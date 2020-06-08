@@ -17,9 +17,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import { auth } from "redux/actions";
+import { auth, toast } from "redux/actions";
 import PersonIcon from "@material-ui/icons/Person";
-import { SIGN_UP } from "redux/constants";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -52,15 +51,37 @@ const useStyles = makeStyles(theme => ({
 const SignUp = props => {
   const classes = useStyles();
   const history = useHistory();
-  const { status, error, setStatus, showSnack } = props;
+
+  const { signup, showToast } = props;
 
   const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    confirm_password: "",
+    passwordConfirm: "",
     role: "regular"
+  };
+
+  const handleSubmit = (values, actions) => {
+    signup({
+      body: values,
+      success: () => {
+        actions.setSubmitting(false);
+        showToast({
+          message: "You are successfully signed up!",
+          intent: "success",
+          timeout: 3000
+        });
+      },
+      fail: err => {
+        actions.setSubmitting(false);
+        showToast({
+          message: err.response.data.message,
+          status: "error"
+        });
+      }
+    });
   };
 
   const validation = Yup.object().shape({
@@ -70,7 +91,7 @@ const SignUp = props => {
       .required("Email is required.")
       .email("Invalid email."),
     password: Yup.string().required("Password is required."),
-    confirm_password: Yup.string()
+    passwordConfirm: Yup.string()
       .test(
         "passwords-match",
         "Password doesn't match, please confirm it.",
@@ -80,11 +101,6 @@ const SignUp = props => {
       )
       .required("Confirm password is required.")
   });
-
-  const handleSubmit = values => {
-    const { signUp } = props;
-    signUp(values);
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -200,11 +216,11 @@ const SignUp = props => {
                   <TextField
                     variant="outlined"
                     fullWidth
-                    name="confirm_password"
+                    name="passwordConfirm"
                     label="Confirm Password"
                     type="password"
-                    id="confirm_password"
-                    value={props.values.confirm_password}
+                    id="passwordConfirm"
+                    value={props.values.passwordConfirm}
                     onChange={props.handleChange}
                     InputProps={{
                       startAdornment: (
@@ -215,10 +231,10 @@ const SignUp = props => {
                     }}
                     autoComplete="current-password"
                   />
-                  {props.errors.confirm_password &&
-                  props.touched.confirm_password ? (
+                  {props.errors.passwordConfirm &&
+                  props.touched.passwordConfirm ? (
                     <div className={classes.error}>
-                      {props.errors.confirm_password}
+                      {props.errors.passwordConfirm}
                     </div>
                   ) : null}
                 </Grid>
@@ -280,7 +296,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  signUp: auth.signUp
+  signup: auth.signup,
+  showToast: toast.showToast
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

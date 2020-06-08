@@ -41,8 +41,9 @@ const UserSchema = new mongoose.Schema({
   },
 
   role: {
-    type: Number,
-    enum: ["regular", "owner", "admin"]
+    type: String,
+    enum: ["regular", "owner", "admin"],
+    required: true
   }
 });
 
@@ -94,9 +95,9 @@ const createUser = user => {
           }
         }
       }),
-    role: Joi.number()
-      .integer()
-      .optional()
+    role: Joi.string()
+      .valid("admin", "owner", "regular")
+      .required()
   });
 };
 

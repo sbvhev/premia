@@ -16,7 +16,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { auth } from "redux/actions";
+import { auth, toast } from "redux/actions";
+import { setLoading } from "redux/actions/progress";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -44,7 +45,8 @@ const useStyles = makeStyles(theme => ({
 
 const LogIn = props => {
   let {
-    logIn,
+    login,
+    showToast,
     auth: { status }
   } = props;
   const classes = useStyles();
@@ -57,16 +59,30 @@ const LogIn = props => {
     password: ""
   };
 
+  const handleSubmit = (values, actions) => {
+    login({
+      body: values,
+      success: () => {
+        actions.setSubmitting(false);
+        history.push("/dashboard");
+        showToast({
+          message: "You are successfully logged in!",
+          intent: "success"
+        });
+      },
+      fail: err => {
+        actions.setSubmitting(false);
+        showToast({ message: err.response.data.message, intent: "error" });
+      }
+    });
+  };
+
   const validation = Yup.object().shape({
     email: Yup.string()
       .required("Email is required.")
       .email("Invalid email."),
     password: Yup.string().required("Password is required.")
   });
-
-  const handleSubmit = values => {
-    logIn(values);
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -164,7 +180,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  logIn: auth.logIn
+  login: auth.login,
+  showToast: toast.showToast
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogIn);

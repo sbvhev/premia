@@ -8,6 +8,8 @@ export default ({ type, method, path, headers, success }) =>
     const { body, params, success: successPayload, fail: failPayload } =
       action.payload || {};
 
+    console.log("failPayload: ", failPayload);
+
     const authToken = localStorage.getItem("auth_token");
     let header = {
       "Content-Type": "application/json"
@@ -23,7 +25,7 @@ export default ({ type, method, path, headers, success }) =>
         type: Pending(type)
       });
       const options = {
-        url: `http://localhost:3001/api${
+        url: `http://localhost:4000/api${
           typeof path === "function" ? path(action.payload) : path
         }`,
         method: method,

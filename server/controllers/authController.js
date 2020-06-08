@@ -50,9 +50,7 @@ async function signUp(req, res, next) {
     let user = await User.findOne({ email: req.body.email });
 
     if (user)
-      return res
-        .status("User already registered.")
-        .send({ message: "User already registered." });
+      return res.status(409).send({ message: "User already registered." });
 
     user = new User(
       pick(req.body, [
@@ -60,14 +58,15 @@ async function signUp(req, res, next) {
         "lastName",
         "email",
         "password",
-        "passwordConfirm"
+        "passwordConfirm",
+        "role"
       ])
     );
 
     const newUser = await user.save();
 
     res.status(201).send({
-      user: pick(newUser, ["firstName", "lastName", "email", "_id"])
+      user: pick(newUser, ["firstName", "lastName", "email", "_id", "role"])
     });
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });
