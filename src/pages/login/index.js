@@ -17,7 +17,6 @@ import Container from "@material-ui/core/Container";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { auth, toast } from "redux/actions";
-import { setLoading } from "redux/actions/progress";
 
 const useStyles = makeStyles(theme => ({
   paper: {
