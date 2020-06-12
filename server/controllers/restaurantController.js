@@ -3,8 +3,14 @@ const _ = require("lodash");
 
 async function post(req, res, next) {
   try {
-    let { name } = req.body;
+    let { name = "" } = req.body || {};
     const { user } = req;
+
+    if (!name) {
+      return res.status(400).json({
+        message: "Name is required."
+      });
+    }
 
     if (user.role === "regular") {
       return res.status(403).json({
@@ -34,33 +40,9 @@ async function post(req, res, next) {
   }
 }
 
-async function read(req, res, next) {
-  try {
-    const user = req.user;
-    const { page = 1, limit = 5 } = req.query;
-    let all;
-    if (user.role === "owner") {
-      all = await Restaurant.find({ user: user })
-        .skip((page - 1) * limit)
-        .sort([["overall_rating", -1]])
-        .exec();
-    } else {
-      all = await Restaurant.find({})
-        .skip((page - 1) * limit)
-        .sort([["overall_rating", -1]])
-        .exec();
-    }
-    return res.send({
-      all
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
 async function list(req, res, next) {
   try {
-    let { min = 0, max = 5 } = req.body;
+    let { min = 0, max = 5, page = 1, limit = 5 } = req.query;
     const { user } = req;
     if (min > max) {
       res.status(400).json({
@@ -75,12 +57,14 @@ async function list(req, res, next) {
         overall_rating: { $gte: min, $lte: max },
         user: user._id
       })
+        .skip((page - 1) * limit)
         .sort([["overall_rating", -1]])
         .exec();
     } else {
       restaurants = await Restaurant.find({
         overall_rating: { $gte: min, $lte: max }
       })
+        .skip((page - 1) * limit)
         .sort([["overall_rating", -1]])
         .exec();
     }
@@ -151,7 +135,6 @@ async function remove(req, res, next) {
 
 module.exports = {
   post,
-  read,
   list,
   update,
   remove

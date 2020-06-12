@@ -8,7 +8,7 @@ export default ({ type, method, path, headers, success }) =>
     const { body, params, success: successPayload, fail: failPayload } =
       action.payload || {};
 
-    console.log("failPayload: ", failPayload);
+    console.log("params: ", params);
 
     const authToken = localStorage.getItem("auth_token");
     let header = {

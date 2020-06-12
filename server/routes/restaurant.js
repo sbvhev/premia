@@ -4,7 +4,7 @@ const restaurantController = require("../controllers/restaurantController");
 
 router
   .route("/")
-  .get(restaurantController.read)
+  .get(restaurantController.list)
   .post(restaurantController.post);
 
 router

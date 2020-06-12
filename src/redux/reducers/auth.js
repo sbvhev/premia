@@ -1,6 +1,6 @@
 import { handleActions } from "redux-actions";
 import { Success, Fail } from "utils/status";
-import { LOG_IN, SIGN_UP } from "redux/constants";
+import { LOG_IN, SIGN_UP, LOG_OUT } from "redux/constants";
 
 const getInitialState = () => {
   let authInfo = JSON.parse(localStorage.getItem("auth_token") || "{}");
@@ -49,6 +49,13 @@ export default handleActions(
       status: "FAIL",
       me: null,
       error: payload
+    }),
+    [LOG_OUT]: state => ({
+      ...state,
+      token: null,
+      status: LOG_OUT,
+      me: null,
+      error: null
     })
   },
   getInitialState()

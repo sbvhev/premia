@@ -63,7 +63,7 @@ const LogIn = props => {
       body: values,
       success: () => {
         actions.setSubmitting(false);
-        history.push("/dashboard");
+        history.push("/restaurants");
         showToast({
           message: "You are successfully logged in!",
           intent: "success"
