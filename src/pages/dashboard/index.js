@@ -26,7 +26,6 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   Add as AddIcon,
-  Dehaze as DehazeIcon,
   Home as HomeIcon,
   MoreVert as MoreVertIcon
 } from "@material-ui/icons";
@@ -34,7 +33,7 @@ import debounce from "lodash-es/debounce";
 
 import ManageRestaurant from "components/manage_restaurant";
 import Confirm from "components/confirm";
-import { restaurant, toast } from "redux/actions";
+import { restaurant, toast, progress } from "redux/actions";
 
 const columns = [
   {
@@ -137,10 +136,10 @@ const Dashboard = props => {
     updateRestaurant,
     userInfo,
     restaurants = [],
-    showToast,
     setParams,
     params,
-    filter
+    count,
+    setLoading
   } = props;
 
   const setDebouncedParams = useCallback(
@@ -165,11 +164,10 @@ const Dashboard = props => {
   };
 
   const handleChangePage = (event, newPage) => {
-    setParams({ page: newPage });
+    setParams({ page: newPage + 1 });
   };
 
   const handleChangeRowsPerPage = event => {
-    console.log(event.target.value);
     setParams({ limit: event.target.value, page: 1 });
   };
 
@@ -325,7 +323,7 @@ const Dashboard = props => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 50]}
             component="div"
-            count={restaurants.length}
+            count={count}
             rowsPerPage={params.limit}
             page={params.page - 1}
             onChangePage={handleChangePage}
@@ -367,7 +365,8 @@ const Dashboard = props => {
 const mapStateToProps = state => ({
   params: state.restaurant.params,
   restaurants: state.restaurant.restaurants,
-  userInfo: state.auth.me
+  userInfo: state.auth.me,
+  count: state.restaurant.count
 });
 
 const mapDispatchToProps = {
@@ -375,7 +374,8 @@ const mapDispatchToProps = {
   createRestaurant: restaurant.createRestaurant,
   updateRestaurant: restaurant.updateRestaurant,
   setParams: restaurant.setParams,
-  showToast: toast.showToast
+  showToast: toast.showToast,
+  setLoading: progress.setLoading
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

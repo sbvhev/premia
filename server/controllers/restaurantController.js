@@ -51,6 +51,10 @@ async function list(req, res, next) {
       return;
     }
 
+    let where = {};
+    where["overall_rating"] = { $gte: min, $lte: max };
+    const count = await Restaurant.countDocuments(where);
+
     let restaurants;
     if (user.role === "owner") {
       restaurants = await Restaurant.find({
@@ -58,6 +62,7 @@ async function list(req, res, next) {
         user: user._id
       })
         .skip((page - 1) * limit)
+        .limit(parseInt(limit))
         .sort([["overall_rating", -1]])
         .exec();
     } else {
@@ -65,12 +70,14 @@ async function list(req, res, next) {
         overall_rating: { $gte: min, $lte: max }
       })
         .skip((page - 1) * limit)
+        .limit(parseInt(limit))
         .sort([["overall_rating", -1]])
         .exec();
     }
 
     return res.send({
-      restaurants
+      restaurants,
+      count
     });
   } catch (err) {
     next(err);

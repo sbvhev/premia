@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { LinearProgress } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -16,9 +15,7 @@ const Progress = props => {
   const { loading } = props;
   return (
     <div className={classes.placeholder}>
-      <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {loading && <LinearProgress color="secondary" />}
     </div>
   );
 };

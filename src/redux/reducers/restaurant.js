@@ -13,7 +13,6 @@ const initialState = {
   currentRestaurant: null,
   filteredResults: [],
   count: -1,
-  loading: false,
   params: {
     page: 1,
     limit: 5,
@@ -28,7 +27,6 @@ export default handleActions(
   {
     [SET_PARAMS]: (state, { payload }) => ({
       ...state,
-      loading: true,
       params: {
         ...state.params,
         ...payload
@@ -38,12 +36,10 @@ export default handleActions(
       ...state,
       restaurants: payload.restaurants,
       count: payload.count,
-      loading: false,
       error: null
     }),
     [Fail(GET_RESTAURANTS)]: (state, { payload }) => ({
       ...state,
-      loading: false,
       error: payload.data
     }),
     [Success(CREATE_RESTAURANT)]: (state, { payload }) => {
@@ -51,21 +47,18 @@ export default handleActions(
         ...state,
         currentRestaurant: payload,
         count: state.count + 1,
-        loading: false,
         error: null
       };
     },
     [Fail(CREATE_RESTAURANT)]: (state, { payload }) => {
       return {
         ...state,
-        loading: false,
         error: payload.data
       };
     },
     [Success(UPDATE_RESTAURANT)]: (state, { payload }) => {
       return {
         ...state,
-        loading: false,
         currentRestaurant: payload,
         error: null
       };
@@ -73,14 +66,12 @@ export default handleActions(
     [Fail(UPDATE_RESTAURANT)]: (state, { payload }) => {
       return {
         ...state,
-        loading: false,
         error: payload.data
       };
     },
     [Success(DELETE_RESTAURANT)]: (state, { payload }) => {
       return {
         ...state,
-        loading: false,
         count: state.count - 1,
         error: null
       };
@@ -88,7 +79,6 @@ export default handleActions(
     [Fail(DELETE_RESTAURANT)]: (state, { payload }) => {
       return {
         ...state,
-        loading: false,
         error: payload.data
       };
     }
