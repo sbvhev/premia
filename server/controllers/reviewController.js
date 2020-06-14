@@ -4,7 +4,7 @@ const _ = require("lodash");
 
 async function read(req, res, next) {
   try {
-    const { id } = req.params;
+    const { id, page = 1, limit = 5 } = req.params;
     const user = req.user;
 
     let restaurant;
@@ -22,7 +22,11 @@ async function read(req, res, next) {
     }
     res.send({
       name: restaurant.name,
-      reviews: restaurant.reviews
+      reviews: restaurant.reviews.slice(
+        (page - 1) * limit,
+        (page - 1) * limit + limit
+      ),
+      count: restaurant.reviews.length
     });
   } catch (err) {
     next(err);

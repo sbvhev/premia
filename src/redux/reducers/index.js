@@ -4,12 +4,14 @@ import auth from "./auth";
 import toast from "./toast";
 import progress from "./progress";
 import restaurant from "./restaurant";
+import review from "./review";
 
 const appReducer = combineReducers({
   auth,
   toast,
   progress,
-  restaurant
+  restaurant,
+  review
 });
 
 const rootReducer = (state, action) => {

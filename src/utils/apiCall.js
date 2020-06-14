@@ -3,12 +3,10 @@ import { get } from "lodash-es";
 import axios from "axios";
 import { Fail, Pending, Success } from "./status";
 
-export default ({ type, method, path, headers, success }) =>
+export default ({ type, method, path, success }) =>
   function*(action) {
     const { body, params, success: successPayload, fail: failPayload } =
       action.payload || {};
-
-    console.log("params: ", params);
 
     const authToken = localStorage.getItem("auth_token");
     let header = {

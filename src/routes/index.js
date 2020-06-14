@@ -4,6 +4,7 @@ import get from "lodash-es/get";
 import { useSelector } from "react-redux";
 import LogIn from "pages/login";
 import Signup from "pages/signup";
+import DetailedView from "pages/detail_view";
 import Dashboard from "pages/dashboard";
 import Header from "components/header";
 
@@ -36,6 +37,7 @@ const Routes = () => {
             <Header />
             <Switch>
               <Route exact path="/restaurants" component={Dashboard} />
+              <Route path="/restaurants/:id" component={DetailedView} />
               <Route render={() => <Redirect to="/" />} />
             </Switch>
           </>
