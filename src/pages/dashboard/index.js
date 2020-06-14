@@ -31,7 +31,7 @@ import {
 } from "@material-ui/icons";
 import debounce from "lodash-es/debounce";
 
-import ManageRestaurant from "components/manage_restaurant";
+import CreateRestaurant from "components/create_restaurant";
 import Confirm from "components/confirm";
 import { restaurant, toast, progress } from "redux/actions";
 
@@ -138,8 +138,7 @@ const Dashboard = props => {
     restaurants = [],
     setParams,
     params,
-    count,
-    setLoading
+    count
   } = props;
 
   const setDebouncedParams = useCallback(
@@ -153,7 +152,7 @@ const Dashboard = props => {
 
   useEffect(() => {
     getRestaurants({ params });
-  }, [params]);
+  }, [params, count]);
 
   useEffect(() => {
     setDebouncedParams(range);
@@ -349,7 +348,7 @@ const Dashboard = props => {
           setSelctedRow("");
         }}
       />
-      <ManageRestaurant
+      <CreateRestaurant
         handleSave={handleSave}
         handleClose={handleClose}
         classes={classes}

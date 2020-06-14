@@ -2,7 +2,7 @@ const { isInteger, toNumber, pick, get } = require("lodash");
 
 const { User, createValidate, updateValidate } = require("../models/user");
 
-const { Restaurant } = require("../models/restaurant");
+const Restaurant = require("../models/restaurant");
 
 function read(req, res, next) {
   res.json(req.userModel);

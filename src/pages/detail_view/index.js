@@ -28,6 +28,7 @@ import Rating from "@material-ui/lab/Rating";
 import moment from "moment";
 import { review } from "redux/actions";
 import CreateReview from "components/create_review";
+import ReplyModal from "components/reply_modal";
 
 const columns = [
   {
@@ -126,19 +127,23 @@ const StyledBreadcrumb = withStyles(theme => ({
 const DetailedView = props => {
   const classes = useStyles();
   const history = useHistory();
-  const { getReviews, reviews, me, params, setParams, count } = props;
-  const [open, setOpen] = useState(false);
-  const [rate, setRate] = useState(0);
-  const [deleteOpen, setDeleteModalOpen] = useState(false);
-  const [fieldValue, setFieldValue] = useState("");
-  const [reviewSelected, setSelectedReview] = useState("");
-  const [reply, addReply] = useState("");
-  const [createOrEdit, setCreateOrEdit] = useState(true);
+  const {
+    getReviews,
+    reviews,
+    me,
+    params,
+    setParams,
+    count,
+    currentReview
+  } = props;
+  const [createOpen, setCreateModalOpen] = useState(false);
+  const [replyOpen, setReplyModalOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState({});
   const { id } = props.match.params;
 
   useEffect(() => {
     getReviews({ params, id });
-  }, [params]);
+  }, [params, currentReview, count]);
 
   const handleChangePage = (event, newPage) => {
     setParams({ page: newPage + 1 });
@@ -146,15 +151,6 @@ const DetailedView = props => {
 
   const handleChangeRowsPerPage = event => {
     setParams({ limit: event.target.value, page: 1 });
-  };
-
-  const openDialog = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setCreateOrEdit(true);
-    setOpen(false);
   };
 
   return (
@@ -218,8 +214,8 @@ const DetailedView = props => {
                                 <IconButton
                                   aria-label="reply"
                                   onClick={() => {
-                                    setSelectedReview(row._id);
-                                    openDialog();
+                                    setSelectedReview(row);
+                                    setReplyModalOpen(true);
                                   }}
                                 >
                                   <ReplyIcon fontSize="small" />
@@ -238,12 +234,7 @@ const DetailedView = props => {
                                   <IconButton
                                     aria-label="edit"
                                     onClick={() => {
-                                      setSelectedReview(row._id);
-                                      setRate(row.rate);
-                                      setFieldValue(row.comment);
-                                      addReply(row.reply);
-                                      setCreateOrEdit(false);
-                                      openDialog();
+                                      setSelectedReview(row);
                                     }}
                                   >
                                     <EditIcon fontSize="small" />
@@ -252,7 +243,6 @@ const DetailedView = props => {
                                     aria-label="delete"
                                     onClick={() => {
                                       setSelectedReview(row._id);
-                                      setDeleteModalOpen(true);
                                     }}
                                   >
                                     <DeleteIcon fontSize="small" />
@@ -317,15 +307,19 @@ const DetailedView = props => {
             icon={<AddIcon />}
             color="primary"
             label="Add a comment"
-            onClick={openDialog}
+            onClick={() => setCreateModalOpen(true)}
           />
         )}
         <CreateReview
           id={id}
-          open={open}
-          handleClose={handleClose}
-          initialRate={rate}
-          initialField={fieldValue}
+          open={createOpen}
+          handleClose={() => setCreateModalOpen(false)}
+        />
+        <ReplyModal
+          id={id}
+          open={replyOpen}
+          handleClose={() => setReplyModalOpen(false)}
+          selectRow={selectedReview}
         />
       </Container>
     </React.Fragment>
@@ -336,7 +330,8 @@ const mapStateToProps = state => ({
   me: state.auth.me,
   reviews: state.review.reviews,
   count: state.review.count,
-  params: state.review.params
+  params: state.review.params,
+  currentReview: state.review.currentReview
 });
 
 const mapDispatchToProps = {

@@ -1,6 +1,11 @@
 import { handleActions } from "redux-actions";
 import { Success, Fail } from "utils/status";
-import { GET_REVIEWS, SET_REVIEW_PARAMS, ADD_REVIEW } from "redux/constants";
+import {
+  GET_REVIEWS,
+  SET_REVIEW_PARAMS,
+  ADD_REVIEW,
+  EDIT_REVIEW
+} from "redux/constants";
 
 const initialState = {
   reviews: [],
@@ -42,6 +47,20 @@ export default handleActions(
       };
     },
     [Fail(ADD_REVIEW)]: (state, { payload }) => {
+      return {
+        ...state,
+        error: payload.data
+      };
+    },
+    [Success(EDIT_REVIEW)]: (state, { payload }) => {
+      return {
+        ...state,
+        currentReview: payload,
+        count: state.count,
+        error: null
+      };
+    },
+    [Fail(EDIT_REVIEW)]: (state, { payload }) => {
       return {
         ...state,
         error: payload.data

@@ -15,4 +15,5 @@ export const SET_RESTAURANT_PARAMS = "SET_RESTAURANT_PARAMS";
 
 export const GET_REVIEWS = "GET_REVIEWS";
 export const ADD_REVIEW = "ADD_REVIEW";
+export const EDIT_REVIEW = "EDIT_REVIEW";
 export const SET_REVIEW_PARAMS = "SET_REVIEW_PARAMS";

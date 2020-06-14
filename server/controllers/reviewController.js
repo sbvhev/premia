@@ -1,5 +1,5 @@
 const Review = require("../models/review");
-const { Restaurant } = require("../models/restaurant");
+const Restaurant = require("../models/restaurant");
 const _ = require("lodash");
 
 async function read(req, res, next) {
@@ -24,8 +24,8 @@ async function read(req, res, next) {
     res.send({
       name: restaurant.name,
       reviews: restaurant.reviews.slice(
-        (page - 1) * limit,
-        (page - 1) * limit + limit
+        parseInt(page - 1) * parseInt(limit),
+        parseInt(page - 1) * parseInt(limit) + parseInt(limit)
       ),
       count: restaurant.reviews.length
     });
@@ -80,24 +80,24 @@ async function create(req, res, next) {
 }
 
 async function update(req, res, next) {
-  const { review_id } = req.params;
+  const { id } = req.params;
   const { reply, comment, rate } = req.body;
   const user = req.user;
   if (
     user.role === "regular" ||
-    (user.role === "onwer" && typeof rate != "undefined")
+    (user.role === "owner" && typeof rate != "undefined")
   ) {
     return res.status(403).json({
-      error: "You're not authorized to update the review."
+      message: "You're not authorized to update the review."
     });
   }
   let previous = 0;
-  const review = await Review.findOne({ _id: review_id }).populate(
-    "restaurant"
-  );
+  const review = await Review.findOne({ _id: id }).populate("restaurant");
+
+  console.log("review: ", review);
   if (review == null) {
     return res.status(400).send({
-      error: "Review doesn't exist"
+      message: "Review doesn't exist"
     });
   }
   if (typeof comment != "undefined") review.comment = comment;
@@ -107,7 +107,7 @@ async function update(req, res, next) {
   }
   if (user.role == "owner" && review.reply.length > 0) {
     return res.status(400).send({
-      error: "Owners can only reply once."
+      message: "Owners can only reply once."
     });
   }
   review.reply = reply;
@@ -116,7 +116,7 @@ async function update(req, res, next) {
     Restaurant.findOne({ _id: review.restaurant._id }, (err, restaurant) => {
       if (restaurant == null) {
         return res.status(400).send({
-          error: "Restaurant doesn't exist"
+          message: "Restaurant doesn't exist"
         });
       }
       if (restaurant.highest_rating < rate) restaurant.highest_rating = rate;

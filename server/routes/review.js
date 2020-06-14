@@ -7,7 +7,7 @@ router.route("/restaurants/:id/reviews").get(reviewController.read);
 router.route("/restaurants/reviews/").post(reviewController.create);
 
 router
-  .route("/restaurants/reviews/:review_id")
+  .route("/restaurants/reviews/:id")
   .put(reviewController.update)
   .delete(reviewController.remove);
 

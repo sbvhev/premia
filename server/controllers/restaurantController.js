@@ -1,4 +1,5 @@
-const { Restaurant } = require("../models/restaurant");
+const Restaurant = require("../models/restaurant");
+const ObjectId = require("mongodb").ObjectID;
 const _ = require("lodash");
 
 async function post(req, res, next) {
@@ -53,6 +54,9 @@ async function list(req, res, next) {
 
     let where = {};
     where["overall_rating"] = { $gte: min, $lte: max };
+    if (user.role === "owner") {
+      where["user"] = ObjectId(user._id);
+    }
     const count = await Restaurant.countDocuments(where);
 
     let restaurants;
@@ -61,7 +65,7 @@ async function list(req, res, next) {
         overall_rating: { $gte: min, $lte: max },
         user: user._id
       })
-        .skip((page - 1) * limit)
+        .skip(parseInt(page - 1) * parseInt(limit))
         .limit(parseInt(limit))
         .sort([["overall_rating", -1]])
         .exec();
@@ -69,7 +73,7 @@ async function list(req, res, next) {
       restaurants = await Restaurant.find({
         overall_rating: { $gte: min, $lte: max }
       })
-        .skip((page - 1) * limit)
+        .skip(parseInt(page - 1) * parseInt(limit))
         .limit(parseInt(limit))
         .sort([["overall_rating", -1]])
         .exec();
