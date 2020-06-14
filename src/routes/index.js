@@ -7,11 +7,14 @@ import Signup from "pages/signup";
 import DetailedView from "pages/detail_view";
 import Dashboard from "pages/dashboard";
 import Header from "components/header";
+import User from "pages/user";
 
 const Routes = () => {
   const isAuthenticated = useSelector(
     state => !!get(state, "auth.token", false)
   );
+
+  const role = useSelector(state => get(state, "auth.me.role", "regular"));
   return (
     <>
       <Switch>
@@ -38,6 +41,7 @@ const Routes = () => {
             <Switch>
               <Route exact path="/restaurants" component={Dashboard} />
               <Route path="/restaurants/:id" component={DetailedView} />
+              {role === "admin" && <Route path="/users" component={User} />}
               <Route render={() => <Redirect to="/" />} />
             </Switch>
           </>

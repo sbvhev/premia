@@ -13,6 +13,7 @@ async function list(req, res, next) {
     const { page = 1, limit = 5 } = req.query;
 
     const where = { _id: { $ne: req.user._id } };
+    const count = await User.countDocuments(where);
 
     if (!isInteger(toNumber(page)) || !isInteger(toNumber(limit))) {
       return res
@@ -26,7 +27,7 @@ async function list(req, res, next) {
       .select("-password -passwordConfirm")
       .sort("-role");
 
-    res.json({ users });
+    res.json({ users, count });
   } catch (error) {
     next(error);
   }
@@ -50,16 +51,7 @@ async function create(req, res, next) {
 
     const newUser = await user.save();
 
-    res.json(
-      pick(newUser, [
-        "firstName",
-        "lastName",
-        "email",
-        "_id",
-        "role",
-        "preferredWorkingHours"
-      ])
-    );
+    res.json(pick(newUser, ["firstName", "lastName", "email", "_id", "role"]));
   } catch (error) {
     next(error);
   }
@@ -87,14 +79,7 @@ async function update(req, res, next) {
     const updatedUser = await req.userModel.save();
 
     res.json(
-      pick(updatedUser, [
-        "firstName",
-        "lastName",
-        "email",
-        "_id",
-        "role",
-        "preferredWorkingHours"
-      ])
+      pick(updatedUser, ["firstName", "lastName", "email", "_id", "role"])
     );
   } catch (error) {
     next(error);
@@ -109,27 +94,10 @@ async function remove(req, res, next) {
   res.json({ id: req.userModel._id });
 }
 
-async function getSpecificUser(req, res, next, id) {
-  try {
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).send({ message: "Not found." });
-    }
-
-    req.userModel = user;
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
 module.exports = {
   create,
   update,
   read,
   list,
-  remove,
-  getSpecificUser
+  remove
 };

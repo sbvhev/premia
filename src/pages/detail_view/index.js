@@ -149,7 +149,7 @@ const DetailedView = props => {
     setParams({ page: newPage + 1 });
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeLimitPage = event => {
     setParams({ limit: event.target.value, page: 1 });
   };
 
@@ -298,7 +298,7 @@ const DetailedView = props => {
             rowsPerPage={params.limit}
             page={params.page - 1}
             onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
+            onChangeRowsPerPage={handleChangeLimitPage}
           />
         </Paper>
         {me.role !== "owner" && (

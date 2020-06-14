@@ -17,3 +17,9 @@ export const GET_REVIEWS = "GET_REVIEWS";
 export const ADD_REVIEW = "ADD_REVIEW";
 export const EDIT_REVIEW = "EDIT_REVIEW";
 export const SET_REVIEW_PARAMS = "SET_REVIEW_PARAMS";
+
+export const GET_USERS = "GET_USERS";
+export const CREATE_USER = "CREATE_USER";
+export const UPDATE_USER = "UPDATE_USER";
+export const DEL_USER = "DEL_USER";
+export const SET_USER_PARAMS = "SET_USER_PARAMS";

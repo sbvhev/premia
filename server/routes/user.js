@@ -16,6 +16,4 @@ router
   .put(userController.update)
   .delete(userController.remove);
 
-router.param("id", userController.getSpecificUser);
-
 module.exports = router;
