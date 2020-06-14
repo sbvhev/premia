@@ -94,7 +94,7 @@ const LogIn = props => {
           Sign in
         </Typography>
         <Formik
-          initialValues={initialValues}
+          initialValues={{ email: "", password: "" }}
           validationSchema={validation}
           onSubmit={handleSubmit}
         >
@@ -111,6 +111,12 @@ const LogIn = props => {
                 id="email"
                 label="Email Address"
                 name="email"
+                error={props.errors.email && props.touched.email}
+                helperText={
+                  props.errors.email &&
+                  props.touched.email &&
+                  props.errors.email
+                }
                 autoComplete="email"
                 value={props.values.email}
                 onChange={props.handleChange}
@@ -123,9 +129,6 @@ const LogIn = props => {
                 }}
                 autoFocus
               />
-              {props.errors.email && props.touched.email ? (
-                <div className={classes.error}>{props.errors.email}</div>
-              ) : null}
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -134,6 +137,12 @@ const LogIn = props => {
                 label="Password"
                 type="password"
                 id="password"
+                error={props.errors.password && props.touched.password}
+                helperText={
+                  props.errors.password &&
+                  props.touched.password &&
+                  props.errors.password
+                }
                 value={props.values.password}
                 onChange={props.handleChange}
                 InputProps={{
@@ -145,9 +154,6 @@ const LogIn = props => {
                 }}
                 autoComplete="current-password"
               />
-              {props.errors.password && props.touched.password ? (
-                <div className={classes.error}>{props.errors.password}</div>
-              ) : null}
               <Button
                 type="submit"
                 fullWidth

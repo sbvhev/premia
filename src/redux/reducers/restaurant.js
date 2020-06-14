@@ -5,7 +5,7 @@ import {
   CREATE_RESTAURANT,
   UPDATE_RESTAURANT,
   DELETE_RESTAURANT,
-  SET_PARAMS
+  SET_RESTAURANT_PARAMS
 } from "redux/constants";
 
 const initialState = {
@@ -25,7 +25,7 @@ const initialState = {
 
 export default handleActions(
   {
-    [SET_PARAMS]: (state, { payload }) => ({
+    [SET_RESTAURANT_PARAMS]: (state, { payload }) => ({
       ...state,
       params: {
         ...state.params,

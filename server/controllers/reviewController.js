@@ -1,10 +1,11 @@
-const { Review } = require("../models/review");
+const Review = require("../models/review");
 const { Restaurant } = require("../models/restaurant");
 const _ = require("lodash");
 
 async function read(req, res, next) {
   try {
-    const { id, page = 1, limit = 5 } = req.params;
+    const { page = 1, limit = 5 } = req.query;
+    const { id } = req.params;
     const user = req.user;
 
     let restaurant;
@@ -39,22 +40,25 @@ async function create(req, res, next) {
     const { user } = req;
     if (user.role === "owner") {
       return res.status(403).json({
-        error: "You're not authorized to leave a comment."
+        message: "You're not authorized to leave a comment."
       });
     }
     const restaurant = await Restaurant.findOne({ _id: id });
     if (restaurant == null) {
       return res.status(400).send({
-        error: "Restaurant doesn't exist"
+        message: "Restaurant doesn't exist"
       });
     }
-    const review = await Review.create({
+    const newReview = new Review({
       from_user: user,
       rate: rate,
       comment: comment,
       restaurant: id,
       reply: ""
     });
+
+    const review = await newReview.save();
+
     restaurant.reviews.push(review);
     if (restaurant.highest_rating < review.rate)
       restaurant.highest_rating = review.rate;

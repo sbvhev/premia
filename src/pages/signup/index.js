@@ -92,14 +92,14 @@ const SignUp = props => {
       .email("Invalid email."),
     password: Yup.string().required("Password is required."),
     passwordConfirm: Yup.string()
-      .test(
-        "passwords-match",
-        "Password doesn't match, please confirm it.",
-        function(value) {
-          return this.parent.password === value;
-        }
-      )
-      .required("Confirm password is required.")
+      .when("password", {
+        is: val => (val && val.length > 0 ? true : false),
+        then: Yup.string().oneOf(
+          [Yup.ref("password")],
+          "Both password need to be the same"
+        )
+      })
+      .required("Password confirm is required")
   });
 
   return (
@@ -130,6 +130,12 @@ const SignUp = props => {
                     label="First Name"
                     value={props.values.firstName}
                     onChange={props.handleChange}
+                    error={props.errors.firstName && props.touched.firstName}
+                    helperText={
+                      props.errors.firstName &&
+                      props.touched.firstName &&
+                      props.errors.firstName
+                    }
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -139,11 +145,6 @@ const SignUp = props => {
                     }}
                     autoFocus
                   />
-                  {props.errors.firstName && props.touched.firstName ? (
-                    <div className={classes.error}>
-                      {props.errors.firstName}
-                    </div>
-                  ) : null}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -154,6 +155,12 @@ const SignUp = props => {
                     name="lastName"
                     value={props.values.lastName}
                     onChange={props.handleChange}
+                    error={props.errors.lastName && props.touched.lastName}
+                    helperText={
+                      props.errors.lastName &&
+                      props.touched.lastName &&
+                      props.errors.lastName
+                    }
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -163,9 +170,6 @@ const SignUp = props => {
                     }}
                     autoComplete="lname"
                   />
-                  {props.errors.lastName && props.touched.lastName ? (
-                    <div className={classes.error}>{props.errors.lastName}</div>
-                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -175,6 +179,12 @@ const SignUp = props => {
                     label="Email Address"
                     name="email"
                     value={props.values.email}
+                    error={props.errors.email && props.touched.email}
+                    helperText={
+                      props.errors.email &&
+                      props.touched.email &&
+                      props.errors.email
+                    }
                     onChange={props.handleChange}
                     InputProps={{
                       startAdornment: (
@@ -198,6 +208,12 @@ const SignUp = props => {
                     type="password"
                     id="password"
                     value={props.values.password}
+                    error={props.errors.password && props.touched.password}
+                    helperText={
+                      props.errors.password &&
+                      props.touched.password &&
+                      props.errors.password
+                    }
                     onChange={props.handleChange}
                     InputProps={{
                       startAdornment: (
@@ -208,9 +224,6 @@ const SignUp = props => {
                     }}
                     autoComplete="current-password"
                   />
-                  {props.errors.password && props.touched.password ? (
-                    <div className={classes.error}>{props.errors.password}</div>
-                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -220,6 +233,15 @@ const SignUp = props => {
                     label="Confirm Password"
                     type="password"
                     id="passwordConfirm"
+                    error={
+                      props.errors.passwordConfirm &&
+                      props.touched.passwordConfirm
+                    }
+                    helperText={
+                      props.errors.passwordConfirm &&
+                      props.touched.passwordConfirm &&
+                      props.errors.passwordConfirm
+                    }
                     value={props.values.passwordConfirm}
                     onChange={props.handleChange}
                     InputProps={{
@@ -231,12 +253,6 @@ const SignUp = props => {
                     }}
                     autoComplete="current-password"
                   />
-                  {props.errors.passwordConfirm &&
-                  props.touched.passwordConfirm ? (
-                    <div className={classes.error}>
-                      {props.errors.passwordConfirm}
-                    </div>
-                  ) : null}
                 </Grid>
               </Grid>
               <Grid item xs={12}>

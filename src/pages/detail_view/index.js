@@ -18,7 +18,7 @@ import {
   IconButton
 } from "@material-ui/core";
 import {
-  Create as CreateIcon,
+  Add as AddIcon,
   Home as HomeIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -27,6 +27,7 @@ import {
 import Rating from "@material-ui/lab/Rating";
 import moment from "moment";
 import { review } from "redux/actions";
+import CreateReview from "components/create_review";
 
 const columns = [
   {
@@ -140,7 +141,7 @@ const DetailedView = props => {
   }, [params]);
 
   const handleChangePage = (event, newPage) => {
-    setParams({ page: newPage });
+    setParams({ page: newPage + 1 });
   };
 
   const handleChangeRowsPerPage = event => {
@@ -149,6 +150,11 @@ const DetailedView = props => {
 
   const openDialog = () => {
     setOpen(true);
+  };
+
+  const handleClose = () => {
+    setCreateOrEdit(true);
+    setOpen(false);
   };
 
   return (
@@ -308,12 +314,19 @@ const DetailedView = props => {
         {me.role !== "owner" && (
           <Chip
             className={classes.comment}
-            icon={<CreateIcon />}
+            icon={<AddIcon />}
             color="primary"
-            label="Leave a comment"
+            label="Add a comment"
             onClick={openDialog}
           />
         )}
+        <CreateReview
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          initialRate={rate}
+          initialField={fieldValue}
+        />
       </Container>
     </React.Fragment>
   );
