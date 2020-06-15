@@ -1,5 +1,10 @@
 import { takeLatest } from "redux-saga/effects";
-import { GET_USERS, CREATE_USER, UPDATE_USER, DEL_USER } from "redux/constants";
+import {
+  GET_USERS,
+  CREATE_USER,
+  UPDATE_USER,
+  DELETE_USER
+} from "redux/constants";
 import apiCall from "utils/apiCall";
 
 const getUsers = apiCall({
@@ -21,7 +26,7 @@ const updateUser = apiCall({
 });
 
 const deleteUser = apiCall({
-  type: DEL_USER,
+  type: DELETE_USER,
   method: "delete",
   path: ({ id }) => `/users/${id}/`
 });
@@ -29,6 +34,6 @@ const deleteUser = apiCall({
 export default function* rootSaga() {
   yield takeLatest(GET_USERS, getUsers);
   yield takeLatest(CREATE_USER, createUser);
-  yield takeLatest(DEL_USER, deleteUser);
+  yield takeLatest(DELETE_USER, deleteUser);
   yield takeLatest(UPDATE_USER, updateUser);
 }

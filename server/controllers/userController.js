@@ -3,9 +3,10 @@ const { isInteger, toNumber, pick, get } = require("lodash");
 const { User, createValidate, updateValidate } = require("../models/user");
 
 const Restaurant = require("../models/restaurant");
+const Review = require("../models/review");
 
 function read(req, res, next) {
-  res.json(req.userModel);
+  res.json(req.user);
 }
 
 async function list(req, res, next) {
@@ -60,23 +61,20 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const { error } = updateValidate(req.body);
+    const { id } = req.params;
 
     if (error)
       return res.status(400).send({
         message: get(error, "details.0.message", "Something went wrong.")
       });
 
-    let exist = await User.findOne({
-      email: req.body.email,
-      _id: { $ne: req.userModel._id }
+    const exist = await User.findOne({
+      _id: id
     });
 
-    if (exist)
-      return res.status(409).send({ message: "User already registerd." });
+    Object.assign(exist, req.body);
 
-    Object.assign(req.userModel, req.body);
-
-    const updatedUser = await req.userModel.save();
+    const updatedUser = await exist.save();
 
     res.json(
       pick(updatedUser, ["firstName", "lastName", "email", "_id", "role"])
@@ -87,11 +85,32 @@ async function update(req, res, next) {
 }
 
 async function remove(req, res, next) {
-  await Restaurant.remove({ user: req.userModel._id });
-
-  await req.userModel.remove();
-
-  res.json({ id: req.userModel._id });
+  try {
+    const id = req.params.id;
+    const user = req.user;
+    if (user.role !== "admin") {
+      res.status(403).json({
+        error: "You're not authorized to remove user."
+      });
+      return;
+    }
+    await User.findOne({ _id: id }, async (err, user) => {
+      if (user == null) {
+        res.status(400).send({
+          error: "User doesn't exist"
+        });
+      }
+      await Restaurant.deleteMany({ user: user._id });
+      await Review.deleteMany({ to_user: user._id });
+      await Review.deleteMany({ from_user: user._id });
+      user.delete();
+    });
+    res.send({
+      status: "ok"
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = {

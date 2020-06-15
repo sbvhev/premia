@@ -2,13 +2,12 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import HomeIcon from "@material-ui/icons/Home";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import GroupIcon from "@material-ui/icons/Group";
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+import {
+  Home as HomeIcon,
+  ExitToApp as ExitToAppIcon,
+  Group as GroupIcon
+} from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { auth, toast } from "redux/actions";
 

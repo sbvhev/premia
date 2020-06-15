@@ -17,7 +17,7 @@ const validation = Yup.object().shape({
   name: Yup.string().required("Restaurnt name is required.")
 });
 
-function ManageRestaurant(props) {
+function CreateRestaurant(props) {
   const { handleClose, classes, open, createRestaurant, showToast } = props;
 
   const handleSubmit = (values, actions) => {
@@ -104,4 +104,4 @@ const mapDispatchToProps = {
   showToast: toast.showToast
 };
 
-export default connect(null, mapDispatchToProps)(ManageRestaurant);
+export default connect(null, mapDispatchToProps)(CreateRestaurant);

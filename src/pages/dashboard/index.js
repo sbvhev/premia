@@ -126,14 +126,13 @@ const Dashboard = props => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [fieldValue, setFieldValue] = useState("");
-  const [selectedRow, setSelctedRow] = useState("");
+  const [selectedRow, setSelectedRow] = useState({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [range, setRange] = useState([0, 5]);
 
   const {
     getRestaurants,
     createRestaurant,
-    updateRestaurant,
     userInfo,
     restaurants = [],
     setParams,
@@ -184,10 +183,7 @@ const Dashboard = props => {
   };
 
   const handleSave = () => {
-    if (selectedRow !== "") updateRestaurant(fieldValue, selectedRow);
-    else {
-      createRestaurant(fieldValue);
-    }
+    createRestaurant(fieldValue);
   };
 
   const openDialog = () => {
@@ -254,7 +250,7 @@ const Dashboard = props => {
                                       aria-label="details"
                                       onClick={() => {
                                         setFieldValue(row.name);
-                                        setSelctedRow(row._id);
+                                        setSelectedRow(row);
                                         openDialog();
                                       }}
                                     >
@@ -263,7 +259,7 @@ const Dashboard = props => {
                                     <IconButton
                                       aria-label="details"
                                       onClick={() => {
-                                        setSelctedRow(row._id);
+                                        setSelectedRow(row);
                                         setDeleteOpen(true);
                                       }}
                                     >
@@ -342,20 +338,13 @@ const Dashboard = props => {
       <Confirm
         open={deleteOpen}
         confirmText="Do you want to remove this restaurant?"
-        handleDisagree={() => setDeleteOpen(false)}
-        handleAgree={() => {
-          setDeleteOpen(false);
-          setSelctedRow("");
-        }}
+        handleClose={() => setDeleteOpen(false)}
+        selectedRow={selectedRow}
       />
       <CreateRestaurant
-        handleSave={handleSave}
         handleClose={handleClose}
         classes={classes}
-        selectedRow={selectedRow}
         open={open}
-        fieldChange={fieldChange}
-        fieldValue={fieldValue}
       />
     </React.Fragment>
   );

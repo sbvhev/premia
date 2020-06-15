@@ -60,7 +60,7 @@ const SignUp = props => {
     email: "",
     password: "",
     passwordConfirm: "",
-    role: "regular"
+    role: ""
   };
 
   const handleSubmit = (values, actions) => {
@@ -99,7 +99,8 @@ const SignUp = props => {
           "Both password need to be the same"
         )
       })
-      .required("Password confirm is required")
+      .required("Password confirm is required"),
+    role: Yup.string().required("Role is required")
   });
 
   return (
@@ -195,9 +196,6 @@ const SignUp = props => {
                     }}
                     autoComplete="email"
                   />
-                  {props.errors.email && props.touched.email ? (
-                    <div className={classes.error}>{props.errors.email}</div>
-                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -268,6 +266,7 @@ const SignUp = props => {
                   SelectProps={{
                     native: true
                   }}
+                  error={props.errors.role && props.touched.role}
                   helperText="Please select your role"
                   InputProps={{
                     startAdornment: (
@@ -278,6 +277,7 @@ const SignUp = props => {
                   }}
                   variant="outlined"
                 >
+                  <option value=""></option>
                   <option value="regular">Regular</option>
                   <option value="owner">Owner</option>
                 </TextField>

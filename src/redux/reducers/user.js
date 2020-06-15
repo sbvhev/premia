@@ -4,7 +4,7 @@ import {
   GET_USERS,
   CREATE_USER,
   UPDATE_USER,
-  DEL_USER,
+  DELETE_USER,
   SET_USER_PARAMS
 } from "redux/constants";
 
@@ -72,7 +72,7 @@ export default handleActions(
         error: payload.data
       };
     },
-    [Success(DEL_USER)]: state => {
+    [Success(DELETE_USER)]: state => {
       return {
         ...state,
         loading: false,
@@ -80,7 +80,7 @@ export default handleActions(
         error: null
       };
     },
-    [Fail(DEL_USER)]: (state, { payload }) => {
+    [Fail(DELETE_USER)]: (state, { payload }) => {
       return {
         ...state,
         loading: false,
