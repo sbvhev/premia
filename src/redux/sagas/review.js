@@ -1,5 +1,10 @@
 import { takeLatest } from "redux-saga/effects";
-import { GET_REVIEWS, ADD_REVIEW, EDIT_REVIEW } from "redux/constants";
+import {
+  GET_REVIEWS,
+  ADD_REVIEW,
+  EDIT_REVIEW,
+  DELETE_REVIEW
+} from "redux/constants";
 import apiCall from "utils/apiCall";
 
 const getReviews = apiCall({
@@ -20,8 +25,15 @@ const editReview = apiCall({
   path: ({ id }) => `/restaurants/reviews/${id}`
 });
 
+const deleteReview = apiCall({
+  type: DELETE_REVIEW,
+  method: "delete",
+  path: ({ id }) => `/restaurants/reviews/${id}`
+});
+
 export default function* rootSaga() {
   yield takeLatest(GET_REVIEWS, getReviews);
   yield takeLatest(ADD_REVIEW, addReview);
   yield takeLatest(EDIT_REVIEW, editReview);
+  yield takeLatest(DELETE_REVIEW, deleteReview);
 }

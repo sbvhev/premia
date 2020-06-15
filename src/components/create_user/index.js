@@ -105,7 +105,7 @@ const CreateUser = props => {
         actions.setSubmitting(false);
         showToast({
           message: err.response.data.message,
-          status: "error"
+          intent: "error"
         });
         handleClose();
       }

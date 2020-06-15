@@ -1,7 +1,7 @@
 const { isInteger, toNumber, pick, get } = require("lodash");
 
-const { User, createValidate, updateValidate } = require("../models/user");
-
+const User = require("../models/user");
+const { createValidate, updateValidate } = require("../utils");
 const Restaurant = require("../models/restaurant");
 const Review = require("../models/review");
 

@@ -37,7 +37,7 @@ function CreateRestaurant(props) {
         actions.setSubmitting(false);
         showToast({
           message: err.response.data.message,
-          status: "error"
+          intent: "error"
         });
       }
     });

@@ -133,33 +133,32 @@ async function update(req, res, next) {
 }
 
 async function remove(req, res, next) {
-  const { review_id } = req.params;
+  const { id } = req.params;
+  console.log(id);
   const user = req.user;
   if (user.role !== "admin") {
     return res.status(403).json({
-      error: "You're not authorized to remove review."
+      message: "You're not authorized to remove review."
     });
   }
-  const review = await Review.findOne({ _id: review_id }).populate(
-    "restaurant"
-  );
+  const review = await Review.findOne({ _id: id }).populate("restaurant");
   if (review == null) {
     return res.status(400).send({
-      error: "Review doesn't exist"
+      message: "Review doesn't exist"
     });
   }
-  await Review.deleteOne({ _id: review_id });
+  await Review.deleteOne({ _id: id });
   Restaurant.findOne({ _id: review.restaurant._id })
     .populate("reviews")
     .exec(async (err, restaurant) => {
       if (restaurant == "null") {
         return res.status(400).send({
-          error: "Restaurant doesn't exist."
+          message: "Restaurant doesn't exist."
         });
       }
       if (typeof restaurant != "undefined") {
         restaurant.reviews = restaurant.reviews.filter(
-          review => review._id != review_id
+          review => review._id != id
         );
         let sum = 0;
         if (restaurant.reviews.length === 0) {

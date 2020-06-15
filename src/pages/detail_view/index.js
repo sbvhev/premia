@@ -26,9 +26,10 @@ import {
 } from "@material-ui/icons";
 import Rating from "@material-ui/lab/Rating";
 import moment from "moment";
-import { review } from "redux/actions";
+import { review, toast } from "redux/actions";
 import CreateReview from "components/create_review";
 import ReplyModal from "components/reply_modal";
+import Confirm from "components/confirm";
 
 const columns = [
   {
@@ -129,6 +130,8 @@ const DetailedView = props => {
   const history = useHistory();
   const {
     getReviews,
+    deleteReview,
+    showToast,
     reviews,
     me,
     params,
@@ -138,6 +141,7 @@ const DetailedView = props => {
   } = props;
   const [createOpen, setCreateModalOpen] = useState(false);
   const [replyOpen, setReplyModalOpen] = useState(false);
+  const [deleteReviewOpen, setDeleteReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState({});
   const { id } = props.match.params;
 
@@ -151,6 +155,28 @@ const DetailedView = props => {
 
   const handleChangeLimitPage = event => {
     setParams({ limit: event.target.value, page: 1 });
+  };
+
+  const handleDeleteSubmit = () => {
+    setDeleteReviewOpen(false);
+
+    deleteReview({
+      id: selectedReview._id,
+      body: {},
+      success: () => {
+        showToast({
+          message: "You successfully deleted selected review!",
+          intent: "success",
+          timeout: 3000
+        });
+      },
+      fail: err => {
+        showToast({
+          message: err.response.data.message,
+          intent: "error"
+        });
+      }
+    });
   };
 
   return (
@@ -242,7 +268,8 @@ const DetailedView = props => {
                                   <IconButton
                                     aria-label="delete"
                                     onClick={() => {
-                                      setSelectedReview(row._id);
+                                      setDeleteReviewOpen(true);
+                                      setSelectedReview(row);
                                     }}
                                   >
                                     <DeleteIcon fontSize="small" />
@@ -321,6 +348,13 @@ const DetailedView = props => {
           handleClose={() => setReplyModalOpen(false)}
           selectRow={selectedReview}
         />
+        <Confirm
+          open={deleteReviewOpen}
+          confirmText="Do you want to remove this review?"
+          handleClose={() => setDeleteReviewOpen(false)}
+          handleSubmit={handleDeleteSubmit}
+          selectedRow={selectedReview}
+        />
       </Container>
     </React.Fragment>
   );
@@ -336,7 +370,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getReviews: review.getReviews,
-  setParams: review.setParams
+  deleteReview: review.deleteReview,
+  setParams: review.setParams,
+  showToast: toast.showToast
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedView);

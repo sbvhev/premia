@@ -43,12 +43,8 @@ const columns = [
     label: "No",
     align: "center"
   },
-  {
-    id: "name",
-    numeric: true,
-    label: "Name",
-    align: "center"
-  },
+  { id: "name", numeric: true, label: "Name", align: "center" },
+  { id: "user", disablePadding: true, label: "User", align: "center" },
   {
     id: "overall_rating",
     disablePadding: true,
@@ -67,12 +63,7 @@ const columns = [
     label: "Lowest Rate",
     align: "center"
   },
-  {
-    id: "action",
-    disablePadding: true,
-    label: "Action",
-    align: "center"
-  }
+  { id: "action", disablePadding: true, label: "Action", align: "center" }
 ];
 
 const StyledBreadcrumb = withStyles(theme => ({
@@ -125,14 +116,14 @@ const Dashboard = props => {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
-  const [fieldValue, setFieldValue] = useState("");
   const [selectedRow, setSelectedRow] = useState({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [range, setRange] = useState([0, 5]);
 
   const {
     getRestaurants,
-    createRestaurant,
+    deleteRestaurant,
+    showToast,
     userInfo,
     restaurants = [],
     setParams,
@@ -173,21 +164,34 @@ const Dashboard = props => {
     event.preventDefault();
   };
 
-  const fieldChange = event => {
-    setFieldValue(event.target.value);
-  };
-
   const handleClose = () => {
-    setFieldValue("");
     setOpen(false);
-  };
-
-  const handleSave = () => {
-    createRestaurant(fieldValue);
   };
 
   const openDialog = () => {
     setOpen(true);
+  };
+
+  const handleDeleteSubmit = () => {
+    setDeleteOpen(false);
+
+    deleteRestaurant({
+      id: selectedRow._id,
+      body: {},
+      success: () => {
+        showToast({
+          message: "You successfully deleted selected restaurant!",
+          intent: "success",
+          timeout: 3000
+        });
+      },
+      fail: err => {
+        showToast({
+          message: err.response.data.message,
+          intent: "error"
+        });
+      }
+    });
   };
 
   return (
@@ -222,15 +226,19 @@ const Dashboard = props => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map(column => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
+                  {columns.map(column => {
+                    if (column.id === "user" && userInfo.role !== "admin")
+                      return;
+                    return (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -240,7 +248,23 @@ const Dashboard = props => {
                       {columns.map(column => {
                         const value =
                           column.id === "no" ? index + 1 : row[column.id];
-                        if (column.id === "action")
+                        if (column.id === "user" && userInfo.role !== "admin")
+                          return;
+                        else if (
+                          column.id === "user" &&
+                          userInfo.role === "admin"
+                        ) {
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {row[column.id].firstName +
+                                " " +
+                                row[column.id].lastName +
+                                " (" +
+                                row[column.id].email +
+                                ")"}
+                            </TableCell>
+                          );
+                        } else if (column.id === "action")
                           return (
                             <React.Fragment key={column.id}>
                               <TableCell align={column.align}>
@@ -249,7 +273,6 @@ const Dashboard = props => {
                                     <IconButton
                                       aria-label="details"
                                       onClick={() => {
-                                        setFieldValue(row.name);
                                         setSelectedRow(row);
                                         openDialog();
                                       }}
@@ -339,6 +362,7 @@ const Dashboard = props => {
         open={deleteOpen}
         confirmText="Do you want to remove this restaurant?"
         handleClose={() => setDeleteOpen(false)}
+        handleSubmit={handleDeleteSubmit}
         selectedRow={selectedRow}
       />
       <CreateRestaurant
@@ -361,6 +385,7 @@ const mapDispatchToProps = {
   getRestaurants: restaurant.getRestaurants,
   createRestaurant: restaurant.createRestaurant,
   updateRestaurant: restaurant.updateRestaurant,
+  deleteRestaurant: restaurant.deleteRestaurant,
   setParams: restaurant.setParams,
   showToast: toast.showToast,
   setLoading: progress.setLoading

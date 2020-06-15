@@ -1,6 +1,7 @@
 const { pick, get } = require("lodash");
 const bcrypt = require("bcrypt");
-const { User, createValidate } = require("../models/user");
+const User = require("../models/user");
+const { createValidate } = require("../utils");
 
 async function login(req, res, next) {
   try {

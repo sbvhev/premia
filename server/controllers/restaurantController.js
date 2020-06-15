@@ -1,4 +1,5 @@
 const Restaurant = require("../models/restaurant");
+const Review = require("../models/review");
 const ObjectId = require("mongodb").ObjectID;
 const _ = require("lodash");
 
@@ -67,6 +68,7 @@ async function list(req, res, next) {
       })
         .skip(parseInt(page - 1) * parseInt(limit))
         .limit(parseInt(limit))
+        .populate("user", "-password -passwordConfirm")
         .sort([["overall_rating", -1]])
         .exec();
     } else {
@@ -75,6 +77,7 @@ async function list(req, res, next) {
       })
         .skip(parseInt(page - 1) * parseInt(limit))
         .limit(parseInt(limit))
+        .populate("user", "-password -passwordConfirm")
         .sort([["overall_rating", -1]])
         .exec();
     }
@@ -132,9 +135,7 @@ async function remove(req, res, next) {
         message: "Restaurant doesn't exist."
       });
     }
-    restaurant.review.map(async review => {
-      await Restaurant.deleteOne({ _id: review });
-    });
+    await Review.deleteMany({ restaurant: id });
     const remove = await Restaurant.deleteOne({ _id: id });
     return res.send({
       result: remove

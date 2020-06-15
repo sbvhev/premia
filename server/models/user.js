@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const bcrypt = require("bcrypt");
@@ -67,75 +66,4 @@ UserSchema.pre("save", function(next) {
   }
 });
 
-const User = mongoose.model("User", UserSchema);
-
-const createUser = user => {
-  return Joi.validate(user, {
-    firstName: Joi.string()
-      .min(1)
-      .max(50)
-      .required(),
-    lastName: Joi.string()
-      .min(1)
-      .max(50)
-      .required(),
-    email: Joi.string()
-      .min(5)
-      .max(50)
-      .required()
-      .email(),
-    password: Joi.string().required(),
-    passwordConfirm: Joi.string()
-      .required()
-      .valid(Joi.ref("password"))
-      .options({
-        language: {
-          any: {
-            allowOnly: "Both password need to be the same"
-          }
-        }
-      }),
-    role: Joi.string()
-      .valid("admin", "owner", "regular")
-      .required()
-  });
-};
-
-const updateUser = user => {
-  return Joi.validate(user, {
-    firstName: Joi.string()
-      .min(1)
-      .max(50)
-      .optional(),
-    lastName: Joi.string()
-      .min(1)
-      .max(50)
-      .optional(),
-    email: Joi.string()
-      .min(5)
-      .max(50)
-      .optional()
-      .email(),
-    password: Joi.string().optional(),
-    passwordConfirm: Joi.string()
-      .optional()
-      .valid(Joi.ref("password"))
-      .options({
-        language: {
-          any: {
-            allowOnly: "Both password need to be the same"
-          }
-        }
-      }),
-
-    role: Joi.string()
-      .valid("admin", "owner", "regular")
-      .optional()
-  });
-};
-
-module.exports = {
-  User,
-  createValidate: createUser,
-  updateValidate: updateUser
-};
+module.exports = mongoose.model("user", UserSchema);

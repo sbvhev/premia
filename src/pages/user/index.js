@@ -137,7 +137,7 @@ const User = props => {
       fail: err => {
         showToast({
           message: err.response.data.message,
-          status: "error"
+          intent: "error"
         });
       }
     });

@@ -4,7 +4,8 @@ import {
   GET_REVIEWS,
   SET_REVIEW_PARAMS,
   ADD_REVIEW,
-  EDIT_REVIEW
+  EDIT_REVIEW,
+  DELETE_REVIEW
 } from "redux/constants";
 
 const initialState = {
@@ -61,6 +62,20 @@ export default handleActions(
       };
     },
     [Fail(EDIT_REVIEW)]: (state, { payload }) => {
+      return {
+        ...state,
+        error: payload.data
+      };
+    },
+    [Success(DELETE_REVIEW)]: (state, { payload }) => {
+      return {
+        ...state,
+        currentReview: payload,
+        count: state.count - 1,
+        error: null
+      };
+    },
+    [Fail(DELETE_REVIEW)]: (state, { payload }) => {
       return {
         ...state,
         error: payload.data

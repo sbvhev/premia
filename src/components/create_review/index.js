@@ -74,7 +74,7 @@ const CreateReview = props => {
         actions.setSubmitting(false);
         showToast({
           message: err.response.data.message,
-          status: "error"
+          intent: "error"
         });
 
         setLoading({ loading: false });
