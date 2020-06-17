@@ -3,11 +3,7 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
-import {
-  Home as HomeIcon,
-  ExitToApp as ExitToAppIcon,
-  Group as GroupIcon
-} from "@material-ui/icons";
+import { ExitToApp as ExitToAppIcon } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { auth, toast } from "redux/actions";
 
@@ -25,6 +21,9 @@ const useStyles = makeStyles(theme => ({
   link: {
     color: "white",
     textDecoration: "none"
+  },
+  button: {
+    textTransform: "none"
   }
 }));
 
@@ -52,14 +51,14 @@ const Header = props => {
           {!!auth.me && (
             <React.Fragment>
               <Link to="/restaurants" className={classes.link}>
-                <Button color="inherit">
-                  <HomeIcon />
+                <Button color="inherit" className={classes.button}>
+                  Restaurants
                 </Button>
               </Link>
               {auth.me.role === "admin" && (
                 <Link to="/users" className={classes.link}>
-                  <Button color="inherit">
-                    <GroupIcon />
+                  <Button color="inherit" className={classes.button}>
+                    Users
                   </Button>
                 </Link>
               )}

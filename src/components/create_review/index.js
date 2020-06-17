@@ -47,6 +47,7 @@ const CreateReview = props => {
 
   useEffect(() => {
     getReviews({ params, id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
   useEffect(() => {

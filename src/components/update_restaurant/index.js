@@ -11,15 +11,17 @@ import {
 } from "@material-ui/core";
 import * as Yup from "yup";
 import _omit from "lodash-es/omit";
+import _get from "lodash-es/get";
 import { Formik } from "formik";
 import { restaurant, toast, user } from "redux/actions";
 
-function CreateRestaurant(props) {
+function UpdateRestaurant(props) {
   const {
+    selectedRow,
     handleClose,
     classes,
     open,
-    createRestaurant,
+    updateRestaurant,
     showToast,
     getUsers,
     users,
@@ -48,12 +50,13 @@ function CreateRestaurant(props) {
       values = _omit(values, ["user"]);
     }
 
-    createRestaurant({
+    updateRestaurant({
+      id: selectedRow._id,
       body: values,
       success: () => {
         actions.setSubmitting(false);
         showToast({
-          message: "You successfully added a restaurant!",
+          message: "You successfully updated a restaurant!",
           intent: "success",
           timeout: 3000
         });
@@ -75,7 +78,10 @@ function CreateRestaurant(props) {
       aria-labelledby="form-dialog-title"
     >
       <Formik
-        initialValues={{ name: "", user: "" }}
+        initialValues={{
+          name: selectedRow.name,
+          user: _get(selectedRow, "user._id", null)
+        }}
         validationSchema={validation}
         onSubmit={handleSubmit}
       >
@@ -83,7 +89,7 @@ function CreateRestaurant(props) {
           return (
             <form className={classes.form} onSubmit={props.handleSubmit}>
               <DialogTitle id="form-dialog-title">
-                Create restaurant
+                Update restaurant
               </DialogTitle>
               <DialogContent className={classes.dialog}>
                 <DialogContentText>
@@ -159,9 +165,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  createRestaurant: restaurant.createRestaurant,
+  updateRestaurant: restaurant.updateRestaurant,
   showToast: toast.showToast,
   getUsers: user.getUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateRestaurant);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateRestaurant);

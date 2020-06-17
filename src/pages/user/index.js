@@ -111,6 +111,7 @@ const User = props => {
 
   useEffect(() => {
     getUsers({ params });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, user, count]);
 
   const handleChangePage = (event, newPage) => {
@@ -179,7 +180,7 @@ const User = props => {
                           column.id === "no" ? index + 1 : row[column.id];
                         if (column.id === "action") {
                           return (
-                            <TableCell align={column.align}>
+                            <TableCell align={column.align} key={column.id}>
                               <IconButton
                                 aria-label="details"
                                 onClick={() => {

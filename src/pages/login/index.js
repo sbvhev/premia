@@ -1,19 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  InputAdornment,
+  Typography,
+  Container
+} from "@material-ui/core";
+import {
+  LockOutlined as LockOutlinedIcon,
+  AccountBox,
+  Lock as LockIcon
+} from "@material-ui/icons";
 import { Link } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import AccountBox from "@material-ui/icons/AccountBox";
-import LockIcon from "@material-ui/icons/Lock";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { auth, toast } from "redux/actions";
@@ -43,20 +47,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LogIn = props => {
-  let {
-    login,
-    showToast,
-    auth: { status }
-  } = props;
+  let { login, showToast } = props;
   const classes = useStyles();
   const history = useHistory();
-
-  useEffect(() => {}, [status]);
-
-  const initialValues = {
-    email: "",
-    password: ""
-  };
 
   const handleSubmit = (values, actions) => {
     login({

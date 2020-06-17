@@ -11,7 +11,7 @@ function read(req, res, next) {
 
 async function list(req, res, next) {
   try {
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 5, all = false } = req.query;
 
     const where = { _id: { $ne: req.user._id } };
     const count = await User.countDocuments(where);
@@ -22,11 +22,19 @@ async function list(req, res, next) {
         .send({ message: "Page and rows per page must be positive integer." });
     }
 
-    const users = await User.find(where)
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
-      .select("-password -passwordConfirm")
-      .sort("-role");
+    let users;
+    if (all) {
+      where["role"] = "owner";
+      users = await User.find(where)
+        .select("-password -passwordConfirm")
+        .sort("-role");
+    } else {
+      users = await User.find(where)
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit))
+        .select("-password -passwordConfirm")
+        .sort("-role");
+    }
 
     res.json({ users, count });
   } catch (error) {

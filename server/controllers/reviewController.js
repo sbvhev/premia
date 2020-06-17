@@ -94,7 +94,6 @@ async function update(req, res, next) {
   let previous = 0;
   const review = await Review.findOne({ _id: id }).populate("restaurant");
 
-  console.log("review: ", review);
   if (review == null) {
     return res.status(400).send({
       message: "Review doesn't exist"
@@ -134,7 +133,6 @@ async function update(req, res, next) {
 
 async function remove(req, res, next) {
   const { id } = req.params;
-  console.log(id);
   const user = req.user;
   if (user.role !== "admin") {
     return res.status(403).json({

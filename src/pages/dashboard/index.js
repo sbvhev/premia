@@ -32,6 +32,7 @@ import {
 import debounce from "lodash-es/debounce";
 
 import CreateRestaurant from "components/create_restaurant";
+import UpdateRestaurant from "components/update_restaurant";
 import Confirm from "components/confirm";
 import { restaurant, toast, progress } from "redux/actions";
 
@@ -109,15 +110,19 @@ const useStyles = makeStyles({
   slider: {
     width: "20rem",
     margin: "auto"
+  },
+  user: {
+    marginTop: "0.5rem"
   }
 });
 
 const Dashboard = props => {
   const classes = useStyles();
   const history = useHistory();
-  const [open, setOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [range, setRange] = useState([0, 5]);
 
   const {
@@ -126,6 +131,7 @@ const Dashboard = props => {
     showToast,
     userInfo,
     restaurants = [],
+    restaurant,
     setParams,
     params,
     count
@@ -133,7 +139,7 @@ const Dashboard = props => {
 
   const setDebouncedParams = useCallback(
     debounce(newvalue => {
-      if (newvalue && newvalue.length == 2) {
+      if (newvalue && newvalue.length === 2) {
         setParams({ min: newvalue[0], max: newvalue[1] });
       }
     }, 1000),
@@ -142,10 +148,12 @@ const Dashboard = props => {
 
   useEffect(() => {
     getRestaurants({ params });
-  }, [params, count]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, count, restaurant]);
 
   useEffect(() => {
     setDebouncedParams(range);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range]);
 
   const handleChangeRange = (event, newValue) => {
@@ -162,14 +170,6 @@ const Dashboard = props => {
 
   const handleClick = event => {
     event.preventDefault();
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const openDialog = () => {
-    setOpen(true);
   };
 
   const handleDeleteSubmit = () => {
@@ -228,7 +228,7 @@ const Dashboard = props => {
                 <TableRow>
                   {columns.map(column => {
                     if (column.id === "user" && userInfo.role !== "admin")
-                      return;
+                      return null;
                     return (
                       <TableCell
                         key={column.id}
@@ -249,7 +249,7 @@ const Dashboard = props => {
                         const value =
                           column.id === "no" ? index + 1 : row[column.id];
                         if (column.id === "user" && userInfo.role !== "admin")
-                          return;
+                          return null;
                         else if (
                           column.id === "user" &&
                           userInfo.role === "admin"
@@ -274,7 +274,7 @@ const Dashboard = props => {
                                       aria-label="details"
                                       onClick={() => {
                                         setSelectedRow(row);
-                                        openDialog();
+                                        setUpdateOpen(true);
                                       }}
                                     >
                                       <EditIcon fontSize="small" />
@@ -354,7 +354,7 @@ const Dashboard = props => {
             icon={<AddIcon />}
             color="primary"
             label="Create restaurant"
-            onClick={openDialog}
+            onClick={() => setCreateOpen(true)}
           />
         )}
       </Container>
@@ -366,9 +366,15 @@ const Dashboard = props => {
         selectedRow={selectedRow}
       />
       <CreateRestaurant
-        handleClose={handleClose}
+        handleClose={() => setCreateOpen(false)}
         classes={classes}
-        open={open}
+        open={createOpen}
+      />
+      <UpdateRestaurant
+        handleClose={() => setUpdateOpen(false)}
+        classes={classes}
+        open={updateOpen}
+        selectedRow={selectedRow}
       />
     </React.Fragment>
   );
@@ -377,6 +383,7 @@ const Dashboard = props => {
 const mapStateToProps = state => ({
   params: state.restaurant.params,
   restaurants: state.restaurant.restaurants,
+  restaurant: state.restaurant.currentRestaurant,
   userInfo: state.auth.me,
   count: state.restaurant.count
 });

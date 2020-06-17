@@ -28,6 +28,7 @@ import Rating from "@material-ui/lab/Rating";
 import moment from "moment";
 import { review, toast } from "redux/actions";
 import CreateReview from "components/create_review";
+import UpdateReview from "components/update_review";
 import ReplyModal from "components/reply_modal";
 import Confirm from "components/confirm";
 
@@ -140,6 +141,7 @@ const DetailedView = props => {
     currentReview
   } = props;
   const [createOpen, setCreateModalOpen] = useState(false);
+  const [updateOpen, setUpdateModalOpen] = useState(false);
   const [replyOpen, setReplyModalOpen] = useState(false);
   const [deleteReviewOpen, setDeleteReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState({});
@@ -147,6 +149,7 @@ const DetailedView = props => {
 
   useEffect(() => {
     getReviews({ params, id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, currentReview, count]);
 
   const handleChangePage = (event, newPage) => {
@@ -218,6 +221,7 @@ const DetailedView = props => {
                           {column.label}
                         </TableCell>
                       );
+                    else return null;
                   })}
                 </TableRow>
               </TableHead>
@@ -227,7 +231,7 @@ const DetailedView = props => {
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {columns.map(column => {
                         if (me.role === "regular" && column.id === "action")
-                          return;
+                          return null;
                         const value =
                           column.id === "no" ? index + 1 : row[column.id];
                         if (column.id === "action" && me.role === "owner")
@@ -261,6 +265,7 @@ const DetailedView = props => {
                                     aria-label="edit"
                                     onClick={() => {
                                       setSelectedReview(row);
+                                      setUpdateModalOpen(true);
                                     }}
                                   >
                                     <EditIcon fontSize="small" />
@@ -347,6 +352,12 @@ const DetailedView = props => {
           open={replyOpen}
           handleClose={() => setReplyModalOpen(false)}
           selectRow={selectedReview}
+        />
+        <UpdateReview
+          id={id}
+          open={updateOpen}
+          handleClose={() => setUpdateModalOpen(false)}
+          selectedRow={selectedReview}
         />
         <Confirm
           open={deleteReviewOpen}

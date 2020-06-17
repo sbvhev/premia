@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import Avatar from "@material-ui/core/Avatar";
@@ -50,7 +49,6 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = props => {
   const classes = useStyles();
-  const history = useHistory();
 
   const { signup, showToast } = props;
 

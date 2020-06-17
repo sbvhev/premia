@@ -5,7 +5,7 @@ const _ = require("lodash");
 
 async function post(req, res, next) {
   try {
-    let { name = "" } = req.body || {};
+    let { name = "", user: reqUser = null } = req.body || {};
     const { user } = req;
 
     if (!name) {
@@ -29,7 +29,7 @@ async function post(req, res, next) {
 
     const restaurant = await Restaurant.create({
       name: name,
-      user: user,
+      user: user.role === "admin" ? reqUser : user,
       overall_rating: 0,
       highest_rating: 0,
       lowest_rating: 0,
@@ -94,27 +94,21 @@ async function list(req, res, next) {
 async function update(req, res, next) {
   try {
     const id = req.params.id;
-    const { name = "" } = req.body;
+    const { name = "", user } = req.body;
 
     if (!name) {
       return res.status(400).send({
         message: "Restaurant name required."
       });
     }
-    const exist = await Restaurant.find({ name: name });
-    if (exist.length != 0 && id != exist[0]._id) {
-      return res.status(409).send({
-        message: "Restaurant already exists with same name"
+    await Restaurant.findOne({ _id: id }, async (err, restaurant) => {
+      restaurant.name = name;
+      restaurant.user = user;
+      await restaurant.save();
+      return res.send({
+        restaurant: restaurant
       });
-    } else {
-      await Restaurant.findOne({ _id: id }, async (err, restaurant) => {
-        restaurant.name = name;
-        await restaurant.save();
-        return res.send({
-          restaurant: restaurant
-        });
-      });
-    }
+    });
   } catch (err) {
     next(err);
   }

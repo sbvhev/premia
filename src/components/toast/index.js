@@ -22,8 +22,6 @@ const Toast = props => {
     });
   };
 
-  console.log("timeout: ", timeout, show);
-
   return (
     <>
       {show && (

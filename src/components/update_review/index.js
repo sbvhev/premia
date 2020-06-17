@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -10,8 +10,10 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  Box,
   Button
 } from "@material-ui/core";
+import Rating from "@material-ui/lab/Rating";
 import { review, toast, progress } from "redux/actions";
 
 const useStyles = makeStyles(theme => ({
@@ -24,40 +26,50 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const validation = Yup.object().shape({
-  reply: Yup.string().required("Reply is required.")
+  comment: Yup.string().required("Comment is required."),
+  reply: Yup.string().optional()
 });
 
-const ReplyModal = props => {
+const UpdateReview = props => {
   const classes = useStyles();
   const {
     id,
     open,
     handleClose,
+    selectedRow,
     editReview,
     getReviews,
     showToast,
     setLoading,
     params,
-    count,
-    selectRow
+    count
   } = props;
+
+  const [rate, setRate] = useState(selectedRow.rate);
 
   useEffect(() => {
     getReviews({ params, id });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
+  useEffect(() => {
+    setRate(selectedRow.rate);
+  }, [open, selectedRow]);
+
   const handleSubmit = (values, actions) => {
+    values["id"] = id;
+    values["rate"] = rate;
+
     handleClose();
     setLoading({ loading: true });
 
     editReview({
-      id: selectRow._id,
+      id: selectedRow._id,
       body: values,
       success: () => {
         actions.setSubmitting(false);
         showToast({
-          message: "You successfully replied to a comment!",
+          message: "You successfully updated a review!",
           intent: "success",
           timeout: 3000
         });
@@ -82,19 +94,52 @@ const ReplyModal = props => {
       aria-labelledby="form-dialog-title"
     >
       <Formik
-        initialValues={{ reply: "" }}
+        initialValues={{
+          comment: selectedRow.comment,
+          reply: selectedRow.reply
+        }}
         validationSchema={validation}
         onSubmit={handleSubmit}
       >
         {props => {
           return (
             <form className={classes.form} onSubmit={props.handleSubmit}>
-              <DialogTitle id="form-dialog-title">
-                Reply to a comment
-              </DialogTitle>
+              <DialogTitle id="form-dialog-title">Edit a review</DialogTitle>
               <DialogContent className={classes.dialog}>
-                <DialogContentText>Please reply to a comment</DialogContentText>
+                <DialogContentText>
+                  Please leave a comment and rate
+                </DialogContentText>
 
+                <Box mb={1} borderColor="transparent">
+                  <Rating
+                    name="simple-controlled"
+                    value={rate}
+                    precision={0.5}
+                    onChange={(event, newValue) => {
+                      setRate(newValue);
+                    }}
+                  />
+                </Box>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="comment"
+                  name="comment"
+                  label="Comment"
+                  type="text"
+                  className={classes.textField}
+                  multiline
+                  rows="5"
+                  variant="outlined"
+                  value={props.values.comment}
+                  onChange={props.handleChange}
+                  error={props.errors.comment && props.touched.comment}
+                  helperText={
+                    props.errors.comment &&
+                    props.touched.comment &&
+                    props.errors.comment
+                  }
+                />
                 <TextField
                   autoFocus
                   margin="dense"
@@ -144,4 +189,4 @@ const mapDispatchToProps = {
   setLoading: progress.setLoading
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReplyModal);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateReview);
