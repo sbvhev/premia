@@ -247,7 +247,9 @@ const Dashboard = props => {
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {columns.map(column => {
                         const value =
-                          column.id === "no" ? index + 1 : row[column.id];
+                          column.id === "no"
+                            ? params.limit * (params.page - 1) + index + 1
+                            : row[column.id];
                         if (column.id === "user" && userInfo.role !== "admin")
                           return null;
                         else if (

@@ -1,29 +1,33 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Formik } from "formik";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import {
-  Avatar,
-  Button,
-  CssBaseline,
   TextField,
   Grid,
   InputAdornment,
-  Typography,
-  Container,
-  Box,
-  Card
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Button
 } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import LockIcon from "@material-ui/icons/Lock";
-import EmailIcon from "@material-ui/icons/Email";
-import AccessibleIcon from "@material-ui/icons/Accessible";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import {
+  Person as PersonIcon,
+  Email as EmailIcon,
+  Lock as LockIcon,
+  Accessible as AccessibleIcon
+} from "@material-ui/icons";
 import * as Yup from "yup";
-import { auth, toast } from "redux/actions";
-import PersonIcon from "@material-ui/icons/Person";
+import _ from "lodash-es";
+import { auth, toast, progress } from "redux/actions";
 
 const useStyles = makeStyles(theme => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main
@@ -39,68 +43,26 @@ const useStyles = makeStyles(theme => ({
     color: "red",
     textAlign: "left"
   },
-  role: {
-    width: "100%",
-    marginTop: theme.spacing(2)
+  action: {
+    float: "right",
+    marginTop: "1rem"
   },
-  root: {
-    display: "flex",
-    height: "100%"
-  },
-  card: {
-    padding: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    margin: "auto"
-  },
-  container: {
-    display: "flex",
-    width: "50%"
-  },
-  background: {
-    width: "50%",
-    height: "100%",
-    backgroundImage: `url("/restaurant.jpg")`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center"
+  placeholder: {
+    height: 40,
+    position: "absolute",
+    top: "calc(50% - 20)",
+    left: "calc(50% - 20)"
   }
 }));
 
-const SignUp = props => {
+const UpdateProfile = props => {
   const classes = useStyles();
-
-  const { signup, showToast } = props;
+  const { open, handleClose, updateProfile, showToast, me } = props;
 
   const initialValues = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    passwordConfirm: "",
-    role: ""
-  };
-
-  const handleSubmit = (values, actions) => {
-    signup({
-      body: values,
-      success: () => {
-        actions.setSubmitting(false);
-        showToast({
-          message: "You are successfully signed up!",
-          intent: "success",
-          timeout: 3000
-        });
-      },
-      fail: err => {
-        actions.setSubmitting(false);
-        showToast({
-          message: err.response.data.message,
-          intent: "error"
-        });
-      }
-    });
+    password: "********",
+    passwordConfirm: "********",
+    ..._.pick(me, ["firstName", "lastName", "email"])
   };
 
   const validation = Yup.object().shape({
@@ -118,22 +80,48 @@ const SignUp = props => {
           "Both password need to be the same"
         )
       })
-      .required("Password confirm is required"),
-    role: Yup.string().required("Role is required")
+      .required("Password confirm is required")
   });
 
+  const handleSubmit = (values, actions) => {
+    if (
+      values["password"].includes("******") ||
+      values["passwordConfirm"].includes("******")
+    ) {
+      values = _.omit(values, ["password", "passwordConfirm"]);
+    }
+
+    updateProfile({
+      body: values,
+      success: () => {
+        actions.setSubmitting(false);
+        showToast({
+          message: "You successfully updated user!",
+          intent: "success",
+          timeout: 3000
+        });
+        handleClose();
+      },
+      fail: err => {
+        actions.setSubmitting(false);
+        showToast({
+          message: err.response.data.message,
+          intent: "error"
+        });
+        handleClose();
+      }
+    });
+  };
+
   return (
-    <Box className={classes.root} component="div">
-      <Box className={classes.background} component="div"></Box>
-      <Container className={classes.container} component="main" maxWidth="sm">
-        <CssBaseline />
-        <Card className={classes.card} raised>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+    <React.Fragment>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Update Profile</DialogTitle>
+        <DialogContent>
           <Formik
             initialValues={initialValues}
             validationSchema={validation}
@@ -148,7 +136,6 @@ const SignUp = props => {
                       name="firstName"
                       variant="outlined"
                       fullWidth
-                      id="firstName"
                       label="First Name"
                       value={props.values.firstName}
                       onChange={props.handleChange}
@@ -172,7 +159,6 @@ const SignUp = props => {
                     <TextField
                       variant="outlined"
                       fullWidth
-                      id="lastName"
                       label="Last Name"
                       name="lastName"
                       value={props.values.lastName}
@@ -197,7 +183,6 @@ const SignUp = props => {
                     <TextField
                       variant="outlined"
                       fullWidth
-                      id="email"
                       label="Email Address"
                       name="email"
                       value={props.values.email}
@@ -225,15 +210,14 @@ const SignUp = props => {
                       name="password"
                       label="Password"
                       type="password"
-                      id="password"
                       value={props.values.password}
+                      onChange={props.handleChange}
                       error={props.errors.password && props.touched.password}
                       helperText={
                         props.errors.password &&
                         props.touched.password &&
                         props.errors.password
                       }
-                      onChange={props.handleChange}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -251,16 +235,6 @@ const SignUp = props => {
                       name="passwordConfirm"
                       label="Confirm Password"
                       type="password"
-                      id="passwordConfirm"
-                      error={
-                        props.errors.passwordConfirm &&
-                        props.touched.passwordConfirm
-                      }
-                      helperText={
-                        props.errors.passwordConfirm &&
-                        props.touched.passwordConfirm &&
-                        props.errors.passwordConfirm
-                      }
                       value={props.values.passwordConfirm}
                       onChange={props.handleChange}
                       InputProps={{
@@ -270,72 +244,44 @@ const SignUp = props => {
                           </InputAdornment>
                         )
                       }}
+                      error={
+                        props.errors.passwordConfirm &&
+                        props.touched.passwordConfirm
+                      }
+                      helperText={
+                        props.errors.passwordConfirm &&
+                        props.touched.passwordConfirm &&
+                        props.errors.passwordConfirm
+                      }
                       autoComplete="current-password"
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    id="role"
-                    name="role"
-                    fullWidth
-                    select
-                    label="Role"
-                    className={classes.role}
-                    value={props.values.role}
-                    onChange={props.handleChange}
-                    SelectProps={{
-                      native: true
-                    }}
-                    error={props.errors.role && props.touched.role}
-                    helperText="Please select your role"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccessibleIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    variant="outlined"
-                  >
-                    <option value=""></option>
-                    <option value="regular">Regular</option>
-                    <option value="owner">Owner</option>
-                  </TextField>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Sign Up
-                </Button>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item>
-                    <Link to="/login" variant="body2">
-                      {"Back to Log in"}
-                    </Link>
-                  </Grid>
+                <Grid className={classes.action}>
+                  <Button onClick={handleClose} color="primary">
+                    Cancel
+                  </Button>
+                  <Button type="submit" color="primary">
+                    Save
+                  </Button>
                 </Grid>
               </form>
             )}
           </Formik>
-        </Card>
-      </Container>
-    </Box>
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
   );
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  me: state.auth.me
 });
 
 const mapDispatchToProps = {
-  signup: auth.signup,
-  showToast: toast.showToast
+  updateProfile: auth.updateProfile,
+  showToast: toast.showToast,
+  setLoading: progress.setLoading
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile);

@@ -1,8 +1,9 @@
 import { createAction } from "redux-actions";
-import { LOG_IN, SIGN_UP, LOG_OUT } from "redux/constants";
+import { LOG_IN, SIGN_UP, LOG_OUT, UPDATE_PROFILE } from "redux/constants";
 
 export const login = createAction(LOG_IN);
 export const signup = createAction(SIGN_UP);
+export const updateProfile = createAction(UPDATE_PROFILE);
 export const logout = createAction(LOG_OUT, () => {
   localStorage.removeItem("auth_token");
 });
@@ -10,5 +11,6 @@ export const logout = createAction(LOG_OUT, () => {
 export default {
   login,
   signup,
-  logout
+  logout,
+  updateProfile
 };

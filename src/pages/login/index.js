@@ -9,7 +9,9 @@ import {
   Grid,
   InputAdornment,
   Typography,
-  Container
+  Container,
+  Card,
+  Box
 } from "@material-ui/core";
 import {
   LockOutlined as LockOutlinedIcon,
@@ -24,10 +26,7 @@ import { auth, toast } from "redux/actions";
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    marginTop: theme.spacing(20),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
+    marginTop: theme.spacing(20)
   },
   avatar: {
     margin: theme.spacing(1),
@@ -40,9 +39,28 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2)
   },
-  error: {
-    color: "red",
-    textAlign: "left"
+  root: {
+    display: "flex",
+    height: "100%"
+  },
+  card: {
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    margin: "auto"
+  },
+  container: {
+    display: "flex",
+    width: "50%"
+  },
+  background: {
+    width: "50%",
+    height: "100%",
+    backgroundImage: `url("/restaurant.jpg")`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center"
   }
 }));
 
@@ -77,99 +95,102 @@ const LogIn = props => {
   });
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={validation}
-          onSubmit={handleSubmit}
-        >
-          {props => (
-            <form
-              className={classes.form}
-              onSubmit={props.handleSubmit}
-              noValidate
-            >
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                error={props.errors.email && props.touched.email}
-                helperText={
-                  props.errors.email &&
-                  props.touched.email &&
-                  props.errors.email
-                }
-                autoComplete="email"
-                value={props.values.email}
-                onChange={props.handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccountBox />
-                    </InputAdornment>
-                  )
-                }}
-                autoFocus
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                error={props.errors.password && props.touched.password}
-                helperText={
-                  props.errors.password &&
-                  props.touched.password &&
-                  props.errors.password
-                }
-                value={props.values.password}
-                onChange={props.handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon />
-                    </InputAdornment>
-                  )
-                }}
-                autoComplete="current-password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
+    <Box className={classes.root} component="div">
+      <Box className={classes.background} component="div"></Box>
+      <Container className={classes.container} component="main" maxWidth="sm">
+        <CssBaseline />
+        <Card className={classes.card} raised>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={validation}
+            onSubmit={handleSubmit}
+          >
+            {props => (
+              <form
+                className={classes.form}
+                onSubmit={props.handleSubmit}
+                noValidate
               >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs></Grid>
-                <Grid item>
-                  <span> Don't have an account? </span>
-                  <Link to="/signup" variant="body2">
-                    {"Sign Up"}
-                  </Link>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  error={props.errors.email && props.touched.email}
+                  helperText={
+                    props.errors.email &&
+                    props.touched.email &&
+                    props.errors.email
+                  }
+                  autoComplete="email"
+                  value={props.values.email}
+                  onChange={props.handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccountBox />
+                      </InputAdornment>
+                    )
+                  }}
+                  autoFocus
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  error={props.errors.password && props.touched.password}
+                  helperText={
+                    props.errors.password &&
+                    props.touched.password &&
+                    props.errors.password
+                  }
+                  value={props.values.password}
+                  onChange={props.handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                  autoComplete="current-password"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Sign In
+                </Button>
+                <Grid container>
+                  <Grid item xs></Grid>
+                  <Grid item>
+                    <span> Don't have an account? </span>
+                    <Link to="/signup" variant="body2">
+                      {"Sign Up"}
+                    </Link>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </form>
-          )}
-        </Formik>
-      </div>
-    </Container>
+              </form>
+            )}
+          </Formik>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 

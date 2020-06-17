@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
-import { ExitToApp as ExitToAppIcon } from "@material-ui/icons";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Divider,
+  Box
+} from "@material-ui/core";
+import {
+  ExitToApp as ExitToAppIcon,
+  AccountCircle as AccountCircleIcon
+} from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { auth, toast } from "redux/actions";
+import UpdateProfile from "components/update_profile";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,6 +43,7 @@ const Header = props => {
   const classes = useStyles();
   const history = useHistory();
   const { auth, logout, showToast } = props;
+  const [open, setOpen] = useState(false);
 
   const handlgeLogout = () => {
     logout();
@@ -50,26 +63,35 @@ const Header = props => {
           </Typography>
           {!!auth.me && (
             <React.Fragment>
-              <Link to="/restaurants" className={classes.link}>
-                <Button color="inherit" className={classes.button}>
-                  Restaurants
-                </Button>
-              </Link>
-              {auth.me.role === "admin" && (
-                <Link to="/users" className={classes.link}>
+              <Box component="div" m={1}>
+                <Link to="/restaurants" className={classes.link}>
                   <Button color="inherit" className={classes.button}>
-                    Users
+                    Restaurants
                   </Button>
                 </Link>
-              )}
-              <Link to="" className={classes.link}>
-                <Button color="inherit" onClick={handlgeLogout}>
-                  <ExitToAppIcon />
-                </Button>
-              </Link>
+                {auth.me.role === "admin" && (
+                  <Link to="/users" className={classes.link}>
+                    <Button color="inherit" className={classes.button}>
+                      Users
+                    </Button>
+                  </Link>
+                )}
+              </Box>
+              <Divider orientation="vertical" flexItem />
+              <Box component="div" m={1}>
+                <IconButton color="inherit" onClick={() => setOpen(true)}>
+                  <AccountCircleIcon />
+                </IconButton>
+                <Link to="" className={classes.link}>
+                  <Button color="inherit" onClick={handlgeLogout}>
+                    <ExitToAppIcon />
+                  </Button>
+                </Link>
+              </Box>
             </React.Fragment>
           )}
         </Toolbar>
+        <UpdateProfile handleClose={() => setOpen(false)} open={open} />
       </AppBar>
     </div>
   );

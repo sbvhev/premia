@@ -177,7 +177,9 @@ const User = props => {
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {columns.map(column => {
                         const value =
-                          column.id === "no" ? index + 1 : row[column.id];
+                          column.id === "no"
+                            ? (params.page - 1) * params.limit + index + 1
+                            : row[column.id];
                         if (column.id === "action") {
                           return (
                             <TableCell align={column.align} key={column.id}>

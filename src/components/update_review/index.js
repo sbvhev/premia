@@ -22,6 +22,11 @@ const useStyles = makeStyles(theme => ({
   },
   dialog: {
     width: "30rem"
+  },
+  root: {
+    width: 200,
+    display: "flex",
+    alignItems: "center"
   }
 }));
 
@@ -29,6 +34,19 @@ const validation = Yup.object().shape({
   comment: Yup.string().required("Comment is required."),
   reply: Yup.string().optional()
 });
+
+const labels = {
+  0.5: "Useless",
+  1: "Useless+",
+  1.5: "Poor",
+  2: "Poor+",
+  2.5: "Ok",
+  3: "Ok+",
+  3.5: "Good",
+  4: "Good+",
+  4.5: "Excellent",
+  5: "Excellent+"
+};
 
 const UpdateReview = props => {
   const classes = useStyles();
@@ -46,6 +64,7 @@ const UpdateReview = props => {
   } = props;
 
   const [rate, setRate] = useState(selectedRow.rate);
+  const [hover, setHover] = React.useState(-1);
 
   useEffect(() => {
     getReviews({ params, id });
@@ -110,7 +129,12 @@ const UpdateReview = props => {
                   Please leave a comment and rate
                 </DialogContentText>
 
-                <Box mb={1} borderColor="transparent">
+                <Box
+                  mb={1}
+                  component="div"
+                  className={classes.root}
+                  borderColor="transparent"
+                >
                   <Rating
                     name="simple-controlled"
                     value={rate}
@@ -118,7 +142,13 @@ const UpdateReview = props => {
                     onChange={(event, newValue) => {
                       setRate(newValue);
                     }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
                   />
+                  {rate !== null && (
+                    <Box ml={2}>{labels[hover !== -1 ? hover : rate]}</Box>
+                  )}
                 </Box>
                 <TextField
                   autoFocus

@@ -1,5 +1,5 @@
 import { takeLatest } from "redux-saga/effects";
-import { LOG_IN, SIGN_UP } from "redux/constants";
+import { LOG_IN, SIGN_UP, UPDATE_PROFILE } from "redux/constants";
 import apiCall from "utils/apiCall";
 
 const login = apiCall({
@@ -20,7 +20,15 @@ const signup = apiCall({
   }
 });
 
+const updateProfile = apiCall({
+  type: UPDATE_PROFILE,
+  method: "put",
+  path: () => "/auth/updateprofile/",
+  success: () => {}
+});
+
 export default function* rootSaga() {
   yield takeLatest(LOG_IN, login);
   yield takeLatest(SIGN_UP, signup);
+  yield takeLatest(UPDATE_PROFILE, updateProfile);
 }

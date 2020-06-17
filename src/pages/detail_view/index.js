@@ -233,7 +233,9 @@ const DetailedView = props => {
                         if (me.role === "regular" && column.id === "action")
                           return null;
                         const value =
-                          column.id === "no" ? index + 1 : row[column.id];
+                          column.id === "no"
+                            ? (params.page - 1) * params.limit + index + 1
+                            : row[column.id];
                         if (column.id === "action" && me.role === "owner")
                           return (
                             <React.Fragment key={column.id}>
@@ -338,7 +340,7 @@ const DetailedView = props => {
             className={classes.comment}
             icon={<AddIcon />}
             color="primary"
-            label="Add a comment"
+            label="Add a review"
             onClick={() => setCreateModalOpen(true)}
           />
         )}

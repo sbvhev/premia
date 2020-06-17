@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import _omit from "lodash-es/omit";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -22,12 +23,31 @@ const useStyles = makeStyles(theme => ({
   },
   dialog: {
     width: "30rem"
+  },
+  root: {
+    width: 200,
+    display: "flex",
+    alignItems: "center"
   }
 }));
 
 const validation = Yup.object().shape({
-  comment: Yup.string().required("Comment is required.")
+  comment: Yup.string().required("Comment is required."),
+  reply: Yup.string().optional()
 });
+
+const labels = {
+  0.5: "Useless",
+  1: "Useless+",
+  1.5: "Poor",
+  2: "Poor+",
+  2.5: "Ok",
+  3: "Ok+",
+  3.5: "Good",
+  4: "Good+",
+  4.5: "Excellent",
+  5: "Excellent+"
+};
 
 const CreateReview = props => {
   const classes = useStyles();
@@ -40,10 +60,12 @@ const CreateReview = props => {
     showToast,
     setLoading,
     params,
-    count
+    count,
+    me
   } = props;
 
   const [rate, setRate] = useState(0);
+  const [hover, setHover] = React.useState(-1);
 
   useEffect(() => {
     getReviews({ params, id });
@@ -59,6 +81,8 @@ const CreateReview = props => {
     values["rate"] = rate;
     handleClose();
     setLoading({ loading: true });
+
+    if (me.role !== "admin") values = _omit(values, ["reply"]);
 
     addReview({
       body: values,
@@ -90,7 +114,7 @@ const CreateReview = props => {
       aria-labelledby="form-dialog-title"
     >
       <Formik
-        initialValues={{ comment: "" }}
+        initialValues={{ comment: "", reply: "" }}
         validationSchema={validation}
         onSubmit={handleSubmit}
       >
@@ -103,7 +127,12 @@ const CreateReview = props => {
                   Please leave a comment and rate
                 </DialogContentText>
 
-                <Box mb={1} borderColor="transparent">
+                <Box
+                  mb={1}
+                  component="div"
+                  className={classes.root}
+                  borderColor="transparent"
+                >
                   <Rating
                     name="simple-controlled"
                     value={rate}
@@ -111,7 +140,13 @@ const CreateReview = props => {
                     onChange={(event, newValue) => {
                       setRate(newValue);
                     }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
                   />
+                  {rate !== null && (
+                    <Box ml={2}>{labels[hover !== -1 ? hover : rate]}</Box>
+                  )}
                 </Box>
                 <TextField
                   autoFocus
@@ -133,6 +168,28 @@ const CreateReview = props => {
                     props.errors.comment
                   }
                 />
+                {me.role === "admin" && (
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="reply"
+                    name="reply"
+                    label="Reply"
+                    type="text"
+                    className={classes.textField}
+                    multiline
+                    rows="5"
+                    variant="outlined"
+                    value={props.values.reply}
+                    onChange={props.handleChange}
+                    error={props.errors.reply && props.touched.reply}
+                    helperText={
+                      props.errors.reply &&
+                      props.touched.reply &&
+                      props.errors.reply
+                    }
+                  />
+                )}
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
@@ -152,6 +209,7 @@ const CreateReview = props => {
 
 const mapStateToProps = state => ({
   params: state.review.params,
+  me: state.auth.me,
   count: state.review.count
 });
 

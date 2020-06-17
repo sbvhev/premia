@@ -1,7 +1,7 @@
-const { pick, get } = require("lodash");
+const { pick, get, assign } = require("lodash");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const { createValidate } = require("../utils");
+const { createValidate, updateValidate } = require("../utils");
 
 async function login(req, res, next) {
   try {
@@ -75,7 +75,38 @@ async function signUp(req, res, next) {
   }
 }
 
+async function updateProfile(req, res, next) {
+  try {
+    const { error } = updateValidate(req.body);
+
+    if (error)
+      return res.status(400).send({
+        message: get(error, "details.0.message", "Something went wrong.")
+      });
+
+    const user = await User.findOne({ _id: req.user._id });
+    assign(user, req.body, { role: get(req.user, "role", "regular") });
+    const updatedUser = await user.save();
+    const token = updatedUser.getAuthToken();
+
+    res.json({
+      info: pick(updatedUser, [
+        "_id",
+        "firstName",
+        "lastName",
+        "email",
+        "role"
+      ]),
+
+      token
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   login,
-  signUp
+  signUp,
+  updateProfile
 };
