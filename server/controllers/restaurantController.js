@@ -1,5 +1,6 @@
 const Restaurant = require("../models/restaurant");
 const Review = require("../models/review");
+const User = require("../models/user");
 const ObjectId = require("mongodb").ObjectID;
 const _ = require("lodash");
 
@@ -9,22 +10,30 @@ async function post(req, res, next) {
     const { user } = req;
 
     if (!name) {
-      return res.status(400).json({
+      return res.status(400).send({
         message: "Name is required."
       });
     }
 
     if (user.role === "regular") {
-      return res.status(403).json({
+      return res.status(403).send({
         message: "You're not authorized to create a restaurant."
       });
     }
 
     const rest = await Restaurant.findOne({ name });
     if (rest) {
-      return res.status(409).json({
+      return res.status(409).send({
         message: "Restaurant already exists with same name."
       });
+    }
+
+    const existUser = await User.findOne({ _id: reqUser, role: "owner" });
+    console.log("existUSer", existUser);
+    if (!existUser && user.role === "admin") {
+      return res
+        .status(409)
+        .send({ message: "Restaurant is authorized to only owners" });
     }
 
     const restaurant = await Restaurant.create({
@@ -47,7 +56,7 @@ async function list(req, res, next) {
     let { min = 0, max = 5, page = 1, limit = 5 } = req.query;
     const { user } = req;
     if (min > max) {
-      res.status(400).json({
+      res.status(400).send({
         message: "Max value should be more than min value."
       });
       return;
@@ -97,6 +106,13 @@ async function update(req, res, next) {
     const { name = "", user } = req.body;
     const { user: reqUser } = req;
 
+    const existUser = await User.findOne({ _id: user, role: "owner" });
+    if (!existUser && reqUser.role === "admin") {
+      return res
+        .status(409)
+        .send({ message: "Restaurant is authorized to only owners" });
+    }
+
     if (reqUser.role !== "admin")
       return res
         .status(403)
@@ -126,7 +142,7 @@ async function remove(req, res, next) {
     const user = req.user;
 
     if (user.role !== "admin") {
-      return res.status(403).json({
+      return res.status(403).send({
         message: "You're not authroized to remove the restaurant."
       });
     }

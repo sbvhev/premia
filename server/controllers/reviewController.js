@@ -153,7 +153,7 @@ async function remove(req, res, next) {
   const { id } = req.params;
   const user = req.user;
   if (user.role !== "admin") {
-    return res.status(403).json({
+    return res.status(403).send({
       message: "You're not authorized to remove review."
     });
   }
