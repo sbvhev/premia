@@ -85,6 +85,15 @@ async function updateProfile(req, res, next) {
       });
 
     const user = await User.findOne({ _id: req.user._id });
+    const where = {
+      email: req.body.email,
+      _id: { $ne: req.user._id }
+    };
+    const exist = await User.find(where);
+
+    if (exist.length) {
+      return res.status(409).send({ message: "Same email already exists" });
+    }
     assign(user, req.body, { role: get(req.user, "role", "regular") });
     const updatedUser = await user.save();
     const token = updatedUser.getAuthToken();
@@ -97,7 +106,6 @@ async function updateProfile(req, res, next) {
         "email",
         "role"
       ]),
-
       token
     });
   } catch (error) {

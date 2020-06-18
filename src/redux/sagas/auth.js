@@ -24,7 +24,9 @@ const updateProfile = apiCall({
   type: UPDATE_PROFILE,
   method: "put",
   path: () => "/auth/updateprofile/",
-  success: () => {}
+  success: ({ data }) => {
+    localStorage.setItem("auth_token", JSON.stringify(data));
+  }
 });
 
 export default function* rootSaga() {

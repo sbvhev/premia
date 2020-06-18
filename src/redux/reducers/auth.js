@@ -59,9 +59,7 @@ export default handleActions(
 
     [Fail(UPDATE_PROFILE)]: (state, { payload }) => ({
       ...state,
-      token: null,
       status: "FAIL",
-      me: null,
       error: payload
     }),
     [LOG_OUT]: state => ({
