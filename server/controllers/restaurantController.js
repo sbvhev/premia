@@ -95,6 +95,12 @@ async function update(req, res, next) {
   try {
     const id = req.params.id;
     const { name = "", user } = req.body;
+    const { user: reqUser } = req;
+
+    if (reqUser.role !== "admin")
+      return res
+        .status(403)
+        .send({ message: "You are not authorized to update restaruant" });
 
     if (!name) {
       return res.status(400).send({
@@ -118,6 +124,7 @@ async function remove(req, res, next) {
   try {
     const id = req.params.id;
     const user = req.user;
+
     if (user.role !== "admin") {
       return res.status(403).json({
         message: "You're not authroized to remove the restaurant."

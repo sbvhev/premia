@@ -77,7 +77,6 @@ const CreateReview = props => {
   }, [open]);
 
   const handleSubmit = (values, actions) => {
-    values["id"] = id;
     values["rate"] = rate;
     handleClose();
     setLoading({ loading: true });
@@ -85,6 +84,7 @@ const CreateReview = props => {
     if (me.role !== "admin") values = _omit(values, ["reply"]);
 
     addReview({
+      id,
       body: values,
       success: () => {
         actions.setSubmitting(false);

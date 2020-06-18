@@ -36,13 +36,24 @@ async function read(req, res, next) {
 
 async function create(req, res, next) {
   try {
-    const { id, rate, comment } = req.body;
+    const { rate = 0, comment, reply } = req.body;
+    const { id } = req.params;
     const { user } = req;
+
+    if (rate < 0 || rate > 5)
+      return res
+        .status(400)
+        .send({ message: "Rate should be between 0 and 5" });
+
+    if (!comment)
+      return res.status(400).send({ message: "comment is required" });
+
     if (user.role === "owner") {
-      return res.status(403).json({
-        message: "You're not authorized to leave a comment."
+      return res.status(403).send({
+        message: "You're not authorized to add a review."
       });
     }
+
     const restaurant = await Restaurant.findOne({ _id: id });
     if (restaurant == null) {
       return res.status(400).send({
@@ -54,7 +65,7 @@ async function create(req, res, next) {
       rate: rate,
       comment: comment,
       restaurant: id,
-      reply: ""
+      reply: user.role === "admin" ? reply : ""
     });
 
     const review = await newReview.save();
@@ -83,14 +94,7 @@ async function update(req, res, next) {
   const { id } = req.params;
   const { reply, comment, rate } = req.body;
   const user = req.user;
-  if (
-    user.role === "regular" ||
-    (user.role === "owner" && typeof rate != "undefined")
-  ) {
-    return res.status(403).json({
-      message: "You're not authorized to update the review."
-    });
-  }
+
   let previous = 0;
   const review = await Review.findOne({ _id: id }).populate("restaurant");
 
@@ -99,19 +103,33 @@ async function update(req, res, next) {
       message: "Review doesn't exist"
     });
   }
-  if (typeof comment != "undefined") review.comment = comment;
-  if (typeof rate != "undefined") {
+
+  if (!comment) {
+    return res.status(400).send({ message: "Comment is required" });
+  }
+
+  if (
+    user.role === "regular" ||
+    (user.role === "owner" && typeof rate !== "undefined")
+  ) {
+    return res.status(403).send({
+      message: "You're not authorized to update the review."
+    });
+  }
+
+  if (!_.isNaN(comment)) review.comment = comment;
+  if (!_.isNaN(rate)) {
     previous = review.rate;
     review.rate = rate;
   }
-  if (user.role == "owner" && review.reply.length > 0) {
+  if (user.role == "owner" && review.reply && review.reply.length > 0) {
     return res.status(400).send({
       message: "Owners can only reply once."
     });
   }
   review.reply = reply;
   await review.save();
-  if (typeof rate != "undefined")
+  if (!_.isNaN(rate))
     Restaurant.findOne({ _id: review.restaurant._id }, (err, restaurant) => {
       if (restaurant == null) {
         return res.status(400).send({

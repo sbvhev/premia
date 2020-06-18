@@ -16,7 +16,7 @@ const getReviews = apiCall({
 const addReview = apiCall({
   type: ADD_REVIEW,
   method: "post",
-  path: "/restaurants/reviews"
+  path: ({ id }) => `/restaurants/${id}/reviews`
 });
 
 const editReview = apiCall({

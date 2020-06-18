@@ -8,8 +8,8 @@ const ReviewSchema = new Schema({
     ref: "user",
     required: true
   },
-  rate: { type: Number, required: false },
-  comment: { type: String, required: false },
+  rate: { type: Number, required: true },
+  comment: { type: String, required: true },
   reply: { type: String, required: false },
   restaurant: {
     type: mongoose.Schema.Types.ObjectId,

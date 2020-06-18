@@ -42,6 +42,7 @@ async function login(req, res, next) {
 async function signUp(req, res, next) {
   try {
     const { error } = createValidate(req.body);
+    const { role } = req.body || {};
 
     if (error)
       return res.status(400).send({
@@ -49,6 +50,10 @@ async function signUp(req, res, next) {
       });
 
     let user = await User.findOne({ email: req.body.email });
+
+    if (role === "admin") {
+      return res.status(400).send({ message: "Can not sign up as admin" });
+    }
 
     if (user)
       return res.status(409).send({ message: "User already registered." });
