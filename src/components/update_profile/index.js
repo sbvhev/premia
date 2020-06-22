@@ -126,25 +126,14 @@ const UpdateProfile = props => {
   };
 
   const handleDelete = () => {
-    removeProfile({
-      body: {},
-      success: () => {
-        history.push("/");
-        showToast({
-          message: "You are logged out!",
-          intent: "success",
-          timeout: 3000
-        });
-        handleClose();
-      },
-      fail: err => {
-        showToast({
-          message: err.response.data.message,
-          intent: "error"
-        });
-        handleClose();
-      }
-    });
+    removeProfile();
+    setTimeout(() => {
+      history.push("/login");
+      showToast({
+        message: "You are logged out!",
+        intent: "success"
+      });
+    }, 1000);
   };
 
   return (

@@ -15,7 +15,8 @@ const initialState = {
   loading: true,
   params: {
     page: 1,
-    limit: 5
+    limit: 5,
+    role: ""
   },
   error: ""
 };

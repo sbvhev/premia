@@ -13,7 +13,9 @@ import {
   Paper,
   Chip,
   Breadcrumbs,
-  IconButton
+  IconButton,
+  Grid,
+  TextField
 } from "@material-ui/core";
 import {
   Add as AddIcon,
@@ -89,12 +91,17 @@ const useStyles = makeStyles({
   restaurant: {
     float: "right",
     marginTop: "1rem"
+  },
+  role: {
+    width: "100%",
+    marginTop: "1rem"
   }
 });
 
 const User = props => {
   const classes = useStyles();
   const [selectedRow, setSelected] = useState("");
+  const [role, setRole] = useState("");
   const [createUserOpen, setCreateUserOpen] = useState(false);
   const [updateUserOpen, setUpdateUserOpen] = useState(false);
   const [deleteUserOpen, setDeleteUserOpen] = useState(false);
@@ -110,9 +117,9 @@ const User = props => {
   } = props;
 
   useEffect(() => {
-    getUsers({ params });
+    getUsers({ params: { ...params, role } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, user, count]);
+  }, [params, user, count, role]);
 
   const handleChangePage = (event, newPage) => {
     setParams({ page: newPage + 1 });
@@ -155,6 +162,28 @@ const User = props => {
             icon={<GroupIcon fontSize="small" />}
           />
         </Breadcrumbs>
+        <Grid item xs={3}>
+          <TextField
+            id="role"
+            name="role"
+            fullWidth
+            select
+            className={classes.role}
+            label="Role"
+            value={role}
+            onChange={evt => setRole(evt.target.value)}
+            SelectProps={{
+              native: true
+            }}
+            helperText="Please select your role to filter by"
+            variant="outlined"
+          >
+            <option value=""></option>
+            <option value="regular">Regular</option>
+            <option value="owner">Owner</option>
+            <option value="admin">Admin</option>
+          </TextField>
+        </Grid>
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">

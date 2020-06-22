@@ -236,7 +236,11 @@ const DetailedView = props => {
                           column.id === "no"
                             ? (params.page - 1) * params.limit + index + 1
                             : row[column.id];
-                        if (column.id === "action" && me.role === "owner")
+                        if (
+                          column.id === "action" &&
+                          me.role === "owner" &&
+                          !row.reply
+                        )
                           return (
                             <React.Fragment key={column.id}>
                               <TableCell

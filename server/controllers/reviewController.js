@@ -36,13 +36,25 @@ async function read(req, res, next) {
 
     res.send({
       name: restaurant.name,
-      reviews: restaurant.reviews
-        .sort((a, b) => a.date < b.date)
-        .slice(
-          parseInt(page - 1) * parseInt(limit),
-          parseInt(page - 1) * parseInt(limit) + parseInt(limit)
-        ),
-      count: restaurant.reviews.length
+      reviews:
+        user.role === "regular"
+          ? restaurant.reviews
+              .filter(a => a.from_user == user._id)
+              .sort((a, b) => a.date < b.date)
+              .slice(
+                parseInt(page - 1) * parseInt(limit),
+                parseInt(page - 1) * parseInt(limit) + parseInt(limit)
+              )
+          : restaurant.reviews
+              .sort((a, b) => a.date < b.date)
+              .slice(
+                parseInt(page - 1) * parseInt(limit),
+                parseInt(page - 1) * parseInt(limit) + parseInt(limit)
+              ),
+      count:
+        user.role === "regular"
+          ? restaurant.reviews.filter(a => a.from_user == user._id).length
+          : restaurant.reviews.length
     });
   } catch (err) {
     next(err);

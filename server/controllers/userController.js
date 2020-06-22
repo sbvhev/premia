@@ -11,7 +11,7 @@ function read(req, res, next) {
 
 async function list(req, res, next) {
   try {
-    const { page = 1, limit = 5, all = false } = req.query;
+    const { page = 1, limit = 5, all = false, role = "" } = req.query;
 
     const where = { _id: { $ne: req.user._id } };
     const count = await User.countDocuments(where);
@@ -25,6 +25,16 @@ async function list(req, res, next) {
       return res
         .status(422)
         .send({ message: "Page and limit must be positive integer." });
+    }
+
+    if (!["", "admin", "owner", "regular"].includes(role)) {
+      return res
+        .status(400)
+        .send({ message: "Role should be admin, owner, or regular " });
+    }
+
+    if (role) {
+      where["role"] = role;
     }
 
     let users;
