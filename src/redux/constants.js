@@ -2,6 +2,7 @@ export const LOG_IN = "LOG_IN";
 export const SIGN_UP = "SIGN_UP";
 export const LOG_OUT = "LOG_OUT";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
+export const REMOVE_PROFILE = "REMOVE_PROFILE";
 
 export const HIDE_TOAST = "HIDE_TOAST";
 export const SHOW_TOAST = "SHOW_TOAST";

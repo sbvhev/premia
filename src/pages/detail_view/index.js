@@ -300,7 +300,7 @@ const DetailedView = props => {
                                   <Rating
                                     name="read-only"
                                     value={value}
-                                    precision={0.5}
+                                    precision={0.25}
                                     readOnly
                                   />
                                 </Box>
@@ -314,7 +314,7 @@ const DetailedView = props => {
                             style={{ width: column.maxWidth }}
                           >
                             {column.id === "date"
-                              ? moment(value).format("YYYY-MM-DD")
+                              ? moment(value).format("YYYY/MM/DD hh:mm:ss")
                               : value}
                           </TableCell>
                         );
@@ -335,7 +335,8 @@ const DetailedView = props => {
             onChangeRowsPerPage={handleChangeLimitPage}
           />
         </Paper>
-        {me.role !== "owner" && (
+        {(me.role === "admin" ||
+          (me.role === "regular" && !reviews.length)) && (
           <Chip
             className={classes.comment}
             icon={<AddIcon />}

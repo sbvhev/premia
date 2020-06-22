@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const header = req.headers["x-access-token"] || req.headers["authorization"];
 
   if (!header)
@@ -17,6 +18,12 @@ module.exports = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token[1], "secret");
+    const user = await User.findById({ _id: decoded._id });
+
+    if (!user)
+      return res
+        .status(401)
+        .send({ message: "Token is provided. But it's invalid one." });
     req.user = decoded;
 
     next();

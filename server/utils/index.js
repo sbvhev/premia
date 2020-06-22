@@ -7,7 +7,7 @@ function hasRole(roles) {
 
       return;
     }
-    res.status(403).json({ message: "Permission denied." });
+    res.status(403).send({ message: "Permission denied." });
   };
 }
 

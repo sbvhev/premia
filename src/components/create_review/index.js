@@ -136,7 +136,7 @@ const CreateReview = props => {
                   <Rating
                     name="simple-controlled"
                     value={rate}
-                    precision={0.5}
+                    precision={0.25}
                     onChange={(event, newValue) => {
                       setRate(newValue);
                     }}

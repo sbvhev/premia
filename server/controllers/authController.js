@@ -1,6 +1,8 @@
 const { pick, get, assign } = require("lodash");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Restaurant = require("../models/restaurant");
+const Review = require("../models/review");
 const { createValidate, updateValidate } = require("../utils");
 
 async function login(req, res, next) {
@@ -18,7 +20,7 @@ async function login(req, res, next) {
       .exec();
 
     if (!user) {
-      return res.status(404).send({
+      return res.status(401).send({
         message: "Can not find user matched with credential"
       });
     }
@@ -31,7 +33,7 @@ async function login(req, res, next) {
         token
       });
     } else {
-      res.status(401).send({ message: "Invalid credential" });
+      res.status(401).send({ message: "Password is incorrect." });
     }
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });
@@ -118,8 +120,26 @@ async function updateProfile(req, res, next) {
   }
 }
 
+async function removeProfile(req, res, next) {
+  try {
+    const user = await User.findOne({ _id: req.user._id });
+
+    await Review.deleteMany({ from_user: user._id });
+    await Restaurant.deleteMany({ user: user._id });
+
+    user.deleteOne();
+
+    res.send({
+      message: "Profile is removed"
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   login,
   signUp,
-  updateProfile
+  updateProfile,
+  removeProfile
 };

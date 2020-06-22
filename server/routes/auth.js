@@ -9,5 +9,8 @@ router.post("/signup", authController.signUp);
 router
   .route("/updateprofile")
   .put(authMiddleware, authController.updateProfile);
+router
+  .route("/removeprofile")
+  .delete(authMiddleware, authController.removeProfile);
 
 module.exports = router;

@@ -65,7 +65,9 @@ async function create(req, res, next) {
 
     const newUser = await user.save();
 
-    res.json(pick(newUser, ["firstName", "lastName", "email", "_id", "role"]));
+    res
+      .status(201)
+      .send(pick(newUser, ["firstName", "lastName", "email", "_id", "role"]));
   } catch (error) {
     next(error);
   }
@@ -102,7 +104,7 @@ async function remove(req, res, next) {
     const id = req.params.id;
     const user = req.user;
     if (user.role !== "admin") {
-      res.status(403).json({
+      res.status(403).send({
         error: "You're not authorized to remove user."
       });
       return;
@@ -113,9 +115,8 @@ async function remove(req, res, next) {
           error: "User doesn't exist"
         });
       }
-      await Restaurant.deleteMany({ user: user._id });
-      await Review.deleteMany({ to_user: user._id });
       await Review.deleteMany({ from_user: user._id });
+      await Restaurant.deleteMany({ user: user._id });
       user.delete();
     });
     res.send({

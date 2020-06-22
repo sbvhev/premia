@@ -28,7 +28,7 @@ async function post(req, res, next) {
       });
     }
 
-    if (!ObjectId.isValid(reqUser)) {
+    if (!ObjectId.isValid(reqUser) && user.role === "admin") {
       return res.status(400).send({
         message: "User ID is not valid id."
       });
@@ -41,7 +41,7 @@ async function post(req, res, next) {
 
     if (!existUser && user.role === "admin") {
       return res
-        .status(409)
+        .status(422)
         .send({ message: "Restaurant is authorized to only owners" });
     }
 
@@ -54,7 +54,7 @@ async function post(req, res, next) {
       reviews: []
     });
 
-    return res.send({ restaurant });
+    return res.status(201).send({ restaurant });
   } catch (err) {
     next(err);
   }

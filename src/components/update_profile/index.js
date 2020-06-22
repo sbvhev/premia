@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik } from "formik";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -9,13 +10,13 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  Box
 } from "@material-ui/core";
 import {
   Person as PersonIcon,
   Email as EmailIcon,
-  Lock as LockIcon,
-  Accessible as AccessibleIcon
+  Lock as LockIcon
 } from "@material-ui/icons";
 import * as Yup from "yup";
 import _ from "lodash-es";
@@ -43,8 +44,12 @@ const useStyles = makeStyles(theme => ({
     color: "red",
     textAlign: "left"
   },
+  delete: {
+    float: "left"
+  },
   action: {
-    float: "right",
+    display: "flex",
+    justifyContent: "space-between",
     marginTop: "1rem"
   },
   placeholder: {
@@ -57,7 +62,16 @@ const useStyles = makeStyles(theme => ({
 
 const UpdateProfile = props => {
   const classes = useStyles();
-  const { open, handleClose, updateProfile, showToast, me } = props;
+  const {
+    open,
+    handleClose,
+    updateProfile,
+    removeProfile,
+    showToast,
+    me
+  } = props;
+
+  const history = useHistory();
 
   const initialValues = {
     password: "********",
@@ -94,7 +108,6 @@ const UpdateProfile = props => {
     updateProfile({
       body: values,
       success: () => {
-        actions.setSubmitting(false);
         showToast({
           message: "You successfully updated user!",
           intent: "success",
@@ -103,7 +116,28 @@ const UpdateProfile = props => {
         handleClose();
       },
       fail: err => {
-        actions.setSubmitting(false);
+        showToast({
+          message: err.response.data.message,
+          intent: "error"
+        });
+        handleClose();
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    removeProfile({
+      body: {},
+      success: () => {
+        history.push("/");
+        showToast({
+          message: "You are logged out!",
+          intent: "success",
+          timeout: 3000
+        });
+        handleClose();
+      },
+      fail: err => {
         showToast({
           message: err.response.data.message,
           intent: "error"
@@ -258,12 +292,21 @@ const UpdateProfile = props => {
                   </Grid>
                 </Grid>
                 <Grid className={classes.action}>
-                  <Button onClick={handleClose} color="primary">
-                    Cancel
+                  <Button
+                    className={classes.delete}
+                    onClick={handleDelete}
+                    color="secondary"
+                  >
+                    Delete Profile
                   </Button>
-                  <Button type="submit" color="primary">
-                    Save
-                  </Button>
+                  <Box>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button type="submit" color="primary">
+                      Save
+                    </Button>
+                  </Box>
                 </Grid>
               </form>
             )}
@@ -280,6 +323,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateProfile: auth.updateProfile,
+  removeProfile: auth.removeProfile,
   showToast: toast.showToast,
   setLoading: progress.setLoading
 };

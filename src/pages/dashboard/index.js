@@ -319,7 +319,7 @@ const Dashboard = props => {
                                   <Rating
                                     name="read-only"
                                     value={value}
-                                    precision={0.5}
+                                    precision={0.1}
                                     readOnly
                                   />
                                 </Box>

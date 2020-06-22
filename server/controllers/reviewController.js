@@ -18,7 +18,8 @@ async function read(req, res, next) {
     }
     if (restaurant == null) {
       return res.status(400).send({
-        error: "The restaurant doesn't exist"
+        message:
+          "We can not find this restaurant for this req user. Maybe you need to try with another role token or correct restaruant id."
       });
     }
 
@@ -35,10 +36,12 @@ async function read(req, res, next) {
 
     res.send({
       name: restaurant.name,
-      reviews: restaurant.reviews.slice(
-        parseInt(page - 1) * parseInt(limit),
-        parseInt(page - 1) * parseInt(limit) + parseInt(limit)
-      ),
+      reviews: restaurant.reviews
+        .sort((a, b) => a.date < b.date)
+        .slice(
+          parseInt(page - 1) * parseInt(limit),
+          parseInt(page - 1) * parseInt(limit) + parseInt(limit)
+        ),
       count: restaurant.reviews.length
     });
   } catch (err) {
@@ -67,10 +70,23 @@ async function create(req, res, next) {
       return res.status(400).send({ message: "comment is required" });
 
     const restaurant = await Restaurant.findOne({ _id: id });
-    if (restaurant == null) {
+    if (!restaurant) {
       return res.status(400).send({
         message: "Restaurant doesn't exist"
       });
+    }
+
+    if (user.role === "regular") {
+      const reviews = await Review.find({
+        restaurant: id,
+        from_user: user._id
+      });
+
+      if (reviews.length >= 1) {
+        return res.status(400).send({
+          message: "Regular users can only comment once"
+        });
+      }
     }
     const newReview = new Review({
       from_user: user,
@@ -96,7 +112,7 @@ async function create(req, res, next) {
       restaurant.reviews.length;
     await restaurant.save();
 
-    res.send({ review: review });
+    res.status(201).send({ review: review });
   } catch (err) {
     next(err);
   }
@@ -107,10 +123,7 @@ async function update(req, res, next) {
   const { reply, comment, rate } = req.body;
   const user = req.user;
 
-  if (
-    user.role === "regular" ||
-    (user.role === "owner" && typeof rate !== "undefined")
-  ) {
+  if (user.role === "regular") {
     return res.status(403).send({
       message: "You're not authorized to update the review."
     });
@@ -137,7 +150,10 @@ async function update(req, res, next) {
     return res.status(400).send({ message: "Rate should be between 0 and 5" });
 
   let previous = 0;
-  const review = await Review.findOne({ _id: id }).populate("restaurant");
+  const review = await Review.findOne({ _id: id }).populate(
+    "restaurant",
+    "-reviews -overall_rating -highest_rating -lowest_rating -name -user"
+  );
 
   if (review == null) {
     return res.status(400).send({
@@ -162,24 +178,37 @@ async function update(req, res, next) {
 
   review.reply = reply;
   await review.save();
-  if (!_.isNaN(rate) && user.role === "admin")
-    Restaurant.findOne({ _id: review.restaurant._id }, (err, restaurant) => {
-      if (restaurant == null) {
-        return res.status(400).send({
-          message: "Restaurant doesn't exist"
-        });
-      }
-      if (restaurant.highest_rating < rate) restaurant.highest_rating = rate;
-      if (restaurant.lowest_rating > rate) restaurant.lowest_rating = rate;
-      restaurant.overall_rating =
-        (restaurant.overall_rating * restaurant.reviews.length -
-          previous +
-          rate) /
-        restaurant.reviews.length;
-      restaurant.save();
-    });
 
-  return res.send({ review: review });
+  if (!_.isNaN(rate) && user.role === "admin") {
+    Restaurant.findOne(
+      { _id: review.restaurant._id },
+      async (err, restaurant) => {
+        if (restaurant == null) {
+          return res.status(400).send({
+            message: "Restaurant doesn't exist"
+          });
+        }
+
+        let highestOne = 0,
+          lowestOne = 100,
+          sumOne = 0;
+        for (let i = 0; i < restaurant.reviews.length; i++) {
+          const r = await Review.findOne({ _id: restaurant.reviews[i] });
+          if (r.rate > highestOne) highestOne = r.rate;
+          if (r.rate < lowestOne) lowestOne = r.rate;
+          sumOne += r.rate;
+        }
+
+        restaurant.highest_rating = highestOne;
+        restaurant.lowest_rating = lowestOne;
+        restaurant.overall_rating = sumOne / restaurant.reviews.length;
+        await restaurant.save();
+        return res.send({ review: review });
+      }
+    );
+  } else {
+    return res.send({ review: review });
+  }
 }
 
 async function remove(req, res, next) {
@@ -191,42 +220,44 @@ async function remove(req, res, next) {
     });
   }
   const review = await Review.findOne({ _id: id }).populate("restaurant");
-  if (review == null) {
+  if (!review) {
     return res.status(400).send({
       message: "Review doesn't exist"
     });
   }
   await Review.deleteOne({ _id: id });
+  await Restaurant.update(
+    { _id: review.restaurant._id },
+    { $pull: { reviews: id } }
+  );
   Restaurant.findOne({ _id: review.restaurant._id })
     .populate("reviews")
     .exec(async (err, restaurant) => {
-      if (restaurant == "null") {
+      console.log(restaurant);
+      if (!restaurant) {
         return res.status(400).send({
           message: "Restaurant doesn't exist."
         });
       }
-      if (typeof restaurant != "undefined") {
-        restaurant.reviews = restaurant.reviews.filter(
-          review => review._id != id
-        );
-        let sum = 0;
+      if (!_.isUndefined(restaurant)) {
         if (restaurant.reviews.length === 0) {
           restaurant.overall_rating = 0;
           restaurant.highest_rating = 0;
           restaurant.lowest_rating = 0;
         } else {
-          let lowest = 5,
-            highest = 0;
+          let highestOne = 0,
+            lowestOne = 100,
+            sumOne = 0;
           for (let i = 0; i < restaurant.reviews.length; i++) {
-            if (restaurant.reviews[i].rate > highest)
-              highest = restaurant.reviews[i].rate;
-            if (restaurant.reviews[i].rate < lowest)
-              lowest = restaurant.reviews[i].rate;
-            sum += restaurant.reviews[i].rate;
+            const r = await Review.findOne({ _id: restaurant.reviews[i] });
+            if (r.rate > highestOne) highestOne = r.rate;
+            if (r.rate < lowestOne) lowestOne = r.rate;
+            sumOne += r.rate;
           }
-          restaurant.overall_rating = sum / restaurant.reviews.length;
-          restaurant.highest_rating = highest;
-          restaurant.lowest_rating = lowest;
+
+          restaurant.highest_rating = highestOne;
+          restaurant.lowest_rating = lowestOne;
+          restaurant.overall_rating = sumOne / restaurant.reviews.length;
         }
         await restaurant.save();
         res.send({
