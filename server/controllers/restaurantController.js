@@ -29,7 +29,7 @@ async function post(req, res, next) {
     }
 
     if (!ObjectId.isValid(reqUser) && user.role === "admin") {
-      return res.status(400).send({
+      return res.status(422).send({
         message: "User ID is not valid id."
       });
     }
@@ -145,7 +145,7 @@ async function update(req, res, next) {
     }
 
     if (!ObjectId.isValid(user)) {
-      return res.status(400).send({
+      return res.status(422).send({
         message: "User ID is not valid id."
       });
     }

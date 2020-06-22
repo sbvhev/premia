@@ -18,7 +18,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import EmailIcon from "@material-ui/icons/Email";
 import AccessibleIcon from "@material-ui/icons/Accessible";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { auth, toast } from "redux/actions";
 import PersonIcon from "@material-ui/icons/Person";
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = props => {
   const classes = useStyles();
-
+  const history = useHistory();
   const { signup, showToast } = props;
 
   const initialValues = {
@@ -87,6 +87,7 @@ const SignUp = props => {
       body: values,
       success: () => {
         actions.setSubmitting(false);
+        history.push("/login");
         showToast({
           message: "You are successfully signed up!",
           intent: "success",

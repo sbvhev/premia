@@ -17,7 +17,7 @@ async function read(req, res, next) {
       restaurant = await Restaurant.findOne({ _id: id }).populate("reviews");
     }
     if (restaurant == null) {
-      return res.status(400).send({
+      return res.status(422).send({
         message:
           "We can not find this restaurant for this req user. Maybe you need to try with another role token or correct restaruant id."
       });
@@ -95,7 +95,7 @@ async function create(req, res, next) {
       });
 
       if (reviews.length >= 1) {
-        return res.status(400).send({
+        return res.status(422).send({
           message: "Regular users can only comment once"
         });
       }
@@ -174,7 +174,7 @@ async function update(req, res, next) {
   }
 
   if (user.role == "owner" && review.reply && review.reply.length > 0) {
-    return res.status(400).send({
+    return res.status(422).send({
       message: "Owners can only reply once."
     });
   }
