@@ -36,6 +36,13 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     textTransform: "none"
+  },
+  profile: {
+    fontSize: "1rem",
+    textTransform: "uppercase"
+  },
+  profileIcon: {
+    marginRight: "0.5rem"
   }
 }));
 
@@ -79,8 +86,13 @@ const Header = props => {
               </Box>
               <Divider orientation="vertical" flexItem />
               <Box component="div" m={1}>
-                <IconButton color="inherit" onClick={() => setOpen(true)}>
-                  <AccountCircleIcon />
+                <IconButton
+                  className={classes.profile}
+                  color="inherit"
+                  onClick={() => setOpen(true)}
+                >
+                  <AccountCircleIcon className={classes.profileIcon} />
+                  {` ${auth.me.firstName} ${auth.me.lastName} (${auth.me.role})`}
                 </IconButton>
                 <Link to="" className={classes.link}>
                   <Button color="inherit" onClick={handlgeLogout}>
