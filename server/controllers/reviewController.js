@@ -73,10 +73,14 @@ async function create(req, res, next) {
       });
     }
 
-    if (!_.toNumber(rate) || _.toNumber(rate) < 0 || _.toNumber(rate) > 5)
+    if (
+      _.isNaN(_.toNumber(rate)) ||
+      _.toNumber(rate) < 0 ||
+      _.toNumber(rate) > 5
+    )
       return res
         .status(400)
-        .send({ message: "Rate should be between 0 and 5" });
+        .send({ message: "Rate should be number between 0 and 5" });
 
     if (!comment)
       return res.status(400).send({ message: "comment is required" });
@@ -156,10 +160,14 @@ async function update(req, res, next) {
   }
 
   if (
-    (!_.toNumber(rate) || _.toNumber(rate) < 0 || _.toNumber(rate) > 5) &&
+    (_.isNaN(_.toNumber(rate)) ||
+      _.toNumber(rate) < 0 ||
+      _.toNumber(rate) > 5) &&
     user.role === "admin"
   )
-    return res.status(400).send({ message: "Rate should be between 0 and 5" });
+    return res
+      .status(400)
+      .send({ message: "Rate should be number between 0 and 5" });
 
   let previous = 0;
   const review = await Review.findOne({ _id: id }).populate(
