@@ -15,7 +15,8 @@ import {
   Breadcrumbs,
   IconButton,
   Grid,
-  TextField
+  TextField,
+  Box
 } from "@material-ui/core";
 import {
   Add as AddIcon,
@@ -95,6 +96,10 @@ const useStyles = makeStyles({
   role: {
     width: "100%",
     marginTop: "1rem"
+  },
+  box: {
+    display: "flex",
+    justifyContent: "space-between"
   }
 });
 
@@ -154,36 +159,40 @@ const User = props => {
   return (
     <React.Fragment>
       <Container fixed>
-        <Breadcrumbs aria-label="breadcrumb" className={classes.crumbs}>
-          <StyledBreadcrumb
-            component="a"
-            href="#"
-            label="Users"
-            icon={<GroupIcon fontSize="small" />}
-          />
-        </Breadcrumbs>
-        <Grid item xs={3}>
-          <TextField
-            id="role"
-            name="role"
-            fullWidth
-            select
-            className={classes.role}
-            label="Role"
-            value={role}
-            onChange={evt => setRole(evt.target.value)}
-            SelectProps={{
-              native: true
-            }}
-            helperText="Please select your role to filter by"
-            variant="outlined"
-          >
-            <option value=""></option>
-            <option value="regular">Regular</option>
-            <option value="owner">Owner</option>
-            <option value="admin">Admin</option>
-          </TextField>
-        </Grid>
+        <Box className={classes.box} component="div">
+          <Grid item xs={3}>
+            <Breadcrumbs aria-label="breadcrumb" className={classes.crumbs}>
+              <StyledBreadcrumb
+                component="a"
+                href="#"
+                label="Users"
+                icon={<GroupIcon fontSize="small" />}
+              />
+            </Breadcrumbs>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              id="role"
+              name="role"
+              fullWidth
+              select
+              className={classes.role}
+              label="Role"
+              value={role}
+              onChange={evt => setRole(evt.target.value)}
+              SelectProps={{
+                native: true
+              }}
+              helperText="Please select your role to filter by"
+              variant="outlined"
+            >
+              <option value=""></option>
+              <option value="regular">Regular</option>
+              <option value="owner">Owner</option>
+              <option value="admin">Admin</option>
+            </TextField>
+          </Grid>
+        </Box>
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">

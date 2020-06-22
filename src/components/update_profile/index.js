@@ -67,11 +67,10 @@ const UpdateProfile = props => {
     handleClose,
     updateProfile,
     removeProfile,
+    logout,
     showToast,
     me
   } = props;
-
-  const history = useHistory();
 
   const initialValues = {
     password: "********",
@@ -128,10 +127,11 @@ const UpdateProfile = props => {
   const handleDelete = () => {
     removeProfile();
     setTimeout(() => {
-      history.push("/login");
+      logout();
       showToast({
         message: "You are logged out!",
-        intent: "success"
+        intent: "success",
+        timeout: 3000
       });
     }, 1000);
   };
@@ -313,6 +313,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   updateProfile: auth.updateProfile,
   removeProfile: auth.removeProfile,
+  logout: auth.logout,
   showToast: toast.showToast,
   setLoading: progress.setLoading
 };
