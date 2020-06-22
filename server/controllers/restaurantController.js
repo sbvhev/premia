@@ -28,8 +28,17 @@ async function post(req, res, next) {
       });
     }
 
-    const existUser = await User.findOne({ _id: reqUser, role: "owner" });
-    console.log("existUSer", existUser);
+    if (!ObjectId.isValid(reqUser)) {
+      return res.status(400).send({
+        message: "User ID is not valid id."
+      });
+    }
+
+    const existUser = await User.findOne({
+      _id: ObjectId(reqUser),
+      role: "owner"
+    });
+
     if (!existUser && user.role === "admin") {
       return res
         .status(409)
@@ -38,7 +47,7 @@ async function post(req, res, next) {
 
     const restaurant = await Restaurant.create({
       name: name,
-      user: user.role === "admin" ? reqUser : user,
+      user: user.role === "admin" ? ObjectId(reqUser) : user,
       overall_rating: 0,
       highest_rating: 0,
       lowest_rating: 0,
@@ -54,6 +63,18 @@ async function post(req, res, next) {
 async function list(req, res, next) {
   try {
     let { min = 0, max = 5, page = 1, limit = 5 } = req.query;
+
+    if (
+      !_.isInteger(_.toNumber(page)) ||
+      !_.isInteger(_.toNumber(limit)) ||
+      _.toNumber(page) <= 0 ||
+      _.toNumber(limit) <= 0
+    ) {
+      return res
+        .status(422)
+        .send({ message: "Page and limit must be positive integer." });
+    }
+
     const { user } = req;
     if (min > max) {
       res.status(400).send({
@@ -106,13 +127,6 @@ async function update(req, res, next) {
     const { name = "", user } = req.body;
     const { user: reqUser } = req;
 
-    const existUser = await User.findOne({ _id: user, role: "owner" });
-    if (!existUser && reqUser.role === "admin") {
-      return res
-        .status(409)
-        .send({ message: "Restaurant is authorized to only owners" });
-    }
-
     if (reqUser.role !== "admin")
       return res
         .status(403)
@@ -120,9 +134,29 @@ async function update(req, res, next) {
 
     if (!name) {
       return res.status(400).send({
-        message: "Restaurant name required."
+        message: "Restaurant name is required."
       });
     }
+
+    if (!user) {
+      return res.status(400).send({
+        message: "User is required."
+      });
+    }
+
+    if (!ObjectId.isValid(user)) {
+      return res.status(400).send({
+        message: "User ID is not valid id."
+      });
+    }
+
+    const existUser = await User.findOne({ _id: user, role: "owner" });
+    if (!existUser && reqUser.role === "admin") {
+      return res
+        .status(409)
+        .send({ message: "Restaurant is authorized to only owners" });
+    }
+
     await Restaurant.findOne({ _id: id }, async (err, restaurant) => {
       restaurant.name = name;
       restaurant.user = user;

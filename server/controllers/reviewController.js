@@ -21,6 +21,18 @@ async function read(req, res, next) {
         error: "The restaurant doesn't exist"
       });
     }
+
+    if (
+      !_.isInteger(_.toNumber(page)) ||
+      !_.isInteger(_.toNumber(limit)) ||
+      _.toNumber(page) <= 0 ||
+      _.toNumber(limit) <= 0
+    ) {
+      return res
+        .status(422)
+        .send({ message: "Page and limit must be positive integer." });
+    }
+
     res.send({
       name: restaurant.name,
       reviews: restaurant.reviews.slice(
@@ -40,19 +52,19 @@ async function create(req, res, next) {
     const { id } = req.params;
     const { user } = req;
 
-    if (rate < 0 || rate > 5)
+    if (user.role === "owner") {
+      return res.status(403).send({
+        message: "You're not authorized to add a review."
+      });
+    }
+
+    if (!_.toNumber(rate) || _.toNumber(rate) < 0 || _.toNumber(rate) > 5)
       return res
         .status(400)
         .send({ message: "Rate should be between 0 and 5" });
 
     if (!comment)
       return res.status(400).send({ message: "comment is required" });
-
-    if (user.role === "owner") {
-      return res.status(403).send({
-        message: "You're not authorized to add a review."
-      });
-    }
 
     const restaurant = await Restaurant.findOne({ _id: id });
     if (restaurant == null) {
@@ -95,19 +107,6 @@ async function update(req, res, next) {
   const { reply, comment, rate } = req.body;
   const user = req.user;
 
-  let previous = 0;
-  const review = await Review.findOne({ _id: id }).populate("restaurant");
-
-  if (review == null) {
-    return res.status(400).send({
-      message: "Review doesn't exist"
-    });
-  }
-
-  if (!comment) {
-    return res.status(400).send({ message: "Comment is required" });
-  }
-
   if (
     user.role === "regular" ||
     (user.role === "owner" && typeof rate !== "undefined")
@@ -117,19 +116,53 @@ async function update(req, res, next) {
     });
   }
 
-  if (!_.isNaN(comment)) review.comment = comment;
-  if (!_.isNaN(rate)) {
-    previous = review.rate;
-    review.rate = rate;
+  if (_.isUndefined(rate) && user.role === "admin") {
+    return res.status(400).send({ message: "Rate is required in admin view" });
   }
+
+  if (_.isUndefined(reply) && user.role === "owner") {
+    return res.status(400).send({ message: "Reply is required in owner view" });
+  }
+
+  if (_.isUndefined(comment) && user.role === "admin") {
+    return res
+      .status(400)
+      .send({ message: "Comment is required in admin view" });
+  }
+
+  if (
+    (!_.toNumber(rate) || _.toNumber(rate) < 0 || _.toNumber(rate) > 5) &&
+    user.role === "admin"
+  )
+    return res.status(400).send({ message: "Rate should be between 0 and 5" });
+
+  let previous = 0;
+  const review = await Review.findOne({ _id: id }).populate("restaurant");
+
+  if (review == null) {
+    return res.status(400).send({
+      message: "Review doesn't exist"
+    });
+  }
+
   if (user.role == "owner" && review.reply && review.reply.length > 0) {
     return res.status(400).send({
       message: "Owners can only reply once."
     });
   }
+
+  if (user.role === "admin") {
+    if (!_.isNaN(comment)) review.comment = comment;
+
+    if (!_.isNaN(rate)) {
+      previous = review.rate;
+      review.rate = rate;
+    }
+  }
+
   review.reply = reply;
   await review.save();
-  if (!_.isNaN(rate))
+  if (!_.isNaN(rate) && user.role === "admin")
     Restaurant.findOne({ _id: review.restaurant._id }, (err, restaurant) => {
       if (restaurant == null) {
         return res.status(400).send({

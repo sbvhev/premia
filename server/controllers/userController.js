@@ -16,10 +16,15 @@ async function list(req, res, next) {
     const where = { _id: { $ne: req.user._id } };
     const count = await User.countDocuments(where);
 
-    if (!isInteger(toNumber(page)) || !isInteger(toNumber(limit))) {
+    if (
+      !isInteger(toNumber(page)) ||
+      !isInteger(toNumber(limit)) ||
+      toNumber(page) <= 0 ||
+      toNumber(limit) <= 0
+    ) {
       return res
         .status(422)
-        .send({ message: "Page and rows per page must be positive integer." });
+        .send({ message: "Page and limit must be positive integer." });
     }
 
     let users;
