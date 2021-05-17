@@ -35,6 +35,10 @@ const backgroundNight = '#000000';
 
 const dividerGreyDay = '#E9E9E9';
 const dividerGreyNight = '#212121';
+const warningLight = 'rgba(253, 200, 69, .3)';
+const warningMain = 'rgba(253, 200, 69, .5)';
+const warningDark = 'rgba(253, 200, 69, .7)';
+const selectionNight = 'rgba(82, 148, 255, 0.2)';
 
 // breakpoints
 const xl = 1920;
@@ -58,6 +62,7 @@ const theme = createTheme(
   {
     palette: {
       primary: {
+        dark: selectionNight,
         main: primary,
         light: premiaBlueDay,
       },
@@ -132,7 +137,9 @@ const theme = createTheme(
       tonalOffset: 0.2,
     },
     typography: {
-      
+      htmlFontSize: 16,
+      fontFamily: 'DM Sans',
+      fontSize: 14,
       h1: {
         
       },

@@ -102,7 +102,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
       >
         {!hideAccountButtons && (
           <Box
-            width={!mobile ? 334 : 350}
+            width={!mobile ? 450 : 460}
             position='fixed'
             top={0}
             right={0}
