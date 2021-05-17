@@ -21,6 +21,7 @@ const dividerGrey = 'rgba(228, 228, 228, 0.1)';
 const warningLight = 'rgba(253, 200, 69, .3)';
 const warningMain = 'rgba(253, 200, 69, .5)';
 const warningDark = 'rgba(253, 200, 69, .7)';
+const selectionNight = 'rgba(82, 148, 255, 0.2)';
 
 // breakpoints
 const xl = 1920;
@@ -46,6 +47,7 @@ const theme = createTheme(
     palette: {
       type: 'dark',
       primary: {
+        dark: selectionNight,
         main: primary,
       },
       secondary: {
@@ -85,7 +87,7 @@ const theme = createTheme(
     },
     typography: {
       htmlFontSize: 16,
-      fontFamily: 'Roboto Mono',
+      fontFamily: 'DM Sans',
       fontSize: 14,
       h1: {
         fontSize: '3.42rem',

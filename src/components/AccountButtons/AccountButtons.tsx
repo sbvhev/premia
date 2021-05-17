@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -20,8 +20,11 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-
+import theme from 'theme';
+import cx from 'classnames';
 import { BetaSoftwareModal, ConfirmTermsModal } from 'components';
+import LogoIcon from 'assets/svg/LogoIcon.svg';
+import SwapIcon from 'assets/svg/SwapIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   page: {
@@ -31,8 +34,8 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   avatar: {
-    marginRight: '1.5rem',
-    backgroundColor: palette.text.primary,
+    margin: '0.6rem 1.5rem 0.6rem 0',
+    backgroundColor: palette.text.primary
   },
 
   walletIcon: {
@@ -44,8 +47,10 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   account: {
-    padding: '0.6rem 2rem',
+    padding: '0 1rem',
     border: `1px solid ${palette.divider}`,
+    width: '100%',
+    borderRadius: 12
   },
 
   address: {
@@ -53,10 +58,25 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 10,
   },
 
+  noDecoration: {
+    textDecoration: 'none'
+  },
+
   tier: {
     color: palette.text.secondary,
     fontSize: 10,
   },
+
+  button: {
+    marginRight: 10,
+    '& img' : {
+      marginLeft: 10
+    }
+  },
+
+  swapButton: {
+    backgroundColor: palette.primary.dark
+  }
 }));
 
 const AccountButtons: React.FC = () => {
@@ -64,7 +84,6 @@ const AccountButtons: React.FC = () => {
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const disconnect = useDisconnect();
-  const location = useLocation();
   const classes = useStyles();
 
   return (
@@ -91,16 +110,6 @@ const AccountButtons: React.FC = () => {
         </Grid>
       )}
 
-      {wallet && wallet.provider && (
-        <Grid item xs={2}>
-          <Tooltip title='Disconnect'>
-            <IconButton onClick={disconnect}>
-              <ExitToApp color='action' />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-      )}
-
       <Hidden mdUp>
         {(!wallet || !wallet.provider || !account) && (
           <Grid item xs={2}>
@@ -114,58 +123,57 @@ const AccountButtons: React.FC = () => {
       </Hidden>
 
       <Hidden smDown>
-        <Grid item xs={8}>
-          <Box position='relative'>
-            {wallet && wallet.provider && account ? (
-              <Box clone boxShadow={3}>
-                <Button
-                  className={classes.account}
-                  component={Link}
-                  to='/account'
-                >
-                  <Grid container direction='row' alignItems='center'>
+        <Grid item container xs={12}>
+          <Button variant='contained' color='primary' className={classes.button}>
+            Get
+            <img src={LogoIcon} alt='Logo Icon' />
+          </Button>
+          <Button variant='contained' className={cx(classes.button, classes.swapButton)}>
+            Swap
+            <img src={SwapIcon} alt='Swap Icon' />
+          </Button>
+          {wallet && wallet.provider && account ? (
+            <Box clone boxShadow={3}>
+              <Link to='/account' className={classes.noDecoration}>
+                <Grid container direction='row' alignItems='center' className={classes.account}>
+                  <Grid item container alignItems='center' xs={9}>
                     <Avatar className={classes.avatar} />
-
-                    <Grid>
+                    <Box>
                       <Typography className={classes.address}>
                         {shortenAddress(account ?? '')}
                       </Typography>
-
                       <Typography className={classes.tier}>Tier 1</Typography>
-                    </Grid>
+                    </Box>
                   </Grid>
-                </Button>
-              </Box>
-            ) : (
-              <Box clone boxShadow={3}>
-                <Button
-                  className={classes.account}
-                  onClick={() => setConfirmTermsModalOpen(true)}
-                >
-                  <Grid container direction='row' alignItems='center'>
-                    <Lock className={classes.walletIcon} />
 
-                    <Typography className={classes.address}>
-                      Connect Wallet
-                    </Typography>
+                  <Grid item xs={3}>
+                    <Box borderLeft={1} borderColor={theme.palette.divider} p={0.8}>
+                      <Tooltip title='Disconnect'>
+                        <IconButton onClick={disconnect}>
+                          <ExitToApp color='action' />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                   </Grid>
-                </Button>
-              </Box>
-            )}
-
-            <Box
-              position='absolute'
-              top='110%'
-              left={wallet && wallet.provider && account ? '3rem' : '2.5rem'}
-            >
-              <Link
-                to={location.pathname}
-                onClick={() => setBetaSoftwareModalOpen(true)}
-              >
-                View Beta Warning
+                </Grid>
               </Link>
             </Box>
-          </Box>
+          ) : (
+            <Box clone boxShadow={3}>
+              <Button
+                className={classes.account}
+                onClick={() => setConfirmTermsModalOpen(true)}
+              >
+                <Grid container direction='row' alignItems='center'>
+                  <Lock className={classes.walletIcon} />
+
+                  <Typography className={classes.address}>
+                    Connect Wallet
+                  </Typography>
+                </Grid>
+              </Button>
+            </Box>
+          )}
         </Grid>
       </Hidden>
 
