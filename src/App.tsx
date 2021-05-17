@@ -24,7 +24,7 @@ import UserUpdater from './state/user/updater';
 import store from './state';
 import theme from './theme';
 
-import { Dashboard } from './pages';
+import { Dashboard, Options } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -163,6 +163,10 @@ const App: React.FC = () => {
       <Switch>
         <Route exact path='/'>
           <Dashboard />
+        </Route>
+
+        <Route path='/options'>
+          <Options />
         </Route>
 
         <Route path='*'>
