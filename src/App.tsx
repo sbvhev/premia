@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
+import { ThemeProvider } from '@material-ui/core/styles';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider as StateProvider } from 'react-redux';
@@ -139,20 +140,22 @@ const Providers: React.FC = ({ children }) => {
 
   return (
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Suspense fallback={null}>
-          <StateProvider store={store}>
-            <StateUpdaters />
+       <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Suspense fallback={null}>
+            <StateProvider store={store}>
+              <StateUpdaters />
 
-            <MuiThemeProvider theme={theme}>
-              <CssBaseline />
-              <TopLevelModals />
-              <TransactionNotifications />
-              {children}
-            </MuiThemeProvider>
-          </StateProvider>
-        </Suspense>
-      </BrowserRouter>
+              <MuiThemeProvider theme={theme}>
+                <CssBaseline />
+                <TopLevelModals />
+                <TransactionNotifications />
+                {children}
+              </MuiThemeProvider>
+            </StateProvider>
+          </Suspense>
+        </BrowserRouter>
+       </ThemeProvider>
     </ApolloProvider>
   );
 };

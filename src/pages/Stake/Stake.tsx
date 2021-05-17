@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useWeb3 } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
 
 import { PageWithSidebar } from 'layouts';
-import theme from 'theme';
 
 const useStyles = makeStyles(() => ({
   hoverable: {
@@ -32,8 +31,6 @@ const useStyles = makeStyles(() => ({
   },
 
   topContainer: {
-    backgroundColor: theme.palette.primary.main,
-    opacity: 0.2,
   },
 
   title: {
@@ -62,14 +59,6 @@ const useStyles = makeStyles(() => ({
     margin: '80px 0 0 12px',
     width: 'calc(100% - 50px)',
   },
-  callButton: {
-    borderRadius: '12px',
-    background: `linear-gradient(121.21deg, ${theme.palette.primary.light} 7.78%, ${theme.palette.primary.dark} 118.78%);`,
-  },
-  putButton: {
-    borderRadius: '12px',
-    backgroundColor: `linear-gradient(121.21deg ${theme.palette.secondary.light} 18.89%, ${theme.palette.secondary.dark} 95.84%)`,
-  },
 }));
 
 const Stake: React.FC = () => {
@@ -79,52 +68,28 @@ const Stake: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <ThemeProvider theme={theme}>
-      <PageWithSidebar mobile={mobile}>
-        <Grid container direction='column'>
-          <Box
-            width={1}
-            className={mobile ? classes.topContainerMobile : classes.topContainer}
-          >
-            {wallet && wallet.provider && account ? (
-              <>
-                <Typography
-                  component='h2'
-                  variant='h4'
-                  color='textPrimary'
-                  style={{
-                    fontFamily: '"Inter"',
-                    fontWeight: 500,
-                    fontSize: 24,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  Hi {shortenAddress(account ?? '')},
-                </Typography>
+    <PageWithSidebar mobile={mobile}>
+      <Grid container direction='column'>
+        <Box
+          width={1}
+          className={mobile ? classes.topContainerMobile : classes.topContainer}
+        >
+          {wallet && wallet.provider && account ? (
+            <>
+              <Typography
+                component='h2'
+                variant='h4'
+                color='textPrimary'
+                style={{
+                  fontFamily: '"Inter"',
+                  fontWeight: 500,
+                  fontSize: 24,
+                  lineHeight: 1.5,
+                }}
+              >
+                Hi {shortenAddress(account ?? '')},
+              </Typography>
 
-                <Typography
-                  component='h2'
-                  variant='h3'
-                  color='textPrimary'
-                  style={
-                    !mobile
-                      ? {
-                          fontFamily: '"Teko"',
-                          fontWeight: 600,
-                          fontSize: 48,
-                          marginBottom: 32,
-                        }
-                      : {
-                          fontFamily: '"Teko"',
-                          fontWeight: 600,
-                          fontSize: 48,
-                        }
-                  }
-                >
-                  Welcome to Stake
-                </Typography>
-              </>
-            ) : (
               <Typography
                 component='h2'
                 variant='h3'
@@ -140,18 +105,40 @@ const Stake: React.FC = () => {
                     : {
                         fontFamily: '"Teko"',
                         fontWeight: 600,
-                        fontSize: 40,
-                        marginBottom: 8,
+                        fontSize: 48,
                       }
                 }
               >
-                Stake page
+                Welcome to Stake
               </Typography>
-            )}
-          </Box>
-        </Grid>
-      </PageWithSidebar>
-    </ThemeProvider>
+            </>
+          ) : (
+            <Typography
+              component='h2'
+              variant='h3'
+              color='textPrimary'
+              style={
+                !mobile
+                  ? {
+                      fontFamily: '"Teko"',
+                      fontWeight: 600,
+                      fontSize: 48,
+                      marginBottom: 32,
+                    }
+                  : {
+                      fontFamily: '"Teko"',
+                      fontWeight: 600,
+                      fontSize: 40,
+                      marginBottom: 8,
+                    }
+              }
+            >
+              Stake page
+            </Typography>
+          )}
+        </Box>
+      </Grid>
+    </PageWithSidebar>
   );
 };
 

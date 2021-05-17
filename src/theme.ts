@@ -302,13 +302,11 @@ const theme = createTheme(
           },
         },
         containedPrimary: {
-          backgroundColor: premiaBlueNight,
-          color: primary,
-          '&:hover': {
-            backgroundColor: 'grey',
-          },
-        },
-        containedSecondary: {
+          // backgroundColor: premiaBlueNight,
+          // color: primary,
+          // '&:hover': {
+          //   backgroundColor: 'grey',
+          // },
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: black,
           '&:hover': {
@@ -316,15 +314,7 @@ const theme = createTheme(
             background: 'none',
           },
         },
-        outlinedPrimary: {
-          backgroundColor: black,
-          color: '#646464',
-          border: '1px solid #212121',
-          '&:hover': {
-            backgroundColor: 'grey',
-          },
-        },
-        outlinedSecondary: {
+        containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
           '&:hover': {
@@ -332,6 +322,22 @@ const theme = createTheme(
             background: 'none',
           },
         },
+        outlinedPrimary: {
+          backgroundColor: premiaBlueNight,
+          color: primary,
+          border: 'none',
+          '&:hover': {
+            backgroundColor: 'grey',
+          },
+        },
+        outlinedSecondary: {
+          backgroundColor: black,
+            color: '#646464',
+            border: '1px solid #212121',
+            '&:hover': {
+              backgroundColor: 'grey',
+            },
+          }
       },
       MuiPaper: {
         root: {
