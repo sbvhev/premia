@@ -7,13 +7,19 @@ import { merge } from 'lodash';
 
 // colors
 const primary = '#5294FF';
-const secondary = '#646464';
-const black = '#343a40';
-const white = '#ffffff';
-const greyText = '#808191';
+const premiaBlueDay = 'rgba(82, 148, 255, 0.12)';
+const premiaBlueNight = 'rgba(82, 148, 255, 0.2)';
 
-const buyGreen = '#67CB44';
-const sellRed = '#EA3274';
+const greySecondaryDay = '#8D97A0';
+const greySecondaryNight = '#646464';
+
+const black = '#000000';
+const white = '#ffffff';
+
+const textPrimaryDay = '#29343E';
+const textSecondaryDay = '#8D97A0';
+const textPrimaryNight = '#DCDCDC';
+const textSecondaryNight = '#646464';
 
 const callGradientA = '#5294FF';
 const callGradientB = '#1EFF78';
@@ -21,12 +27,14 @@ const callGradientB = '#1EFF78';
 const putGradientA = '#EB4A97';
 const putGradientB = '#8C43F6';
 
-const background = '#141414';
-const dividerGrey = 'rgba(228, 228, 228, 0.1)';
+const hotBadgeGradientA = '#EB7A4A';
+const hotBadgeGradientB = '#F643CF';
 
-const warningLight = 'rgba(253, 200, 69, .3)';
-const warningMain = 'rgba(253, 200, 69, .5)';
-const warningDark = 'rgba(253, 200, 69, .7)';
+const backgroundDay = '#F2F4F5';
+const backgroundNight = '#000000';
+
+const dividerGreyDay = '#E9E9E9';
+const dividerGreyNight = '#212121';
 
 // breakpoints
 const xl = 1920;
@@ -47,89 +55,113 @@ function createTheme(
 }
 
 const theme = createTheme(
-  {},
   {
     palette: {
-      type: 'dark',
       primary: {
         main: primary,
-        light: callGradientA,
-        dark: callGradientB,
+        light: premiaBlueDay,
       },
       secondary: {
-        main: secondary,
-        light: putGradientA,
-        dark: putGradientB,
-      },
-      grey: {
-        400: '#808191',
+        main: greySecondaryDay,
       },
       common: {
         black,
         white,
       },
       warning: {
-        light: warningLight,
-        main: warningMain,
-        dark: warningDark,
+        main: hotBadgeGradientA,
+        dark: hotBadgeGradientB,
       },
       text: {
-        primary: white,
-        secondary: greyText,
+        primary: textPrimaryDay,
+        secondary: textSecondaryDay,
       },
       background: {
-        default: background,
-        paper: background,
+        default: backgroundDay,
+        paper: white,
       },
       success: {
-        main: buyGreen,
+        main: callGradientA,
+        dark: callGradientB,
       },
       error: {
-        main: sellRed,
+        main: putGradientA,
+        dark: putGradientB,
       },
-      divider: dividerGrey,
+      divider: dividerGreyDay,
+    }
+  },
+  {
+    palette: {
+      type: 'dark',
+      primary: {
+        main: primary,
+        dark: premiaBlueNight,
+      },
+      secondary: {
+        main: greySecondaryNight,
+      },
+      common: {
+        black,
+        white,
+      },
+      warning: {
+        main: hotBadgeGradientA,
+        dark: hotBadgeGradientB,
+      },
+      text: {
+        primary: textPrimaryNight,
+        secondary: textSecondaryNight,
+      },
+      background: {
+        default: backgroundNight,
+        paper: backgroundNight,
+      },
+      success: {
+        main: callGradientA,
+        dark: callGradientB,
+      },
+      error: {
+        main: putGradientA,
+        dark: putGradientB,
+      },
+      divider: dividerGreyNight,
       // Used to shift a color's luminance by approximately
       // two indexes within its tonal palette.
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
     typography: {
-      htmlFontSize: 16,
-      fontFamily: 'Roboto Mono',
-      fontSize: 14,
+      
       h1: {
-        fontSize: '3.42rem',
+        
       },
       h2: {
-        fontSize: '2.5rem',
+
       },
       h3: {
-        fontSize: '1.4rem',
+
       },
       h4: {
-        fontFamily: 'Inter',
-        fontSize: '1.5rem',
+
       },
       h5: {
-        fontFamily: 'Inter',
-        fontSize: '1.25rem',
+        
       },
       h6: {
-        fontFamily: 'Inter',
-        fontSize: '1rem',
+        
       },
       subtitle1: {
-        fontSize: '1.71rem',
+        
       },
       subtitle2: {
-        fontSize: '1.25rem',
+        
       },
       body1: {
-        fontSize: '1rem',
+        
       },
       body2: {
-        fontFamily: 'Inter',
-        fontSize: '0.85rem',
+        
       },
     },
     spacing,
@@ -145,24 +177,21 @@ const theme = createTheme(
     overrides: {
       MuiInputBase: {
         root: {
-          paddingLeft: '1rem',
+          
         },
       },
       MuiInput: {
         underline: {
           '&::before': {
-            borderColor: dividerGrey,
+            borderColor: dividerGreyNight,
           },
         },
       },
       MuiInputLabel: {
         root: {
-          fontSize: '0.85rem',
-          padding: '0 4px 8px',
+          
         },
         shrink: {
-          color: primary,
-
           '&.MuiInputLabel-outlined.MuiInputLabel-shrink': {
             transform: 'translate(12px, 10px) scale(0.75)',
           },
@@ -175,10 +204,7 @@ const theme = createTheme(
       },
       MuiOutlinedInput: {
         root: {
-          border: `1px solid ${primary}`,
-          borderRadius: 8,
-          height: 48,
-          padding: 4,
+         
         },
         notchedOutline: {
           border: 'none',
@@ -189,11 +215,7 @@ const theme = createTheme(
       },
       MuiFilledInput: {
         root: {
-          paddingLeft: 0,
-          background: 'rgba(228, 228, 228, 0.1)',
-          height: 48,
-          borderRadius: '8px !important',
-          paddingTop: '0 !important',
+        
         },
         underline: {
           '&::after': {
@@ -207,117 +229,108 @@ const theme = createTheme(
           },
         },
         input: {
-          paddingLeft: '24px',
+          
         },
       },
       MuiSelect: {
         filled: {
-          border: '1px solid black',
-          backgroundColor: white,
-          color: black,
-          width: '100%',
-          padding: '20px 12px 4px',
-          marginLeft: 0,
 
           '&:focus': {
-            borderRadius: 8,
-            backgroundColor: white,
+           
           },
         },
         iconFilled: {
-          color: primary,
         },
         select: {
-          borderRadius: 8,
-          border: '1px solid transparent',
-          background: 'rgba(228, 228, 228, 0.1)',
-          marginLeft: '-1rem',
-          padding: 8,
 
           '&:focus': {
-            borderRadius: 8,
           },
         },
         icon: {
-          right: 9,
+
         },
         selectMenu: {
-          height: 32,
-          display: 'flex',
-          alignItems: 'center',
+          
         },
       },
       MuiButtonGroup: {
         root: {
-          borderRadius: 16,
         },
         contained: {
-          boxShadow: 'none',
         },
         groupedContainedHorizontal: {
           '&:not(:last-child)': {
-            borderRight: 'none',
           },
         },
         groupedHorizontal: {
           '&:not(:last-child) > div > div': {
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
+            
           },
           '&:not(:first-child) > div > div': {
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
+           
           },
         },
       },
       MuiTableCell: {
         root: {
-          padding: '8px',
         },
       },
       MuiFab: {
         extended: {
-          position: 'absolute',
-          right: 10,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          color: 'white',
+          
 
           '&.MuiFab-sizeSmall': {
-            height: 28,
-            padding: '0 0.75rem',
+            
           },
         },
         sizeSmall: {
-          padding: '0 1rem',
+          
         },
       },
       MuiButton: {
         root: {
-          fontWeight: 400,
-          borderRadius: 16,
+          fontWeight: 700,
+          borderRadius: 12,
           textTransform: 'none',
-          padding: '6px 1.25rem',
-        },
-        containedSecondary: {
-          backgroundColor: 'transparent',
-          borderColor: dividerGrey,
-
+          padding: '6px 2.25rem',
+          backgroundColor: primary,
+          color: white,
+          fontFamily: 'Arial',
+          margin: '4px',
           '&:hover': {
-            backgroundColor: primary,
+            backgroundColor: 'grey',
           },
         },
-        outlined: {
-          borderColor: white,
+        containedPrimary: {
+          backgroundColor: premiaBlueNight,
+          color: primary,
+          '&:hover': {
+            backgroundColor: 'grey',
+          },
+        },
+        containedSecondary: {
+          background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
+          color: black,
+          '&:hover': {
+            backgroundColor: 'grey',
+            background: 'none',
+          },
+        },
+        outlinedPrimary: {
+          backgroundColor: black,
+          color: '#646464',
+          border: '1px solid #212121',
+          '&:hover': {
+            backgroundColor: 'grey',
+          },
         },
         outlinedSecondary: {
-          borderColor: dividerGrey,
-        },
-        label: {
-          color: white,
-        },
-        contained: {
-          border: '1px solid black',
+          background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
+          color: black,
+          '&:hover': {
+            backgroundColor: 'grey',
+            background: 'none',
+          },
         },
       },
       MuiPaper: {
@@ -327,8 +340,8 @@ const theme = createTheme(
           },
         },
         rounded: {
-          borderRadius: 16,
-          border: `1px solid ${dividerGrey}`,
+          borderRadius: 12,
+          border: `1px solid ${dividerGreyNight}`,
         },
       },
     },

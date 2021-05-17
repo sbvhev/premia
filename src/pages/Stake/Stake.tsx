@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Box, Grid, Typography, Button } from '@material-ui/core';
+import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useWeb3 } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
 
 import { PageWithSidebar } from 'layouts';
-import theme from '../../theme';
+import theme from 'theme';
 
 const useStyles = makeStyles(() => ({
   hoverable: {
@@ -79,28 +79,52 @@ const Stake: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <PageWithSidebar mobile={mobile}>
-      <Grid container direction='column'>
-        <Box
-          width={1}
-          className={mobile ? classes.topContainerMobile : classes.topContainer}
-        >
-          {wallet && wallet.provider && account ? (
-            <>
-              <Typography
-                component='h2'
-                variant='h4'
-                color='textPrimary'
-                style={{
-                  fontFamily: '"Inter"',
-                  fontWeight: 500,
-                  fontSize: 24,
-                  lineHeight: 1.5,
-                }}
-              >
-                Hi {shortenAddress(account ?? '')},
-              </Typography>
+    <ThemeProvider theme={theme}>
+      <PageWithSidebar mobile={mobile}>
+        <Grid container direction='column'>
+          <Box
+            width={1}
+            className={mobile ? classes.topContainerMobile : classes.topContainer}
+          >
+            {wallet && wallet.provider && account ? (
+              <>
+                <Typography
+                  component='h2'
+                  variant='h4'
+                  color='textPrimary'
+                  style={{
+                    fontFamily: '"Inter"',
+                    fontWeight: 500,
+                    fontSize: 24,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Hi {shortenAddress(account ?? '')},
+                </Typography>
 
+                <Typography
+                  component='h2'
+                  variant='h3'
+                  color='textPrimary'
+                  style={
+                    !mobile
+                      ? {
+                          fontFamily: '"Teko"',
+                          fontWeight: 600,
+                          fontSize: 48,
+                          marginBottom: 32,
+                        }
+                      : {
+                          fontFamily: '"Teko"',
+                          fontWeight: 600,
+                          fontSize: 48,
+                        }
+                  }
+                >
+                  Welcome to Stake
+                </Typography>
+              </>
+            ) : (
               <Typography
                 component='h2'
                 variant='h3'
@@ -116,40 +140,18 @@ const Stake: React.FC = () => {
                     : {
                         fontFamily: '"Teko"',
                         fontWeight: 600,
-                        fontSize: 48,
+                        fontSize: 40,
+                        marginBottom: 8,
                       }
                 }
               >
-                Welcome to Stake
+                Stake page
               </Typography>
-            </>
-          ) : (
-            <Typography
-              component='h2'
-              variant='h3'
-              color='textPrimary'
-              style={
-                !mobile
-                  ? {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 48,
-                      marginBottom: 32,
-                    }
-                  : {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 40,
-                      marginBottom: 8,
-                    }
-              }
-            >
-              Stake page
-            </Typography>
-          )}
-        </Box>
-      </Grid>
-    </PageWithSidebar>
+            )}
+          </Box>
+        </Grid>
+      </PageWithSidebar>
+    </ThemeProvider>
   );
 };
 
