@@ -6,14 +6,20 @@ import {
 import { merge } from 'lodash';
 
 // colors
-const primary = '#66A6FF';
-const secondary = '#A44CD6';
+const primary = '#5294FF';
+const secondary = '#646464';
 const black = '#343a40';
 const white = '#ffffff';
 const greyText = '#808191';
 
 const buyGreen = '#67CB44';
 const sellRed = '#EA3274';
+
+const callGradientA = '#5294FF';
+const callGradientB = '#1EFF78';
+
+const putGradientA = '#EB4A97';
+const putGradientB = '#8C43F6';
 
 const background = '#141414';
 const dividerGrey = 'rgba(228, 228, 228, 0.1)';
@@ -47,9 +53,13 @@ const theme = createTheme(
       type: 'dark',
       primary: {
         main: primary,
+        light: callGradientA,
+        dark: callGradientB,
       },
       secondary: {
         main: secondary,
+        light: putGradientA,
+        dark: putGradientB,
       },
       grey: {
         400: '#808191',
