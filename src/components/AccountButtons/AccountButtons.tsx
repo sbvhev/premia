@@ -52,6 +52,13 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: 12
   },
 
+  connect: {
+    padding: '1rem',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+    cursor: 'pointer'
+  },
+
   address: {
     color: palette.text.primary,
     fontSize: 10,
@@ -122,16 +129,16 @@ const AccountButtons: React.FC = () => {
       </Hidden>
 
       <Hidden smDown>
-        <Grid item container xs={12}>
-          <Button color='primary' className={classes.button}>
-            Get
-            <img src={LogoIcon} alt='Logo Icon' />
-          </Button>
-          <Button color='secondary' className={classes.button}>
-            Swap
-            <img src={SwapIcon} alt='Swap Icon' />
-          </Button>
-          {wallet && wallet.provider && account ? (
+        {wallet && wallet.provider && account ? (
+          <Grid item container xs={12}>
+            <Button color='primary' className={classes.button}>
+              Get
+              <img src={LogoIcon} alt='Logo Icon' />
+            </Button>
+            <Button color='secondary' className={classes.button}>
+              Swap
+              <img src={SwapIcon} alt='Swap Icon' />
+            </Button>
             <Box clone boxShadow={3}>
               <Link to='/account' className={classes.noDecoration}>
                 <Grid container direction='row' alignItems='center' className={classes.account}>
@@ -157,23 +164,18 @@ const AccountButtons: React.FC = () => {
                 </Grid>
               </Link>
             </Box>
+          </Grid>
           ) : (
-            <Box clone boxShadow={3}>
-              <Button
-                className={classes.account}
-                onClick={() => setConfirmTermsModalOpen(true)}
-              >
-                <Grid container direction='row' alignItems='center'>
-                  <Lock className={classes.walletIcon} />
+          <Box boxShadow={3} onClick={() => setConfirmTermsModalOpen(true)} className={classes.connect}>
+            <Grid container direction='row' alignItems='center'>
+              <Lock className={classes.walletIcon} />
 
-                  <Typography className={classes.address}>
-                    Connect Wallet
-                  </Typography>
-                </Grid>
-              </Button>
-            </Box>
-          )}
-        </Grid>
+              <Typography className={classes.address}>
+                Connect Wallet
+              </Typography>
+            </Grid>
+          </Box>
+        )}
       </Hidden>
 
       <Grid item xs={1} />
