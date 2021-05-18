@@ -25,7 +25,7 @@ import UserUpdater from './state/user/updater';
 import store from './state';
 import theme from './theme';
 
-import { Dashboard, Stake } from './pages';
+import { Dashboard, Stake, ProVault } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -140,7 +140,7 @@ const Providers: React.FC = ({ children }) => {
 
   return (
     <ApolloProvider client={client}>
-       <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Suspense fallback={null}>
             <StateProvider store={store}>
@@ -155,7 +155,7 @@ const Providers: React.FC = ({ children }) => {
             </StateProvider>
           </Suspense>
         </BrowserRouter>
-       </ThemeProvider>
+      </ThemeProvider>
     </ApolloProvider>
   );
 };
@@ -170,6 +170,10 @@ const App: React.FC = () => {
 
         <Route exact path='/stake'>
           <Stake />
+        </Route>
+
+        <Route exact path='/provault'>
+          <ProVault />
         </Route>
 
         <Route path='*'>
