@@ -62,7 +62,6 @@ const theme = createTheme(
   {
     palette: {
       primary: {
-        dark: selectionNight,
         main: primary,
         light: premiaBlueDay,
       },
@@ -307,6 +306,16 @@ const theme = createTheme(
           '&:hover': {
             backgroundColor: 'grey',
           },
+        },
+        text: {
+          width: 90
+        },
+        textPrimary: {
+          color: white,
+        },
+        textSecondary: {
+          background: premiaBlueNight,
+          color: primary,
         },
         containedPrimary: {
           // backgroundColor: premiaBlueNight,
