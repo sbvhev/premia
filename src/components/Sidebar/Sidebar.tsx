@@ -8,9 +8,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import cx from 'classnames';
-
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import theme from 'theme';
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/MainLogo.svg';
+import MobileLogo from 'assets/svg/MobileLogo.svg';
 import DocumentationIcon from 'assets/svg/DocumentationIcon.svg';
 import CareerIcon from 'assets/svg/CareerIcon.svg';
 import PositionsIcon from 'assets/svg/PositionsIcon.svg';
@@ -80,6 +82,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
   },
 
+  mobileModeItem: {
+    padding: 12,
+    '& img': {
+      marginRight: 0
+    }
+  },
+
   activeMode: {
     background: theme.palette.primary.dark,
     '& img': {
@@ -93,13 +102,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Sidebar: React.FC = () => {
   const classes = useStyles();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box
       clone
       width={1}
-      px={{ sm: 1, md: 3 }}
-      py={{ md: 5 }}
+      px={{ sm: 0, md: 3 }}
+      pt={{ sm: 3, md: 5 }}
+      pb={{ sm: 1 }}
       position='relative'
       height='100vh'
       overflow='scroll'
@@ -108,8 +119,8 @@ const Sidebar: React.FC = () => {
       <Grid container direction='column' justify='space-between'>
         <Box>
           <Grid container component={Link} to='/'>
-            <Box pb={3}>
-              <img src={MainLogo} alt='Logo' style={{}} />
+            <Box pb={3} pl={1.5}>
+              <img src={mobile ? MobileLogo : MainLogo} alt='Logo' style={{}} />
             </Box>
           </Grid>
 
@@ -135,18 +146,24 @@ const Sidebar: React.FC = () => {
             </List>
           </Box>
 
-          <Box clone width={1} px={{ sm: 1, md: 2 }} mb={-4}>
+          <Box clone width={1} px={{ sm: 1, md: 2 }}>
             <Grid container justify='space-around'>
-              <Grid item xs={6}>
-                <Grid container justify='center' alignItems='center' className={classes.modeItem}>
+              <Grid item md={6}>
+                <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, mobile && classes.mobileModeItem)}>
                   <img src={DayIcon} alt='Day' />
-                  <Typography component='span'>Day</Typography>
+                  { 
+                    !mobile && 
+                      <Typography component='span'>Day</Typography>
+                  }
                 </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, classes.activeMode)}>
+              <Grid item md={6}>
+                <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, classes.activeMode, mobile && classes.mobileModeItem)}>
                   <img src={NightIcon} alt='Night' />
-                  <Typography component='span'>Night</Typography>
+                  {
+                    !mobile &&
+                      <Typography component='span'>Night</Typography>
+                  }
                 </Grid>
               </Grid>
             </Grid>

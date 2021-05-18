@@ -48,12 +48,12 @@ const Footer: React.FC = () => {
   return (
     <Box height={mobile ? 70 : 45} width={1} position='absolute' bottom={0} borderTop={1} borderColor={theme.palette.divider}>
       <Grid container justify='space-between' alignItems='center' className={classes.footer}>
-        <Grid item sm={6} container justify={mobile ? 'center' : 'flex-start'}>
+        <Grid item sm={4} container justify={mobile ? 'center' : 'flex-start'}>
           <img src={TwitterIcon} alt='Twitter' className={classes.footerIcon} />
           <img src={MediumIcon} alt='Medium' className={classes.footerIcon} />
           <img src={DiscordIcon} alt='Discord' className={classes.footerIcon} />
         </Grid>
-        <Grid item sm={6} container justify={mobile ? 'center' : 'flex-end'}>
+        <Grid item sm={8} container justify={mobile ? 'center' : 'flex-end'}>
           <Box className={classes.footerRightItem}>
             <img src={LockIcon} alt='TVL' />
             <Typography component='span'>
