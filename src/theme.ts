@@ -328,6 +328,7 @@ const theme = createTheme(
           border: 'none',
           '&:hover': {
             backgroundColor: 'grey',
+            border: 'none',
           },
         },
         outlinedSecondary: {
