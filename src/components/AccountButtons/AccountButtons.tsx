@@ -21,7 +21,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
 import theme from 'theme';
-import cx from 'classnames';
 import { BetaSoftwareModal, ConfirmTermsModal } from 'components';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
@@ -124,11 +123,11 @@ const AccountButtons: React.FC = () => {
 
       <Hidden smDown>
         <Grid item container xs={12}>
-          <Button variant='contained' color='primary' className={classes.button}>
+          <Button color='primary' className={classes.button}>
             Get
             <img src={LogoIcon} alt='Logo Icon' />
           </Button>
-          <Button variant='contained' className={cx(classes.button, classes.swapButton)}>
+          <Button color='secondary' className={classes.button}>
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
           </Button>

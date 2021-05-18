@@ -30,7 +30,6 @@ const putGradientB = '#8C43F6';
 const hotBadgeGradientA = '#EB7A4A';
 const hotBadgeGradientB = '#F643CF';
 
-const selectionNight = 'rgba(82, 148, 255, 0.2)';
 const backgroundDay = '#F2F4F5';
 const backgroundNight = '#000000';
 
@@ -59,7 +58,6 @@ const theme = createTheme(
   {
     palette: {
       primary: {
-        dark: selectionNight,
         main: primary,
         light: premiaBlueDay,
       },
@@ -304,6 +302,16 @@ const theme = createTheme(
           '&:hover': {
             backgroundColor: 'grey',
           },
+        },
+        text: {
+          width: 90
+        },
+        textPrimary: {
+          color: white,
+        },
+        textSecondary: {
+          background: premiaBlueNight,
+          color: primary,
         },
         containedPrimary: {
           // backgroundColor: premiaBlueNight,

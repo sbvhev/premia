@@ -3,7 +3,7 @@ import { Box, Container, Hidden, IconButton } from '@material-ui/core';
 import { Menu, MenuOpen } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { AccountButtons, Sidebar } from 'components';
+import { AccountButtons, Sidebar, Footer } from 'components';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.up('md')]: {
-      width: 'calc(100% - 260px)',
+      width: 'calc(100% - 249px)',
     },
   },
   pageMobile: {
@@ -117,6 +117,8 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
         <Box py={7} px={1} width={1} mx='auto' style={mobile ? { width: '100%', padding: '0 16px', marginBottom: '42px' } : {}}>
           <Container style={mobile ? { display: 'flex', justifyContent: 'center', padding: '0', width: '100%' } : {}}>{children}</Container>
         </Box>
+
+        <Footer />
       </Box>
     </Box>
   );
