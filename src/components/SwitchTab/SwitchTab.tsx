@@ -5,11 +5,11 @@ import { BottomNavigation } from '@material-ui/core';
 
 export interface SwitchProps {
   children: any;
-  dark?: boolean;
   value: number;
-  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
-  className?: string;
   showLabels: boolean;
+  dark?: boolean;
+  className?: string;
+  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
