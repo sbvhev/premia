@@ -289,7 +289,9 @@ const theme = createTheme(
       },
       MuiButton: {
         root: {
+          boxSizing: 'border-box',
           fontWeight: 700,
+          height: '45px',
           borderRadius: 12,
           textTransform: 'none',
           padding: '6px 2.25rem',
