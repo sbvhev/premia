@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles, useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { useWeb3 } from 'state/application/hooks';
-import { shortenAddress } from 'utils';
+// import { useWeb3 } from 'state/application/hooks';
+// import { shortenAddress } from 'utils';
 
 import { PageWithSidebar } from 'layouts';
 
@@ -13,9 +14,7 @@ import { StakePremiaCard, LockPremiaCard } from './components';
 import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
 import PremiaRed from 'assets/svg/PremiaLogoSmallRed.svg';
 
-import theme from 'theme';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
   topContainer: {
   },
   topContainerMobile: {
@@ -41,132 +40,82 @@ const useStyles = makeStyles(() => ({
     width: '190px',
     height: '55px',
     alignItems: 'center',
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
     padding: '0 7px',
   },
   title: {
     fontWeight: 700,
-    size: '28px',
+    fontSize: '28px',
+    lineHeight: '27.5px',
   },
   text: {
     fontWeight: 500,
-    size: '14px',
+    fontSize: '14px',
+    lineHeight: '24px',
   },
   bigNumber: {
     fontWeight: 700,
-    size: '18px',
+    fontSize: '18px',
+    lineHeight: '18px',
   },
   premiaBox1: {
     width: '40px',
+    minWidth: '40px',
     height: '40px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: palette.primary.dark,
     borderRadius: '7px',
+    marginRight: '7px', 
     // boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
   },
   premiaBox2: {
     width: '40px',
+    minWidth: '40px',
     height: '40px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: `linear-gradient(266.96deg, ${theme.palette.warning.main} 29.5%, ${theme.palette.warning.dark} 117.72%);`,
-    // opacity: '0.2',
+    background: `linear-gradient(266.96deg, ${palette.warning.main} 29.5%, ${palette.warning.dark} 117.72%);`,
+    opacity: '0.2',
     borderRadius: '7px',
+    marginRight: '7px', 
     zIndex: 1,
     // boxShadow: '0px 0px 4px rgba(236, 120, 81, 0.25)',
   },
   boxCover: {
+    position: 'relative',
+    top: 0,
+    left: 0,
     width: '40px',
     height: '40px',
     display: 'flex',
-    background: 'white',
+    // background: 'rgba( 255, 255, 255, 0.00 )',
+    background: 'green',
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: '0.2',
-    zIndex: 2,
+    borderRadius: '7px',
+    zIndex: 20,
+  },
+  redPremiaIcon: {
+    position: 'relative',
+    top: 2,
+    left: -42,
+    zIndex: 100,
+    opacity: 1,
   }
 }));
 
 const Stake: React.FC = () => {
-  const { account, wallet } = useWeb3();
   const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  // const theme = useTheme();
+  // const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <PageWithSidebar mobile={mobile}>
-      <Grid container direction='column'>
-        <Box
-          width={1}
-          className={mobile ? classes.topContainerMobile : classes.topContainer}
-        >
-          {wallet && wallet.provider && account ? (
-            <>
-              <Typography
-                component='h2'
-                variant='h4'
-                color='textPrimary'
-                style={{
-                  fontFamily: '"Inter"',
-                  fontWeight: 500,
-                  fontSize: 24,
-                  lineHeight: 1.5,
-                }}
-              >
-                Hi {shortenAddress(account ?? '')},
-              </Typography>
-
-              <Typography
-                component='h2'
-                variant='h3'
-                color='textPrimary'
-                style={
-                  !mobile
-                    ? {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                        marginBottom: 32,
-                      }
-                    : {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                      }
-                }
-              >
-                Welcome to Stake
-              </Typography>
-            </>
-          ) : (
-            <Typography
-              component='h2'
-              variant='h3'
-              color='textPrimary'
-              style={
-                !mobile
-                  ? {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 48,
-                      marginBottom: 32,
-                    }
-                  : {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 40,
-                      marginBottom: 8,
-                    }
-              }
-            >
-              Stake page
-            </Typography>
-          )}
-        </Box>
+    <PageWithSidebar>
+      <Grid container direction='column' style={{ marginTop: '100px' }}>
         <Box display="flex" width={1} justifyContent="space-between" marginBottom="50px">
           <Box className={classes.col}>
             <Typography
@@ -184,12 +133,13 @@ const Stake: React.FC = () => {
               Refine your interaction rewards, stake your Premia for fee sharing, or lock for reduced fees
             </Typography>
           </Box>
-          <Box className={classes.horizontalBox} style={{ width: '394px' }}>
+          <Box className={classes.horizontalBox} style={{ minWidth: '390px', width: '390px' }}>
             <Box className={classes.borderedBox}>
               <Box className={classes.premiaBox1}>
                 <img
                   src={PremiaBlue}
                   alt="Premia"
+                  style={{ marginTop: '3px' }}
                 />
               </Box>
               <Box className={classes.col}>
@@ -211,14 +161,13 @@ const Stake: React.FC = () => {
             </Box>
             <Box className={classes.borderedBox}>
               <Box className={classes.premiaBox2}>
-                <Box className={classes.boxCover}>
+              </Box>
                   <img
                     src={PremiaRed}
                     alt="xPremia"
-                    style={{ zIndex: 10 }}
+                    className={classes.redPremiaIcon}
+                    // style={{ zIndex: 30, marginTop: '3px' }}
                   />
-                </Box>
-              </Box>
               <Box className={classes.col}>
                 <Typography
                   component='p'

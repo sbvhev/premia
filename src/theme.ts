@@ -95,7 +95,9 @@ const theme = createTheme(
       MuiButton: {
         root: {
           boxSizing: 'border-box',
+          fontSize: '14px',
           fontWeight: 700,
+          lineHeight: '18px',
           height: '40px',
           borderRadius: 12,
           textTransform: 'none',
@@ -110,9 +112,16 @@ const theme = createTheme(
         },
         sizeSmall: {
           height: '35px',
+          borderRadius: '10px',
+          fontSize: '14px',
+          fontWeight: 700,
+          lineHeight: '18px',
         },
         sizeLarge: {
-          height: '46px',
+          height: '45px',
+          fontSize: '16px',
+          fontWeight: 700,
+          lineHeight: '18px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -202,39 +211,39 @@ const theme = createTheme(
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
-    typography: {
+    // typography: {
       
-      h1: {
-        
-      },
-      h2: {
+    //   h1: {
+    //     fontSize: '28px',
+    //   },
+    //   h2: {
 
-      },
-      h3: {
+    //   },
+    //   h3: {
 
-      },
-      h4: {
+    //   },
+    //   h4: {
 
-      },
-      h5: {
+    //   },
+    //   h5: {
         
-      },
-      h6: {
+    //   },
+    //   h6: {
         
-      },
-      subtitle1: {
+    //   },
+    //   subtitle1: {
         
-      },
-      subtitle2: {
+    //   },
+    //   subtitle2: {
         
-      },
-      body1: {
+    //   },
+    //   body1: {
         
-      },
-      body2: {
+    //   },
+    //   body2: {
         
-      },
-    },
+    //   },
+    // },
     spacing,
     breakpoints: {
       values: {
@@ -376,14 +385,19 @@ const theme = createTheme(
           },
         },
         sizeSmall: {
+          borderRadius: '10px',
           height: '35px',
+          fontSize: '14px',
+          fontWeight: 700,
+          lineHeight: '18px',
         },
         sizeLarge: {
-          height: '46px',
+          height: '45px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: black,
+          boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
           '&:hover': {
             background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
           },
@@ -396,6 +410,8 @@ const theme = createTheme(
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
+          fontWeight: 500,
+          boxShadow: '0px 0px 25px rgba(246, 67, 207, 0.4)',
           '&:hover': {
             background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
@@ -411,7 +427,7 @@ const theme = createTheme(
         },
         outlinedSecondary: {
           backgroundColor: black,
-            color: dividerGreyNight,
+            color: greySecondaryNight,
             border: `1px solid ${dividerGreyNight}`,
             '&:hover': {
               color: textPrimaryNight,

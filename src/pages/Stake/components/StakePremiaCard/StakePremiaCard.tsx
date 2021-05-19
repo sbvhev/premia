@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 // import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import {
   Box,
@@ -20,11 +20,9 @@ import {
 import StakePremiaIcon from 'assets/images/stakePremia-icon.png';
 import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
 
-import theme from 'theme';
-
-const useStyles = makeStyles(({ breakpoints }: Theme) => ({
+const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '620px',
+    height: '610px',
     width: '384px',
     display: 'flex', 
     flexDirection: 'column',
@@ -37,39 +35,46 @@ const useStyles = makeStyles(({ breakpoints }: Theme) => ({
     justifyContent: 'flex-start',
     width: '384px',
     height: '545px',
-    border: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.default,
+    border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.default,
     borderRadius: '12px',
   },
   lockImg: {
     position: 'relative',
-    top: 82,
-    left: 143,
-    width: '99px',
+    top: 75,
+    left: 153,
+    width: '84px',
+    height: '130px',
     zIndex: 10,
   },
   titleBox: {
     marginTop: '98px',
     display: 'flex',
+    justifyContent: 'space-between',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
   },
   title: {
     fontWeight: 700,
-    size: '18px',
+    fontSize: '18px',
+    lineHeight: '18px',
   },
   secondaryTitle: {
     fontWeight: 700,
-    size: '16px',
+    fontSize: '16px',
+    lineHeight: '18px',
+    margin: '7px 0 9px',
   },
   subTitle: {
     fontWeight: 400,
-    size: '14px',
+    fontSize: '14px',
+    lineHeight: '18px',
   },
   smallInfoText: {
     fontWeight: 500,
-    size: '12px',
+    fontSize: '12px',
+    lineHeight: '24px',
   },
   col: {
     boxSizing: 'border-box',
@@ -87,31 +92,48 @@ const useStyles = makeStyles(({ breakpoints }: Theme) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: '12px',
-    height: '225px',
-    margin: '22px 0 4px',
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    justifyContent: 'flex-end',
+    padding: '0 16px 12px',
+    height: '230px',
+    margin: '22px 0 0',
+    borderBottom: `1px solid ${palette.divider}`,
   },
   borderedBox: {
     boxSizing: 'border-box',
+    height: '46px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
-    padding: '0 13px',
+    padding: '3px',
+    '&:hover': {
+      backgroundColor: palette.primary.dark,
+    }
+  },
+  inputAmount: {
+    backgroundColor: palette.background.default,
+    boxShadow: 'none',
+    border: 'none',
+    marginLeft: '8px',
+    color: palette.text.primary,
+    '&:hover': {
+      backgroundColor: palette.primary.dark,
+    }
   },
   elementHeader: {
     fontWeight: 500,
-    size: '14px',
+    fontSize: '14px',
+    lineHeight: '24px',
   },
   buttonLeft: {
     width: '48%',
+    marginRight: '4px',
   },
   buttonRight: {
     width: '52%',
+    marginLeft: '4px',
   },
   botSection: {
     boxSizing: 'border-box',
@@ -119,7 +141,7 @@ const useStyles = makeStyles(({ breakpoints }: Theme) => ({
     flexDirection: 'column',
     padding: '12px',
     height: '158px',
-    marginTop: '18px',
+    // marginTop: '18px',
   },
   progressBarAndTime: {
     display: 'flex',
@@ -190,7 +212,7 @@ const StakePremiaCard: React.FC = () => {
           </Typography>
         </Box>
         <Box className={classes.topSection}>
-          <Box className={classes.col} style={{ margin: '0 5px' }}>
+          <Box className={classes.col} style={{ margin: '0 8px 2px', justifyContent: 'flex-start', width: 'calc(100% - 16px)' }}>
             {/* <Box className={classes.horizontalBox}>
               <Typography
                 component='p'
@@ -218,8 +240,8 @@ const StakePremiaCard: React.FC = () => {
               </Box> */}
           </Box>
 
-          <Box className={classes.col} style={{ margin: '0 5px' }}>
-            <Box className={classes.horizontalBox} style={{ margin: '0 5px' }}>
+          <Box className={classes.col}>
+            <Box className={classes.horizontalBox} style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}>
               <Typography
                 component='p'
                 color='textPrimary'
@@ -238,23 +260,29 @@ const StakePremiaCard: React.FC = () => {
               </Typography>
             </Box>
               <Box className={classes.borderedBox}>
+              <Box display="flex" alignItems="center">
                 <img
                   src={greyLogo}
                   alt='Select Amount'
-                  // className={classes.lockImg}
+                  style={{ marginLeft: '10px' }}
                 />
-                <input value={'100'} onChange={() => {}} />
-                <Button color="primary" variant="outlined">
+                <input
+                  value={'100'}
+                  onChange={() => {}}
+                  className={classes.inputAmount}
+                />
+              </Box>
+                <Button color="primary" variant="outlined" size="small" >
                   MAX
                 </Button>
               </Box>
           </Box>
 
-          <Box className={classes.horizontalBox}>
-            <Button color="primary" variant="contained" className={classes.buttonLeft}>
+          <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
+            <Button  size="large" color="primary" variant="contained" className={classes.buttonLeft}>
               Stake
             </Button>
-            <Button color="secondary" variant="outlined" className={classes.buttonRight}>
+            <Button color="secondary" variant="outlined" size="large" className={classes.buttonRight}>
               Unstake
             </Button>
           </Box>
