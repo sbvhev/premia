@@ -128,55 +128,53 @@ const AccountButtons: React.FC = () => {
         )}
       </Hidden>
 
-      <Hidden smDown>
-        {wallet && wallet.provider && account ? (
-          <Grid item container xs={12}>
-            <Button color='primary' className={classes.button}>
-              Get
-              <img src={LogoIcon} alt='Logo Icon' />
-            </Button>
-            <Button color='secondary' className={classes.button}>
-              Swap
-              <img src={SwapIcon} alt='Swap Icon' />
-            </Button>
-            <Box clone boxShadow={3}>
-              <Link to='/account' className={classes.noDecoration}>
-                <Grid container direction='row' alignItems='center' className={classes.account}>
-                  <Grid item container alignItems='center' xs={9}>
-                    <Avatar className={classes.avatar} />
-                    <Box>
-                      <Typography className={classes.address}>
-                        {shortenAddress(account ?? '')}
-                      </Typography>
-                      <Typography className={classes.tier}>Tier 1</Typography>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={3}>
-                    <Box borderLeft={1} borderColor={theme.palette.divider} p={0.8}>
-                      <Tooltip title='Disconnect'>
-                        <IconButton onClick={disconnect}>
-                          <ExitToApp color='action' />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </Grid>
+      {wallet && wallet.provider && account ? (
+        <Grid item container xs={12}>
+          <Button color='primary' className={classes.button}>
+            Get
+            <img src={LogoIcon} alt='Logo Icon' />
+          </Button>
+          <Button color='secondary' className={classes.button}>
+            Swap
+            <img src={SwapIcon} alt='Swap Icon' />
+          </Button>
+          <Box clone boxShadow={3}>
+            <Link to='/account' className={classes.noDecoration}>
+              <Grid container direction='row' alignItems='center' className={classes.account}>
+                <Grid item container alignItems='center' xs={9}>
+                  <Avatar className={classes.avatar} />
+                  <Box>
+                    <Typography className={classes.address}>
+                      {shortenAddress(account ?? '')}
+                    </Typography>
+                    <Typography className={classes.tier}>Tier 1</Typography>
+                  </Box>
                 </Grid>
-              </Link>
-            </Box>
-          </Grid>
-          ) : (
-          <Box boxShadow={3} onClick={() => setConfirmTermsModalOpen(true)} className={classes.connect}>
-            <Grid container direction='row' alignItems='center'>
-              <Lock className={classes.walletIcon} />
 
-              <Typography className={classes.address}>
-                Connect Wallet
-              </Typography>
-            </Grid>
+                <Grid item xs={3}>
+                  <Box borderLeft={1} borderColor={theme.palette.divider} p={0.8}>
+                    <Tooltip title='Disconnect'>
+                      <IconButton onClick={disconnect}>
+                        <ExitToApp color='action' />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Link>
           </Box>
-        )}
-      </Hidden>
+        </Grid>
+        ) : (
+        <Box boxShadow={3} onClick={() => setConfirmTermsModalOpen(true)} className={classes.connect}>
+          <Grid container direction='row' alignItems='center'>
+            <Lock className={classes.walletIcon} />
+
+            <Typography className={classes.address}>
+              Connect Wallet
+            </Typography>
+          </Grid>
+        </Box>
+      )}
 
       <Grid item xs={1} />
     </Grid>
