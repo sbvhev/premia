@@ -9,6 +9,7 @@ import { merge } from 'lodash';
 const primary = '#5294FF';
 const premiaBlueDay = 'rgba(82, 148, 255, 0.12)';
 const premiaBlueNight = 'rgba(82, 148, 255, 0.2)';
+const primaryOnHover = '#80B5FF';
 
 const greySecondaryDay = '#8D97A0';
 const greySecondaryNight = '#646464';
@@ -89,6 +90,76 @@ const theme = createTheme(
         dark: putGradientB,
       },
       divider: dividerGreyDay,
+    },
+    overrides: {
+      MuiButton: {
+        root: {
+          boxSizing: 'border-box',
+          fontWeight: 700,
+          height: '40px',
+          borderRadius: 12,
+          textTransform: 'none',
+          padding: '6px 2.25rem',
+          backgroundColor: primary,
+          color: white,
+          fontFamily: 'Arial',
+          margin: '2px',
+          '&:hover': {
+            backgroundColor: primaryOnHover,
+          },
+        },
+        sizeSmall: {
+          height: '35px',
+        },
+        sizeLarge: {
+          height: '46px',
+        },
+        containedPrimary: {
+          background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
+          color: black,
+          '&:hover': {
+            background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
+          },
+        },
+        containedSecondary: {
+          background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
+          color: black,
+          '&:hover': {
+            backgroundColor: 'grey',
+            background: 'none',
+          },
+        },
+        outlinedPrimary: {
+          backgroundColor: premiaBlueDay,
+          color: primary,
+          border: 'none',
+          '&:hover': {
+            backgroundColor: 'grey',
+            border: 'none',
+          },
+        },
+        outlinedSecondary: {
+          backgroundColor: white,
+            color: dividerGreyDay,
+            border: `1px solid ${dividerGreyDay}`,
+            '&:hover': {
+              backgroundColor: white,
+              color: textPrimaryDay,
+              border: `1px solid ${primaryOnHover}`,
+            },
+          }
+      },
+      MuiPaper: {
+        root: {
+          '&:focus': {
+            outline: 'none',
+          },
+        },
+        rounded: {
+          borderRadius: 12,
+          border: `1px solid ${dividerGreyDay}`,
+        },
+      },
     }
   },
   {
@@ -291,37 +362,42 @@ const theme = createTheme(
         root: {
           boxSizing: 'border-box',
           fontWeight: 700,
-          height: '45px',
+          height: '40px',
           borderRadius: 12,
           textTransform: 'none',
           padding: '6px 2.25rem',
           backgroundColor: primary,
           color: white,
           fontFamily: 'Arial',
-          margin: '4px',
+          margin: '2px',
           '&:hover': {
-            backgroundColor: 'grey',
+            color: black,
+            backgroundColor: primaryOnHover,
           },
         },
+        sizeSmall: {
+          height: '35px',
+        },
+        sizeLarge: {
+          height: '46px',
+        },
         containedPrimary: {
-          // backgroundColor: premiaBlueNight,
-          // color: primary,
-          // '&:hover': {
-          //   backgroundColor: 'grey',
-          // },
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: black,
           '&:hover': {
-            backgroundColor: 'grey',
-            background: 'none',
+            background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
           },
+          // '&:active': {
+          //   background: 'none',
+          //   backgroundColoe: primary,
+          //   color: black,
+          // },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
           '&:hover': {
-            backgroundColor: 'grey',
-            background: 'none',
+            background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
         },
         outlinedPrimary: {
@@ -335,10 +411,12 @@ const theme = createTheme(
         },
         outlinedSecondary: {
           backgroundColor: black,
-            color: '#646464',
-            border: '1px solid #212121',
+            color: dividerGreyNight,
+            border: `1px solid ${dividerGreyNight}`,
             '&:hover': {
-              backgroundColor: 'grey',
+              color: textPrimaryNight,
+              backgroundColor: black,
+              border: `1px solid ${primary}`,
             },
           }
       },
