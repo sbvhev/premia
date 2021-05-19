@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 import MainLogo from 'assets/svg/MainLogo.svg';
 import { AccountButtons, Sidebar, Footer } from 'components';
+import Hamburger from 'hamburger-react'
+import theme from 'theme';
 
 const useStyles = makeStyles(({ palette }) => ({
   page: {
@@ -65,7 +66,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                     <IconButton
                       onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
                     >
-                      <Menu color='action' />
+                      <Hamburger color={theme.palette.text.secondary} toggled={!mobileSidebarHidden} toggle={setMobileSidebarHidden} />
                     </IconButton>
                   }
                 </Grid>
