@@ -1,45 +1,29 @@
 import React, { useState } from 'react';
-import { Box, Container, Hidden, IconButton } from '@material-ui/core';
-import { Menu, MenuOpen } from '@material-ui/icons';
+import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import cx from 'classnames';
+import MainLogo from 'assets/svg/MainLogo.svg';
+import { AccountButtons, Sidebar, Footer } from 'components';
+import Hamburger from 'hamburger-react'
+import theme from 'theme';
 
-import { AccountButtons, Sidebar } from 'components';
-
-const useStyles = makeStyles(({ palette, breakpoints }) => ({
+const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: '100%',
-    height: '100vh',
-    overflowY: 'scroll',
-    marginBottom: '4rem',
-
-    [breakpoints.down('xs')]: ({
-      mobileSidebarHidden,
-    }: {
-      mobileSidebarHidden: boolean;
-    }) => ({
-      width: mobileSidebarHidden ? '100%' : 'calc(100% - 80px)',
-    }),
-
-    [breakpoints.up('sm')]: {
-      width: 'calc(100% - 80px)',
-    },
-
-    [breakpoints.up('md')]: {
-      width: 'calc(100% - 260px)',
-    },
+    width: 'calc(100% - 260px)',
+    position: 'relative',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 260
   },
   pageMobile: {
-    backgroundColor: palette.background.default,
     width: '100vw',
-    height: '100vh',
-    overflowY: 'auto',
-    marginBottom: '36px',
-    
-    [breakpoints.up('sm')]: {
-      width: 'calc(100% - 80px)',
-    },
+    marginLeft: 0
   },
+  border: {
+    borderBottom: `1px solid ${palette.divider}`
+  }
 }));
 
 export interface PageWithSidebarProps {
@@ -51,73 +35,70 @@ export interface PageWithSidebarProps {
 const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   children,
   hideAccountButtons = false,
-  mobile,
+  mobile = false,
 }) => {
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
-  const classes = useStyles({ mobileSidebarHidden });
+  const classes = useStyles();
 
   return (
-    <Box bgcolor='background.default' overflow='scroll'>
-      <Hidden smDown>
-        <Box width={260} position='fixed'>
-          <Sidebar />
-        </Box>
-      </Hidden>
-
-      <Hidden mdUp>
-        <Box
-          width={80}
-          position='fixed'
-          zIndex={mobileSidebarHidden ? -1 : 100}
-        >
-          <Sidebar />
-        </Box>
-      </Hidden>
-
-      <Hidden smUp>
-        <Box
-          width={40}
-          position={mobileSidebarHidden ? 'fixed' : 'absolute'}
-          top='16px'
-          left='16px'
-          zIndex={100}
-        >
-          <IconButton
-            onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-          >
-            {mobileSidebarHidden ? <Menu color='action' /> : <MenuOpen />}
-          </IconButton>
-        </Box>
-      </Hidden>
-
-      <Box
-        id='test'
-        className={mobile ? classes.pageMobile : classes.page}
-        position='fixed'
-        top={0}
-        left={{
-          ...(mobileSidebarHidden ? { xs: 0, sm: 80 } : { xs: 80 }),
-          md: 260,
-        }}
-      >
-        {!hideAccountButtons && (
-          <Box
-            width={!mobile ? 334 : 350}
-            position='fixed'
-            top={0}
-            right={0}
-            mt={mobile ? 2 : 7}
-            zIndex={10}
-            marginRight={1}
-          >
-            <AccountButtons />
+    <Box bgcolor='background.default' overflow='auto'>
+      <Grid container>
+        { !mobile &&
+          <Box position='fixed' left={0} width={260}>
+            <Sidebar />
           </Box>
-        )}
+        }
+        <Box
+          id='test'
+          className={cx(classes.page, mobile && classes.pageMobile)}
+        >
+          {!hideAccountButtons && (
+            <Box p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
+              <Grid container justify='space-between' alignItems='center'>
+                {
+                  mobile &&
+                    <Grid item>
+                      <img src={MainLogo} alt='main logo' />
+                    </Grid>
+                }
+                <Grid item>
+                  {mobile && 
+                    <IconButton
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                    >
+                      <Hamburger color={theme.palette.text.secondary} toggled={!mobileSidebarHidden} toggle={setMobileSidebarHidden} />
+                    </IconButton>
+                  }
+                </Grid>
+                {
+                  !mobile &&
+                    <Grid item>
+                      <AccountButtons />
+                    </Grid>
+                }
+              </Grid>
+            </Box>
+          )}
 
-        <Box py={7} px={1} width={1} mx='auto' style={mobile ? { width: '100%', padding: '0 16px', marginBottom: '42px' } : {}}>
-          <Container style={mobile ? { display: 'flex', justifyContent: 'center', padding: '0', width: '100%' } : {}}>{children}</Container>
+          { mobile &&
+            <Box width={1} position='relative' style={{ marginBottom: 90 }}>
+              { !mobileSidebarHidden && <Box p={1}><AccountButtons mobile={true} /></Box> }
+              { !mobileSidebarHidden && <Divider />}
+              { !mobileSidebarHidden && <Box p={1}><Sidebar mobile={true} /></Box> }
+            </Box>
+          }
+
+          { mobileSidebarHidden && 
+            <Box py={1} px={3} width={1} mx='auto'>
+              <Container>{children}</Container>
+            </Box>
+          }
+
+          <Box position='absolute' width={1} bottom={0}>
+            <Footer />
+          </Box>
         </Box>
-      </Box>
+      </Grid>
     </Box>
   );
 };

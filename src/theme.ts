@@ -132,7 +132,9 @@ const theme = createTheme(
       tonalOffset: 0.2,
     },
     typography: {
-      
+      htmlFontSize: 16,
+      fontFamily: 'DM Sans',
+      fontSize: 14,
       h1: {
         
       },
@@ -300,6 +302,16 @@ const theme = createTheme(
           '&:hover': {
             backgroundColor: 'grey',
           },
+        },
+        text: {
+          width: 90
+        },
+        textPrimary: {
+          color: white,
+        },
+        textSecondary: {
+          background: premiaBlueNight,
+          color: primary,
         },
         containedPrimary: {
           // backgroundColor: premiaBlueNight,
