@@ -7,11 +7,9 @@ import {
   Button,
   Typography,
   Avatar,
-  Hidden,
   Tooltip,
 } from '@material-ui/core';
 import {
-  LockOpen,
   ExitToApp,
   SupervisorAccount,
   Lock,
@@ -131,18 +129,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         </Grid>
       )}
 
-      <Hidden mdUp>
-        {(!wallet || !wallet.provider || !account) && (
-          <Grid item xs={2}>
-            <Tooltip title='Connect Account'>
-              <IconButton onClick={() => setConfirmTermsModalOpen(true)}>
-                <LockOpen color='action' />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-        )}
-      </Hidden>
-
       {wallet && wallet.provider && account ? (
         <Grid item container xs={12}>
           <Button color='primary' className={cx(classes.button, mobile && classes.half)} style={{ order: mobile ? 1 : 0}}>
@@ -180,7 +166,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           </Box>
         </Grid>
         ) : (
-        <Box boxShadow={3} onClick={() => setConfirmTermsModalOpen(true)} className={classes.connect}>
+        <Box boxShadow={3} onClick={() => setConfirmTermsModalOpen(true)} className={cx(classes.connect, mobile && classes.fullWidth)}>
           <Grid container direction='row' alignItems='center'>
             <Lock className={classes.walletIcon} />
 
