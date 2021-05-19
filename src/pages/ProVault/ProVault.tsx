@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { BottomNavigationAction, useMediaQuery } from '@material-ui/core';
-import { SwitchTab } from 'components';
+import { SwitchTab, LineChart } from 'components';
 import RestoreIcon from '@material-ui/icons/Restore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
@@ -143,6 +143,38 @@ const Stake: React.FC = () => {
             <BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
             <BottomNavigationAction label='Nearby' icon={<LocationOnIcon />} />
           </SwitchTab>
+          <LineChart
+            color='#BF47C3'
+            dark={true}
+            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+            width={500}
+            height={200}
+          />
+          <LineChart
+            color='#14A887'
+            dark={true}
+            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+            width={500}
+            height={200}
+          />
+          <LineChart
+            color='#BF47C3'
+            dark={false}
+            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+            width={500}
+            height={200}
+          />
+          <LineChart
+            color='#14A887'
+            dark={false}
+            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+            width={500}
+            height={200}
+          />
         </Box>
       </Grid>
     </PageWithSidebar>
