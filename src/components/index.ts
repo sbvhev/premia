@@ -3,6 +3,7 @@ export { default as AccountRequired } from './AccountRequired';
 export { default as AntSwitch } from './AntSwitch';
 export { default as BetaSoftwareModal } from './BetaSoftwareModal';
 export { default as Breadcrumb } from './Breadcrumb';
+export { default as BorderLinearProgress } from './BorderLinearProgress';
 export { default as SwitchTab } from './SwitchTab';
 export { default as BorderLinearProgress } from './BorderLinearProgress';
 export { default as ConfirmTermsModal } from './ConfirmTermsModal';
