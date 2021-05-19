@@ -91,6 +91,11 @@ const theme = createTheme(
       },
       divider: dividerGreyDay,
     },
+    typography: {
+      htmlFontSize: 16,
+      fontFamily: 'DM Sans',
+      fontSize: 14,
+    },
     overrides: {
       MuiButton: {
         root: {
@@ -104,7 +109,6 @@ const theme = createTheme(
           padding: '6px 2.25rem',
           backgroundColor: primary,
           color: white,
-          fontFamily: 'Arial',
           margin: '2px',
           '&:hover': {
             backgroundColor: primaryOnHover,
@@ -211,39 +215,41 @@ const theme = createTheme(
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
-    // typography: {
-      
-    //   h1: {
-    //     fontSize: '28px',
-    //   },
-    //   h2: {
+    typography: {
+      htmlFontSize: 16,
+      fontFamily: 'DM Sans',
+      fontSize: 14,
+      h1: {
+        
+      },
+      h2: {
 
-    //   },
-    //   h3: {
+      },
+      h3: {
 
-    //   },
-    //   h4: {
+      },
+      h4: {
 
-    //   },
-    //   h5: {
+      },
+      h5: {
         
-    //   },
-    //   h6: {
+      },
+      h6: {
         
-    //   },
-    //   subtitle1: {
+      },
+      subtitle1: {
         
-    //   },
-    //   subtitle2: {
+      },
+      subtitle2: {
         
-    //   },
-    //   body1: {
+      },
+      body1: {
         
-    //   },
-    //   body2: {
+      },
+      body2: {
         
-    //   },
-    // },
+      },
+    },
     spacing,
     breakpoints: {
       values: {
@@ -377,7 +383,6 @@ const theme = createTheme(
           padding: '6px 2.25rem',
           backgroundColor: primary,
           color: white,
-          fontFamily: 'Arial',
           margin: '2px',
           '&:hover': {
             color: black,
@@ -393,6 +398,13 @@ const theme = createTheme(
         },
         sizeLarge: {
           height: '45px',
+        },
+        textPrimary: {
+          color: white,
+        },
+        textSecondary: {
+          background: premiaBlueNight,
+          color: primary,
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,

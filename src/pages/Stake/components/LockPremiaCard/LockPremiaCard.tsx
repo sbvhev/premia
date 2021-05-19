@@ -2,14 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Box,
-  // Paper,
-  // Toolbar,
   Typography,
-  // Grid,
-  // InputLabel,
-  // Slider,
   Button,
-  // ButtonGroup,
 } from '@material-ui/core';
 // import { useQuery } from 'react-apollo';
 // import { DateRangePicker } from 'react-dates';
@@ -28,6 +22,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundcolor: 'transparent',
+    margin: '12px',
   },
   borderedCard: {
     alignSelf: 'flex-end',

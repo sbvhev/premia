@@ -27,6 +27,15 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     width: '100%',
   },
+  colRelative: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    position: 'relative',
+    top: 0,
+    left: -30,
+  },
   horizontalBox: {
     boxSizing: 'border-box',
     display: 'flex',
@@ -36,7 +45,7 @@ const useStyles = makeStyles(({ palette }) => ({
   borderedBox: {
     boxSizing: 'border-box',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     width: '190px',
     height: '55px',
     alignItems: 'center',
@@ -85,20 +94,6 @@ const useStyles = makeStyles(({ palette }) => ({
     zIndex: 1,
     // boxShadow: '0px 0px 4px rgba(236, 120, 81, 0.25)',
   },
-  boxCover: {
-    position: 'relative',
-    top: 0,
-    left: 0,
-    width: '40px',
-    height: '40px',
-    display: 'flex',
-    // background: 'rgba( 255, 255, 255, 0.00 )',
-    background: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '7px',
-    zIndex: 20,
-  },
   redPremiaIcon: {
     position: 'relative',
     top: 2,
@@ -115,7 +110,7 @@ const Stake: React.FC = () => {
 
   return (
     <PageWithSidebar>
-      <Grid container direction='column' style={{ marginTop: '100px' }}>
+      <Grid container direction='column' style={{ marginTop: '22px' }}>
         <Box display="flex" width={1} justifyContent="space-between" marginBottom="50px">
           <Box className={classes.col}>
             <Typography
@@ -142,7 +137,7 @@ const Stake: React.FC = () => {
                   style={{ marginTop: '3px' }}
                 />
               </Box>
-              <Box className={classes.col}>
+              <Box className={classes.col} style={{ marginBottom: '4px' }}>
                 <Typography
                   component='p'
                   color='textSecondary'
@@ -159,16 +154,16 @@ const Stake: React.FC = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className={classes.borderedBox}>
+            <Box className={classes.borderedBox} justifyContent="flex-start">
               <Box className={classes.premiaBox2}>
               </Box>
-                  <img
-                    src={PremiaRed}
-                    alt="xPremia"
-                    className={classes.redPremiaIcon}
-                    // style={{ zIndex: 30, marginTop: '3px' }}
-                  />
-              <Box className={classes.col}>
+                <img
+                  src={PremiaRed}
+                  alt="xPremia"
+                  className={classes.redPremiaIcon}
+                  // style={{ zIndex: 30, marginTop: '3px' }}
+                />
+              <Box className={classes.colRelative} style={{ marginBottom: '4px' }}>
                 <Typography
                   component='p'
                   color='textSecondary'
@@ -181,13 +176,13 @@ const Stake: React.FC = () => {
                   color='textPrimary'
                   className={classes.bigNumber}
                 >
-                  {`8,912`}
+                  {`128,912`}
                 </Typography>
               </Box>
             </Box>
           </Box>
         </Box>
-        <Box display="flex" width={1} justifyContent="space-evenly">
+        <Box display="flex" width={1} justifyContent="center">
           <StakePremiaCard />
           <LockPremiaCard />
         </Box>

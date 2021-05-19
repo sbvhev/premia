@@ -2,60 +2,66 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
-  Paper,
-  List,
-  Divider,
   Grid,
-  Hidden,
-  IconButton,
-  Tooltip,
+  Typography
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import {
-  DesktopWindows,
-  Face,
-  Forum,
-  VerifiedUser,
-  Twitter,
-  GitHub,
-} from '@material-ui/icons';
-
+import cx from 'classnames';
 import SidebarItem from './SidebarItem';
-import PremiaLogo from 'assets/svg/PremiaLogo.svg';
-import PremiaText from 'assets/svg/PremiaText.svg';
-import MediumLogo from 'assets/svg/medium.svg';
+import MainLogo from 'assets/svg/MainLogo.svg';
+import DocumentationIcon from 'assets/svg/DocumentationIcon.svg';
+import CareerIcon from 'assets/svg/CareerIcon.svg';
+import PositionsIcon from 'assets/svg/PositionsIcon.svg';
+import VaultsIcon from 'assets/svg/VaultIcon.svg';
+import OptionsIcon from 'assets/svg/OptionsIcon.svg';
+import StakeIcon from 'assets/svg/StakeIcon.svg';
+import DayIcon from 'assets/svg/DayIcon.svg';
+import NightIcon from 'assets/svg/NightIcon.svg';
 
 const navigation = [
   {
-    title: 'Dashboard',
+    title: 'My positions',
     link: '/',
-    Icon: DesktopWindows,
+    Icon: PositionsIcon,
+  },
+  {
+    title: 'Vaults',
+    link: '/vaults',
+    Icon: VaultsIcon,
+  },
+  {
+    title: 'Options',
+    link: '/options',
+    Icon: OptionsIcon,
+  },
+  {
+    title: 'Stake',
+    link: '/stake',
+    Icon: StakeIcon,
   },
 ];
 
 const insights = [
   {
-    title: 'About',
+    title: 'Documentation',
     link: 'https://premia.medium.com',
-    Icon: Face,
+    Icon: DocumentationIcon,
     href: true,
   },
   {
-    title: 'Audits',
+    title: 'Careers',
     link: 'https://solidity.finance/audits/Premia/',
-    Icon: VerifiedUser,
+    Icon: CareerIcon,
     href: true,
-  },
-  {
-    title: 'Discord Chat',
-    link: 'https://discord.gg/6MhRmzmdHN',
-    Icon: Forum,
-    href: true,
-  },
+  }
 ];
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
+    background: theme.palette.common.black
+  },
+
+  rightBorder: {
     borderRight: `1px solid ${theme.palette.divider}`,
   },
 
@@ -65,57 +71,64 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: 10,
     color: theme.palette.text.secondary,
   },
+
+  modeItem: {
+    padding: '4px 8px',
+    borderRadius: 10,
+    cursor: 'pointer',
+    '& img': {
+      filter: 'grayscale(1)',
+      marginRight: 8
+    }
+  },
+
+  activeMode: {
+    background: theme.palette.primary.dark,
+    '& img': {
+      filter: 'none'
+    },
+    '& span': {
+      color: theme.palette.primary.main,
+    }
+  }
 }));
 
-const Sidebar: React.FC = () => {
+export interface SidebarProps {
+  mobile?: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
     <Box
       clone
       width={1}
-      px={{ sm: 1, md: 3 }}
-      py={{ md: 5 }}
+      px={{ sm: 0, md: 3 }}
+      pt={{ sm: 3, md: 5 }}
+      pb={{ sm: 1 }}
       position='relative'
-      height='100vh'
-      overflow='scroll'
-      className={classes.paper}
+      height={ mobile ? 'auto' : '100vh' }
+      className={cx(!mobile && classes.rightBorder, classes.paper)}
     >
-      <Paper square>
-        <Box clone width={1}>
-          <Grid container component={Link} justify='center' to='/'>
-            <Hidden smDown>
-              <Box pt={1} pr={2}>
-                <img src={PremiaLogo} alt='Logo' style={{}} />
+      <Grid container direction='column' justify='space-between'>
+        <Box>
+          {
+            !mobile && 
+            <Grid container component={Link} to='/'>
+              <Box pb={3} pl={1.5}>
+                <img src={MainLogo} alt='Logo' style={{}} />
               </Box>
-            </Hidden>
+            </Grid>
+          }
 
-            <Hidden mdUp>
-              <Box pt={12}>
-                <img src={PremiaLogo} alt='Logo' style={{}} />
-              </Box>
-            </Hidden>
-
-            <Hidden smDown>
-              <img src={PremiaText} alt='Premia' />
-            </Hidden>
-          </Grid>
+          {navigation.map(({ title, link, Icon }, i) => (
+            <SidebarItem key={i} title={title} link={link} Icon={Icon} />
+          ))}
         </Box>
 
-        <Box position='relative' mt={8} mb={2}>
-          <List>
-            {navigation.map(({ title, link, Icon }, i) => (
-              <SidebarItem key={i} title={title} link={link} Icon={Icon} />
-            ))}
-          </List>
-        </Box>
-
-        <Box mx={{ sm: 1, md: 4 }}>
-          <Divider />
-        </Box>
-
-        <Box mt={4} mb={2}>
-          <List>
+        <Box>
+          <Box mt={mobile ? 0 : 4} mb={2}>
             {insights.map(({ href, title, link, Icon }, i) => (
               <SidebarItem
                 key={i}
@@ -125,49 +138,26 @@ const Sidebar: React.FC = () => {
                 Icon={Icon}
               />
             ))}
-          </List>
+          </Box>
+
+          <Box>
+            <Grid container>
+              <Grid item xs={6}>
+                <Grid container justify='center' alignItems='center' className={classes.modeItem}>
+                  <img src={DayIcon} alt='Day' />
+                  <Typography component='span'>Day</Typography>
+                </Grid>
+              </Grid>
+              <Grid item xs={6}>
+                <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, classes.activeMode)}>
+                  <img src={NightIcon} alt='Night' />
+                  <Typography component='span'>Night</Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
-
-        <Box clone width={1} px={{ sm: 1, md: 2 }} mb={-4}>
-          <Grid container justify='space-around'>
-            <Tooltip title='Twitter'>
-              <a
-                href='https://twitter.com/PremiaFinance'
-                target='_blank'
-                rel='noreferrer'
-              >
-                <IconButton>
-                  <Twitter />
-                </IconButton>
-              </a>
-            </Tooltip>
-
-            <Tooltip title='Github'>
-              <a
-                href='https://github.com/PremiaFinance/'
-                target='_blank'
-                rel='noreferrer'
-              >
-                <IconButton>
-                  <GitHub />
-                </IconButton>
-              </a>
-            </Tooltip>
-
-            <Tooltip title='Medium'>
-              <a
-                href='https://premia.medium.com/'
-                target='_blank'
-                rel='noreferrer'
-              >
-                <IconButton>
-                  <img src={MediumLogo} alt='Medium' height='24' width='24' />
-                </IconButton>
-              </a>
-            </Tooltip>
-          </Grid>
-        </Box>
-      </Paper>
+      </Grid>
     </Box>
   );
 };
