@@ -353,6 +353,47 @@ const theme = createTheme(
           border: `1px solid ${dividerGreyNight}`,
         },
       },
+      MuiBottomNavigation: {
+        root: {
+          background: black,
+          border: `1px solid ${dividerGreyNight}`,
+          borderRadius: 12,
+          padding: 8,
+          width: 'fit-content',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)'
+        },
+      },
+      MuiBottomNavigationAction: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto',
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            background: 'rgba(82, 148, 255, 0.12)',
+            borderRadius: 10,
+          },
+        },
+        wrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        label: {
+          marginLeft: 10,
+          fontSize: 14,
+          lineHeight: '18px',
+
+          '&$selected': {
+            fontWeight: 'bold'
+          },
+        },
+      },
     },
   },
 );
