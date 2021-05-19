@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Container, IconButton, Grid } from '@material-ui/core';
+import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
@@ -9,17 +9,16 @@ import { AccountButtons, Sidebar, Footer } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    height: '100vh',
-    overflowY: 'scroll',
-    marginBottom: '4rem',
-    width: 'calc(100% - 249px)',
+    width: 'calc(100% - 260px)',
+    position: 'relative',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 260
   },
   pageMobile: {
-    backgroundColor: palette.background.default,
     width: '100vw',
-    height: '100vh',
-    overflowY: 'auto',
-    marginBottom: '36px'
+    marginLeft: 0
   },
   border: {
     borderBottom: `1px solid ${palette.divider}`
@@ -41,52 +40,64 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const classes = useStyles();
 
   return (
-    <Box bgcolor='background.default' overflow='scroll'>
-      <Box width={260} position='fixed' zIndex={100}>
-        { (!mobile || !mobileSidebarHidden) && <Sidebar /> }
-      </Box>
-
-      <Box
-        id='test'
-        className={mobile ? classes.pageMobile : classes.page}
-        position='fixed'
-        top={0}
-        left={mobile ? 0 : 260}
-      >
-        {!hideAccountButtons && (
-          <Box p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
-            <Grid container justify='space-between' alignItems='center'>
-              {
-                mobile &&
-                  <Grid item>
-                    <img src={MainLogo} alt='main logo' />
-                  </Grid>
-              }
-              <Grid item>
-                {mobile && 
-                  <IconButton
-                    onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-                  >
-                    <Menu color='action' />
-                  </IconButton>
+    <Box bgcolor='background.default' overflow='auto'>
+      <Grid container>
+        { !mobile &&
+          <Box position='fixed' left={0} width={260}>
+            <Sidebar />
+          </Box>
+        }
+        <Box
+          id='test'
+          className={cx(classes.page, mobile && classes.pageMobile)}
+        >
+          {!hideAccountButtons && (
+            <Box p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
+              <Grid container justify='space-between' alignItems='center'>
+                {
+                  mobile &&
+                    <Grid item>
+                      <img src={MainLogo} alt='main logo' />
+                    </Grid>
+                }
+                <Grid item>
+                  {mobile && 
+                    <IconButton
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                    >
+                      <Menu color='action' />
+                    </IconButton>
+                  }
+                </Grid>
+                {
+                  !mobile &&
+                    <Grid item>
+                      <AccountButtons />
+                    </Grid>
                 }
               </Grid>
-              {
-                !mobile &&
-                  <Grid item>
-                    <AccountButtons />
-                  </Grid>
-              }
-            </Grid>
+            </Box>
+          )}
+
+          { mobile &&
+            <Box width={1} position='relative' style={{ marginBottom: 90 }} zIndex={100}>
+              { !mobileSidebarHidden && <Box p={1}><AccountButtons mobile={true} /></Box> }
+              { !mobileSidebarHidden && <Divider />}
+              { !mobileSidebarHidden && <Box p={1}><Sidebar mobile={true} /></Box> }
+            </Box>
+          }
+
+          { mobileSidebarHidden && 
+            <Box py={1} px={3} width={1} mx='auto'>
+              <Container style={mobile ? { display: 'flex', justifyContent: 'center', padding: '0', width: '100%' } : {}}>{children}</Container>
+            </Box>
+          }
+
+          <Box position='absolute' width={1} bottom={0}>
+            <Footer />
           </Box>
-        )}
-
-        <Box py={1} px={3} width={1} mx='auto'>
-          <Container style={mobile ? { display: 'flex', justifyContent: 'center', padding: '0', width: '100%' } : {}}>{children}</Container>
         </Box>
-
-        <Footer />
-      </Box>
+      </Grid>
     </Box>
   );
 };
