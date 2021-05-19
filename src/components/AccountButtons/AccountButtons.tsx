@@ -17,6 +17,7 @@ import {
   Lock,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
@@ -80,12 +81,26 @@ const useStyles = makeStyles(({ palette }) => ({
     }
   },
 
+  half: {
+    marginRight: 4,
+    width: 'calc(50% - 8px)'
+  },
+
+  fullWidth: {
+    marginLeft: 4,
+    width: 'calc(100% - 8px)',
+  },
+
   swapButton: {
     backgroundColor: palette.primary.dark
   }
 }));
 
-const AccountButtons: React.FC = () => {
+interface AccountButtonsProps {
+  mobile?: boolean
+}
+
+const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
@@ -130,16 +145,16 @@ const AccountButtons: React.FC = () => {
 
       {wallet && wallet.provider && account ? (
         <Grid item container xs={12}>
-          <Button color='primary' className={classes.button}>
+          <Button color='primary' className={cx(classes.button, mobile && classes.half)} style={{ order: mobile ? 1 : 0}}>
             Get
             <img src={LogoIcon} alt='Logo Icon' />
           </Button>
-          <Button color='secondary' className={classes.button}>
+          <Button color='secondary' className={cx(classes.button, mobile && classes.half)} style={{ order: mobile ? 1 : 0}}>
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
           </Button>
-          <Box clone boxShadow={3}>
-            <Link to='/account' className={classes.noDecoration}>
+          <Box clone boxShadow={3} mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
+            <Link to='/account' className={cx(classes.noDecoration, mobile && classes.fullWidth)}>
               <Grid container direction='row' alignItems='center' className={classes.account}>
                 <Grid item container alignItems='center' xs={9}>
                   <Avatar className={classes.avatar} />

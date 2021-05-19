@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
-  List,
   Grid,
   Typography
 } from '@material-ui/core';
@@ -59,8 +58,11 @@ const insights = [
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
-    borderRight: `1px solid ${theme.palette.divider}`,
     background: theme.palette.common.black
+  },
+
+  rightBorder: {
+    borderRight: `1px solid ${theme.palette.divider}`,
   },
 
   subtitle: {
@@ -91,7 +93,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const Sidebar: React.FC = () => {
+export interface SidebarProps {
+  mobile?: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
@@ -102,48 +108,47 @@ const Sidebar: React.FC = () => {
       pt={{ sm: 3, md: 5 }}
       pb={{ sm: 1 }}
       position='relative'
-      height='100vh'
-      className={classes.paper}
+      height={ mobile ? 'auto' : '100vh' }
+      className={cx(!mobile && classes.rightBorder, classes.paper)}
     >
       <Grid container direction='column' justify='space-between'>
         <Box>
-          <Grid container component={Link} to='/'>
-            <Box pb={3} pl={1.5}>
-              <img src={MainLogo} alt='Logo' style={{}} />
-            </Box>
-          </Grid>
+          {
+            !mobile && 
+            <Grid container component={Link} to='/'>
+              <Box pb={3} pl={1.5}>
+                <img src={MainLogo} alt='Logo' style={{}} />
+              </Box>
+            </Grid>
+          }
 
-          <List>
-            {navigation.map(({ title, link, Icon }, i) => (
-              <SidebarItem key={i} title={title} link={link} Icon={Icon} />
-            ))}
-          </List>
+          {navigation.map(({ title, link, Icon }, i) => (
+            <SidebarItem key={i} title={title} link={link} Icon={Icon} />
+          ))}
         </Box>
 
         <Box>
-          <Box mt={4} mb={2}>
-            <List>
-              {insights.map(({ href, title, link, Icon }, i) => (
-                <SidebarItem
-                  key={i}
-                  href={href}
-                  title={title}
-                  link={link}
-                  Icon={Icon}
-                />
-              ))}
-            </List>
+          <Box mt={mobile ? 0 : 4} mb={2}>
+            {insights.map(({ href, title, link, Icon }, i) => (
+              <SidebarItem
+                key={i}
+                href={href}
+                title={title}
+                link={link}
+                Icon={Icon}
+              />
+            ))}
           </Box>
 
-          <Box clone width={1} px={{ sm: 1, md: 2 }}>
-            <Grid container justify='space-around'>
-              <Grid item md={6}>
+          <Box>
+            <Grid container>
+              <Grid item xs={6}>
                 <Grid container justify='center' alignItems='center' className={classes.modeItem}>
                   <img src={DayIcon} alt='Day' />
                   <Typography component='span'>Day</Typography>
                 </Grid>
               </Grid>
-              <Grid item md={6}>
+              <Grid item xs={6}>
                 <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, classes.activeMode)}>
                   <img src={NightIcon} alt='Night' />
                   <Typography component='span'>Night</Typography>
