@@ -4,8 +4,6 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Tooltip,
-  Hidden,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cn from 'classnames';
@@ -14,7 +12,7 @@ const useStyles = makeStyles(({ palette }) => ({
   item: {
     border: '1px solid transparent',
     backgroundColor: ({ active }: any) =>
-      active ? palette.primary.main : 'transparent',
+    active ? palette.primary.light : 'transparent',
     borderRadius: 12,
     padding: '12px 16px',
     margin: '2px 0',
@@ -40,17 +38,16 @@ const useStyles = makeStyles(({ palette }) => ({
 
   icon: {
     minWidth: 32,
-    color: ({ active }: any) =>
-      active ? palette.text.primary : palette.text.secondary,
+    filter: ({ active }: any) => active ? 'none' : 'grayscale(1)',
   },
 
   title: {
     whiteSpace: 'nowrap',
-    color: ({ active }: any) =>
-      active ? palette.text.primary : palette.text.secondary,
+    color: ({ active }: any) => active ? palette.primary.main : palette.text.secondary,
 
     '&> span': {
-      fontSize: 12,
+      fontSize: 14,
+      fontWeight: ({ active }: any) => active && 700,
     },
   },
 }));
@@ -58,7 +55,7 @@ const useStyles = makeStyles(({ palette }) => ({
 export interface SidebarItemProps {
   title: string;
   link: string;
-  Icon: React.JSXElementConstructor<any>;
+  Icon: any;
   href?: boolean;
   disabled?: boolean;
 }
@@ -91,34 +88,19 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             activeClassName: 'active',
           })}
     >
-      <Hidden smDown>
-        <ListItemIcon
-          className={classes.icon}
-          style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
-        >
-          <Icon fontSize='small' />
-        </ListItemIcon>
-      </Hidden>
+      <ListItemIcon
+        className={classes.icon}
+        style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
+      >
+        <img src={Icon} alt='Sidebar Icon' />
+      </ListItemIcon>
 
-      <Hidden mdUp>
-        <Tooltip title={title}>
-          <ListItemIcon
-            className={classes.icon}
-            style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
-          >
-            <Icon fontSize='small' />
-          </ListItemIcon>
-        </Tooltip>
-      </Hidden>
-
-      <Hidden smDown>
-        <ListItemText
-          style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
-          className={classes.title}
-        >
-          {title}
-        </ListItemText>
-      </Hidden>
+      <ListItemText
+        style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
+        className={classes.title}
+      >
+        {title}
+      </ListItemText>
     </ListItem>
   );
 };

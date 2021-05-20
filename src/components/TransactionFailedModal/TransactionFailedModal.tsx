@@ -1,10 +1,9 @@
 import React from 'react';
 import { Typography, Modal, Box, Grid, Button } from '@material-ui/core';
 import { Warning } from '@material-ui/icons';
+import { useTheme } from '@material-ui/core/styles';
 
 import { useCurrentTx, useTxStateMsg } from 'state/transactions/hooks';
-
-import theme from 'theme';
 
 import { ModalContainer } from 'components';
 
@@ -17,6 +16,7 @@ const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
   open,
   onClose,
 }) => {
+  const theme = useTheme();
   const { txLink } = useCurrentTx();
   const { txStateMsg } = useTxStateMsg();
   // const { txOption } = useTxOption();

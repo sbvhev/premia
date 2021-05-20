@@ -30,8 +30,7 @@ const useStyles = makeStyles(() => ({
     transform: 'translate(-30%, -65%)',
   },
 
-  topContainer: {
-  },
+  topContainer: {},
 
   title: {
     whiteSpace: 'nowrap',
@@ -68,7 +67,7 @@ const Stake: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <PageWithSidebar mobile={mobile}>
+    <PageWithSidebar>
       <Grid container direction='column'>
         <Box
           width={1}
