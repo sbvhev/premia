@@ -16,8 +16,8 @@ const CustomTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
   return (
     <Tabs orientation={ mobile ? 'vertical' : 'horizontal' } value={value} onChange={onChange}>
       {
-        items.map(val => (
-          <Tab icon={
+        items.map((val, index) => (
+          <Tab key={index} icon={
             <>
               <img src={val.image} alt={val.label} />
               {

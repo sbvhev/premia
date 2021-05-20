@@ -353,6 +353,10 @@ const theme = createTheme(
           background: premiaBlueNight,
           color: primary,
         },
+        contained: {
+          backgroundColor: 'transparent',
+          color: greySecondaryNight
+        },
         containedPrimary: {
           // backgroundColor: premiaBlueNight,
           // color: primary,

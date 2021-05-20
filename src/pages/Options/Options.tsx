@@ -9,6 +9,7 @@ import UniIcon from 'assets/svg/UniIcon.svg';
 import LinkIcon from 'assets/svg/LinkIcon.svg';
 import YFIIcon from 'assets/svg/YFIIcon.svg';
 import EthIcon from 'assets/svg/EthIcon.svg';
+import OptionsFilter from './OptionsFilter';
 import { useWeb3 } from 'state/application/hooks';
 
 import { PageWithSidebar } from 'layouts';
@@ -100,9 +101,9 @@ const Options: React.FC = () => {
       >
         Options
       </Typography>
-      <Box border={1} mt={2} borderRadius={12} borderColor={theme.palette.divider}>
+      <Box border={1} mt={2} mb={4} borderRadius={12} borderColor={theme.palette.divider}>
         <Grid container alignItems='center' spacing={2}>
-          <Grid item container={mobile} justify='center' sm={12} md={9}>
+          <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
             <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
           </Grid>
           <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
@@ -112,6 +113,13 @@ const Options: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
+      <Grid container>
+        <Grid item container sm={8}>
+          <Grid item sm={6}>
+            <OptionsFilter />
+          </Grid>
+        </Grid>
+      </Grid>
     </PageWithSidebar>
   );
 };
