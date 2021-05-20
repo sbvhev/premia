@@ -4,8 +4,8 @@ import { createAction } from '@reduxjs/toolkit';
 // allows any updates to be applied to store data loaded from localStorage
 export const updateVersion = createAction<void>('global/updateVersion');
 
-export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>(
-  'user/updateMatchesDarkMode',
+export const updateMediaDarkMode = createAction<{ mediaDarkMode: boolean }>(
+  'user/updateMediaDarkMode',
 );
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>(
   'user/updateUserDarkMode',

@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Box,
-  Grid,
-  Typography
-} from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import cx from 'classnames';
+
+import { useDarkModeManager } from 'state/user/hooks';
+
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/MainLogo.svg';
 import DocumentationIcon from 'assets/svg/DocumentationIcon.svg';
@@ -53,12 +52,12 @@ const insights = [
     link: 'https://solidity.finance/audits/Premia/',
     Icon: CareerIcon,
     href: true,
-  }
+  },
 ];
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
-    background: theme.palette.common.black
+    background: theme.palette.common.black,
   },
 
   rightBorder: {
@@ -78,19 +77,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     '& img': {
       filter: 'grayscale(1)',
-      marginRight: 8
-    }
+      marginRight: 8,
+    },
   },
 
-  activeMode: {
+  inactiveMode: {
     background: theme.palette.primary.dark,
     '& img': {
-      filter: 'none'
+      filter: 'none',
     },
     '& span': {
       color: theme.palette.primary.main,
-    }
-  }
+    },
+  },
 }));
 
 export interface SidebarProps {
@@ -98,6 +97,7 @@ export interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
+  const [darkMode, setDarkMode] = useDarkModeManager();
   const classes = useStyles();
 
   return (
@@ -108,19 +108,18 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
       pt={{ sm: 3, md: 5 }}
       pb={{ sm: 1 }}
       position='relative'
-      height={ mobile ? 'auto' : '100vh' }
+      height={mobile ? 'auto' : '100vh'}
       className={cx(!mobile && classes.rightBorder, classes.paper)}
     >
       <Grid container direction='column' justify='space-between'>
         <Box>
-          {
-            !mobile && 
+          {!mobile && (
             <Grid container component={Link} to='/'>
               <Box pb={3} pl={1.5}>
                 <img src={MainLogo} alt='Logo' style={{}} />
               </Box>
             </Grid>
-          }
+          )}
 
           {navigation.map(({ title, link, Icon }, i) => (
             <SidebarItem key={i} title={title} link={link} Icon={Icon} />
@@ -143,13 +142,29 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           <Box>
             <Grid container>
               <Grid item xs={6}>
-                <Grid container justify='center' alignItems='center' className={classes.modeItem}>
+                <Grid
+                  container
+                  justify='center'
+                  alignItems='center'
+                  className={cx(classes.modeItem, {
+                    [classes.inactiveMode]: !darkMode,
+                  })}
+                  onClick={() => setDarkMode(false)}
+                >
                   <img src={DayIcon} alt='Day' />
                   <Typography component='span'>Day</Typography>
                 </Grid>
               </Grid>
               <Grid item xs={6}>
-                <Grid container justify='center' alignItems='center' className={cx(classes.modeItem, classes.activeMode)}>
+                <Grid
+                  container
+                  justify='center'
+                  alignItems='center'
+                  className={cx(classes.modeItem, {
+                    [classes.inactiveMode]: darkMode,
+                  })}
+                  onClick={() => setDarkMode(true)}
+                >
                   <img src={NightIcon} alt='Night' />
                   <Typography component='span'>Night</Typography>
                 </Grid>
