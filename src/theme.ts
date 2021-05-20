@@ -60,7 +60,7 @@ export const lightTheme = responsiveFontSizes(
     palette: {
       primary: {
         main: primary,
-        light: premiaBlueDay,
+        dark: premiaBlueDay,
       },
       secondary: {
         main: greySecondaryDay,
@@ -129,14 +129,14 @@ export const lightTheme = responsiveFontSizes(
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
-          color: black,
+          color: white,
           '&:hover': {
             background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
           },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
-          color: black,
+          color: white,
           '&:hover': {
             backgroundColor: 'grey',
             background: 'none',
@@ -153,11 +153,11 @@ export const lightTheme = responsiveFontSizes(
         },
         outlinedSecondary: {
           backgroundColor: white,
-            color: dividerGreyDay,
+            color: textSecondaryDay,
             border: `1px solid ${dividerGreyDay}`,
             '&:hover': {
               backgroundColor: white,
-              color: textPrimaryDay,
+              color: black,
               border: `1px solid ${primaryOnHover}`,
             },
           }
@@ -174,9 +174,7 @@ export const lightTheme = responsiveFontSizes(
         },
       },
     }
-  },
-  {
-  }),
+  })
 );
 
 export const darkTheme = responsiveFontSizes(
@@ -349,6 +347,7 @@ export const darkTheme = responsiveFontSizes(
         },
         sizeLarge: {
           height: '45px',
+        },
         text: {
           width: 90,
         },
@@ -449,8 +448,8 @@ export const darkTheme = responsiveFontSizes(
         },
       },
     },
-  }),
-);
+  }
+));
 
 const theme = { lightTheme, darkTheme };
 
