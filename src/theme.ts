@@ -9,6 +9,7 @@ import { merge } from 'lodash';
 const primary = '#5294FF';
 const premiaBlueDay = 'rgba(82, 148, 255, 0.12)';
 const premiaBlueNight = 'rgba(82, 148, 255, 0.2)';
+const primaryOnHover = '#80B5FF';
 
 const greySecondaryDay = '#8D97A0';
 const greySecondaryNight = '#646464';
@@ -59,7 +60,7 @@ export const lightTheme = responsiveFontSizes(
     palette: {
       primary: {
         main: primary,
-        light: premiaBlueDay,
+        dark: premiaBlueDay,
       },
       secondary: {
         main: greySecondaryDay,
@@ -90,7 +91,89 @@ export const lightTheme = responsiveFontSizes(
       },
       divider: dividerGreyDay,
     },
-  }),
+    typography: {
+      htmlFontSize: 16,
+      fontFamily: 'DM Sans',
+      fontSize: 14,
+    },
+    overrides: {
+      MuiButton: {
+        root: {
+          boxSizing: 'border-box',
+          fontSize: '14px',
+          fontWeight: 700,
+          lineHeight: '18px',
+          height: '40px',
+          borderRadius: 12,
+          textTransform: 'none',
+          padding: '6px 2.25rem',
+          backgroundColor: primary,
+          color: white,
+          margin: '2px',
+          '&:hover': {
+            backgroundColor: primaryOnHover,
+          },
+        },
+        sizeSmall: {
+          height: '35px',
+          borderRadius: '10px',
+          fontSize: '14px',
+          fontWeight: 700,
+          lineHeight: '18px',
+        },
+        sizeLarge: {
+          height: '45px',
+          fontSize: '16px',
+          fontWeight: 700,
+          lineHeight: '18px',
+        },
+        containedPrimary: {
+          background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
+          color: white,
+          '&:hover': {
+            background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
+          },
+        },
+        containedSecondary: {
+          background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
+          color: white,
+          '&:hover': {
+            background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
+          },
+        },
+        outlinedPrimary: {
+          backgroundColor: premiaBlueDay,
+          color: primary,
+          border: 'none',
+          '&:hover': {
+            backgroundColor: 'grey',
+            border: 'none',
+          },
+        },
+        outlinedSecondary: {
+          backgroundColor: white,
+            color: textSecondaryDay,
+            border: `1px solid ${dividerGreyDay}`,
+            '&:hover': {
+              backgroundColor: white,
+              color: black,
+              border: `1px solid ${primaryOnHover}`,
+            },
+          }
+      },
+      MuiPaper: {
+        root: {
+          '&:focus': {
+            outline: 'none',
+          },
+        },
+        rounded: {
+          borderRadius: 12,
+          border: `1px solid ${dividerGreyDay}`,
+        },
+      },
+    }
+  })
 );
 
 export const darkTheme = responsiveFontSizes(
@@ -240,17 +323,29 @@ export const darkTheme = responsiveFontSizes(
       },
       MuiButton: {
         root: {
+          boxSizing: 'border-box',
           fontWeight: 700,
+          height: '40px',
           borderRadius: 12,
           textTransform: 'none',
           padding: '6px 2.25rem',
           backgroundColor: primary,
           color: white,
-          fontFamily: 'Arial',
-          margin: '4px',
+          margin: '2px',
           '&:hover': {
-            backgroundColor: 'grey',
+            color: black,
+            backgroundColor: primaryOnHover,
           },
+        },
+        sizeSmall: {
+          borderRadius: '10px',
+          height: '35px',
+          fontSize: '14px',
+          fontWeight: 700,
+          lineHeight: '18px',
+        },
+        sizeLarge: {
+          height: '45px',
         },
         text: {
           width: 90,
@@ -263,24 +358,20 @@ export const darkTheme = responsiveFontSizes(
           color: primary,
         },
         containedPrimary: {
-          // backgroundColor: premiaBlueNight,
-          // color: primary,
-          // '&:hover': {
-          //   backgroundColor: 'grey',
-          // },
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: black,
+          boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
           '&:hover': {
-            backgroundColor: 'grey',
-            background: 'none',
+            background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
           },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
+          fontWeight: 500,
+          boxShadow: '0px 0px 25px rgba(246, 67, 207, 0.4)',
           '&:hover': {
-            backgroundColor: 'grey',
-            background: 'none',
+            background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
         },
         outlinedPrimary: {
@@ -294,12 +385,14 @@ export const darkTheme = responsiveFontSizes(
         },
         outlinedSecondary: {
           backgroundColor: black,
-          color: '#646464',
-          border: '1px solid #212121',
-          '&:hover': {
-            backgroundColor: 'grey',
-          },
-        },
+            color: greySecondaryNight,
+            border: `1px solid ${dividerGreyNight}`,
+            '&:hover': {
+              color: textPrimaryNight,
+              backgroundColor: black,
+              border: `1px solid ${primary}`,
+            },
+          }
       },
       MuiPaper: {
         root: {
@@ -354,8 +447,8 @@ export const darkTheme = responsiveFontSizes(
         },
       },
     },
-  }),
-);
+  }
+));
 
 const theme = { lightTheme, darkTheme };
 

@@ -1,142 +1,183 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { useWeb3 } from 'state/application/hooks';
-import { shortenAddress } from 'utils';
-
 import { PageWithSidebar } from 'layouts';
 
-const useStyles = makeStyles(() => ({
-  hoverable: {
-    cursor: 'pointer',
-    '&:hover': {
-      opacity: 0.8,
-    },
+import { StakePremiaCard, LockPremiaCard } from './components';
+
+import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
+import PremiaRed from 'assets/svg/PremiaLogoSmallRed.svg';
+
+const useStyles = makeStyles(({ palette }) => ({
+  col: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
   },
-
-  floatCenter: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+  colRelative: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    position: 'relative',
+    top: 0,
+    left: -30,
   },
-
-  floatTopLeft: {
-    position: 'absolute',
-    top: '65%',
-    left: '30%',
-    transform: 'translate(-30%, -65%)',
+  horizontalBox: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
   },
-
-  topContainer: {},
-
+  borderedBox: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    height: '55px',
+    alignItems: 'center',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: '12px',
+    padding: '0 7px',
+  },
   title: {
-    whiteSpace: 'nowrap',
+    fontWeight: 700,
+    fontSize: '28px',
+    lineHeight: '27.5px',
   },
-
-  titleMobile: {
-    fontSize: '3.1vw',
+  text: {
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: '24px',
   },
-
-  smallerTitle: {
-    whiteSpace: 'nowrap',
-    fontSize: '1.5vw',
+  bigNumber: {
+    fontWeight: 700,
+    fontSize: '18px',
+    lineHeight: '18px',
   },
-
-  smallerTitleMobile: {
-    whiteSpace: 'nowrap',
-    fontSize: '2vw',
+  premiaBox1: {
+    width: '40px',
+    minWidth: '40px',
+    height: '40px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: palette.primary.dark,
+    borderRadius: '7px',
+    marginRight: '7px', 
   },
-
-  subtitle: {
-    fontWeight: 300,
+  premiaBox2: {
+    width: '40px',
+    minWidth: '40px',
+    height: '40px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: `linear-gradient(266.96deg, ${palette.warning.main} 29.5%, ${palette.warning.dark} 117.72%);`,
+    opacity: '0.2',
+    borderRadius: '7px',
+    marginRight: '7px', 
+    zIndex: 1,
   },
-
-  topContainerMobile: {
-    margin: '80px 0 0 12px',
-    width: 'calc(100% - 50px)',
-  },
+  redPremiaIcon: {
+    position: 'relative',
+    top: 2,
+    left: -42,
+    zIndex: 100,
+    opacity: 1,
+  }
 }));
 
 const Stake: React.FC = () => {
-  const { account, wallet } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <PageWithSidebar>
-      <Grid container direction='column'>
-        <Box
-          width={1}
-          className={mobile ? classes.topContainerMobile : classes.topContainer}
-        >
-          {wallet && wallet.provider && account ? (
-            <>
-              <Typography
-                component='h2'
-                variant='h4'
-                color='textPrimary'
-                style={{
-                  fontFamily: '"Inter"',
-                  fontWeight: 500,
-                  fontSize: 24,
-                  lineHeight: 1.5,
-                }}
-              >
-                Hi {shortenAddress(account ?? '')},
-              </Typography>
-
-              <Typography
-                component='h2'
-                variant='h3'
-                color='textPrimary'
-                style={
-                  !mobile
-                    ? {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                        marginBottom: 32,
-                      }
-                    : {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                      }
-                }
-              >
-                Welcome to Stake
-              </Typography>
-            </>
-          ) : (
+      <Box display="flex" flexDirection='column' style={{ marginTop: '8px', width: '100%' }}>
+        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="16px">
+          <Box className={classes.col}>
             <Typography
-              component='h2'
-              variant='h3'
+              component='h1'
               color='textPrimary'
-              style={
-                !mobile
-                  ? {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 48,
-                      marginBottom: 32,
-                    }
-                  : {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 40,
-                      marginBottom: 8,
-                    }
-              }
+              className={classes.title}
             >
-              Stake page
+              Choose how to stake your Premia
             </Typography>
-          )}
+            <Typography
+              component='p'
+              color='textSecondary'
+              className={classes.text}
+            >
+              Refine your interaction rewards, stake your Premia for fee sharing, or lock for reduced fees
+            </Typography>
+          </Box>
+          <Box className={classes.horizontalBox}  width={!mobile ? '390px' : '100%'}>
+            <Box className={classes.borderedBox} width={!mobile ? '190px' : '50%'}>
+              <Box className={classes.premiaBox1}>
+                <img
+                  src={PremiaBlue}
+                  alt="Premia"
+                  style={{ marginTop: '3px' }}
+                />
+              </Box>
+              <Box className={classes.col} style={{ marginBottom: '4px' }}>
+                <Typography
+                  component='p'
+                  color='textSecondary'
+                  className={classes.text}
+                >
+                  Premia
+                </Typography>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.bigNumber}
+                >
+                  {`124,098`}
+                </Typography>
+              </Box>
+            </Box>
+            <Box className={classes.borderedBox} justifyContent="flex-start" width={!mobile ? '190px' : '50%'}>
+              <Box className={classes.premiaBox2}>
+              </Box>
+                <img
+                  src={PremiaRed}
+                  alt="xPremia"
+                  className={classes.redPremiaIcon}
+                />
+              <Box className={classes.colRelative} style={{ marginBottom: '4px' }}>
+                <Typography
+                  component='p'
+                  color='textSecondary'
+                  className={classes.text}
+                >
+                  xPremia
+                </Typography>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.bigNumber}
+                >
+                  {`128,912`}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
         </Box>
-      </Grid>
+        <Box
+          display="flex"
+          flexDirection={!mobile ? 'row' : 'column'}
+          width={1}
+          style={!mobile ? { justifyContent: 'center' } : { alignItems: 'center' }}
+        >
+          <StakePremiaCard />
+          <LockPremiaCard />
+        </Box>
+      </Box>
     </PageWithSidebar>
   );
 };
