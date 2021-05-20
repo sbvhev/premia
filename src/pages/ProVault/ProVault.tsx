@@ -51,7 +51,7 @@ const Stake: React.FC = () => {
   const [value, setValue] = useState(0);
 
   return (
-    <PageWithSidebar mobile={mobile}>
+    <PageWithSidebar>
       <Grid container direction='column'>
         <Box
           width={1}

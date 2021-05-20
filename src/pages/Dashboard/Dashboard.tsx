@@ -68,9 +68,10 @@ const Dashboard: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <PageWithSidebar mobile={mobile}>
+    <PageWithSidebar>
       <Grid container direction='column'>
         <Box
+          height='1000vh'
           width={1}
           className={mobile ? classes.topContainerMobile : classes.topContainer}
         >

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: any) =>
   createStyles({
@@ -12,13 +12,13 @@ const useStyles = makeStyles((theme: any) =>
       userSelect: 'none',
 
       '& > *': {
-        userSelect: 'none'
+        userSelect: 'none',
       },
 
       '&:hover': {
-        cursor: 'pointer'
-      }
-    }
+        cursor: 'pointer',
+      },
+    },
   }),
 );
 

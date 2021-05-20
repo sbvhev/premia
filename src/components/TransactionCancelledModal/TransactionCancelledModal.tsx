@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Modal, Box, Grid, Button } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
+import { useTheme } from '@material-ui/core/styles';
 
-import theme from 'theme';
 import { useTxStateMsg } from 'state/transactions/hooks';
 
 import { ModalContainer } from 'components';
@@ -16,6 +16,7 @@ const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
   open,
   onClose,
 }) => {
+  const theme = useTheme();
   const { txStateMsg } = useTxStateMsg();
   // const { txOption } = useTxOption();
 

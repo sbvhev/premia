@@ -1,26 +1,24 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
-  updateMatchesDarkMode,
+  updateMediaDarkMode,
   updateUserDarkMode,
   updateVersion,
 } from './actions';
 
 const currentTimestamp = () => new Date().getTime();
 
+export const DARK_MODE_LOCALSTORAGE_KEY = 'user_dark_mode';
 export interface UserState {
-  // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number;
-
   userDarkMode: boolean | null; // the user's choice for dark mode or light mode
-  matchesDarkMode: boolean; // whether the dark mode media query matches
-
+  mediaDarkMode: boolean; // whether the dark mode media query matches
   timestamp: number;
 }
 
 export const initialState: UserState = {
   userDarkMode: null,
-  matchesDarkMode: false,
+  mediaDarkMode: false,
   timestamp: currentTimestamp(),
 };
 
@@ -30,11 +28,16 @@ export default createReducer(initialState, (builder) =>
       state.lastUpdateVersionTimestamp = currentTimestamp();
     })
     .addCase(updateUserDarkMode, (state, action) => {
+      localStorage.setItem(
+        DARK_MODE_LOCALSTORAGE_KEY,
+        action.payload.userDarkMode ? '1' : '0',
+      );
+
       state.userDarkMode = action.payload.userDarkMode;
       state.timestamp = currentTimestamp();
     })
-    .addCase(updateMatchesDarkMode, (state, action) => {
-      state.matchesDarkMode = action.payload.matchesDarkMode;
+    .addCase(updateMediaDarkMode, (state, action) => {
+      state.mediaDarkMode = action.payload.mediaDarkMode;
       state.timestamp = currentTimestamp();
     }),
 );
