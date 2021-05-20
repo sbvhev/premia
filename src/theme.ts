@@ -55,8 +55,8 @@ function createTheme(
   return createMuiTheme(merge(custom, options), ...args);
 }
 
-const theme = createTheme(
-  {
+export const lightTheme = responsiveFontSizes(
+  createTheme({
     palette: {
       primary: {
         main: primary,
@@ -176,6 +176,11 @@ const theme = createTheme(
     }
   },
   {
+  }),
+);
+
+export const darkTheme = responsiveFontSizes(
+  createTheme({
     palette: {
       type: 'dark',
       primary: {
@@ -219,36 +224,16 @@ const theme = createTheme(
       htmlFontSize: 16,
       fontFamily: 'DM Sans',
       fontSize: 14,
-      h1: {
-        
-      },
-      h2: {
-
-      },
-      h3: {
-
-      },
-      h4: {
-
-      },
-      h5: {
-        
-      },
-      h6: {
-        
-      },
-      subtitle1: {
-        
-      },
-      subtitle2: {
-        
-      },
-      body1: {
-        
-      },
-      body2: {
-        
-      },
+      h1: {},
+      h2: {},
+      h3: {},
+      h4: {},
+      h5: {},
+      h6: {},
+      subtitle1: {},
+      subtitle2: {},
+      body1: {},
+      body2: {},
     },
     spacing,
     breakpoints: {
@@ -262,9 +247,7 @@ const theme = createTheme(
     },
     overrides: {
       MuiInputBase: {
-        root: {
-          
-        },
+        root: {},
       },
       MuiInput: {
         underline: {
@@ -274,9 +257,7 @@ const theme = createTheme(
         },
       },
       MuiInputLabel: {
-        root: {
-          
-        },
+        root: {},
         shrink: {
           '&.MuiInputLabel-outlined.MuiInputLabel-shrink': {
             transform: 'translate(12px, 10px) scale(0.75)',
@@ -289,9 +270,7 @@ const theme = createTheme(
         },
       },
       MuiOutlinedInput: {
-        root: {
-         
-        },
+        root: {},
         notchedOutline: {
           border: 'none',
         },
@@ -300,9 +279,7 @@ const theme = createTheme(
         },
       },
       MuiFilledInput: {
-        root: {
-        
-        },
+        root: {},
         underline: {
           '&::after': {
             borderBottom: 'none',
@@ -314,64 +291,38 @@ const theme = createTheme(
             borderBottom: 'none',
           },
         },
-        input: {
-          
-        },
+        input: {},
       },
       MuiSelect: {
         filled: {
-
-          '&:focus': {
-           
-          },
+          '&:focus': {},
         },
-        iconFilled: {
-        },
+        iconFilled: {},
         select: {
-
-          '&:focus': {
-          },
+          '&:focus': {},
         },
-        icon: {
-
-        },
-        selectMenu: {
-          
-        },
+        icon: {},
+        selectMenu: {},
       },
       MuiButtonGroup: {
-        root: {
-        },
-        contained: {
-        },
+        root: {},
+        contained: {},
         groupedContainedHorizontal: {
-          '&:not(:last-child)': {
-          },
+          '&:not(:last-child)': {},
         },
         groupedHorizontal: {
-          '&:not(:last-child) > div > div': {
-            
-          },
-          '&:not(:first-child) > div > div': {
-           
-          },
+          '&:not(:last-child) > div > div': {},
+          '&:not(:first-child) > div > div': {},
         },
       },
       MuiTableCell: {
-        root: {
-        },
+        root: {},
       },
       MuiFab: {
         extended: {
-          
-
-          '&.MuiFab-sizeSmall': {
-            
-          },
+          '&.MuiFab-sizeSmall': {},
         },
-        sizeSmall: {
-          
-        },
+        sizeSmall: {},
       },
       MuiButton: {
         root: {
@@ -398,6 +349,8 @@ const theme = createTheme(
         },
         sizeLarge: {
           height: '45px',
+        text: {
+          width: 90,
         },
         textPrimary: {
           color: white,
@@ -461,7 +414,7 @@ const theme = createTheme(
           borderRadius: 12,
           padding: 8,
           width: 'fit-content',
-          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)'
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
         },
       },
       MuiBottomNavigationAction: {
@@ -491,12 +444,14 @@ const theme = createTheme(
           lineHeight: '18px',
 
           '&$selected': {
-            fontWeight: 'bold'
+            fontWeight: 'bold',
           },
         },
       },
     },
-  },
+  }),
 );
 
-export default responsiveFontSizes(theme);
+const theme = { lightTheme, darkTheme };
+
+export default theme;

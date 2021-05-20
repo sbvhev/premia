@@ -2,19 +2,28 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { AppDispatch } from 'state';
-import { updateMatchesDarkMode } from './actions';
+import { updateMediaDarkMode, updateUserDarkMode } from './actions';
+import { DARK_MODE_LOCALSTORAGE_KEY } from './reducer';
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
 
-  // keep dark mode in sync with the system
   useEffect(() => {
+    const userExistingDarkMode = Number(
+      localStorage.getItem(DARK_MODE_LOCALSTORAGE_KEY),
+    );
+
+    dispatch(
+      updateUserDarkMode({ userDarkMode: Boolean(userExistingDarkMode) }),
+    );
+
     const darkHandler = (match: MediaQueryListEvent) => {
-      dispatch(updateMatchesDarkMode({ matchesDarkMode: match.matches }));
+      dispatch(updateMediaDarkMode({ mediaDarkMode: match.matches }));
     };
 
     const match = window?.matchMedia('(prefers-color-scheme: dark)');
-    dispatch(updateMatchesDarkMode({ matchesDarkMode: match.matches }));
+
+    dispatch(updateMediaDarkMode({ mediaDarkMode: match.matches }));
 
     if (match?.addListener) {
       match?.addListener(darkHandler);
