@@ -172,6 +172,27 @@ export const lightTheme = responsiveFontSizes(
             },
           }
       },
+      MuiFilledInput: {
+        root: {
+          borderRadius: 10,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10
+        },
+        underline: {
+          '&::after': {
+            borderBottom: 'none',
+          },
+          '&::before': {
+            borderBottom: 'none',
+          },
+          '&:hover::before': {
+            borderBottom: 'none',
+          },
+        },
+        input: {
+          padding: 12,
+        },
+      },
       MuiPaper: {
         root: {
           '&:focus': {
@@ -182,6 +203,42 @@ export const lightTheme = responsiveFontSizes(
           borderRadius: 12,
           border: `1px solid ${dividerGreyDay}`,
         },
+      },
+      MuiTabs: {
+        scroller: {
+          padding: '0 10px',
+        },
+        indicator: {
+          background: whiteColor,
+          borderRadius: 1.25,
+          boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF'
+        },
+      },
+      MuiTab: {
+        labelIcon: {
+          minWidth: 98,
+          minHeight: 55,
+          paddingTop: 0,
+          padding: 0,
+          '&.Mui-selected': {
+            color: primary,
+          }
+        },
+        wrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          '& img:first-child': {
+            marginBottom: '0 !important',
+            marginRight: 6,
+            height: 24
+          },
+          '& img:nth-child(2)': {
+            position: 'absolute',
+            top: 8,
+            right: 0
+          }
+        }
       },
     }
   })
