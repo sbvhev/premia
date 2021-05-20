@@ -48,12 +48,9 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <Sidebar />
           </Box>
         }
-        <Box
-          id='test'
-          className={cx(classes.page, mobile && classes.pageMobile)}
-        >
+        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
-            <Box p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
+            <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} zIndex={10} bgcolor='background.default' p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
               <Grid container justify='space-between' alignItems='center'>
                 {
                   mobile &&
@@ -80,21 +77,21 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           )}
 
-          { mobile &&
-            <Box width={1} position='relative' style={{ marginBottom: 90 }}>
-              { !mobileSidebarHidden && <Box p={1}><AccountButtons mobile={true} /></Box> }
-              { !mobileSidebarHidden && <Divider />}
-              { !mobileSidebarHidden && <Box p={1}><Sidebar mobile={true} /></Box> }
+          { mobile && !mobileSidebarHidden &&
+            <Box width={1} mt={12} mb={10}>
+              <Box p={1}><AccountButtons mobile={true} /></Box>
+              <Divider />
+              <Box p={1}><Sidebar mobile={true} /></Box>
             </Box>
           }
 
           { mobileSidebarHidden && 
-            <Box py={1} px={3} width={1} mx='auto'>
+            <Box py={1} px={3} width={1} mx='auto' mt={12} mb={10}>
               <Container>{children}</Container>
             </Box>
           }
 
-          <Box position='absolute' width={1} bottom={0}>
+          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} bgcolor='background.default'>
             <Footer />
           </Box>
         </Box>

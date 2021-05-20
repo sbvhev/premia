@@ -16,6 +16,8 @@ const greySecondaryNight = '#646464';
 const black = '#000000';
 const white = '#ffffff';
 
+const whiteColor = '#F7FAFF';
+
 const textPrimaryDay = '#29343E';
 const textSecondaryDay = '#8D97A0';
 const textPrimaryNight = '#DCDCDC';
@@ -279,12 +281,25 @@ const theme = createTheme(
         root: {
         },
       },
+      MuiTabs: {
+        scroller: {
+          padding: '0 10px',
+        },
+        indicator: {
+          background: whiteColor,
+          borderRadius: 1.25,
+          boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF'
+        },
+      },
       MuiTab: {
         labelIcon: {
           minWidth: 98,
           minHeight: 55,
           paddingTop: 0,
           padding: 0,
+          '&.Mui-selected': {
+            color: primary,
+          }
         },
         wrapper: {
           display: 'flex',

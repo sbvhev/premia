@@ -58,8 +58,7 @@ const useStyles = makeStyles(() => ({
 
   subtitle: {
     fontWeight: 300,
-  },
-
+  }
 }));
 
 const Options: React.FC = () => {
@@ -67,6 +66,7 @@ const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const [ tokenIndex, setTokenIndex ] = useState(2);
   return (
     <PageWithSidebar mobile={mobile}>
@@ -78,9 +78,9 @@ const Options: React.FC = () => {
         Options
       </Typography>
       <Box border={1} mt={2} borderRadius={12} borderColor={theme.palette.divider}>
-        <Grid container alignItems='center'>
-          <Grid item md={9}>
-            <Tabs value={tokenIndex} onChange={(ev, index: number) => { setTokenIndex(index)}}>
+        <Grid container alignItems='center' spacing={2}>
+          <Grid item container={mobile} justify='center' sm={12} md={9}>
+            <Tabs orientation={ xs ? 'vertical' : 'horizontal' } value={tokenIndex} onChange={(ev, index: number) => { setTokenIndex(index)}}>
               <Tab icon={<img src={WBTCIcon} alt='WBTC' />} label='wBTC' />
               <Tab icon={<><img src={UniIcon} alt='Uni' /><img src={FireIcon} alt='Highlight' /></>} label='Uni' />
               <Tab icon={<img src={LinkIcon} alt='Link' />} label='Link' />
@@ -88,8 +88,8 @@ const Options: React.FC = () => {
               <Tab icon={<img src={EthIcon} alt='ETH' />} label='ETH' />
             </Tabs>
           </Grid>
-          <Grid item container justify='flex-end' md={3}>
-            <Box pr={2}>
+          <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
+            <Box p={1} mr={1}>
               <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
             </Box>
           </Grid>
