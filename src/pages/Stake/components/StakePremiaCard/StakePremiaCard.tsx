@@ -1,17 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-// import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import {
   Box,
   Typography,
   Button,
 } from '@material-ui/core';
-// import { useQuery } from 'react-apollo';
-// import { DateRangePicker } from 'react-dates';
-// import { RSV } from 'eth-permit/rpc';
-// import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
 
 import StakePremiaIcon from 'assets/images/stakePremia-icon.png';
+import StakePremiaMobile from 'assets/images/StakePremiaMobile.png';
 import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -24,6 +22,15 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundcolor: 'transparent',
     margin: '12px',
   },
+  wrapperMobile: {
+    height: '480px',
+    width: '335px',
+    display: 'flex', 
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    backgroundcolor: 'transparent',
+    margin: '12px 12px 50px',
+  },
   borderedCard: {
     alignSelf: 'flex-end',
     flexDirection: 'column',
@@ -34,7 +41,17 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.background.default,
     borderRadius: '12px',
   },
-  lockImg: {
+  borderedCardMobile: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '335px',
+    height: '480px',
+    border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.default,
+    borderRadius: '12px',
+  },
+  stakeImg: {
     position: 'relative',
     top: 75,
     left: 153,
@@ -44,6 +61,14 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   titleBox: {
     marginTop: '98px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  titleBoxMobile: {
+    marginTop: '12px',
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
@@ -93,6 +118,15 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
+  topSectionMobile: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    padding: '0 8px 12px',
+    margin: '22px 0 0',
+    borderBottom: `1px solid ${palette.divider}`,
+  },
   borderedBox: {
     boxSizing: 'border-box',
     height: '46px',
@@ -136,7 +170,12 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     padding: '12px',
     height: '158px',
-    // marginTop: '18px',
+  },
+  botSectionMobile: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '12px 8px',
   },
   progressBarAndTime: {
     display: 'flex',
@@ -148,7 +187,6 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '145px',
     height: '5px',
     background: 'rgb(100,100,100, 0.4)',
-    // opacity: '0.4',
     borderRadius: '5px',
     marginRight: '8px',
   },
@@ -159,40 +197,29 @@ const useStyles = makeStyles(({ palette }) => ({
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
   }
-
 }));
-
-// interface StakeState {
-//   action: 'stake' | 'unstake';
-//   lockupMonths: number;
-//   amount: string;
-//   // permit?: ERC2612PermitMessage & RSV;
-//   permitDeadline?: number;
-// }
 
 const StakePremiaCard: React.FC = () => {
   const classes = useStyles();
-  // const theme = useTheme();
-  // const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  // const [state, setState] = useState<StakeState>({
-  //   action: 'stake',
-  //   lockupMonths: 1,
-  //   amount: '0',
-  // });
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box className={classes.wrapper}>
-      <img
+    <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
+      {!mobile && <img
           src={StakePremiaIcon}
-          alt='Lock premia'
-          className={classes.lockImg}
-        />
-      <Box className={classes.borderedCard}>
-        <Box className={classes.titleBox}>
+          alt='Stake premia'
+          className={classes.stakeImg}
+        />}
+      <Box className={!mobile ? classes.borderedCard : classes.borderedCardMobile}>
+        <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
+          {mobile && <img
+            src={StakePremiaMobile}
+            alt='Stake premia'
+          />}
           <Typography
             component='h2'
             color='textPrimary'
-            // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
             className={classes.title}
           >
             Stake premia
@@ -200,39 +227,13 @@ const StakePremiaCard: React.FC = () => {
           <Typography
             component='p'
             color='textSecondary'
-            // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
             className={classes.subTitle}
           >
             Earn platform fees
           </Typography>
         </Box>
-        <Box className={classes.topSection}>
+        <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
           <Box className={classes.col} style={{ margin: '0 8px 2px', justifyContent: 'flex-start', width: 'calc(100% - 16px)' }}>
-            {/* <Box className={classes.horizontalBox}>
-              <Typography
-                component='p'
-                color='textPrimary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
-                className={classes.elementHeader}
-              >
-                Lock period
-              </Typography>
-            </Box>
-              <Box className={classes.borderedBox}>
-                <Typography
-                  component='p'
-                  color='textSecondary'
-                  // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
-                  className={classes.subTitle}
-                >
-                  Select period
-                </Typography>
-                <img
-                  src={calendarIcon}
-                  alt='Pick a date'
-                  // className={classes.lockImg}
-                />
-              </Box> */}
           </Box>
 
           <Box className={classes.col}>
@@ -240,7 +241,6 @@ const StakePremiaCard: React.FC = () => {
               <Typography
                 component='p'
                 color='textPrimary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.elementHeader}
               >
                 Stake quantity
@@ -248,7 +248,6 @@ const StakePremiaCard: React.FC = () => {
               <Typography
                 component='p'
                 color='textSecondary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.smallInfoText}
               >
                 {'Max size available: 124,098'}
@@ -284,13 +283,12 @@ const StakePremiaCard: React.FC = () => {
 
         </Box>
 
-        <Box className={classes.botSection}>
+        <Box className={!mobile ? classes.botSection : classes.botSectionMobile}>
 
           <Box className={classes.horizontalBox}>
             <Typography
               component='h3'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.secondaryTitle}
             >
               My stats
@@ -300,30 +298,22 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               xPremia Unlocked
             </Typography>
-            {/* <Box className={classes.progressBarAndTime}>
-              <Box className={classes.progressContainer}>
-                <Box className={classes.progressBar} style={{ width: '75%' }} />
-              </Box> */}
               <Typography
                 component='p'
                 color='textPrimary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.elementHeader}
               >
                 {`1000`}
               </Typography>
             </Box>
-          {/* </Box> */}
           <Box className={classes.horizontalBox}>
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               xPremia Locked
@@ -331,7 +321,6 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`100`}
@@ -341,7 +330,6 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               Total xPremia
@@ -349,7 +337,6 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`12`}
@@ -359,7 +346,6 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               Underlying Premia
@@ -367,7 +353,6 @@ const StakePremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`11`}

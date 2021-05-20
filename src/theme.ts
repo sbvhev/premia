@@ -413,11 +413,6 @@ const theme = createTheme(
           '&:hover': {
             background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
           },
-          // '&:active': {
-          //   background: 'none',
-          //   backgroundColoe: primary,
-          //   color: black,
-          // },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,

@@ -1,16 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import {
   Box,
   Typography,
   Button,
 } from '@material-ui/core';
-// import { useQuery } from 'react-apollo';
-// import { DateRangePicker } from 'react-dates';
-// import { RSV } from 'eth-permit/rpc';
-// import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
 
-import lockPremiaIcon from 'assets/images/lockPremia-icon.png';
+import LockPremiaIcon from 'assets/images/lockPremia-icon.png';
+import LockPremiaMobile from 'assets/images/LockPremiaMobile.png';
 import calendarIcon from 'assets/svg/CalendarIcon.svg';
 import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
 
@@ -24,12 +23,31 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundcolor: 'transparent',
     margin: '12px',
   },
+  wrapperMobile: {
+    height: '566px',
+    width: '335px',
+    display: 'flex', 
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    backgroundcolor: 'transparent',
+    margin: '12px 12px 50px',
+  },
   borderedCard: {
     alignSelf: 'flex-end',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
     height: '545px',
+    border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.default,
+    borderRadius: '12px',
+  },
+  borderedCardMobile: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '335px',
+    height: '566px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.default,
     borderRadius: '12px',
@@ -45,6 +63,14 @@ const useStyles = makeStyles(({ palette }) => ({
   titleBox: {
     marginTop: '98px',
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  titleBoxMobile: {
+    marginTop: '12px',
+    display: 'flex',
+    justifyContent: 'space-between',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
@@ -86,10 +112,18 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    // justifyContent: 'space-between',
     justifyContent: 'flex-end',
     padding: '0 16px 12px',
     height: '230px',
+    margin: '22px 0 0',
+    borderBottom: `1px solid ${palette.divider}`,
+  },
+  topSectionMobile: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    padding: '0 8px 12px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -136,7 +170,12 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     padding: '12px',
     height: '158px',
-    // marginTop: '18px',
+  },
+  botSectionMobile: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '12px 8px',
   },
   progressBarAndTime: {
     display: 'flex',
@@ -148,7 +187,6 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '145px',
     height: '5px',
     background: 'rgb(100,100,100, 0.4)',
-    // opacity: '0.4',
     borderRadius: '5px',
     marginRight: '8px',
   },
@@ -159,40 +197,29 @@ const useStyles = makeStyles(({ palette }) => ({
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
   }
-
 }));
-
-// interface LockState {
-//   action: 'stake' | 'unstake';
-//   lockupMonths: number;
-//   amount: string;
-//   // permit?: ERC2612PermitMessage & RSV;
-//   permitDeadline?: number;
-// }
 
 const LockPremiaCard: React.FC = () => {
   const classes = useStyles();
-  // const theme = useTheme();
-  // const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  // const [state, setState] = useState<LockState>({
-  //   action: 'stake',
-  //   lockupMonths: 1,
-  //   amount: '0',
-  // });
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box className={classes.wrapper}>
-      <img
-          src={lockPremiaIcon}
+    <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
+      {!mobile && <img
+          src={LockPremiaIcon}
           alt='Lock premia'
           className={classes.lockImg}
-        />
-      <Box className={classes.borderedCard}>
-        <Box className={classes.titleBox}>
+        />}
+      <Box className={!mobile ? classes.borderedCard : classes.borderedCardMobile}>
+        <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
+          {mobile && <img
+            src={LockPremiaMobile}
+            alt='Stake premia'
+          />}
           <Typography
             component='h2'
             color='textPrimary'
-            // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
             className={classes.title}
           >
             Lock premia
@@ -200,13 +227,12 @@ const LockPremiaCard: React.FC = () => {
           <Typography
             component='p'
             color='textSecondary'
-            // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
             className={classes.subTitle}
           >
             Reduce your transaction costs
           </Typography>
         </Box>
-        <Box className={classes.topSection}>
+        <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
           <Box className={classes.col}>
             <Box display="flex" style={{ margin: '0 8px 2px', justifyContent: 'flex-start' }}>
               <Typography
@@ -239,7 +265,6 @@ const LockPremiaCard: React.FC = () => {
               <Typography
                 component='p'
                 color='textPrimary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.elementHeader}
               >
                 Stake quantity
@@ -247,7 +272,6 @@ const LockPremiaCard: React.FC = () => {
               <Typography
                 component='p'
                 color='textSecondary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.smallInfoText}
               >
                 {'Max size available: 8,912'}
@@ -283,13 +307,12 @@ const LockPremiaCard: React.FC = () => {
 
         </Box>
 
-        <Box className={classes.botSection}>
+        <Box className={!mobile ? classes.botSection : classes.botSectionMobile}>
 
           <Box className={classes.horizontalBox}>
             <Typography
               component='h3'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.secondaryTitle}
             >
               My stats
@@ -299,7 +322,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               Time till unlock
@@ -311,7 +333,6 @@ const LockPremiaCard: React.FC = () => {
               <Typography
                 component='p'
                 color='textPrimary'
-                // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
                 className={classes.elementHeader}
               >
                 {`3m 25d`}
@@ -322,7 +343,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               xPremia Locked
@@ -330,7 +350,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`100`}
@@ -340,7 +359,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               Fee Discount
@@ -348,7 +366,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`12`}
@@ -358,7 +375,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textSecondary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               Lock Multiplier
@@ -366,7 +382,6 @@ const LockPremiaCard: React.FC = () => {
             <Typography
               component='p'
               color='textPrimary'
-              // className={!mobile ? classes.pageTitle : classes.pageTitleMobile}
               className={classes.elementHeader}
             >
               {`11`}

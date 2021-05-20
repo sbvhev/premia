@@ -1,11 +1,7 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-// import { makeStyles, useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-// import { useWeb3 } from 'state/application/hooks';
-// import { shortenAddress } from 'utils';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { PageWithSidebar } from 'layouts';
 
@@ -15,12 +11,6 @@ import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
 import PremiaRed from 'assets/svg/PremiaLogoSmallRed.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
-  topContainer: {
-  },
-  topContainerMobile: {
-    margin: '80px 0 0 12px',
-    width: 'calc(100% - 50px)',
-  },
   col: {
     boxSizing: 'border-box',
     display: 'flex',
@@ -40,13 +30,12 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'space-between',
-    width: '100%',
+    // width: '100%',
   },
   borderedBox: {
     boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'flex-start',
-    width: '190px',
     height: '55px',
     alignItems: 'center',
     border: `1px solid ${palette.divider}`,
@@ -105,13 +94,13 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const Stake: React.FC = () => {
   const classes = useStyles();
-  // const theme = useTheme();
-  // const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <PageWithSidebar>
       <Grid container direction='column' style={{ marginTop: '22px' }}>
-        <Box display="flex" width={1} justifyContent="space-between" marginBottom="50px">
+        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="50px">
           <Box className={classes.col}>
             <Typography
               component='h1'
@@ -128,8 +117,8 @@ const Stake: React.FC = () => {
               Refine your interaction rewards, stake your Premia for fee sharing, or lock for reduced fees
             </Typography>
           </Box>
-          <Box className={classes.horizontalBox} style={{ minWidth: '390px', width: '390px' }}>
-            <Box className={classes.borderedBox}>
+          <Box className={classes.horizontalBox}  width={!mobile ? '390px' : '100%'}>
+            <Box className={classes.borderedBox} width={!mobile ? '190px' : '50%'}>
               <Box className={classes.premiaBox1}>
                 <img
                   src={PremiaBlue}
@@ -154,14 +143,13 @@ const Stake: React.FC = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className={classes.borderedBox} justifyContent="flex-start">
+            <Box className={classes.borderedBox} justifyContent="flex-start" width={!mobile ? '190px' : '50%'}>
               <Box className={classes.premiaBox2}>
               </Box>
                 <img
                   src={PremiaRed}
                   alt="xPremia"
                   className={classes.redPremiaIcon}
-                  // style={{ zIndex: 30, marginTop: '3px' }}
                 />
               <Box className={classes.colRelative} style={{ marginBottom: '4px' }}>
                 <Typography
@@ -182,7 +170,7 @@ const Stake: React.FC = () => {
             </Box>
           </Box>
         </Box>
-        <Box display="flex" width={1} justifyContent="center">
+        <Box display="flex" flexDirection={!mobile ? 'row' : 'column'} width={1} justifyContent="center">
           <StakePremiaCard />
           <LockPremiaCard />
         </Box>
