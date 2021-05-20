@@ -138,8 +138,7 @@ export const lightTheme = responsiveFontSizes(
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: white,
           '&:hover': {
-            backgroundColor: 'grey',
-            background: 'none',
+            background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
         },
         outlinedPrimary: {
