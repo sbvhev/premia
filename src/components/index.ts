@@ -5,6 +5,7 @@ export { default as BetaSoftwareModal } from './BetaSoftwareModal';
 export { default as Breadcrumb } from './Breadcrumb';
 export { default as BorderLinearProgress } from './BorderLinearProgress';
 export { default as SwitchTab } from './SwitchTab';
+export { default as CustomTabs } from './CustomTabs';
 export { default as ConfirmTermsModal } from './ConfirmTermsModal';
 export { default as CurrencyLogo } from './CurrencyLogo';
 export { default as DataTable } from './DataTable';

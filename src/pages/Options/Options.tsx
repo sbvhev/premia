@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Tabs, Tab, TextField } from '@material-ui/core';
+import { Box, Grid, Typography, TextField } from '@material-ui/core';
+import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import SearchIcon from '@material-ui/icons/Search';
 import WBTCIcon from 'assets/svg/WBTCIcon.svg';
 import UniIcon from 'assets/svg/UniIcon.svg';
 import LinkIcon from 'assets/svg/LinkIcon.svg';
 import YFIIcon from 'assets/svg/YFIIcon.svg';
 import EthIcon from 'assets/svg/EthIcon.svg';
-import FireIcon from 'assets/svg/FireIcon.svg';
-import SearchIcon from '@material-ui/icons/Search';
 import { useWeb3 } from 'state/application/hooks';
 
 import { PageWithSidebar } from 'layouts';
@@ -66,8 +66,31 @@ const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const [ tokenIndex, setTokenIndex ] = useState(2);
+  const tabItems = [
+    {
+      image: WBTCIcon,
+      label: 'wBTC'
+    },
+    {
+      image: UniIcon,
+      label: 'Uni',
+      highlight: true
+    },
+    {
+      image: LinkIcon,
+      label: 'Link'
+    },
+    {
+      image: YFIIcon,
+      label: 'YFI',
+      highlight: true
+    },
+    {
+      image: EthIcon,
+      label: 'ETH'
+    }
+  ]
   return (
     <PageWithSidebar mobile={mobile}>
       <Typography
@@ -80,16 +103,10 @@ const Options: React.FC = () => {
       <Box border={1} mt={2} borderRadius={12} borderColor={theme.palette.divider}>
         <Grid container alignItems='center' spacing={2}>
           <Grid item container={mobile} justify='center' sm={12} md={9}>
-            <Tabs orientation={ xs ? 'vertical' : 'horizontal' } value={tokenIndex} onChange={(ev, index: number) => { setTokenIndex(index)}}>
-              <Tab icon={<img src={WBTCIcon} alt='WBTC' />} label='wBTC' />
-              <Tab icon={<><img src={UniIcon} alt='Uni' /><img src={FireIcon} alt='Highlight' /></>} label='Uni' />
-              <Tab icon={<img src={LinkIcon} alt='Link' />} label='Link' />
-              <Tab icon={<><img src={YFIIcon} alt='YFI' /><img src={FireIcon} alt='Highlight' /></>} label='YFI' />
-              <Tab icon={<img src={EthIcon} alt='ETH' />} label='ETH' />
-            </Tabs>
+            <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
           </Grid>
           <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
-            <Box p={1} mr={1}>
+            <Box p={1}>
               <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
             </Box>
           </Grid>
