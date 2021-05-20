@@ -6,29 +6,32 @@ import { AppDispatch, AppState } from 'state';
 import { updateUserDarkMode } from './actions';
 
 export function useIsDarkMode(): boolean {
-  const { userDarkMode, matchesDarkMode } = useSelector<
+  const { userDarkMode, mediaDarkMode } = useSelector<
     AppState,
-    { userDarkMode: boolean | null; matchesDarkMode: boolean }
+    { userDarkMode: boolean | null; mediaDarkMode: boolean }
   >(
-    ({ user: { matchesDarkMode, userDarkMode } }) => ({
+    ({ user: { mediaDarkMode, userDarkMode } }) => ({
       userDarkMode,
-      matchesDarkMode,
+      mediaDarkMode,
     }),
     shallowEqual,
   );
 
-  return userDarkMode === null ? matchesDarkMode : userDarkMode;
+  return userDarkMode === null ? mediaDarkMode : userDarkMode;
 }
 
-export function useDarkModeManager(): [boolean, () => void] {
+export function useDarkModeManager(): [boolean, (darkMode: boolean) => void] {
   const dispatch = useDispatch<AppDispatch>();
   const darkMode = useIsDarkMode();
 
-  const toggleSetDarkMode = useCallback(() => {
-    dispatch(updateUserDarkMode({ userDarkMode: !darkMode }));
-  }, [darkMode, dispatch]);
+  const setDarkMode = useCallback(
+    (darkMode: boolean) => {
+      dispatch(updateUserDarkMode({ userDarkMode: darkMode }));
+    },
+    [dispatch],
+  );
 
-  return [darkMode, toggleSetDarkMode];
+  return [darkMode, setDarkMode];
 }
 
 /**

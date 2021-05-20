@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
-import { ThemeProvider } from '@material-ui/core/styles';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider as StateProvider } from 'react-redux';
@@ -22,8 +21,9 @@ import {
 import ApplicationUpdater from './state/application/updater';
 import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
+import { useIsDarkMode } from 'state/user/hooks';
+import { darkTheme, lightTheme } from './theme';
 import store from './state';
-import theme from './theme';
 
 import { Dashboard, Stake, ProVault } from './pages';
 import {
@@ -130,6 +130,13 @@ const StateUpdaters: React.FC = () => {
   );
 };
 
+const ThemeProvider: React.FC = ({ children }) => {
+  const darkMode = useIsDarkMode();
+  const theme = darkMode ? darkTheme : lightTheme;
+
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+};
+
 const Providers: React.FC = ({ children }) => {
   const chainId = Number(localStorage.getItem('chainId')) || 1;
 
@@ -140,22 +147,20 @@ const Providers: React.FC = ({ children }) => {
 
   return (
     <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Suspense fallback={null}>
-            <StateProvider store={store}>
-              <StateUpdaters />
+      <BrowserRouter>
+        <Suspense fallback={null}>
+          <StateProvider store={store}>
+            <StateUpdaters />
 
-              <MuiThemeProvider theme={theme}>
-                <CssBaseline />
-                <TopLevelModals />
-                <TransactionNotifications />
-                {children}
-              </MuiThemeProvider>
-            </StateProvider>
-          </Suspense>
-        </BrowserRouter>
-      </ThemeProvider>
+            <ThemeProvider>
+              <CssBaseline />
+              <TopLevelModals />
+              <TransactionNotifications />
+              {children}
+            </ThemeProvider>
+          </StateProvider>
+        </Suspense>
+      </BrowserRouter>
     </ApolloProvider>
   );
 };
