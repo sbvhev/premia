@@ -217,7 +217,9 @@ const theme = createTheme(
       },
       MuiFilledInput: {
         root: {
-        
+          borderRadius: 10,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10
         },
         underline: {
           '&::after': {
@@ -231,7 +233,7 @@ const theme = createTheme(
           },
         },
         input: {
-          
+          padding: 12,
         },
       },
       MuiSelect: {
@@ -276,6 +278,29 @@ const theme = createTheme(
       MuiTableCell: {
         root: {
         },
+      },
+      MuiTab: {
+        labelIcon: {
+          minWidth: 98,
+          minHeight: 55,
+          paddingTop: 0,
+          padding: 0,
+        },
+        wrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          '& img:first-child': {
+            marginBottom: '0 !important',
+            marginRight: 6,
+            height: 24
+          },
+          '& img:nth-child(2)': {
+            position: 'absolute',
+            top: 8,
+            right: 0
+          }
+        }
       },
       MuiFab: {
         extended: {

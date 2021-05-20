@@ -1,10 +1,15 @@
-import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, Grid, Typography, Tabs, Tab, TextField } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import WBTCIcon from 'assets/svg/WBTCIcon.svg';
+import UniIcon from 'assets/svg/UniIcon.svg';
+import LinkIcon from 'assets/svg/LinkIcon.svg';
+import YFIIcon from 'assets/svg/YFIIcon.svg';
+import EthIcon from 'assets/svg/EthIcon.svg';
+import FireIcon from 'assets/svg/FireIcon.svg';
+import SearchIcon from '@material-ui/icons/Search';
 import { useWeb3 } from 'state/application/hooks';
-import { shortenAddress } from 'utils';
 
 import { PageWithSidebar } from 'layouts';
 
@@ -55,75 +60,41 @@ const useStyles = makeStyles(() => ({
     fontWeight: 300,
   },
 
-  topContainerMobile: {
-    margin: '80px 0 0 12px',
-    width: 'calc(100% - 50px)',
-  },
 }));
 
 const Options: React.FC = () => {
-  const { account, wallet } = useWeb3();
+  // const { account, wallet } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const [ tokenIndex, setTokenIndex ] = useState(2);
   return (
     <PageWithSidebar mobile={mobile}>
-      <Grid container direction='column'>
-        <Box
-          width={1}
-          className={mobile ? classes.topContainerMobile : classes.topContainer}
-        >
-          {wallet && wallet.provider && account ? (
-            <>
-              <Typography
-                component='h2'
-                variant='h3'
-                color='textPrimary'
-                style={
-                  !mobile
-                    ? {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                        marginBottom: 32,
-                      }
-                    : {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                      }
-                }
-              >
-                Options
-              </Typography>
-            </>
-          ) : (
-            <Typography
-              component='h2'
-              variant='h3'
-              color='textPrimary'
-              style={
-                !mobile
-                  ? {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 48,
-                      marginBottom: 32,
-                    }
-                  : {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 40,
-                      marginBottom: 8,
-                    }
-              }
-            >
-              Dashboard
-            </Typography>
-          )}
-        </Box>
-      </Grid>
+      <Typography
+        component='h3'
+        variant='h4'
+        color='textPrimary'
+      >
+        Options
+      </Typography>
+      <Box border={1} mt={2} borderRadius={12} borderColor={theme.palette.divider}>
+        <Grid container alignItems='center'>
+          <Grid item md={9}>
+            <Tabs value={tokenIndex} onChange={(ev, index: number) => { setTokenIndex(index)}}>
+              <Tab icon={<img src={WBTCIcon} alt='WBTC' />} label='wBTC' />
+              <Tab icon={<><img src={UniIcon} alt='Uni' /><img src={FireIcon} alt='Highlight' /></>} label='Uni' />
+              <Tab icon={<img src={LinkIcon} alt='Link' />} label='Link' />
+              <Tab icon={<><img src={YFIIcon} alt='YFI' /><img src={FireIcon} alt='Highlight' /></>} label='YFI' />
+              <Tab icon={<img src={EthIcon} alt='ETH' />} label='ETH' />
+            </Tabs>
+          </Grid>
+          <Grid item container justify='flex-end' md={3}>
+            <Box pr={2}>
+              <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </PageWithSidebar>
   );
 };
