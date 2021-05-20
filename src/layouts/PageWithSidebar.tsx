@@ -44,7 +44,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   return (
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
-        {!mobile && (
+        {!mobile && 
           <Box position='fixed' left={0} width={260}>
             <Sidebar />
           </Box>
@@ -88,13 +88,13 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Divider />
               <Box p={1}><Sidebar mobile={true} /></Box>
             </Box>
-          )}
+          }
 
           { mobileSidebarHidden && 
-            <Box py={1} px={3} width={1} mx='auto' mt={12} mb={10}>
+            <Box py={1} px={3} width={1} mx='auto' mt={12} mb={mobile ? 10 : 7}>
               <Container>{children}</Container>
             </Box>
-          )}
+          }
 
           <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} bgcolor='background.default'>
             <Footer />

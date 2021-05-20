@@ -105,7 +105,6 @@ export const lightTheme = responsiveFontSizes(
           fontSize: '14px',
           fontWeight: 700,
           lineHeight: '18px',
-          height: '40px',
           borderRadius: 12,
           textTransform: 'none',
           padding: '6px 2.25rem',
@@ -115,6 +114,16 @@ export const lightTheme = responsiveFontSizes(
           '&:hover': {
             backgroundColor: primaryOnHover,
           },
+        },
+        textPrimary: {
+          color: white,
+        },
+        text: {
+          width: 90,
+        },
+        textSecondary: {
+          background: premiaBlueNight,
+          color: primary,
         },
         sizeSmall: {
           height: '35px',
@@ -369,7 +378,6 @@ export const darkTheme = responsiveFontSizes(
         root: {
           boxSizing: 'border-box',
           fontWeight: 700,
-          height: '40px',
           borderRadius: 12,
           textTransform: 'none',
           padding: '6px 2.25rem',

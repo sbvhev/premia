@@ -12,7 +12,7 @@ const useStyles = makeStyles(({ palette }) => ({
   item: {
     border: '1px solid transparent',
     backgroundColor: ({ active }: any) =>
-    active ? palette.primary.light : 'transparent',
+    active ? palette.primary.dark : 'transparent',
     borderRadius: 12,
     padding: '12px 16px',
     margin: '2px 0',

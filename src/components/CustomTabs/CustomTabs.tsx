@@ -1,8 +1,8 @@
 import React from 'react';
 import { Tabs, Tab } from '@material-ui/core';
 import FireIcon from 'assets/svg/FireIcon.svg';
+import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import theme from 'theme'
 
 export interface SwitchProps {
   items: any[];
@@ -11,6 +11,7 @@ export interface SwitchProps {
 }
 
 const CustomTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
+  const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (

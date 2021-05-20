@@ -93,7 +93,7 @@ const Options: React.FC = () => {
     }
   ]
   return (
-    <PageWithSidebar mobile={mobile}>
+    <PageWithSidebar>
       <Typography
         component='h3'
         variant='h4'

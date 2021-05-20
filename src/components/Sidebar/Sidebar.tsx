@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
 
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/MainLogo.svg';
+import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
 import DocumentationIcon from 'assets/svg/DocumentationIcon.svg';
 import CareerIcon from 'assets/svg/CareerIcon.svg';
 import PositionsIcon from 'assets/svg/PositionsIcon.svg';
@@ -56,10 +57,6 @@ const insights = [
 ];
 
 const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    background: theme.palette.common.black,
-  },
-
   rightBorder: {
     borderRight: `1px solid ${theme.palette.divider}`,
   },
@@ -99,6 +96,7 @@ export interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const [darkMode, setDarkMode] = useDarkModeManager();
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
     <Box
@@ -109,14 +107,15 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
       pb={{ sm: 1 }}
       position='relative'
       height={mobile ? 'auto' : '100vh'}
-      className={cx(!mobile && classes.rightBorder, classes.paper)}
+      bgcolor={darkMode ? theme.palette.common.black : theme.palette.common.white}
+      className={cx(!mobile && classes.rightBorder)}
     >
       <Grid container direction='column' justify='space-between'>
         <Box>
           {!mobile && (
-            <Grid container component={Link} to='/'>
-              <Box pb={3} pl={1.5}>
-                <img src={MainLogo} alt='Logo' style={{}} />
+            <Grid container justify='center' component={Link} to='/'>
+              <Box pb={3}>
+                <img src={darkMode ? MainLogo : MainLogoBlack} alt='Logo' style={{}} />
               </Box>
             </Grid>
           )}
