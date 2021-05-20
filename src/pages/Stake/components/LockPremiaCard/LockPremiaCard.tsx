@@ -58,7 +58,7 @@ const useStyles = makeStyles(({ palette }) => ({
     left: 143,
     width: '99px',
     height: '136px',
-    zIndex: 10,
+    zIndex: 2,
   },
   titleBox: {
     marginTop: '98px',
@@ -68,8 +68,9 @@ const useStyles = makeStyles(({ palette }) => ({
     textAlign: 'center',
   },
   titleBoxMobile: {
-    marginTop: '12px',
+    marginTop: '24px',
     display: 'flex',
+    height: '130px',
     justifyContent: 'space-between',
     flexDirection: 'column',
     alignItems: 'center',
@@ -141,15 +142,41 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     }
   },
-  inputAmount: {
-    backgroundColor: palette.background.default,
-    boxShadow: 'none',
-    border: 'none',
-    marginLeft: '8px',
+  borderedInput: {
+    position: 'relative',
+    boxSizing: 'border-box',
+    backgroundColor: 'transparent',
+    height: '46px',
+    width: '100%',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: '12px',
+    padding: '13px 50px 13px 40px',
     color: palette.text.primary,
+    zIndex: 2,
+    fontFamily: 'DM Sans',
+    fontSize: '14px',
+    fontWeight: 400,
     '&:hover': {
       backgroundColor: palette.primary.dark,
     }
+  },
+  inputIcon: {
+    position: 'relative',
+    top: -38,
+    left: 14,
+    zIndex: 1,
+  },
+  maxButton: {
+    position: 'relative',
+    top: -43,
+    right: -260,
+    zIndex: 3,
+  },
+  maxButtonMobile: {
+    position: 'relative',
+    top: -43,
+    right: -227,
+    zIndex: 3,
   },
   elementHeader: {
     fontWeight: 500,
@@ -217,20 +244,22 @@ const LockPremiaCard: React.FC = () => {
             src={LockPremiaMobile}
             alt='Stake premia'
           />}
-          <Typography
-            component='h2'
-            color='textPrimary'
-            className={classes.title}
-          >
-            Lock premia
-          </Typography>
-          <Typography
-            component='p'
-            color='textSecondary'
-            className={classes.subTitle}
-          >
-            Reduce your transaction costs
-          </Typography>
+          <Box>
+            <Typography
+              component='h2'
+              color='textPrimary'
+              className={classes.title}
+            >
+              Lock premia
+            </Typography>
+            <Typography
+              component='p'
+              color='textSecondary'
+              className={classes.subTitle}
+            >
+              Reduce your transaction costs
+            </Typography>
+          </Box>
         </Box>
         <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
           <Box className={classes.col}>
@@ -277,23 +306,22 @@ const LockPremiaCard: React.FC = () => {
                 {'Max size available: 8,912'}
               </Typography>
             </Box>
-              <Box className={classes.borderedBox}>
-                <Box display="flex" alignItems="center">
-                  <img
-                    src={greyLogo}
-                    alt='Select Amount'
-                    style={{ marginLeft: '10px' }}
-                  />
-                  <input
-                    value={'100'}
-                    onChange={() => {}}
-                    className={classes.inputAmount}
-                  />
-                </Box>
-                <Button color="primary" variant="outlined" size="small" >
-                  MAX
-                </Button>
-              </Box>
+              
+            <Box width="100%" height="46px">
+              <input
+                value={'100'}
+                onChange={() => {}}
+                className={classes.borderedInput}
+              />
+              <img
+                src={greyLogo}
+                alt='Select Amount'
+                className={classes.inputIcon}
+              />
+              <Button color="primary" variant="outlined" size="small" className={!mobile ? classes.maxButton : classes.maxButtonMobile}>
+                MAX
+              </Button>
+            </Box>
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>

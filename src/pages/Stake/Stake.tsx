@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'space-between',
-    // width: '100%',
+    width: '100%',
   },
   borderedBox: {
     boxSizing: 'border-box',
@@ -67,7 +67,6 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
     borderRadius: '7px',
     marginRight: '7px', 
-    // boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
   },
   premiaBox2: {
     width: '40px',
@@ -81,7 +80,6 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '7px',
     marginRight: '7px', 
     zIndex: 1,
-    // boxShadow: '0px 0px 4px rgba(236, 120, 81, 0.25)',
   },
   redPremiaIcon: {
     position: 'relative',
@@ -99,8 +97,8 @@ const Stake: React.FC = () => {
 
   return (
     <PageWithSidebar>
-      <Grid container direction='column' style={{ marginTop: '22px' }}>
-        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="50px">
+      <Box display="flex" flexDirection='column' style={{ marginTop: '8px', width: '100%' }}>
+        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="16px">
           <Box className={classes.col}>
             <Typography
               component='h1'
@@ -170,11 +168,16 @@ const Stake: React.FC = () => {
             </Box>
           </Box>
         </Box>
-        <Box display="flex" flexDirection={!mobile ? 'row' : 'column'} width={1} justifyContent="center">
+        <Box
+          display="flex"
+          flexDirection={!mobile ? 'row' : 'column'}
+          width={1}
+          style={!mobile ? { justifyContent: 'center' } : { alignItems: 'center' }}
+        >
           <StakePremiaCard />
           <LockPremiaCard />
         </Box>
-      </Grid>
+      </Box>
     </PageWithSidebar>
   );
 };
