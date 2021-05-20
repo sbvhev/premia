@@ -38,7 +38,7 @@ const LineChart: React.FC<LineChartProps> = ({
       type: 'gradient',
       colors: [color],
       gradient: {
-        shade: dark ? 'dark': 'light',
+        shade: dark ? 'dark' : 'light',
         shadeIntensity: 1,
         opacityFrom: 0.7,
         opacityTo: 0.9,
@@ -48,11 +48,11 @@ const LineChart: React.FC<LineChartProps> = ({
     xaxis: {
       categories,
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
-      }
+        show: false,
+      },
     },
     yaxis: {
       show: false,
@@ -72,11 +72,6 @@ const LineChart: React.FC<LineChartProps> = ({
     },
     grid: {
       show: false,
-      yaxis: {
-        lines: {
-          show: false,
-        },
-      },
       xaxis: {
         lines: {
           show: false,
@@ -84,13 +79,30 @@ const LineChart: React.FC<LineChartProps> = ({
       },
     },
     tooltip: {
-      enabled: false
-    }
+      enabled: true,
+      theme: 'dark',
+      marker: {
+        show: false,
+      },
+      fillSeriesColor: false,
+      custom: (props: any) => {
+        return (
+          '<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none;">' +
+          '<span style="padding: 0.5rem; border: 2px solid #646464;">' +
+          props.w.globals.categoryLabels[props.dataPointIndex] +
+          '</span>' +
+          '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
+          'Price: ' + props.series[props.seriesIndex][props.dataPointIndex] +
+          '</span>' +
+          '</div>'
+        );
+      },
+    },
   };
 
   const series = [
     {
-      name: 'Series',
+      name: 'Prices',
       data,
     },
   ];
