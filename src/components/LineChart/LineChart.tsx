@@ -5,8 +5,8 @@ export interface LineChartProps {
   color: string;
   data?: Array<number>;
   categories?: Array<string>;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   palette?: Object;
 }
 const LineChart: React.FC<LineChartProps> = ({

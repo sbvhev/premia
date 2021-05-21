@@ -47,6 +47,7 @@ export interface RadialChartProps {
   dark?: boolean;
   data?: Array<number>;
   width?: number;
+  height?: number;
   children?: any;
 }
 
@@ -56,6 +57,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
   dark = true,
   data = [],
   width = 300,
+  height = 300,
   children,
 }) => {
   const classes = useStyles();
@@ -64,9 +66,13 @@ const RadialChart: React.FC<RadialChartProps> = ({
       radialBar: {
         startAngle: 0,
         endAngle: 360,
+        offsetX: 0,
+        offsetY: 0,
         hollow: {
           size: '75%',
           background: 'transparent',
+          imageWidth: width,
+          imageHeight: height, 
 
           dropShadow: {
             enabled: true,
@@ -114,7 +120,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
 
   return (
     <div className={classes.chart}>
-      <Chart options={options} series={data} type='radialBar' width={width} />
+      <Chart options={options} series={data} type='radialBar' width={width} height={height} />
       <div className={classes.formatter}>{children}</div>
     </div>
   );
