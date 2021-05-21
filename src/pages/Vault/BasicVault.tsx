@@ -20,6 +20,7 @@ import { ReactComponent as VaultBlueIcon } from 'assets/svg/VaultBlue.svg';
 import { ReactComponent as VaultGreenIcon } from 'assets/svg/VaultGreen.svg';
 import { ReactComponent as VaultRedIcon } from 'assets/svg/VaultRed.svg';
 import { ExpandMore, Check } from '@material-ui/icons';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   borderedCard: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles(({ palette }) => ({
     marginRight: 32,
     width: 340,
     border: `1px solid ${palette.divider}`,
-    backgroundColor: palette.background.default,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
   },
   titleBox: {
@@ -169,7 +170,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
       '& $select': {
         zIndex: 4,
-        background: 'black'
+        background: palette.background.paper
       }
     },
 
@@ -194,7 +195,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   select: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: 'white',
+    color: (props: any) => props.dark ? "white": "black",
     fontSize: 14,
     lineHeight: '18px',
     borderRadius: 9,
@@ -215,12 +216,12 @@ const useStyles = makeStyles(({ palette }) => ({
     },
 
     '&:hover': {
-      background: 'black',
+      background: palette.background.paper,
       border: 'transparent',
     },
   },
   background: {
-    background: '#080f19',
+    background: (props: any) => props.dark ? '#080f19': '#e2eaf6',
     borderRadius: 12,
     zIndex: 3,
     position: 'absolute',
@@ -232,7 +233,8 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const BasicVault: React.FC = () => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const [coin, setCoin] = useState<any>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
