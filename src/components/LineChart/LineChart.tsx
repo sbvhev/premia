@@ -39,7 +39,7 @@ const LineChart: React.FC<LineChartProps> = ({
       type: 'gradient',
       colors: [color],
       gradient: {
-        gradientToColors: [theme.palette.background.default],
+        gradientToColors: [theme.palette.background.paper],
         shadeIntensity: 1,
         opacityFrom: 0.7,
         opacityTo: 0.9,
