@@ -93,7 +93,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           }
 
           { mobileSidebarHidden && 
-            <Box px={3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
+            <Box px={mobile ? 0 : 3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
               <Container>{children}</Container>
             </Box>
           }

@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core/styles';
 import CalendarIcon from 'assets/svg/CalendarIcon.svg';
 import UniIcon from 'assets/svg/UniIcon.svg';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ColoredSlider } from 'components';
 import {
   Box,
@@ -15,7 +16,7 @@ import {
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import { SingleDatePicker } from 'react-dates';
-import { useOptionType } from 'state/application/hooks';
+import { useOptionType, useMaturityDate, useStrikePrice, useOptionSize } from 'state/options/hooks';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -76,10 +77,12 @@ const OptionFilter: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const { optionType, setOptionType } = useOptionType();
-  const [ maturityDate, setMaturityDate ] = useState<any>()
-  const [ maturityFocused, setMaturityFocused ] = useState(false)
-  const [ strikePrice, setStrikePrice ] = useState<number | number[]>(100)
-  const [ optionSize, setOptionSize ] = useState(100)
+  const { maturityDate, setMaturityDate } = useMaturityDate();
+  const [ maturityFocused, setMaturityFocused ] = useState(false);
+  const { strikePrice, setStrikePrice } = useStrikePrice();
+  const { optionSize, setOptionSize } = useOptionSize();
+  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+
   return (
     <Box clone width={1} py={2} px={2} border={1} borderColor={theme.palette.divider} borderRadius={12} boxShadow={3}>
       <Box width={1}>
@@ -141,6 +144,7 @@ const OptionFilter: React.FC = () => {
             <SingleDatePicker
               date={maturityDate}
               id='maturityDate'
+              orientation={ mobile ? 'vertical' : 'horizontal' }
               placeholder='Select date'
               focused={maturityFocused}
               onDateChange={(date) =>

@@ -82,13 +82,15 @@ const Options: React.FC = () => {
   ]
   return (
     <PageWithSidebar>
-      <Typography
-        component='h1'
-        color='textPrimary'
-        className={classes.title}
-      >
-        Options
-      </Typography>
+      {!mobile &&
+        <Typography
+          component='h1'
+          color='textPrimary'
+          className={classes.title}
+        >
+          Options
+        </Typography>
+      }
       <Box border={1} mt={2} mb={4} borderRadius={12} borderColor={theme.palette.divider}>
         <Grid container alignItems='center' spacing={2}>
           <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
@@ -102,7 +104,7 @@ const Options: React.FC = () => {
         </Grid>
       </Box>
       <Grid container>
-        <Grid item container sm={8}>
+        <Grid item container lg={8}>
           <Grid item xs={12} sm={6}>
             <OptionsFilter />
           </Grid>
@@ -171,7 +173,7 @@ const Options: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
-        <Grid item container sm={4}>
+        <Grid item container lg={4}>
           <OptionsPrice />
         </Grid>
       </Grid>
