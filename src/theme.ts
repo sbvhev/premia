@@ -172,6 +172,40 @@ export const lightTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyDay}`,
         },
       },
+      MuiOutlinedInput: {
+        root: {
+          border: `1px solid ${dividerGreyNight}`,
+          borderRadius: 12,
+          height: 45,
+          paddingLeft: 8,
+
+          '& .MuiSelect-root': {
+            paddingLeft: 0,
+            alignItems: 'center',
+            display: 'flex',
+
+            '& svg': {
+              width: 16,
+              height: 16,
+              marginRight: 8, 
+
+              '& path': {
+                fill: primary
+              }
+            },
+
+            '&:focus': {
+              background: 'transparent'
+            }
+          }
+        },
+        notchedOutline: {
+          border: 'none',
+        },
+        input: {
+          padding: 4,
+        },
+      },
       MuiBottomNavigation: {
         root: {
           background: 'white',
@@ -293,7 +327,6 @@ export const darkTheme = responsiveFontSizes(
     },
     overrides: {
       MuiInputBase: {
-        root: {},
       },
       MuiInput: {
         underline: {
@@ -316,7 +349,32 @@ export const darkTheme = responsiveFontSizes(
         },
       },
       MuiOutlinedInput: {
-        root: {},
+        root: {
+          border: `1px solid ${dividerGreyNight}`,
+          borderRadius: 12,
+          height: 45,
+          paddingLeft: 8,
+
+          '& .MuiSelect-root': {
+            paddingLeft: 0,
+            alignItems: 'center',
+            display: 'flex',
+
+            '& svg': {
+              width: 16,
+              height: 16,
+              marginRight: 8, 
+
+              '& path': {
+                fill: primary
+              }
+            },
+
+            '&:focus': {
+              background: 'transparent'
+            }
+          }
+        },
         notchedOutline: {
           border: 'none',
         },
