@@ -11,7 +11,7 @@ import {
   Tab,
   InputAdornment,
   IconButton,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { LineChart, RadialChart } from 'components';
@@ -105,27 +105,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   box: {
-    width: 'calc(100% - 300px)',
-    position: 'relative'
+    width: 'calc(100% - 200px)',
+    position: 'relative',
   },
   searchField: {
     right: 5,
     top: 5,
     position: 'absolute',
     color: '#646464',
-    
+
     '& label': {
-      top: -6
+      top: -6,
     },
-    
+
     '& > div': {
       background: '#181818',
     },
 
     '& path': {
-      fill: '#646464'
+      fill: '#646464',
     },
-  }
+  },
 }));
 
 const ProVault: React.FC = () => {
@@ -145,7 +145,11 @@ const ProVault: React.FC = () => {
           >
             Vaults
           </Typography>
-          <Grid container direction='row' className={classes.topTab} spacing={3}>
+          <Grid
+            container
+            direction='row'
+            className={classes.topTab}
+          >
             <BottomNavigation
               value={value}
               onChange={(event, newValue) => {
@@ -157,36 +161,38 @@ const ProVault: React.FC = () => {
               <BottomNavigationAction label='Basic' icon={<BasicIcon />} />
               <BottomNavigationAction label='Pro' icon={<ProIcon />} />
             </BottomNavigation>
-            <Box component="div" className={classes.box}>
-              <Tabs
-                value={tabIndex}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={(event, newValue) => {
-                  setTabIndex(newValue);
-                }}
-              >
-                <Tab label="wBTC" icon={<WBTCIcon />}/>
-                <Tab label="Uni" icon={<UniswapIcon />} />
-                <Tab label="Link" icon={<LinkIcon />}/>
-                <Tab label="YFI" icon={<YFIIcon />} />
-                <Tab label="ETH" icon={<ETHIcon />} />
-              </Tabs>
-              <TextField
-                label="Search..."
-                variant="outlined"
-                className={classes.searchField}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment component="div" position="end">
-                      <IconButton>
-                        <Search />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Box>
+            {value === 1 && (
+              <Box component='div' className={classes.box}>
+                <Tabs
+                  value={tabIndex}
+                  indicatorColor='primary'
+                  textColor='primary'
+                  onChange={(event, newValue) => {
+                    setTabIndex(newValue);
+                  }}
+                >
+                  <Tab label='wBTC' icon={<WBTCIcon />} />
+                  <Tab label='Uni' icon={<UniswapIcon />} />
+                  <Tab label='Link' icon={<LinkIcon />} />
+                  <Tab label='YFI' icon={<YFIIcon />} />
+                  <Tab label='ETH' icon={<ETHIcon />} />
+                </Tabs>
+                <TextField
+                  label='Search...'
+                  variant='outlined'
+                  className={classes.searchField}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment component='div' position='end'>
+                        <IconButton>
+                          <Search />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            )}
           </Grid>
           {value === 0 && <BasicVault />}
           {value === 1 && (
