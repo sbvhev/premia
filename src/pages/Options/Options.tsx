@@ -14,7 +14,6 @@ import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { LineChart } from 'components';
-import { useWeb3 } from 'state/application/hooks';
 
 import { PageWithSidebar } from 'layouts';
 
