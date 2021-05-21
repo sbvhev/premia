@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, TextField } from '@material-ui/core';
+import { Box, Grid, Typography, TextField, Button } from '@material-ui/core';
 import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -10,6 +10,10 @@ import LinkIcon from 'assets/svg/LinkIcon.svg';
 import YFIIcon from 'assets/svg/YFIIcon.svg';
 import EthIcon from 'assets/svg/EthIcon.svg';
 import OptionsFilter from './OptionsFilter';
+import OptionsPrice from './OptionsPrice';
+import HelpIcon from '@material-ui/icons/Help';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import { LineChart } from 'components';
 import { useWeb3 } from 'state/application/hooks';
 
 import { PageWithSidebar } from 'layouts';
@@ -20,6 +24,21 @@ const useStyles = makeStyles(() => ({
     lineHeight: '27.5px',
     fontWeight: 700,
   },
+  price: {
+    fontSize: 18
+  },
+  subText: {
+    marginLeft: 8,
+    fontSize: 14
+  },
+  priceIcon: {
+    color: '#3ACE5B'
+  },
+  helpIcon: {
+    color: '#646464',
+    fontSize: 16,
+    marginLeft: 4
+  }
 }));
 
 const Options: React.FC = () => {
@@ -75,9 +94,74 @@ const Options: React.FC = () => {
       </Box>
       <Grid container>
         <Grid item container sm={8}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <OptionsFilter />
           </Grid>
+          <Grid item container xs={12} sm={6} direction='column' justify='space-between'>
+            <Box py={1} px={3}>
+              <Typography color='textSecondary'>
+                Current Price
+              </Typography>
+              <Grid container alignItems='center'>
+                <Typography color='textPrimary' component='h2' className={classes.price}>
+                  $1,222
+                </Typography>
+                <span className={classes.subText}>
+                  +13%
+                </span>
+                <ArrowDropUpIcon className={classes.priceIcon} />
+              </Grid>
+            </Box>
+            <Box py={1} px={3}>
+              <Typography color='textSecondary'>
+                Breakeven
+              </Typography>
+              <Typography color='textPrimary' component='h2' className={classes.price}>
+                $1,749.37
+              </Typography>
+            </Box>
+            <Box py={1} px={3}>
+              <Typography color='textSecondary'>
+                Total cost
+              </Typography>
+              <Typography color='textPrimary' component='h2' className={classes.price}>
+                $1,749.37
+              </Typography>
+            </Box>
+            <Box py={1} px={3}>
+              <Button
+                variant='contained'
+                fullWidth
+                color='primary'
+              >
+                Deposit
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box py={3} px={3}>
+              <Typography color='textPrimary' component='h2' className={classes.price}>
+                Pool price level
+              </Typography>
+              <Grid container alignItems='center'>
+                <Typography color='textSecondary'>
+                  Last 7 days
+                </Typography>
+                <HelpIcon className={classes.helpIcon} />
+              </Grid>
+              <LineChart
+                color='#3ACE5B'
+                dark={true}
+                data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+                width='100%'
+                height={200}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+        <Grid item container sm={4}>
+          <OptionsPrice />
         </Grid>
       </Grid>
     </PageWithSidebar>

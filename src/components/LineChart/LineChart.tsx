@@ -6,7 +6,7 @@ export interface LineChartProps {
   dark?: boolean;
   data?: Array<number>;
   categories?: Array<string>;
-  width?: number;
+  width?: number | string;
   height?: number;
 }
 

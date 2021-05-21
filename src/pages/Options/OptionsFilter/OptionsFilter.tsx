@@ -6,16 +6,19 @@ import {
   useTheme,
 } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import CalendarIcon from 'assets/svg/CalendarIcon.svg';
+import UniIcon from 'assets/svg/UniIcon.svg';
 
 import {
   Box,
   Typography,
   Slider,
   Button,
+  TextField,
 } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
-import { DateRangePicker } from 'react-dates';
+import { SingleDatePicker } from 'react-dates';
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
@@ -42,37 +45,40 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: '-16px',
   },
 
-  dateRangePicker: {
-    '& .DateRangePicker': {
+  singleDatePicker: {
+    '& .SingleDatePicker': {
       width: '100%',
     },
+    '& img': {
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      right: 8
+    },
 
-    '& .DateRangePickerInput': {
+    '& .SingleDatePickerInput': {
       width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: 'transparent !important',
+      border: 'none'
     },
 
     '& .DateInput': {
-      width: 'calc(50% - 20px)',
+      width: '100%',
       backgroundColor: 'transparent !important',
     },
 
     '& .DateInput_input': {
       color: 'white',
-      fontFamily: 'Roboto Mono',
-      fontWeight: 400,
-      fontSize: '0.85rem',
-      letterSpacing: 'normal',
-      backgroundColor: 'rgba(228, 228, 228, 0.1) !important',
-      padding: '4px 8px',
+      fontSize: 14,
+      backgroundColor: 'transparent !important',
+      border: `1px solid ${theme.palette.divider}`,
+      padding: '8px 32px 8px 8px',
       borderRadius: 8,
 
       '&::placeholder': {
-        fontWeight: 400,
-        letterSpacing: 'normal',
         color: theme.palette.text.secondary,
       },
     },
@@ -89,13 +95,18 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     height: 8,
   },
 
+  mark: {
+    display: 'none'
+  },
+
   thumb: {
-    height: 24,
-    width: 24,
-    backgroundColor: '#fff',
-    border: '2px solid currentColor',
-    marginTop: -8,
+    height: 16,
+    width: 16,
+    backgroundColor: theme.palette.primary.main,
+    border: '4px solid white',
+    marginTop: -4,
     marginLeft: -12,
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.15)',
 
     '&:focus, &:hover, &$active': {
       boxShadow: 'inherit',
@@ -105,7 +116,15 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   active: {},
 
   valueLabel: {
-    left: 'calc(-50% + 4px)',
+    left: 'calc(-50% - 8px)',
+    top: 20,
+    fontSize: 12,
+    '& > span': {
+      color: 'transparent'
+    },
+    '& > span > span': {
+      color: theme.palette.common.white
+    }
   },
 
   track: {
@@ -120,28 +139,25 @@ const ColoredSlider = withStyles((theme: Theme) => ({
 
   markLabel: {
     marginTop: 4,
+    fontSize: 12,
+    color: theme.palette.text.secondary,
+    transform: 'none',
+    '&[data-index="1"]': {
+      transform: 'translateX(-100%)'
+    }
   },
 }))(Slider);
 
-export interface MarketOptionFilterProps {
-  hidePair?: boolean;
-  center?: boolean;
-}
-
-const MarketOptionFilter: React.FC<MarketOptionFilterProps> = ({
-  hidePair = false,
-  center,
-}) => {
-  const [focusedInput, setFocusedInput] = useState<
-    'startDate' | 'endDate' | null
-  >(null);
+const OptionFilter: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [ optionType, setOptionType ] = useState('call');
-  const [ expiration, setExpiration ] = useState<any>()
+  const [ maturityDate, setMaturityDate ] = useState<any>()
+  const [ maturityFocused, setMaturityFocused ] = useState(false)
   const [ strikePrice, setStrikePrice ] = useState<number | number[]>(100)
+  const [ optionSize, setOptionSize ] = useState(100)
   return (
     <Box clone width={1} py={2} px={2} border={1} borderColor={theme.palette.divider} borderRadius={12} boxShadow={3}>
       <Box width={1}>
@@ -178,7 +194,7 @@ const MarketOptionFilter: React.FC<MarketOptionFilterProps> = ({
             Strike Price
           </Typography>
 
-          <Box width={1} paddingX={2}>
+          <Box width={1}>
             <ColoredSlider
               min={50}
               max={1500}
@@ -195,27 +211,53 @@ const MarketOptionFilter: React.FC<MarketOptionFilterProps> = ({
           </Box>
         </Box>
 
-        <Box width={1} marginTop={2} marginBottom={2} className={classes.dateRangePicker}>
-          <DateRangePicker
-            noBorder
-            hideKeyboardShortcutsPanel
-            customInputIcon={null}
-            startDate={null}
-            startDateId='MarketOptionFilter__startDate'
-            endDate={null}
-            endDateId='MarketOptionFilter__endDate'
-            onDatesChange={({ startDate, endDate }) =>
-              setExpiration({ start: startDate, end: endDate })
-            }
-            focusedInput={focusedInput}
-            onFocusChange={(focusedInput) =>
-              setFocusedInput(focusedInput)
-            }
+        <Box width={1} marginTop={2} marginBottom={2}>
+          <Typography color='textPrimary'>
+            Maturity
+          </Typography>
+          <Box position='relative' width={1} marginTop={1} className={classes.singleDatePicker}>
+            <SingleDatePicker
+              date={maturityDate}
+              id='maturityDate'
+              placeholder='Select date'
+              focused={maturityFocused}
+              onDateChange={(date) =>
+                setMaturityDate(date)
+              }
+              onFocusChange={({ focused }) => {
+                setMaturityFocused(focused)
+              }}
+            />
+            <img src={CalendarIcon} alt='Calendar Icon' />
+          </Box>
+        </Box>
+        
+        <Box display='flex' justifyContent='space-between' alignItems='center' width={1} mt={2}>
+          <Typography color='textPrimary'>
+            Option Size
+          </Typography>
+          <Typography color='textSecondary' component='span' variant='body2'>
+            Max size available: 40012
+          </Typography>
+        </Box>
+        <Box display='flex' alignItems='center' pl={1} width={1} border={1} borderColor={theme.palette.divider} borderRadius={12} height={46}>
+          <img
+            src={UniIcon}
+            alt='Select Amount'
           />
+          <TextField
+            variant='outlined'
+            value={optionSize}
+            style={{flexGrow: 1}}
+            onChange={(ev) => { setOptionSize(Number(ev.target.value)) }}
+          />
+          <Button color="primary" variant="outlined" size="small">
+            MAX
+          </Button>
         </Box>
       </Box>
     </Box>
   );
 };
 
-export default MarketOptionFilter;
+export default OptionFilter;
