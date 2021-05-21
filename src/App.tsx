@@ -181,8 +181,8 @@ const App: React.FC = () => {
           <Stake />
         </Route>
 
-        <Route exact path='/provault'>
-          <ProVault />
+        <Route exact path='/vaults'>
+          <Vault />
         </Route>
 
         <Route path='*'>
