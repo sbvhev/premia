@@ -8,10 +8,6 @@ import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import { Box, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-    position: 'relative',
-  },
   chartTop: {
     background: 'linear-gradient(180deg, #0062FF 0%, #2DE29E 100%)'
   },

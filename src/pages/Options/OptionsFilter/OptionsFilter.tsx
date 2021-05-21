@@ -10,8 +10,7 @@ import { ColoredSlider } from 'components';
 import {
   Box,
   Typography,
-  Button,
-  TextField,
+  Button
 } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
@@ -21,22 +20,11 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-    position: 'relative',
-  },
-
-  title: {
-    flex: '1 1 30%',
-    marginBottom: 8,
-  },
-  titleCenter: {
-    textAlign: 'center',
-    margin: '10px 0 14px',
-  },
-
-  negativeMargin: {
-    marginBottom: '-16px',
+  input: {
+    flexGrow: 1,
+    outline: 'none',
+    background: 'transparent',
+    border: 'none'
   },
 
   singleDatePicker: {
@@ -179,10 +167,9 @@ const OptionFilter: React.FC = () => {
             src={UniIcon}
             alt='Select Amount'
           />
-          <TextField
-            variant='outlined'
+          <input
             value={optionSize}
-            style={{flexGrow: 1}}
+            className={classes.input}
             onChange={(ev) => { setOptionSize(Number(ev.target.value)) }}
           />
           <Button color="primary" variant="outlined" size="small">
