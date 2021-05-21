@@ -23,7 +23,7 @@ import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
-import { ReactComponent as ETHIcon } from 'assets/svg/ETHIcon.svg';
+import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { useIsDarkMode } from 'state/user/hooks';

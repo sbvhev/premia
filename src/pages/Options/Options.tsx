@@ -8,7 +8,7 @@ import WBTCIcon from 'assets/svg/wBTCIcon.svg';
 import UniIcon from 'assets/svg/UniIcon.svg';
 import LinkIcon from 'assets/svg/LinkIcon.svg';
 import YFIIcon from 'assets/svg/YFIIcon.svg';
-import EthIcon from 'assets/svg/ETHIcon.svg';
+import EthIcon from 'assets/svg/EthIcon.svg';
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
