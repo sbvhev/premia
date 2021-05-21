@@ -15,51 +15,11 @@ import { useWeb3 } from 'state/application/hooks';
 import { PageWithSidebar } from 'layouts';
 
 const useStyles = makeStyles(() => ({
-  hoverable: {
-    cursor: 'pointer',
-
-    '&:hover': {
-      opacity: 0.8,
-    },
-  },
-
-  floatCenter: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-  },
-
-  floatTopLeft: {
-    position: 'absolute',
-    top: '65%',
-    left: '30%',
-    transform: 'translate(-30%, -65%)',
-  },
-
-  topContainer: {},
-
   title: {
-    whiteSpace: 'nowrap',
+    fontSize: '28px',
+    lineHeight: '27.5px',
+    fontWeight: 700,
   },
-
-  titleMobile: {
-    fontSize: '3.1vw',
-  },
-
-  smallerTitle: {
-    whiteSpace: 'nowrap',
-    fontSize: '1.5vw',
-  },
-
-  smallerTitleMobile: {
-    whiteSpace: 'nowrap',
-    fontSize: '2vw',
-  },
-
-  subtitle: {
-    fontWeight: 300,
-  }
 }));
 
 const Options: React.FC = () => {
@@ -95,9 +55,9 @@ const Options: React.FC = () => {
   return (
     <PageWithSidebar>
       <Typography
-        component='h3'
-        variant='h4'
+        component='h1'
         color='textPrimary'
+        className={classes.title}
       >
         Options
       </Typography>

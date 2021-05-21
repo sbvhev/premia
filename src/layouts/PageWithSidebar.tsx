@@ -4,7 +4,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Hamburger from 'hamburger-react';
 import cx from 'classnames';
-
+import { useDarkModeManager } from 'state/user/hooks';
+import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
 import MainLogo from 'assets/svg/MainLogo.svg';
 import { AccountButtons, Sidebar, Footer } from 'components';
 
@@ -38,6 +39,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 }) => {
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
   const theme = useTheme();
+  const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
 
@@ -55,7 +57,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
                   <Grid item>
-                    <img src={MainLogo} alt='main logo' />
+                    <img src={darkMode ? MainLogo : MainLogoBlack} alt='main logo' />
                   </Grid>
                 )}
                 <Grid item>
@@ -91,7 +93,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           }
 
           { mobileSidebarHidden && 
-            <Box py={1} px={3} width={1} mx='auto' mt={12} mb={mobile ? 10 : 7}>
+            <Box px={3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
               <Container>{children}</Container>
             </Box>
           }

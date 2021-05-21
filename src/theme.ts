@@ -138,6 +138,11 @@ export const lightTheme = responsiveFontSizes(
           fontWeight: 700,
           lineHeight: '18px',
         },
+        contained: {
+          backgroundColor: 'transparent',
+          color: greySecondaryNight,
+          boxShadow: 'none'
+        },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: white,
@@ -209,9 +214,9 @@ export const lightTheme = responsiveFontSizes(
           padding: '0 10px',
         },
         indicator: {
-          background: whiteColor,
+          background: primary,
           borderRadius: 1.25,
-          boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF'
+          boxShadow: '0px 0px 11px rgba(82, 148, 255, 0.0001)'
         },
       },
       MuiTab: {
