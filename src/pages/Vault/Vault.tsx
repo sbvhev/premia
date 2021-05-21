@@ -180,9 +180,12 @@ const ProVault: React.FC = () => {
                   <Tab label='ETH' icon={<ETHIcon />} />
                 </Tabs>
                 <TextField
-                  label='Search...'
+                  placeholder='Search...'
                   variant='outlined'
                   className={classes.searchField}
+                  InputLabelProps={{
+                    shrink: false
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment component='div' position='end'>
