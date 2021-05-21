@@ -14,10 +14,11 @@ import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { LineChart } from 'components';
-
+import { useOptionType } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
 import { PageWithSidebar } from 'layouts';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
   title: {
     fontSize: '28px',
     lineHeight: '27.5px',
@@ -31,12 +32,19 @@ const useStyles = makeStyles(() => ({
     fontSize: 14
   },
   priceIcon: {
-    color: '#3ACE5B'
+    color: palette.success.dark
   },
   helpIcon: {
-    color: '#646464',
+    color: palette.text.secondary,
     fontSize: 16,
     marginLeft: 4
+  },
+  currentPricePercent: {
+    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    borderRadius: 4
   }
 }));
 
@@ -46,6 +54,8 @@ const Options: React.FC = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [ tokenIndex, setTokenIndex ] = useState(2);
+  const { optionType } = useOptionType();
+  const darkMode = useIsDarkMode();
   const tabItems = [
     {
       image: WBTCIcon,
@@ -105,10 +115,13 @@ const Options: React.FC = () => {
                 <Typography color='textPrimary' component='h2' className={classes.price}>
                   $1,222
                 </Typography>
-                <span className={classes.subText}>
-                  +13%
-                </span>
-                <ArrowDropUpIcon className={classes.priceIcon} />
+                <Box position='relative' display='flex' alignItems='center' ml={1}>
+                  <Box width={1} height={1} style={{opacity: darkMode ? 0.1 : 0.2}} className={classes.currentPricePercent}></Box>
+                  <span className={classes.subText}>
+                    +13%
+                  </span>
+                  <ArrowDropUpIcon className={classes.priceIcon} />
+                </Box>
               </Grid>
             </Box>
             <Box py={1} px={3}>
@@ -131,7 +144,7 @@ const Options: React.FC = () => {
               <Button
                 variant='contained'
                 fullWidth
-                color='primary'
+                color={ optionType === 'call' ? 'primary' : 'secondary' }
               >
                 Deposit
               </Button>
@@ -149,7 +162,7 @@ const Options: React.FC = () => {
                 <HelpIcon className={classes.helpIcon} />
               </Grid>
               <LineChart
-                color='#3ACE5B'
+                color={ optionType === 'call' ? theme.palette.success.dark : theme.palette.error.main }
                 dark={true}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}

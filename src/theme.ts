@@ -78,6 +78,7 @@ export const lightTheme = responsiveFontSizes(
       text: {
         primary: textPrimaryDay,
         secondary: textSecondaryDay,
+        hint: white,
       },
       background: {
         default: backgroundDay,
@@ -271,6 +272,7 @@ export const darkTheme = responsiveFontSizes(
       text: {
         primary: textPrimaryNight,
         secondary: textSecondaryNight,
+        hint: black,
       },
       background: {
         default: backgroundNight,

@@ -15,7 +15,7 @@ import {
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import { SingleDatePicker } from 'react-dates';
-
+import { useOptionType } from 'state/application/hooks';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   input: {
     flexGrow: 1,
     outline: 'none',
+    color: theme.palette.text.primary,
     background: 'transparent',
     border: 'none'
   },
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .DateInput_input': {
-      color: 'white',
+      color: theme.palette.text.primary,
       fontSize: 14,
       backgroundColor: 'transparent !important',
       border: `1px solid ${theme.palette.divider}`,
@@ -74,8 +75,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const OptionFilter: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-
-  const [ optionType, setOptionType ] = useState('call');
+  const { optionType, setOptionType } = useOptionType();
   const [ maturityDate, setMaturityDate ] = useState<any>()
   const [ maturityFocused, setMaturityFocused ] = useState(false)
   const [ strikePrice, setStrikePrice ] = useState<number | number[]>(100)

@@ -4,7 +4,7 @@ import { API as NotifyAPI } from 'bnc-notify';
 import { get } from 'lodash';
 
 import { AppState, AppDispatch } from 'state';
-import { ApplicationNotification, setActiveNotification, ApplicationModal, setActiveModal, setWeb3Settings, setApprovalType as _setApprovalType, setWrapEthModalOpen as _setWrapEthModalOpen, setWrapEth as _setWrapEth } from './actions';
+import { ApplicationNotification, setActiveNotification, ApplicationModal, setActiveModal, setWeb3Settings, setApprovalType as _setApprovalType, setWrapEthModalOpen as _setWrapEthModalOpen, setWrapEth as _setWrapEth, updateOptionType } from './actions';
 
 export function useBlockNumber(): number | undefined {
   return useSelector((state: AppState) => state.application.blockNumber);
@@ -51,6 +51,22 @@ export function usePrices() {
   );
 
   return prices;
+}
+
+export function useOptionType() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { optionType } = useSelector<AppState, AppState['application']>(
+    (state: AppState) => state.application,
+  );
+
+  const setOptionType = useCallback(
+    (optionType: string) => {
+      dispatch(updateOptionType(optionType));
+    },
+    [dispatch],
+  );
+
+  return { optionType, setOptionType };
 }
 
 export async function getPrice(coinName: string) {

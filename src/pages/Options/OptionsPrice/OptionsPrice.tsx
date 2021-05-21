@@ -1,46 +1,52 @@
 import React from 'react';
 import {
   makeStyles,
-  Theme,
   useTheme,
 } from '@material-ui/core/styles';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
+import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import { Box, Grid } from '@material-ui/core';
+import { useOptionType } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(({ palette }) => ({
   chartTop: {
-    background: 'linear-gradient(180deg, #0062FF 0%, #2DE29E 100%)'
+    background: `linear-gradient(180deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`
   },
   chartBottom: {
-    background: 'linear-gradient(180deg, #EB844A 0%, #BF47C3 100%)'
+    background: `linear-gradient(180deg, ${palette.error.main} 0%, ${palette.error.dark} 100%)`
   },
   currentPrice: {
-    backgroundImage: `url(${PriceRectangle})`,
-    backgroundSize: 'cover',
-    padding: '30px 47px 30px 10px',
-    backgroundPosition: '-25px',
+    position: 'absolute',
+    top: 8,
+    left: 16,
     '& p': {
-      color: theme.palette.common.black,
+      color: palette.text.hint,
       margin: 0,
       fontSize: 12,
-    }
+    },
   },
 }));
 
 const OptionsPrice: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const { optionType } = useOptionType();
+  const darkMode = useIsDarkMode();
   
   return (
     <Grid container justify='center' alignItems='center'>
-      <Box className={classes.currentPrice}>
-        <p>Current Price</p>
-        <p><b>$1,749.37</b></p>
+      <Box position='relative' mt={1} mr={-0.75}>
+        <img src={darkMode ? PriceRectangle : PriceRectangleLight} alt='Current Price' />
+        <Box zIndex={2} className={classes.currentPrice}>
+          <p>Current Price</p>
+          <p><b>$1,749.37</b></p>
+        </Box>
       </Box>
-      <Box width={30} height={1.5} mr={-1.5} bgcolor='white' />
+      <Box width={30} height={1.5} mr={-1.5} bgcolor={ darkMode ? theme.palette.common.white : theme.palette.secondary.main } zIndex={10} />
       <Box display='flex' flexDirection='column' justifyContent='space-between' width={12} height={540} border={1} borderColor={theme.palette.divider} borderRadius={12} overflow='hidden'>
-        <Box width={1} height={1/3} className={classes.chartTop} />
-        <Box width={1} height={1/3} className={classes.chartBottom} />
+        <Box width={1} height={1/3} className={optionType === 'call' ? classes.chartTop : classes.chartBottom} />
+        <Box width={1} height={1/3} className={optionType === 'call' ? classes.chartBottom : classes.chartTop} />
       </Box>
     </Grid>
   );

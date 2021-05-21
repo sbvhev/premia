@@ -36,7 +36,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
       color: 'transparent'
     },
     '& > span > span': {
-      color: theme.palette.common.white
+      color: theme.palette.text.primary
     }
   },
 
