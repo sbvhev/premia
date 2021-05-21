@@ -172,6 +172,55 @@ export const lightTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyDay}`,
         },
       },
+      MuiBottomNavigation: {
+        root: {
+          background: 'white',
+          border: 'none',
+          borderRadius: 12,
+          padding: 8,
+          width: 'fit-content',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+        },
+      },
+      MuiBottomNavigationAction: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto',
+
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            background: 'rgba(82, 148, 255, 0.12)',
+            borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
+          },
+        },
+        wrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        label: {
+          marginLeft: 10,
+          fontSize: 14,
+          lineHeight: '18px',
+
+          '&$selected': {
+            fontWeight: 'bold',
+          },
+        },
+      },
     }
   })
 );
@@ -422,6 +471,10 @@ export const darkTheme = responsiveFontSizes(
           fontWeight: 'normal',
           minWidth: 'auto',
 
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
           '& svg': {
             width: '20px',
             height: '18px',
@@ -430,6 +483,10 @@ export const darkTheme = responsiveFontSizes(
           '&$selected': {
             background: 'rgba(82, 148, 255, 0.12)',
             borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
           },
         },
         wrapper: {

@@ -3,14 +3,14 @@ import {
   Box,
   Grid,
   Typography,
+  BottomNavigation,
   BottomNavigationAction,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { SwitchTab, LineChart, RadialChart } from 'components';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { LineChart, RadialChart } from 'components';
+import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
+import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 
@@ -20,33 +20,11 @@ import { shortenAddress } from 'utils';
 import { PageWithSidebar } from 'layouts';
 
 const useStyles = makeStyles(() => ({
-  topContainer: {},
-
   title: {
-    whiteSpace: 'nowrap',
-  },
-
-  titleMobile: {
-    fontSize: '3.1vw',
-  },
-
-  smallerTitle: {
-    whiteSpace: 'nowrap',
-    fontSize: '1.5vw',
-  },
-
-  smallerTitleMobile: {
-    whiteSpace: 'nowrap',
-    fontSize: '2vw',
-  },
-
-  subtitle: {
-    fontWeight: 300,
-  },
-
-  topContainerMobile: {
-    margin: '80px 0 0 12px',
-    width: 'calc(100% - 50px)',
+    fontWeight: 700,
+    fontSize: '28px',
+    lineHeight: '27.5px',
+    marginBottom: 36
   },
 }));
 
@@ -62,150 +40,25 @@ const Stake: React.FC = () => {
       <Grid container direction='column'>
         <Box
           width={1}
-          className={mobile ? classes.topContainerMobile : classes.topContainer}
         >
-          {wallet && wallet.provider && account ? (
-            <>
-              <Typography
-                component='h2'
-                variant='h4'
-                color='textPrimary'
-                style={{
-                  fontFamily: '"Inter"',
-                  fontWeight: 500,
-                  fontSize: 24,
-                  lineHeight: 1.5,
-                }}
-              >
-                Hi {shortenAddress(account ?? '')},
-              </Typography>
-
-              <Typography
-                component='h2'
-                variant='h3'
-                color='textPrimary'
-                style={
-                  !mobile
-                    ? {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                        marginBottom: 32,
-                      }
-                    : {
-                        fontFamily: '"Teko"',
-                        fontWeight: 600,
-                        fontSize: 48,
-                      }
-                }
-              >
-                Welcome to Pro Vaults
-              </Typography>
-            </>
-          ) : (
-            <Typography
-              component='h2'
-              variant='h3'
-              color='textPrimary'
-              style={
-                !mobile
-                  ? {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 48,
-                      marginBottom: 32,
-                    }
-                  : {
-                      fontFamily: '"Teko"',
-                      fontWeight: 600,
-                      fontSize: 40,
-                      marginBottom: 8,
-                    }
-              }
-            >
-              Pro Vaults page
-            </Typography>
-          )}
-          <SwitchTab
-            dark={true}
+          <Typography
+            component='h1'
+            variant='h3'
+            color='textPrimary'
+            className={classes.title}
+          >
+            Vaults
+          </Typography>
+          <BottomNavigation
             value={value}
             onChange={(event, newValue) => {
               setValue(newValue);
             }}
             showLabels={true}
           >
-            <BottomNavigationAction label='Recents' icon={<RestoreIcon />} />
-            <BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
-            <BottomNavigationAction label='Nearby' icon={<LocationOnIcon />} />
-          </SwitchTab>
-          <SwitchTab
-            dark={false}
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-            showLabels={true}
-          >
-            <BottomNavigationAction label='Recents' icon={<RestoreIcon />} />
-            <BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
-            <BottomNavigationAction label='Nearby' icon={<LocationOnIcon />} />
-          </SwitchTab>
-          <LineChart
-            color='#BF47C3'
-            dark={true}
-            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
-            width={500}
-            height={200}
-          />
-          <LineChart
-            color='#14A887'
-            dark={true}
-            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
-            width={500}
-            height={200}
-          />
-          <LineChart
-            color='#BF47C3'
-            dark={false}
-            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
-            width={500}
-            height={200}
-          />
-          <LineChart
-            color='#14A887'
-            dark={false}
-            data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-            categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
-            width={500}
-            height={200}
-          />
-          <RadialChart
-            color='#1EFF78'
-            secondaryColor='#5294FF'
-            width={300}
-            data={[67]}
-          >
-            <UniswapIcon />
-            Pool size in Uni
-            <Typography component='h5' variant='body2' color='textSecondary'>
-              211305
-            </Typography>
-          </RadialChart>
-          <RadialChart
-            color='#EB4A97'
-            secondaryColor='#8C43F6'
-            width={300}
-            data={[67]}
-          >
-            <DaiIcon />
-            Pool size in Dai
-            <Typography component='h5' variant='body2' color='textSecondary'>
-              211305
-            </Typography>
-          </RadialChart>
+            <BottomNavigationAction label='Basic' icon={<BasicIcon />} />
+            <BottomNavigationAction label='Pro' icon={<ProIcon />} />
+          </BottomNavigation>
         </Box>
       </Grid>
     </PageWithSidebar>
