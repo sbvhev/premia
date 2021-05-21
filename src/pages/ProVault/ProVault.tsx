@@ -121,4 +121,4 @@ const Stake: React.FC = () => {
   );
 };
 
-export default Stake;
+export default Vault;
