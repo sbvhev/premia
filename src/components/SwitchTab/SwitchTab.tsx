@@ -15,7 +15,6 @@ const useStyles = makeStyles(({ palette }) => ({
   root: {
     border: `1px solid ${palette.divider}`,
     background: palette.background.default,
-    // boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
   },
 }));
 
