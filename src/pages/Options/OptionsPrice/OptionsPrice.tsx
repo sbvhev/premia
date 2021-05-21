@@ -6,7 +6,7 @@ import {
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import { Box, Grid } from '@material-ui/core';
-import { useOptionType } from 'state/application/hooks';
+import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({

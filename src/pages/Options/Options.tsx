@@ -14,7 +14,7 @@ import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { LineChart } from 'components';
-import { useOptionType } from 'state/application/hooks';
+import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { PageWithSidebar } from 'layouts';
 
