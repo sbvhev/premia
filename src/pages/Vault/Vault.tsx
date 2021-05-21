@@ -5,12 +5,10 @@ import {
   Typography,
   BottomNavigation,
   BottomNavigationAction,
-  useMediaQuery,
   Paper,
   Button,
 } from '@material-ui/core';
-import cn from 'classnames';
-import { makeStyles, useTheme, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import { LineChart, RadialChart } from 'components';
 import { Help } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
@@ -21,7 +19,6 @@ import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import BasicVault from './BasicVault';
 
-import { useWeb3 } from 'state/application/hooks';
 import { PageWithSidebar } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -101,10 +98,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ProVault: React.FC = () => {
-  const { account, wallet } = useWeb3();
   const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [value, setValue] = useState(0);
 
   return (

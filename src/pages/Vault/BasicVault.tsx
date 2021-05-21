@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
   Box,
@@ -8,11 +8,8 @@ import {
   Button,
   Select,
   FormControl,
-  InputLabel,
   MenuItem,
-  useMediaQuery,
   Grid,
-  Paper,
 } from '@material-ui/core';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
@@ -23,7 +20,6 @@ import { ReactComponent as VaultBlueIcon } from 'assets/svg/VaultBlue.svg';
 import { ReactComponent as VaultGreenIcon } from 'assets/svg/VaultGreen.svg';
 import { ReactComponent as VaultRedIcon } from 'assets/svg/VaultRed.svg';
 import { ExpandMore, Check } from '@material-ui/icons';
-import { findLastIndex } from 'lodash';
 
 const useStyles = makeStyles(({ palette }) => ({
   borderedCard: {
@@ -237,8 +233,6 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const BasicVault: React.FC = () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [coin, setCoin] = useState<any>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
