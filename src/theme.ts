@@ -174,7 +174,7 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiOutlinedInput: {
         root: {
-          border: `1px solid ${dividerGreyNight}`,
+          border: `1px solid ${dividerGreyDay}`,
           borderRadius: 12,
           height: 45,
           paddingLeft: 8,
@@ -205,6 +205,63 @@ export const lightTheme = responsiveFontSizes(
         input: {
           padding: 4,
         },
+      },
+      MuiTabs: {
+        root: {
+          height: 55,
+          border: 'none',
+          padding: '0 8px',
+          width: 'auto',
+          background: 'white',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.074)',
+          borderRadius: 12,
+
+          '& .MuiTabs-indicator': {
+            background: primary,
+            borderRadius: 1.25,
+            boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
+          }
+        }
+      },
+      MuiTab: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto !important',
+          padding: '0 30px',
+          width: 'fit-content',
+
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
+          },
+        },
+        labelIcon: {
+          minHeight: '50px',
+          paddingTop: 0,
+        },
+        wrapper: {
+          textTransform: 'initial',
+          flexDirection: 'row',
+
+          '& svg': {
+            marginBottom: '0px !important',
+            marginRight: 8
+          }
+        }
       },
       MuiBottomNavigation: {
         root: {

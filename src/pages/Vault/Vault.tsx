@@ -26,6 +26,7 @@ import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/ETHIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
+import { useIsDarkMode } from 'state/user/hooks';
 import BasicVault from './BasicVault';
 
 import { PageWithSidebar } from 'layouts';
@@ -119,7 +120,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& > div': {
-      background: '#181818',
+      background: (props: any) => props.dark ? '#181818': 'white',
     },
 
     '& path': {
@@ -129,7 +130,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ProVault: React.FC = () => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const [value, setValue] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
 

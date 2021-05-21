@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
+
 export interface LineChartProps {
   color: string;
   data?: Array<number>;
@@ -17,6 +18,7 @@ const LineChart: React.FC<LineChartProps> = ({
   height = 200,
 }) => {
   const theme = useTheme();
+  
   const options = {
     chart: {
       sparkline: {
