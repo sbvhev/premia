@@ -25,7 +25,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
-import { Dashboard, Options, Stake, ProVault } from './pages';
+import { Dashboard, Options, Stake, Vault } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,

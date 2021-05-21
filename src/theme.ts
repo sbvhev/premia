@@ -245,61 +245,40 @@ export const lightTheme = responsiveFontSizes(
         },
       },
       MuiTabs: {
-        root: {
-          height: 55,
-          border: 'none',
-          padding: '0 8px',
-          width: 'auto',
-          background: 'white',
-          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.074)',
-          borderRadius: 12,
-
-          '& .MuiTabs-indicator': {
-            background: primary,
-            borderRadius: 1.25,
-            boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
-          }
-        }
+        scroller: {
+          padding: '0 10px',
+        },
+        indicator: {
+          background: primary,
+          borderRadius: 1.25,
+          boxShadow: '0px 0px 11px rgba(82, 148, 255, 0.0001)'
+        },
       },
       MuiTab: {
-        root: {
-          fontSize: 14,
-          lineHeight: '18px',
-          fontWeight: 'normal',
-          minWidth: 'auto !important',
-          padding: '0 30px',
-          width: 'fit-content',
-
-          '& path': {
-            fill: greySecondaryNight,
-          },
-
-          '& svg': {
-            width: '20px',
-            height: '18px',
-          },
-
-          '&$selected': {
-            borderRadius: 10,
-
-            '& path': {
-              fill: primary
-            }
-          },
-        },
         labelIcon: {
-          minHeight: '50px',
+          minWidth: 98,
+          minHeight: 55,
           paddingTop: 0,
+          padding: 0,
+          '&.Mui-selected': {
+            color: primary,
+          }
         },
         wrapper: {
-          textTransform: 'initial',
+          display: 'flex',
           flexDirection: 'row',
-
-          '& svg': {
-            marginBottom: '0px !important',
-            marginRight: 8
+          alignItems: 'center',
+          '& img:first-child': {
+            marginBottom: '0 !important',
+            marginRight: 6,
+            height: 24
+          },
+          '& img:nth-child(2)': {
+            position: 'absolute',
+            top: 8,
+            right: 0
           }
-        }
+        },
       },
       MuiBottomNavigation: {
         root: {
@@ -569,7 +548,7 @@ export const darkTheme = responsiveFontSizes(
             top: 8,
             right: 0
           }
-        }
+        },
       },
       MuiFab: {
         extended: {
@@ -663,61 +642,6 @@ export const darkTheme = responsiveFontSizes(
           borderRadius: 12,
           border: `1px solid ${dividerGreyNight}`,
         },
-      },
-      MuiTabs: {
-        root: {
-          height: 55,
-          border: `1px solid ${dividerGreyNight}`,
-          padding: '0 8px',
-          width: 'auto',
-          borderRadius: 12,
-
-          '& .MuiTabs-indicator': {
-            background: '#F7FAFF',
-            borderRadius: 1.25,
-            boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
-          }
-        }
-      },
-      MuiTab: {
-        root: {
-          fontSize: 14,
-          lineHeight: '18px',
-          fontWeight: 'normal',
-          minWidth: 'auto !important',
-          padding: '0 30px',
-          width: 'fit-content',
-
-          '& path': {
-            fill: greySecondaryNight,
-          },
-
-          '& svg': {
-            width: '20px',
-            height: '18px',
-          },
-
-          '&$selected': {
-            borderRadius: 10,
-
-            '& path': {
-              fill: primary
-            }
-          },
-        },
-        labelIcon: {
-          minHeight: '50px',
-          paddingTop: 0,
-        },
-        wrapper: {
-          textTransform: 'initial',
-          flexDirection: 'row',
-
-          '& svg': {
-            marginBottom: '0px !important',
-            marginRight: 8
-          }
-        }
       },
       MuiBottomNavigation: {
         root: {

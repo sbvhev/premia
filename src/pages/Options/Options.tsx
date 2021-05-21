@@ -4,11 +4,11 @@ import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SearchIcon from '@material-ui/icons/Search';
-import WBTCIcon from 'assets/svg/WBTCIcon.svg';
+import WBTCIcon from 'assets/svg/wBTCIcon.svg';
 import UniIcon from 'assets/svg/UniIcon.svg';
 import LinkIcon from 'assets/svg/LinkIcon.svg';
 import YFIIcon from 'assets/svg/YFIIcon.svg';
-import EthIcon from 'assets/svg/EthIcon.svg';
+import EthIcon from 'assets/svg/ETHIcon.svg';
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
@@ -163,7 +163,6 @@ const Options: React.FC = () => {
               </Grid>
               <LineChart
                 color={ optionType === 'call' ? theme.palette.success.dark : theme.palette.error.main }
-                dark={true}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
                 width='100%'
