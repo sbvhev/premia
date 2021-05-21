@@ -172,6 +172,146 @@ export const lightTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyDay}`,
         },
       },
+      MuiOutlinedInput: {
+        root: {
+          border: `1px solid ${dividerGreyDay}`,
+          borderRadius: 12,
+          height: 45,
+          paddingLeft: 8,
+
+          '& .MuiSelect-root': {
+            paddingLeft: 0,
+            alignItems: 'center',
+            display: 'flex',
+
+            '& svg': {
+              width: 16,
+              height: 16,
+              marginRight: 8, 
+
+              '& path': {
+                fill: primary
+              }
+            },
+
+            '&:focus': {
+              background: 'transparent'
+            }
+          }
+        },
+        notchedOutline: {
+          border: 'none',
+        },
+        input: {
+          padding: 4,
+        },
+      },
+      MuiTabs: {
+        root: {
+          height: 55,
+          border: 'none',
+          padding: '0 8px',
+          width: 'auto',
+          background: 'white',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.074)',
+          borderRadius: 12,
+
+          '& .MuiTabs-indicator': {
+            background: primary,
+            borderRadius: 1.25,
+            boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
+          }
+        }
+      },
+      MuiTab: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto !important',
+          padding: '0 30px',
+          width: 'fit-content',
+
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
+          },
+        },
+        labelIcon: {
+          minHeight: '50px',
+          paddingTop: 0,
+        },
+        wrapper: {
+          textTransform: 'initial',
+          flexDirection: 'row',
+
+          '& svg': {
+            marginBottom: '0px !important',
+            marginRight: 8
+          }
+        }
+      },
+      MuiBottomNavigation: {
+        root: {
+          background: 'white',
+          border: 'none',
+          borderRadius: 12,
+          padding: 8,
+          width: 'fit-content',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+        },
+      },
+      MuiBottomNavigationAction: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto',
+
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            background: 'rgba(82, 148, 255, 0.12)',
+            borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
+          },
+        },
+        wrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        label: {
+          marginLeft: 10,
+          fontSize: 14,
+          lineHeight: '18px',
+
+          '&$selected': {
+            fontWeight: 'bold',
+          },
+        },
+      },
     }
   })
 );
@@ -244,7 +384,6 @@ export const darkTheme = responsiveFontSizes(
     },
     overrides: {
       MuiInputBase: {
-        root: {},
       },
       MuiInput: {
         underline: {
@@ -267,7 +406,32 @@ export const darkTheme = responsiveFontSizes(
         },
       },
       MuiOutlinedInput: {
-        root: {},
+        root: {
+          border: `1px solid ${dividerGreyNight}`,
+          borderRadius: 12,
+          height: 45,
+          paddingLeft: 8,
+
+          '& .MuiSelect-root': {
+            paddingLeft: 0,
+            alignItems: 'center',
+            display: 'flex',
+
+            '& svg': {
+              width: 16,
+              height: 16,
+              marginRight: 8, 
+
+              '& path': {
+                fill: primary
+              }
+            },
+
+            '&:focus': {
+              background: 'transparent'
+            }
+          }
+        },
         notchedOutline: {
           border: 'none',
         },
@@ -405,6 +569,61 @@ export const darkTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyNight}`,
         },
       },
+      MuiTabs: {
+        root: {
+          height: 55,
+          border: `1px solid ${dividerGreyNight}`,
+          padding: '0 8px',
+          width: 'auto',
+          borderRadius: 12,
+
+          '& .MuiTabs-indicator': {
+            background: '#F7FAFF',
+            borderRadius: 1.25,
+            boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
+          }
+        }
+      },
+      MuiTab: {
+        root: {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'normal',
+          minWidth: 'auto !important',
+          padding: '0 30px',
+          width: 'fit-content',
+
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
+          '& svg': {
+            width: '20px',
+            height: '18px',
+          },
+
+          '&$selected': {
+            borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
+          },
+        },
+        labelIcon: {
+          minHeight: '50px',
+          paddingTop: 0,
+        },
+        wrapper: {
+          textTransform: 'initial',
+          flexDirection: 'row',
+
+          '& svg': {
+            marginBottom: '0px !important',
+            marginRight: 8
+          }
+        }
+      },
       MuiBottomNavigation: {
         root: {
           background: black,
@@ -422,6 +641,10 @@ export const darkTheme = responsiveFontSizes(
           fontWeight: 'normal',
           minWidth: 'auto',
 
+          '& path': {
+            fill: greySecondaryNight,
+          },
+
           '& svg': {
             width: '20px',
             height: '18px',
@@ -430,6 +653,10 @@ export const darkTheme = responsiveFontSizes(
           '&$selected': {
             background: 'rgba(82, 148, 255, 0.12)',
             borderRadius: 10,
+
+            '& path': {
+              fill: primary
+            }
           },
         },
         wrapper: {

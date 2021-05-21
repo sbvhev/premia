@@ -1,12 +1,13 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
+
 export interface LineChartProps {
   color: string;
   data?: Array<number>;
   categories?: Array<string>;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   palette?: Object;
 }
 const LineChart: React.FC<LineChartProps> = ({
@@ -17,6 +18,7 @@ const LineChart: React.FC<LineChartProps> = ({
   height = 200,
 }) => {
   const theme = useTheme();
+  
   const options = {
     chart: {
       sparkline: {
@@ -37,7 +39,7 @@ const LineChart: React.FC<LineChartProps> = ({
       type: 'gradient',
       colors: [color],
       gradient: {
-        gradientToColors: [theme.palette.background.default],
+        gradientToColors: [theme.palette.background.paper],
         shadeIntensity: 1,
         opacityFrom: 0.7,
         opacityTo: 0.9,
