@@ -7,16 +7,25 @@ import {
   BottomNavigationAction,
   Paper,
   Button,
+  Tabs,
+  Tab,
+  InputAdornment,
+  IconButton,
+  TextField
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { LineChart, RadialChart } from 'components';
-import { Help } from '@material-ui/icons';
+import { Help, Search } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
+import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
+import { ReactComponent as ETHIcon } from 'assets/svg/ETHIcon.svg';
+import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
+import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import BasicVault from './BasicVault';
 
 import { PageWithSidebar } from 'layouts';
@@ -95,11 +104,34 @@ const useStyles = makeStyles((theme: Theme) => ({
       lineHeight: '24px',
     },
   },
+  box: {
+    width: 'calc(100% - 300px)',
+    position: 'relative'
+  },
+  searchField: {
+    right: 5,
+    top: 5,
+    position: 'absolute',
+    color: '#646464',
+    
+    '& label': {
+      top: -6
+    },
+    
+    '& > div': {
+      background: '#181818',
+    },
+
+    '& path': {
+      fill: '#646464'
+    },
+  }
 }));
 
 const ProVault: React.FC = () => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
 
   return (
     <PageWithSidebar>
@@ -113,17 +145,48 @@ const ProVault: React.FC = () => {
           >
             Vaults
           </Typography>
-          <Grid container direction='row' className={classes.topTab}>
+          <Grid container direction='row' className={classes.topTab} spacing={3}>
             <BottomNavigation
               value={value}
               onChange={(event, newValue) => {
                 setValue(newValue);
               }}
               showLabels={true}
+              style={{ marginRight: '16px' }}
             >
               <BottomNavigationAction label='Basic' icon={<BasicIcon />} />
               <BottomNavigationAction label='Pro' icon={<ProIcon />} />
             </BottomNavigation>
+            <Box component="div" className={classes.box}>
+              <Tabs
+                value={tabIndex}
+                indicatorColor="primary"
+                textColor="primary"
+                onChange={(event, newValue) => {
+                  setTabIndex(newValue);
+                }}
+              >
+                <Tab label="wBTC" icon={<WBTCIcon />}/>
+                <Tab label="Uni" icon={<UniswapIcon />} />
+                <Tab label="Link" icon={<LinkIcon />}/>
+                <Tab label="YFI" icon={<YFIIcon />} />
+                <Tab label="ETH" icon={<ETHIcon />} />
+              </Tabs>
+              <TextField
+                label="Search..."
+                variant="outlined"
+                className={classes.searchField}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment component="div" position="end">
+                      <IconButton>
+                        <Search />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Box>
           </Grid>
           {value === 0 && <BasicVault />}
           {value === 1 && (
