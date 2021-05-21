@@ -25,7 +25,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
-import { Dashboard, Stake, ProVault } from './pages';
+import { Dashboard, Stake, Vault } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -177,8 +177,8 @@ const App: React.FC = () => {
           <Stake />
         </Route>
 
-        <Route exact path='/provault'>
-          <ProVault />
+        <Route exact path='/vaults'>
+          <Vault />
         </Route>
 
         <Route path='*'>

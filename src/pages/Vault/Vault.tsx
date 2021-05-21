@@ -11,12 +11,14 @@ import {
 } from '@material-ui/core';
 import cn from 'classnames';
 import { makeStyles, useTheme, Theme } from '@material-ui/core/styles';
+import { Help } from '@material-ui/icons';
 import { LineChart, RadialChart } from 'components';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
+import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
+import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
-import { ArrowUpward, ArrowDownward, Help } from '@material-ui/icons';
 
 import { useWeb3 } from 'state/application/hooks';
 import { PageWithSidebar } from 'layouts';
@@ -32,8 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: 20,
   },
   mainContent: {},
-  call: {},
-  put: {},
   subtitle: {
     display: 'flex',
     alignItems: 'center',
@@ -133,10 +133,10 @@ const ProVault: React.FC = () => {
           </Grid>
           <Grid container direction='row' spacing={3}>
             <Grid item xs={6}>
-              <Paper className={classes.call}>
+              <Paper>
                 <Box component='div' className={classes.topSector}>
                   <Box component='div' className={classes.header}>
-                    <ArrowUpward />
+                    <CallUpIcon />
                     <Typography
                       variant='h6'
                       component='h1'
@@ -327,10 +327,10 @@ const ProVault: React.FC = () => {
               </Paper>
             </Grid>
             <Grid item xs={6}>
-              <Paper className={classes.call}>
+              <Paper>
                 <Box component='div' className={classes.topSector}>
                   <Box component='div' className={classes.header}>
-                    <ArrowUpward />
+                    <PoolDownIcon />
                     <Typography
                       variant='h6'
                       component='h1'

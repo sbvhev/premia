@@ -25,7 +25,7 @@ const navigation = [
   },
   {
     title: 'Vaults',
-    link: '/provault',
+    link: '/vaults',
     Icon: VaultsIcon,
   },
   {
