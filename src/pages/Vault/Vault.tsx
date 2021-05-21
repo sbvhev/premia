@@ -104,7 +104,7 @@ const ProVault: React.FC = () => {
   return (
     <PageWithSidebar>
       <Grid container direction='column'>
-        <Box width={1}>
+        <Box width={1} style={{ paddingBottom: '60px' }}>
           <Typography
             component='h1'
             variant='h3'
