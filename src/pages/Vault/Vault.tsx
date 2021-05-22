@@ -12,10 +12,14 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import { LineChart, RadialChart } from 'components';
-import { Help, Search } from '@material-ui/icons';
+import { Help, Search, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
@@ -37,9 +41,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '28px',
     lineHeight: '27.5px',
     marginBottom: 36,
+
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
   topTab: {
     marginBottom: 20,
+
+    [theme.breakpoints.down('md')]: {
+      marginTop: 20,
+    },
   },
   mainContent: {},
   subtitle: {
@@ -104,6 +116,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& h2': {
       lineHeight: '24px',
     },
+
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   box: {
     width: 'calc(100% - 200px)',
@@ -120,20 +136,53 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& > div': {
-      background: (props: any) => props.dark ? '#181818': 'white',
+      background: (props: any) => (props.dark ? '#181818' : 'white'),
     },
 
     '& path': {
       fill: '#646464',
     },
   },
+  menuItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+
+    '& svg': {
+      marginRight: 8,
+      width: 16,
+      height: 16,
+    },
+  },
+  col: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    marginTop: 22,
+  },
+  elementHeader: {
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: '24px',
+  },
 }));
 
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
+  const theme = useTheme();
   const [value, setValue] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
+  const [coin, setCoin] = useState<any>(null);
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
+  ) => {
+    const coin = event.target.value;
+    setCoin(coin);
+  };
 
   return (
     <PageWithSidebar>
@@ -147,23 +196,22 @@ const ProVault: React.FC = () => {
           >
             Vaults
           </Typography>
-          <Grid
-            container
-            direction='row'
-            className={classes.topTab}
-          >
+          <Grid container direction='row' className={classes.topTab}>
             <BottomNavigation
               value={value}
               onChange={(event, newValue) => {
                 setValue(newValue);
               }}
               showLabels={true}
-              style={{ marginRight: '16px' }}
+              style={{
+                marginRight: mobile ? '0' : '16px',
+                width: mobile ? '100%' : '',
+              }}
             >
               <BottomNavigationAction label='Basic' icon={<BasicIcon />} />
               <BottomNavigationAction label='Pro' icon={<ProIcon />} />
             </BottomNavigation>
-            {value === 1 && (
+            {!mobile && value === 1 && (
               <Box component='div' className={classes.box}>
                 <Tabs
                   value={tabIndex}
@@ -184,7 +232,7 @@ const ProVault: React.FC = () => {
                   variant='outlined'
                   className={classes.searchField}
                   InputLabelProps={{
-                    shrink: false
+                    shrink: false,
                   }}
                   InputProps={{
                     endAdornment: (
@@ -198,11 +246,77 @@ const ProVault: React.FC = () => {
                 />
               </Box>
             )}
+            {mobile && value === 1 && (
+              <>
+                <Box className={classes.col}>
+                  <Box
+                    display='flex'
+                    style={{
+                      margin: '0 8px 2px',
+                      justifyContent: 'flex-start',
+                    }}
+                  >
+                    <Typography
+                      component='p'
+                      color='textPrimary'
+                      className={classes.elementHeader}
+                    >
+                      Pool
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box width='100%' height='46px'>
+                  <FormControl variant='outlined' fullWidth>
+                    <Select
+                      IconComponent={() => {
+                        return <ExpandMore />;
+                      }}
+                      value={coin}
+                      onChange={handleChange}
+                      inputProps={{
+                        name: 'age',
+                      }}
+                    >
+                      <MenuItem className={classes.menuItem} value='wBTC'>
+                        <WBTCIcon />
+                        <Typography component='span' color='textSecondary'>
+                          Uni
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem className={classes.menuItem} value='Uni'>
+                        <UniswapIcon />
+                        <Typography component='span' color='textSecondary'>
+                          Uni
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem className={classes.menuItem} value='Link'>
+                        <LinkIcon />
+                        <Typography component='span' color='textSecondary'>
+                          Link
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem className={classes.menuItem} value='YFI'>
+                        <YFIIcon />
+                        <Typography component='span' color='textSecondary'>
+                          YFI
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem className={classes.menuItem} value='ETH'>
+                        <ETHIcon />
+                        <Typography component='span' color='textSecondary'>
+                          Eth
+                        </Typography>
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </>
+            )}
           </Grid>
           {value === 0 && <BasicVault />}
           {value === 1 && (
             <Grid container direction='row' spacing={3}>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Paper>
                   <Box component='div' className={classes.topSector}>
                     <Box component='div' className={classes.header}>
@@ -222,7 +336,11 @@ const ProVault: React.FC = () => {
                         78% Utilization
                       </Typography>
                     </Box>
-                    <Grid container direction='row'>
+                    <Grid
+                      container
+                      direction={!mobile ? 'row' : 'column'}
+                      alignItems={!mobile ? 'flex-start' : 'center'}
+                    >
                       <RadialChart
                         color='#5294FF'
                         secondaryColor='#1EFF78'
@@ -396,7 +514,7 @@ const ProVault: React.FC = () => {
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} style={{ marginBottom: 40 }}>
                 <Paper>
                   <Box component='div' className={classes.topSector}>
                     <Box component='div' className={classes.header}>
@@ -416,7 +534,11 @@ const ProVault: React.FC = () => {
                         78% Utilization
                       </Typography>
                     </Box>
-                    <Grid container direction='row'>
+                    <Grid
+                      container
+                      direction={!mobile ? 'row' : 'column'}
+                      alignItems={!mobile ? 'flex-start' : 'center'}
+                    >
                       <RadialChart
                         color='#EB4A97'
                         secondaryColor='#8C43F6'

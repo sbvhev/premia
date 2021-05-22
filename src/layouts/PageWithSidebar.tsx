@@ -85,12 +85,21 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           )}
 
           { mobile && !mobileSidebarHidden &&
-            <Box width={1} mt={12} mb={10}>
-              <Box p={1}><AccountButtons mobile={true} /></Box>
-              <Divider />
-              <Box p={1}><Sidebar mobile={true} /></Box>
+            <Box width={1} position='relative' style={{ marginBottom: 0 }}>
+              {!mobileSidebarHidden && (
+                <Box p={1}>
+                  <AccountButtons mobile />
+                </Box>
+              )}
+              {!mobileSidebarHidden && <Divider />}
+              {!mobileSidebarHidden && (
+                <Box p={1}>
+                  <Sidebar mobile />
+                </Box>
+              )}
             </Box>
           }
+
 
           { mobileSidebarHidden && 
             <Box px={mobile ? 0 : 3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
