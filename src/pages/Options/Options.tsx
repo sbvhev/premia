@@ -49,7 +49,6 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const Options: React.FC = () => {
-  // const { account, wallet } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
