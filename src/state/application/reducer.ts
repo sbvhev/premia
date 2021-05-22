@@ -15,8 +15,7 @@ import {
   updateTokenPrices,
   setApprovalType,
   setWrapEthModalOpen,
-  setWrapEth,
-  updateOptionType
+  setWrapEth
 } from './actions';
 
 export interface ApplicationState {
@@ -38,7 +37,6 @@ export interface ApplicationState {
   approvalType: string | null;
   wrapEthModalOpen: boolean;
   wrapEth: boolean;
-  optionType: string;
 }
 
 export const initialState: ApplicationState = {
@@ -62,7 +60,6 @@ export const initialState: ApplicationState = {
   approvalType: 'write',
   wrapEthModalOpen: false,
   wrapEth: true,
-  optionType: 'call'
 };
 
 export default createReducer(initialState, (builder) =>
@@ -123,7 +120,4 @@ export default createReducer(initialState, (builder) =>
     .addCase(setWrapEth, (state, { payload }) => {
       state.wrapEth = payload;
     })
-    .addCase(updateOptionType, (state, { payload }) => {
-      state.optionType = payload;
-    }),
 );
