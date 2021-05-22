@@ -4,7 +4,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Hamburger from 'hamburger-react';
 import cx from 'classnames';
-
+import { useDarkModeManager } from 'state/user/hooks';
+import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
 import MainLogo from 'assets/svg/MainLogo.svg';
 import { AccountButtons, Sidebar, Footer } from 'components';
 
@@ -38,31 +39,25 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 }) => {
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
   const theme = useTheme();
+  const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
 
   return (
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
-        {!mobile && (
+        {!mobile && 
           <Box position='fixed' left={0} width={260}>
             <Sidebar />
           </Box>
-        )}
-        <Box
-          id='test'
-          className={cx(classes.page, mobile && classes.pageMobile)}
-        >
+        }
+        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
-            <Box
-              p={mobile ? 1 : 3}
-              px={mobile ? 2 : 3}
-              className={cx(mobile && classes.border)}
-            >
+            <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} zIndex={10} bgcolor='background.default' p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
                   <Grid item>
-                    <img src={MainLogo} alt='main logo' />
+                    <img src={darkMode ? MainLogo : MainLogoBlack} alt='main logo' />
                   </Grid>
                 )}
                 <Grid item>
@@ -89,7 +84,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           )}
 
-          {mobile && (
+          { mobile && !mobileSidebarHidden &&
             <Box width={1} position='relative' style={{ marginBottom: 0 }}>
               {!mobileSidebarHidden && (
                 <Box p={1}>
@@ -103,15 +98,15 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 </Box>
               )}
             </Box>
-          )}
+          }
 
-          {mobileSidebarHidden && (
-            <Box py={1} px={3} width={1} mx='auto' style={{ padding: mobile ? '8px 0': '8px 24px' }}>
+          { mobileSidebarHidden && 
+            <Box px={mobile ? 0 : 3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
               <Container>{children}</Container>
             </Box>
-          )}
+          }
 
-          <Box position='absolute' width={1} bottom={0}>
+          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} bgcolor='background.default'>
             <Footer />
           </Box>
         </Box>

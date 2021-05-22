@@ -8,6 +8,9 @@ import {
   CssBaseline,
 } from '@material-ui/core';
 
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+
 import {
   useModalOpen,
   useCloseModals,
@@ -25,7 +28,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
-import { Dashboard, Stake, Vault } from './pages';
+import { Dashboard, Options, Stake, Vault } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -171,6 +174,10 @@ const App: React.FC = () => {
       <Switch>
         <Route exact path='/'>
           <Dashboard />
+        </Route>
+
+        <Route exact path='/options'>
+          <Options />
         </Route>
 
         <Route exact path='/stake'>

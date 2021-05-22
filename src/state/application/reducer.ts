@@ -15,7 +15,7 @@ import {
   updateTokenPrices,
   setApprovalType,
   setWrapEthModalOpen,
-  setWrapEth,
+  setWrapEth
 } from './actions';
 
 export interface ApplicationState {
@@ -119,5 +119,5 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setWrapEth, (state, { payload }) => {
       state.wrapEth = payload;
-    }),
+    })
 );

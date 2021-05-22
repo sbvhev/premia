@@ -32,6 +32,10 @@ const useStyles = makeStyles(() => ({
     width: 35,
     marginLeft: 4,
   },
+
+  footerDivider: {
+    width: '100%',
+  },
 }));
 
 const Footer: React.FC = () => {
@@ -86,6 +90,10 @@ const Footer: React.FC = () => {
             />
           </Box>
         </Grid>
+        {
+          mobile &&
+            <Divider className={classes.footerDivider} />
+        }
       </Grid>
     </Box>
   );
