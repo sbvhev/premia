@@ -17,8 +17,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import { SingleDatePicker } from 'react-dates';
 import { useOptionType, useMaturityDate, useStrikePrice, useOptionSize } from 'state/options/hooks';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
