@@ -213,6 +213,7 @@ export const lightTheme = responsiveFontSizes(
       MuiOutlinedInput: {
         root: {
           border: `1px solid ${dividerGreyDay}`,
+          background: 'white',
           borderRadius: 12,
           height: 45,
           paddingLeft: 8,
@@ -451,6 +452,7 @@ export const darkTheme = responsiveFontSizes(
       MuiOutlinedInput: {
         root: {
           border: `1px solid ${dividerGreyNight}`,
+          background: 'black',
           borderRadius: 12,
           height: 45,
           paddingLeft: 8,
