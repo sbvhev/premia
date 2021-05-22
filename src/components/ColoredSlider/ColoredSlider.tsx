@@ -26,8 +26,6 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     },
   },
 
-  active: {},
-
   valueLabel: {
     left: 'calc(-50% - 8px)',
     top: 20,
