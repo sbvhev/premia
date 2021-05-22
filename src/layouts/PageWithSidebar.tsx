@@ -90,7 +90,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           )}
 
           {mobile && (
-            <Box width={1} position='relative' style={{ marginBottom: 90 }}>
+            <Box width={1} position='relative' style={{ marginBottom: 0 }}>
               {!mobileSidebarHidden && (
                 <Box p={1}>
                   <AccountButtons mobile />
@@ -106,7 +106,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           )}
 
           {mobileSidebarHidden && (
-            <Box py={1} px={3} width={1} mx='auto'>
+            <Box py={1} px={3} width={1} mx='auto' style={{ padding: mobile ? '8px 0': '8px 24px' }}>
               <Container>{children}</Container>
             </Box>
           )}

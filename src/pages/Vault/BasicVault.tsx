@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import {
   Box,
@@ -10,6 +10,7 @@ import {
   FormControl,
   MenuItem,
   Grid,
+  useMediaQuery,
 } from '@material-ui/core';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
@@ -22,7 +23,7 @@ import { ReactComponent as VaultRedIcon } from 'assets/svg/VaultRed.svg';
 import { ExpandMore, Check } from '@material-ui/icons';
 import { useIsDarkMode } from 'state/user/hooks';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   borderedCard: {
     alignSelf: 'flex-start',
     flexDirection: 'column',
@@ -33,6 +34,11 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
+
+    [breakpoints.down('md')]: {
+      width: '100%',
+      marginRight: 0,
+    },
   },
   titleBox: {
     display: 'flex',
@@ -122,6 +128,10 @@ const useStyles = makeStyles(({ palette }) => ({
     paddingTop: 32,
     width: 'calc(100% - 460px)',
 
+    [breakpoints.down('md')]: {
+      width: '100%',
+    },
+
     '& $title': {
       marginBottom: 12,
       height: 20,
@@ -139,7 +149,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'relative',
     zIndex: 2,
 
-    '& svg': {
+    '& > svg': {
       width: 90,
       height: 90,
       marginBottom: 18,
@@ -165,13 +175,13 @@ const useStyles = makeStyles(({ palette }) => ({
       },
 
       '& $background': {
-        zIndex: 0
+        zIndex: 0,
       },
 
       '& $select': {
         zIndex: 4,
-        background: palette.background.paper
-      }
+        background: palette.background.paper,
+      },
     },
 
     '&:hover': {
@@ -187,22 +197,30 @@ const useStyles = makeStyles(({ palette }) => ({
         borderRadius: 'inherit',
         background: `linear-gradient(to right, #5294FF, #1EFF78)`,
       },
+    },
 
-      '& $select': {
-        zIndex: 4,
+    [breakpoints.down('md')]: {
+      flexDirection: 'row',
+      padding: 20,
+
+      '& > svg': {
+        marginBottom: 0,
+        minWidth: 80,
+        minHeight: 80,
       },
     },
   },
   select: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: (props: any) => props.dark ? "white": "black",
+    color: (props: any) => (props.dark ? 'white' : 'black'),
+    background: palette.background.paper,
     fontSize: 14,
     lineHeight: '18px',
     borderRadius: 9,
     height: 40,
     width: 140,
     display: 'flex',
-    zIndex: -1,
+    zIndex: 4,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 12,
@@ -212,16 +230,22 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 16,
       height: 16,
       marginRight: 8,
-      marginBottom: 0
+      marginBottom: 0,
     },
 
     '&:hover': {
       background: palette.background.paper,
       border: 'transparent',
     },
+
+    [breakpoints.down('md')]: {
+      height: 32,
+      marginTop: 4,
+      width: '100%'
+    },
   },
   background: {
-    background: (props: any) => props.dark ? '#080f19': '#e2eaf6',
+    background: (props: any) => (props.dark ? '#080f19' : '#e2eaf6'),
     borderRadius: 12,
     zIndex: 3,
     position: 'absolute',
@@ -235,8 +259,10 @@ const useStyles = makeStyles(({ palette }) => ({
 const BasicVault: React.FC = () => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
+  const theme = useTheme();
   const [coin, setCoin] = useState<any>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
@@ -246,7 +272,7 @@ const BasicVault: React.FC = () => {
   };
 
   return (
-    <Grid container direction='row'>
+    <Grid container direction={!mobile ? 'row' : 'column'}>
       <Box className={classes.borderedCard}>
         <Box className={classes.titleBox}>
           <Box>
@@ -383,96 +409,109 @@ const BasicVault: React.FC = () => {
             style={{ height: 'calc(100% - 18px)' }}
             spacing={2}
           >
-            <Grid item xs={4}>
+            <Grid item md={4} sm={12} xs={12}>
               <Box
                 className={cn(
                   classes.vaultCard,
                   selectedIndex === 1 ? 'selected' : '',
                 )}
+                onClick={() => {
+                  setSelectedIndex(1);
+                }}
               >
                 <Box className={classes.background} />
                 <VaultBlueIcon />
-                <Typography
-                  component='h2'
-                  color='textSecondary'
-                  variant='body2'
+                <Grid
+                  container
+                  direction='column'
+                  alignItems={!mobile ? 'center' : 'flex-start'}
+                  style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
-                  Low risk
-                </Typography>
-                <Typography component='h2' color='textPrimary'>
-                  10% Expected APY
-                </Typography>
-                <Box
-                  className={classes.select}
-                  onClick={() => {
-                    setSelectedIndex(1);
-                  }}
-                >
-                  { selectedIndex === 1 && <Check />}
-                  { selectedIndex === 1 ? 'Selected' : 'Select' }
-                </Box>
+                  <Typography
+                    component='h2'
+                    color='textSecondary'
+                    variant='body2'
+                  >
+                    Low risk
+                  </Typography>
+                  <Typography component='h2' color='textPrimary'>
+                    10% Expected APY
+                  </Typography>
+                  <Box className={classes.select}>
+                    {selectedIndex === 1 && <Check />}
+                    {selectedIndex === 1 ? 'Selected' : 'Select'}
+                  </Box>
+                </Grid>
               </Box>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item md={4} sm={12} xs={12}>
               <Box
                 className={cn(
                   classes.vaultCard,
                   selectedIndex === 2 ? 'selected' : '',
                 )}
+                onClick={() => {
+                  setSelectedIndex(2);
+                }}
               >
-                <Box
-                  className={classes.background}
-                />
+                <Box className={classes.background} />
                 <VaultGreenIcon />
-                <Typography
-                  component='h2'
-                  color='textSecondary'
-                  variant='body2'
+                <Grid
+                  container
+                  direction='column'
+                  alignItems={!mobile ? 'center' : 'flex-start'}
+                  style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
-                  Medium risk
-                </Typography>
-                <Typography component='h2' color='textPrimary'>
-                  20% Expected APY
-                </Typography>
-                <Box
-                  className={classes.select}
-                  onClick={() => {
-                    setSelectedIndex(2);
-                  }}
-                >
-                  { selectedIndex === 2 && <Check />}
-                  { selectedIndex === 2 ? 'Selected' : 'Select' }
-                </Box>
+                  <Typography
+                    component='h2'
+                    color='textSecondary'
+                    variant='body2'
+                  >
+                    Medium risk
+                  </Typography>
+                  <Typography component='h2' color='textPrimary'>
+                    20% Expected APY
+                  </Typography>
+                  <Box className={classes.select}>
+                    {selectedIndex === 2 && <Check />}
+                    {selectedIndex === 2 ? 'Selected' : 'Select'}
+                  </Box>
+                </Grid>
               </Box>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item md={4} sm={12} xs={12}>
               <Box
                 className={cn(
                   classes.vaultCard,
                   selectedIndex === 3 ? 'selected' : '',
                 )}
+                onClick={() => {
+                  setSelectedIndex(3);
+                }}
               >
                 <Box className={classes.background} />
                 <VaultRedIcon />
-                <Typography
-                  component='h2'
-                  color='textSecondary'
-                  variant='body2'
+                <Grid
+                  container
+                  direction='column'
+                  alignItems={!mobile ? 'center' : 'flex-start'}
+                  style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
-                  High risk
-                </Typography>
-                <Typography component='h2' color='textPrimary'>
-                  60% Expected APY
-                </Typography>
-                <Box
-                  className={classes.select}
-                  onClick={() => {
-                    setSelectedIndex(3);
-                  }}
-                >
-                  { selectedIndex === 3 && <Check />}
-                  { selectedIndex === 3 ? 'Selected' : 'Select' }
-                </Box>
+                  <Typography
+                    component='h2'
+                    color='textSecondary'
+                    variant='body2'
+                  >
+                    High risk
+                  </Typography>
+                  <Typography component='h2' color='textPrimary'>
+                    60% Expected APY
+                  </Typography>
+                  <Box className={classes.select}>
+                    {selectedIndex === 3 && <Check />}
+                    {selectedIndex === 3 ? 'Selected' : 'Select'}
+                  </Box>
+                </Grid>
               </Box>
             </Grid>
           </Grid>
