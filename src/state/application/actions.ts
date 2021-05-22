@@ -41,10 +41,6 @@ export const updateTokenPrices = createAction<TokenPrice[]>(
   'application/updateTokenPrice',
 );
 
-export const updateOptionType = createAction<string>(
-  'application/updateOptionType',
-);
-
 export const setWeb3Settings = createAction<SetWeb3Settings>(
   'application/setWeb3Settings',
 );
