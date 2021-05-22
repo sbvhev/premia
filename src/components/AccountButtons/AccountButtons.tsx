@@ -145,7 +145,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           </Button>
           <Box
             clone
-            boxShadow={3}
             mb={mobile ? 1 : 0}
             style={{ order: mobile ? 0 : 1 }}
           >
@@ -188,7 +187,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         </Grid>
       ) : (
         <Box
-          boxShadow={3}
           onClick={() => setConfirmTermsModalOpen(true)}
           className={cx(classes.connect, mobile && classes.fullWidth)}
         >
