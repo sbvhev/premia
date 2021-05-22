@@ -245,6 +245,12 @@ export const lightTheme = responsiveFontSizes(
         },
       },
       MuiTabs: {
+        root: {
+          border: '1px solid transparent',
+          background: 'white',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+          borderRadius: 12
+        },
         scroller: {
           padding: '0 10px',
         },
@@ -268,6 +274,14 @@ export const lightTheme = responsiveFontSizes(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+
+          '& svg': {
+            marginBottom: '0px !important',
+            width: 16,
+            height: 16,
+            marginRight: 8
+          },
+          
           '& img:first-child': {
             marginBottom: '0 !important',
             marginRight: 6,
@@ -515,6 +529,10 @@ export const darkTheme = responsiveFontSizes(
         root: {},
       },
       MuiTabs: {
+        root: {
+          border: '1px solid #212121',
+          borderRadius: 12
+        },
         scroller: {
           padding: '0 10px',
         },
@@ -538,6 +556,14 @@ export const darkTheme = responsiveFontSizes(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+
+          '& svg': {
+            width: 16,
+            height: 16,
+            marginRight: 8,
+            marginBottom: '0px !important;'
+          },
+          
           '& img:first-child': {
             marginBottom: '0 !important',
             marginRight: 6,
