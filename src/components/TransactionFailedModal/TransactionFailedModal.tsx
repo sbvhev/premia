@@ -12,7 +12,6 @@ import SecondFailureRadial from 'assets/svg/FailureIconSecondOuterRadial.svg';
 import FailureIcon from 'assets/svg/FailureIconCore.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 
-
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     height: '274px',
@@ -169,22 +168,21 @@ const useStyles = makeStyles(({ palette }) => ({
 
 export interface TransactionFailedModalProps {
   open: boolean;
-  onClose: () => void;
   swapModal?: boolean; 
-
+  onClose: () => void;
 }
 
 const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
   open,
-  onClose,
   swapModal,
+  onClose,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const { txLink } = useCurrentTx();
   const { txStateMsg } = useTxStateMsg();
-  const { palette } = theme;;
+  const { palette } = theme;
 
   return (
     <Modal open={open} onClose={onClose}>
