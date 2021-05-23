@@ -17,7 +17,7 @@ import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '258px',
+    height: '274px',
     backgroundColor: 'transparent',
   },
   topIconWraper: {
@@ -34,12 +34,12 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '50%',
     border: `1px solid ${palette.divider}`,
   },
-  coloredBorderBackground: {
+  borderedCard: {
     position: 'relative',
     zIndex: 1,
-    top: 66,
+    top: 64,
     left: 0,
-    height: '192px',
+    height: '210px',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -51,9 +51,16 @@ const useStyles = makeStyles(({ palette }) => ({
   textColumn: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
+    textAlign: 'center',
+    marginTop: '50px',
+    fontFamily: 'DM Sans',
+  },
+  topTextWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     textAlign: 'center',
-    marginTop: '24px',
     fontFamily: 'DM Sans',
   },
   title: {
@@ -109,7 +116,6 @@ const TransactionLoadingModal: React.FC<TransactionLoadingModalProps> = ({
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const { txLink } = useCurrentTx();
   const { txStateMsg } = useTxStateMsg();
-  // const { txOption } = useTxOption();
   const { palette } = theme;
 
   return (
@@ -119,10 +125,12 @@ const TransactionLoadingModal: React.FC<TransactionLoadingModalProps> = ({
           <Box className={classes.topIconWraper} style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}>
             <CircularProgress size="60px" />
           </Box>
-          <Box className={classes.coloredBorderBackground}>
+          <Box className={classes.borderedCard}>
               <Box className={classes.textColumn}>
-                <Typography variant="h2" className={classes.title}>Transaction Pending</Typography>
-                <Typography color="secondary" className={classes.subTitle}>{txStateMsg}</Typography>
+                <Box className={classes.topTextWrapper}>
+                  <Typography variant="h2" className={classes.title}>Transaction Pending</Typography>
+                  <Typography color="secondary" className={classes.subTitle}>{txStateMsg}</Typography>
+                </Box>
                 {txLink && (
                   <a href={'test.com'} target='_blank' rel='noreferrer' className={classes.anchor}>
                     <Typography color="secondary" className={classes.hyperlink}>Transaction link</Typography>

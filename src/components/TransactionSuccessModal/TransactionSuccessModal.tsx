@@ -16,8 +16,6 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     height: '274px',
     backgroundColor: 'transparent',
-    border: 'none',
-    boxShadow: 'none',
   },
   topIconWraper: {
     position: 'absolute',
@@ -184,7 +182,6 @@ const TransactionSuccessModal: React.FC<TransactionSuccessModalProps> = ({
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const { txLink } = useCurrentTx();
   const { txStateMsg } = useTxStateMsg();
-  // const { txOption } = useTxOption();
   const { palette } = theme;
 
   return (
