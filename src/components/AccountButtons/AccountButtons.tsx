@@ -149,7 +149,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             style={{ order: mobile ? 0 : 1 }}
           >
             <Link
-              to='/account'
+              to='/'
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}
             >
               <Grid
