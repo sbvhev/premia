@@ -230,6 +230,8 @@ const LockPremiaCard: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const progress = '75%';
+  const { palette } = theme;
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -356,7 +358,10 @@ const LockPremiaCard: React.FC = () => {
             </Typography>
             <Box className={classes.progressBarAndTime}>
               <Box className={classes.progressContainer}>
-                <Box className={classes.progressBar} style={{ width: '75%' }} />
+                <Box
+                  className={classes.progressBar}
+                  style={palette && palette.type === 'dark' ? { width: progress } : { width: progress, boxShadow: 'none' }}
+                />
               </Box>
               <Typography
                 component='p'

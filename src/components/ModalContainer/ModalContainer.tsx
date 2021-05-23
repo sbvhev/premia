@@ -8,36 +8,38 @@ export interface ModalContainerProps {
   size: 'lg' | 'md' | 'sm';
 }
 
-const useStyles = makeStyles<Theme, ModalContainerProps>(() => ({
+const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
   container: {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    border: 'none',
+    boxShadow: 'none',
     width: ({ size }) => {
       switch (size) {
         case 'sm':
           return 'auto';
         case 'md':
-          return '60vw';
+          return '490px';
         case 'lg':
           return '80vw';
       }
     },
-    minHeight: '300px',
     maxHeight: '90vh',
     minWidth: '400px',
     margin: '0 auto',
-    padding: '30px 2rem',
     outline: 'none',
-    overflowY: 'scroll',
+    overflowY: 'hidden',
+    backgroundColor: 'transparent',
   },
   containerMobile: {
+    backgroundColor: 'transparent',
+    border: 'none',
     width: 'calc(100vw - 12px)',
-    minHeight: '280px',
     maxHeight: '80vh',
-    margin: '10vh 6px',
-    padding: '30px 22px',
+    // Changing this 20vh top margin will break TX Modals!!
+    margin: '20vh 6px',
     outline: 'none',
     overflowY: 'auto',
   },

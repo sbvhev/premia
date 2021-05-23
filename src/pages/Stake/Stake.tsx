@@ -29,8 +29,16 @@ const useStyles = makeStyles(({ palette }) => ({
   horizontalBox: {
     boxSizing: 'border-box',
     display: 'flex',
-    justifyContent: 'space-between',
+    minWidth: '390px',
+    justifyContent: "space-between",
+  },
+  horizontalBoxMobile: {
+    boxSizing: 'border-box',
+    display: 'flex',
     width: '100%',
+    maxWidth: '335px',
+    marginTop: '15px',
+    justifyContent: "space-between",
   },
   borderedBox: {
     boxSizing: 'border-box',
@@ -47,10 +55,21 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '28px',
     lineHeight: '27.5px',
   },
+  titleMobile: {
+    fontWeight: 700,
+    fontSize: '24px',
+    lineHeight: '21px',
+  },
   text: {
     fontWeight: 500,
     fontSize: '14px',
     lineHeight: '24px',
+  },
+  textMobile: {
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: '16px',
+    marginTop: '12px',
   },
   bigNumber: {
     fontWeight: 700,
@@ -97,26 +116,26 @@ const Stake: React.FC = () => {
 
   return (
     <PageWithSidebar>
-      <Box display="flex" flexDirection='column' style={{ marginTop: '8px', width: '100%' }}>
-        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="16px">
-          <Box className={classes.col}>
+      <Box display="flex" flexDirection='column' style={{ marginTop: '8px', width: '100%', height: '100%' }}>
+        <Box display="flex" width={1} flexDirection={!mobile ? 'row' : 'column'} justifyContent="space-between" marginBottom="16px" alignItems={mobile ? 'center' : 'flex-start'}>
+          <Box className={classes.col} style={!mobile ? { marginLeft: '12px' } : { justifyContent: 'space-between' }}>
             <Typography
               component='h1'
               color='textPrimary'
-              className={classes.title}
+              className={!mobile ? classes.title : classes.titleMobile}
             >
               Choose how to stake your Premia
             </Typography>
             <Typography
               component='p'
               color='textSecondary'
-              className={classes.text}
+              className={!mobile ? classes.text : classes.textMobile}
             >
               Refine your interaction rewards, stake your Premia for fee sharing, or lock for reduced fees
             </Typography>
           </Box>
-          <Box className={classes.horizontalBox}  width={!mobile ? '390px' : '100%'}>
-            <Box className={classes.borderedBox} width={!mobile ? '190px' : '50%'}>
+          <Box className={!mobile ? classes.horizontalBox : classes.horizontalBoxMobile}>
+            <Box className={classes.borderedBox} width={!mobile ? '190px' : '50%'} style={{ marginRight: '6px'}}>
               <Box className={classes.premiaBox1}>
                 <img
                   src={PremiaBlue}
@@ -172,7 +191,8 @@ const Stake: React.FC = () => {
           display="flex"
           flexDirection={!mobile ? 'row' : 'column'}
           width={1}
-          style={!mobile ? { justifyContent: 'center' } : { alignItems: 'center' }}
+          height={'auto'}
+          style={!mobile ? { justifyContent: 'center', margin: '20px 0' } : { alignItems: 'center' }}
         >
           <StakePremiaCard />
           <LockPremiaCard />

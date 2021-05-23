@@ -42,6 +42,7 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '12px',
   },
   borderedCardMobile: {
+    boxSizing: 'border-box',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
