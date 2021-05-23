@@ -104,7 +104,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'relative',
     top: 2,
     left: -42,
-    zIndex: 100,
+    zIndex: 5,
     opacity: 1,
   }
 }));
