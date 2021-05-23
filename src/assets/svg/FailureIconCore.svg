@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="84px" height="84px" viewBox="0 0 84 84" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>failed</title>
+    <defs>
+        <linearGradient x1="62.077381%" y1="-129.210714%" x2="-30.5670631%" y2="-124.291429%" id="linearGradient-1">
+            <stop stop-color="#EB7A4A" offset="0%"></stop>
+            <stop stop-color="#F643CF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="failed" fill="url(#linearGradient-1)">
+            <path d="M42,84 C65.196,84 84,65.196 84,42 C84,18.804 65.196,0 42,0 C18.804,0 0,18.804 0,42 C0,65.196 18.804,84 42,84 Z M39,26 C39,25.4477 39.4477,25 40,25 L44,25 C44.5523,25 45,25.4477 45,26 L45,49 C45,49.5523 44.5523,50 44,50 L40,50 C39.4477,50 39,49.5523 39,49 L39,26 Z M39,54 C39,53.4477 39.4477,53 40,53 L44,53 C44.5523,53 45,53.4477 45,54 L45,58 C45,58.5523 44.5523,59 44,59 L40,59 C39.4477,59 39,58.5523 39,58 L39,54 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>
