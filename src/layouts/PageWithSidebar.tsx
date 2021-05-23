@@ -7,7 +7,7 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
 import MainLogo from 'assets/svg/MainLogo.svg';
-import { AccountButtons, Sidebar, Footer } from 'components';
+import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   page: {
@@ -85,18 +85,19 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           )}
 
           { mobile && !mobileSidebarHidden &&
-            <Box width={1} position='relative' style={{ marginBottom: 0 }}>
-              {!mobileSidebarHidden && (
-                <Box p={1}>
-                  <AccountButtons mobile />
-                </Box>
-              )}
-              {!mobileSidebarHidden && <Divider />}
-              {!mobileSidebarHidden && (
-                <Box p={1}>
-                  <Sidebar mobile />
-                </Box>
-              )}
+            <Box width={1} position='relative' mt={12} mb={7}>
+              <Box p={1}>
+                <AccountButtons mobile />
+              </Box>
+              <Divider />
+              <Box p={1}>
+                <Sidebar mobile />
+              </Box>
+              <Divider />
+              <Box p={1.5}>
+                <ThemeSwitch />
+              </Box>
+              <Divider />
             </Box>
           }
 
