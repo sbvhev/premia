@@ -28,7 +28,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
-import { Dashboard, Options, Stake, Vault } from './pages';
+import { Dashboard, Options, Stake, Vault, Positions } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -178,6 +178,10 @@ const App: React.FC = () => {
 
         <Route exact path='/options'>
           <Options />
+        </Route>
+
+        <Route exact path='/positions'>
+          <Positions />
         </Route>
 
         <Route exact path='/stake'>

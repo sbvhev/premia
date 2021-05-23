@@ -21,7 +21,7 @@ import NightIcon from 'assets/svg/NightIcon.svg';
 const navigation = [
   {
     title: 'My positions',
-    link: '/',
+    link: '/positions',
     Icon: PositionsIcon,
   },
   {

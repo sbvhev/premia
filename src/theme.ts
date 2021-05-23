@@ -295,6 +295,14 @@ export const lightTheme = responsiveFontSizes(
           }
         },
       },
+      MuiTableSortLabel: {
+        root: {
+          '& img': {
+            width: 16,
+            marginLeft: 4,
+          }            
+        },
+      },
       MuiBottomNavigation: {
         root: {
           background: 'white',
@@ -307,6 +315,7 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiBottomNavigationAction: {
         root: {
+          flex: 'none',
           fontSize: 14,
           lineHeight: '18px',
           fontWeight: 'normal',
@@ -319,6 +328,7 @@ export const lightTheme = responsiveFontSizes(
           '& svg': {
             width: '20px',
             height: '18px',
+            marginRight: 4,
           },
 
           '&$selected': {
@@ -346,7 +356,6 @@ export const lightTheme = responsiveFontSizes(
           }
         },
         label: {
-          marginLeft: 10,
           fontSize: 14,
           lineHeight: '18px',
 
@@ -530,6 +539,14 @@ export const darkTheme = responsiveFontSizes(
       MuiTableCell: {
         root: {},
       },
+      MuiTableSortLabel: {
+        root: {
+          '& img': {
+            width: 16,
+            marginLeft: 4,
+          }            
+        },
+      },
       MuiTabs: {
         root: {
           border: '1px solid #212121',
@@ -623,6 +640,9 @@ export const darkTheme = responsiveFontSizes(
           backgroundColor: 'transparent',
           color: greySecondaryNight
         },
+        outlined: {
+          backgroundColor: 'transparent'
+        },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: black,
@@ -683,6 +703,7 @@ export const darkTheme = responsiveFontSizes(
       },
       MuiBottomNavigationAction: {
         root: {
+          flex: 'none',
           fontSize: 14,
           lineHeight: '18px',
           fontWeight: 'normal',
@@ -695,6 +716,7 @@ export const darkTheme = responsiveFontSizes(
           '& svg': {
             width: '20px',
             height: '18px',
+            marginRight: 4,
           },
 
           '&$selected': {
@@ -711,7 +733,6 @@ export const darkTheme = responsiveFontSizes(
           flexDirection: 'row',
         },
         label: {
-          marginLeft: 10,
           fontSize: 14,
           lineHeight: '18px',
 
