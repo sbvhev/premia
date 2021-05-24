@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -7,19 +8,14 @@ import {
   BottomNavigationAction,
   Paper,
   Button,
-  Tabs,
-  Tab,
-  InputAdornment,
-  IconButton,
-  TextField,
   FormControl,
   Select,
   MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart } from 'components';
-import { Help, Search, ExpandMore } from '@material-ui/icons';
+import { LineChart, RadialChart, CustomTabs } from 'components';
+import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
@@ -122,26 +118,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   box: {
-    width: 'calc(100% - 200px)',
+    width: 'calc(100% - 286px)',
     position: 'relative',
-  },
-  searchField: {
-    right: 5,
-    top: 5,
-    position: 'absolute',
-    color: '#646464',
-
-    '& label': {
-      top: -6,
-    },
-
-    '& > div': {
-      background: (props: any) => (props.dark ? '#181818' : 'white'),
-    },
-
-    '& path': {
-      fill: '#646464',
-    },
   },
   menuItem: {
     display: 'flex',
@@ -168,11 +146,38 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const tabItems = [
+  {
+    image: WBTCIcon,
+    label: 'wBTC',
+  },
+  {
+    image: UniswapIcon,
+    label: 'Uni',
+    highlight: true,
+  },
+  {
+    image: LinkIcon,
+    label: 'Link',
+  },
+  {
+    image: YFIIcon,
+    label: 'YFI',
+    highlight: true,
+  },
+  {
+    image: ETHIcon,
+    label: 'ETH',
+  },
+];
+
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
+  const history = useHistory();
+  const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(new URLSearchParams(location.search).get('tab') === 'pro' ? 1: 0);
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -187,7 +192,7 @@ const ProVault: React.FC = () => {
   return (
     <PageWithSidebar>
       <Grid container direction='column'>
-        <Box width={1} style={{ paddingBottom: '60px' }}>
+        <Box width={1}>
           <Typography
             component='h1'
             variant='h3'
@@ -201,6 +206,10 @@ const ProVault: React.FC = () => {
               value={value}
               onChange={(event, newValue) => {
                 setValue(newValue);
+                history.push({
+                  pathname: '/vaults',
+                  search: `?tab=${newValue === 0 ? 'basic': 'pro'}`
+                });
               }}
               showLabels={true}
               style={{
@@ -213,35 +222,11 @@ const ProVault: React.FC = () => {
             </BottomNavigation>
             {!mobile && value === 1 && (
               <Box component='div' className={classes.box}>
-                <Tabs
+                <CustomTabs
+                  items={tabItems}
                   value={tabIndex}
-                  indicatorColor='primary'
-                  textColor='primary'
-                  onChange={(event, newValue) => {
-                    setTabIndex(newValue);
-                  }}
-                >
-                  <Tab label='wBTC' icon={<WBTCIcon />} />
-                  <Tab label='Uni' icon={<UniswapIcon />} />
-                  <Tab label='Link' icon={<LinkIcon />} />
-                  <Tab label='YFI' icon={<YFIIcon />} />
-                  <Tab label='ETH' icon={<ETHIcon />} />
-                </Tabs>
-                <TextField
-                  placeholder='Search...'
-                  variant='outlined'
-                  className={classes.searchField}
-                  InputLabelProps={{
-                    shrink: false,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment component='div' position='end'>
-                        <IconButton>
-                          <Search />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
+                  onChange={(ev, index) => {
+                    setTabIndex(index);
                   }}
                 />
               </Box>
@@ -514,7 +499,7 @@ const ProVault: React.FC = () => {
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={12} md={6} style={{ marginBottom: 40 }}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Paper>
                   <Box component='div' className={classes.topSector}>
                     <Box component='div' className={classes.header}>
