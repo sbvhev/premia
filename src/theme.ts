@@ -43,7 +43,7 @@ const dividerGreyNight = '#212121';
 const xl = 1920;
 const lg = 1280;
 const md = 960;
-const sm = 600;
+const sm = 700;
 const xs = 0;
 
 // spacing
@@ -144,6 +144,10 @@ export const lightTheme = responsiveFontSizes(
           color: greySecondaryNight,
           boxShadow: 'none'
         },
+        outlined: {
+          backgroundColor: 'transparent',
+          color: greySecondaryNight,
+        },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
           color: white,
@@ -177,6 +181,15 @@ export const lightTheme = responsiveFontSizes(
               border: `1px solid ${primaryOnHover}`,
             },
           }
+      },
+      MuiContainer: {
+        fixed: {
+          border: `1px solid ${dividerGreyDay}`,
+          borderRadius: 12,
+          background: white,
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+          padding: 0,
+        }
       },
       MuiFilledInput: {
         root: {
@@ -246,12 +259,6 @@ export const lightTheme = responsiveFontSizes(
         },
       },
       MuiTabs: {
-        root: {
-          border: '1px solid transparent',
-          background: 'white',
-          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-          borderRadius: 12
-        },
         scroller: {
           padding: '0 10px',
         },
@@ -308,6 +315,7 @@ export const lightTheme = responsiveFontSizes(
           background: 'white',
           border: 'none',
           borderRadius: 12,
+          minWidth: 270,
           padding: 8,
           width: 'fit-content',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
@@ -315,7 +323,6 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiBottomNavigationAction: {
         root: {
-          flex: 'none',
           fontSize: 14,
           lineHeight: '18px',
           fontWeight: 'normal',
@@ -436,6 +443,13 @@ export const darkTheme = responsiveFontSizes(
       },
     },
     overrides: {
+      MuiContainer: {
+        fixed: {
+          border: `1px solid ${dividerGreyNight}`,
+          borderRadius: 12,
+          padding: 0,
+        }
+      },
       MuiInputBase: {
       },
       MuiInput: {
@@ -548,10 +562,6 @@ export const darkTheme = responsiveFontSizes(
         },
       },
       MuiTabs: {
-        root: {
-          border: '1px solid #212121',
-          borderRadius: 12
-        },
         scroller: {
           padding: '0 10px',
         },
@@ -698,7 +708,7 @@ export const darkTheme = responsiveFontSizes(
           borderRadius: 12,
           padding: 8,
           width: 'fit-content',
-          minWidth: 315,
+          minWidth: 270,
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
         },
       },

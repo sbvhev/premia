@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, BottomNavigation, BottomNavigationAction, TableRow, TableCell, Button } from '@material-ui/core';
+import { Box, Grid, Container, Divider, Typography, BottomNavigation, BottomNavigationAction, TableRow, TableCell, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
@@ -213,6 +213,16 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       margin: '0 0 0 4px'
     }
+  },
+  cardRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 12,
+    padding: '0 8px',
+    '& img': {
+      width: 16,
+      marginLeft: 4
+    }
   }
 }));
 
@@ -220,6 +230,7 @@ const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const [ yieldFilter, setYieldFilter ] = useState(0);
   const [ optionFilter, setOptionFilter ] = useState(0);
 
@@ -307,39 +318,45 @@ const Positions: React.FC = () => {
         >
           My yield positions
         </Typography>
-        <Box>
-          <Grid container>
-            <Box width={mobile ? 1 : 'auto'} display='flex'>
-              <Box width={mobile ? 1/2 : 'auto'} p={1} border={1} display='flex' alignItems='center' borderRadius={12} borderColor={theme.palette.divider}>
-                <Box className={classes.yieldBox}>
-                  <Box width={1} height={1} borderRadius={12} className={classes.capital} />
-                  <img src={CapitalIcon} alt='Capital Active' />
+        <Box mt={tablet ? 2 : 0} width={tablet ? 1 : 700}>
+          <Grid container spacing={1}>
+            <Grid item xs={6} sm={3}>
+              <Container fixed>
+                <Box width={1} p={1} display='flex' alignItems='center'>
+                  <Box className={classes.yieldBox}>
+                    <Box width={1} height={1} borderRadius={12} className={classes.capital} />
+                    <img src={CapitalIcon} alt='Capital Active' />
+                  </Box>
+                  <Box ml={1}>
+                    <Typography color='textSecondary' className={classes.subtitle}>
+                      Capital active
+                    </Typography>
+                    <Typography color='textPrimary' component='h2' className={classes.price}>
+                      124,098
+                      <img src={DaiIcon} alt='Dai Icon' />
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box ml={1}>
-                  <Typography color='textSecondary' className={classes.subtitle}>
-                    Capital active
-                  </Typography>
-                  <Typography color='textPrimary' component='h2' className={classes.price}>
-                    124,098
-                    <img src={DaiIcon} alt='Dai Icon' />
-                  </Typography>
+              </Container>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Container fixed>
+                <Box width={1} p={1} display='flex' alignItems='center'>
+                  <Box className={classes.yieldBox}>
+                    <Box width={1} height={1} borderRadius={12} className={classes.return} />
+                    <img src={ReturnIcon} alt='Current Return' />
+                  </Box>
+                  <Box ml={1}>
+                    <Typography color='textSecondary' className={classes.subtitle}>
+                      Current return
+                    </Typography>
+                    <Typography color='textPrimary' component='h2' className={classes.price}>
+                      12%
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-              <Box width={mobile ? 1/2 : 'auto'} p={1} border={1} display='flex' alignItems='center' borderRadius={12} borderColor={theme.palette.divider}>
-                <Box className={classes.yieldBox}>
-                  <Box width={1} height={1} borderRadius={12} className={classes.return} />
-                  <img src={ReturnIcon} alt='Current Return' />
-                </Box>
-                <Box ml={1}>
-                  <Typography color='textSecondary' className={classes.subtitle}>
-                    Current return
-                  </Typography>
-                  <Typography color='textPrimary' component='h2' className={classes.price}>
-                    12%
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
+              </Container>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <BottomNavigation
                 value={yieldFilter}
@@ -360,7 +377,45 @@ const Positions: React.FC = () => {
       <Box my={3}>
         {
           mobile
-            ? <></>
+            ? <>
+                {yieldData.map((item: any, index) => 
+                  <Box mb={2}>
+                    <Container fixed>
+                      <Box width={1} display='flex' p={1} justifyContent='space-between' alignItems='center'>
+                        <Box>
+                          <img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}
+                        </Box>
+                        <Box display='flex' alignItems='center'>
+                          {item.name}<Box ml={2} display='flex' alignItems='center'><Box className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box></Box>
+                        </Box>
+                      </Box>
+                      <Divider />
+                      <Box className={classes.cardRow}>
+                        <Box display='flex' alignItems='center'><Typography color='textSecondary'>Capital</Typography><img src={DaiIcon} alt='Dai Icon' /></Box>
+                        {formatNumber(item.capital)}
+                      </Box>
+                      <Box className={classes.cardRow}>
+                        <Box display='flex' alignItems='center'><Typography color='textSecondary'>Earned</Typography><img src={DaiIcon} alt='Dai Icon' /></Box>
+                        {item.earned}
+                      </Box>
+                      <Box className={classes.cardRow}>
+                        <Box display='flex' alignItems='center'><Typography color='textSecondary'>Expected APY</Typography></Box>
+                        {item.apy}
+                      </Box>
+                      <Box px={1} my={1.5}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={6}>
+                            <Button fullWidth color='primary'>Add</Button>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Button fullWidth variant='outlined'>Remove</Button>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Container>
+                  </Box>
+                )}
+              </>
             : <DataTable
               headCells={yieldHeadCells}
               data={yieldData}
@@ -386,21 +441,58 @@ const Positions: React.FC = () => {
         >
           My option positions
         </Typography>
-        <BottomNavigation
-          value={optionFilter}
-          className={cx(mobile && classes.fullWidth)}
-          onChange={(event, newValue) => {
-            setOptionFilter(newValue);
-          }}
-          showLabels={true}
-        >
-          <BottomNavigationAction label='Current' icon={<WatchLaterIcon />} />
-          <BottomNavigationAction label='Expired' icon={<><WarningIcon /><ErrorIcon className={classes.errorIcon} /></>} />
-        </BottomNavigation>            
+        <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
+          <BottomNavigation
+            value={optionFilter}
+            className={cx(mobile && classes.fullWidth)}
+            onChange={(event, newValue) => {
+              setOptionFilter(newValue);
+            }}
+            showLabels={true}
+          >
+            <BottomNavigationAction label='Current' icon={<WatchLaterIcon />} />
+            <BottomNavigationAction label='Expired' icon={<><WarningIcon /><ErrorIcon className={classes.errorIcon} /></>} />
+          </BottomNavigation>
+        </Box>
       </Grid>
       <Box mt={3}>
         {mobile
-          ? <></>
+          ? <>
+            {optionsData.map((item: any, index) => 
+              <Box mb={2}>
+                <Container fixed>
+                  <Box width={1} display='flex' p={1} justifyContent='space-between' alignItems='center'>
+                    <Box>
+                      <img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}
+                    </Box>
+                    <Box className={cx(classes.typeBox, item.type === 'call' ? classes.call : classes.put)}><Box />{item.type === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>
+                  </Box>
+                  <Divider />
+                  <Box className={classes.cardRow}>
+                    <Typography color='textSecondary'>Size</Typography>
+                    {formatNumber(item.size)}
+                  </Box>
+                  <Box className={classes.cardRow}>
+                    <Box display='flex' alignItems='center'><Typography color='textSecondary'>Current Value</Typography><img src={DaiIcon} alt='Dai Icon' /></Box>
+                    {formatNumber(item.value)}
+                  </Box>
+                  <Box className={classes.cardRow}>
+                    <Box display='flex' alignItems='center'><Typography color='textSecondary'>Strike</Typography><img src={DaiIcon} alt='Dai Icon' /></Box>
+                    {formatNumber(item.strike)}
+                  </Box>
+                  <Box className={classes.cardRow}>
+                    <Typography color='textSecondary'>Expiration</Typography>
+                    <Box display='flex' alignItems='center'>
+                      {Moment(item.expiration).format('DD MMM') }&nbsp;&nbsp;<Typography color='textSecondary'>2 days left</Typography>
+                    </Box>
+                  </Box>
+                  <Box px={1} my={1.5}>
+                    <Button fullWidth color='primary'>Sell</Button>
+                  </Box>
+                </Container>
+              </Box>
+            )}
+          </>
           : <DataTable
               headCells={optionsHeadCells}
               data={optionsData}

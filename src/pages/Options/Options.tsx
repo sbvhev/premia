@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Divider } from '@material-ui/core';
+import { Box, Container, Grid, Typography, TextField, Button, Divider } from '@material-ui/core';
 import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -45,7 +45,7 @@ const useStyles = makeStyles(({ palette }) => ({
     top: 0,
     left: 0,
     borderRadius: 4
-  }
+  },
 }));
 
 const Options: React.FC = () => {
@@ -92,22 +92,28 @@ const Options: React.FC = () => {
           Options
         </Typography>
       }
-      <Box border={1} mt={2} mb={4} borderRadius={12} borderColor={theme.palette.divider}>
-        <Grid container alignItems='center' spacing={2}>
-          <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
-            <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+      <Box mt={2} mb={4}>
+        <Container fixed>
+          <Grid container alignItems='center' spacing={2}>
+            <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
+              <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+            </Grid>
+            <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
+              <Box p={1}>
+                <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
-            <Box p={1}>
-              <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
-            </Box>
-          </Grid>
-        </Grid>
+        </Container>
       </Box>
       <Grid container>
         <Grid item container lg={8}>
           <Grid item xs={12} sm={6}>
-            <OptionsFilter />
+            <Container fixed>
+              <Box py={2} px={2}>
+                <OptionsFilter />
+              </Box>
+            </Container>
           </Grid>
           <Grid item container xs={12} sm={6} direction='column' justify='space-between'>
             <Box py={1} pl={xs ? 1 : 3}>

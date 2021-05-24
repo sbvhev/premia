@@ -82,102 +82,100 @@ const OptionFilter: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <Box clone width={1} py={2} px={2} border={1} borderColor={theme.palette.divider} borderRadius={12} boxShadow={3}>
-      <Box width={1}>
-        <Box display='flex' border={1} borderColor={theme.palette.divider} borderRadius={12}>
-          <Box clone width={1 / 2}>
-            <Button
-              variant='contained'
-              color={optionType === 'call' ? 'primary' : undefined}
-              onClick={() =>
-                setOptionType('call')
-              }
-            >
-              <ArrowUpwardIcon />
-              &nbsp;Call
-            </Button>
-          </Box>
-
-          <Box clone width={1 / 2}>
-            <Button
-              variant='contained'
-              color={optionType === 'put' ? 'secondary' : undefined}
-              onClick={() =>
-                setOptionType('put')
-              }
-            >
-              <ArrowDownwardIcon />
-              &nbsp;Put
-            </Button>
-          </Box>
-        </Box>
-
-        <Box width={1} mt={2}>
-          <Typography color='textPrimary'>
-            Strike Price
-          </Typography>
-
-          <Box width={1}>
-            <ColoredSlider
-              min={50}
-              max={1500}
-              marks={[50, 1500].map((value) => ({
-                label: value,
-                value
-              }))}
-              value={strikePrice}
-              valueLabelDisplay='on'
-              onChange={(event: any, value) => {
-                setStrikePrice(value);
-              }}
-            />
-          </Box>
-        </Box>
-
-        <Box width={1} marginTop={2} marginBottom={2}>
-          <Typography color='textPrimary'>
-            Maturity
-          </Typography>
-          <Box position='relative' width={1} marginTop={1} className={classes.singleDatePicker}>
-            <SingleDatePicker
-              date={maturityDate}
-              id='maturityDate'
-              orientation={ mobile ? 'vertical' : 'horizontal' }
-              placeholder='Select date'
-              focused={maturityFocused}
-              onDateChange={(date) =>
-                setMaturityDate(date)
-              }
-              onFocusChange={({ focused }) => {
-                setMaturityFocused(focused)
-              }}
-            />
-            <img src={CalendarIcon} alt='Calendar Icon' />
-          </Box>
-        </Box>
-        
-        <Box display='flex' justifyContent='space-between' alignItems='center' width={1} mt={2}>
-          <Typography color='textPrimary'>
-            Option Size
-          </Typography>
-          <Typography color='textSecondary' component='span' variant='body2'>
-            Max size available: 40012
-          </Typography>
-        </Box>
-        <Box display='flex' alignItems='center' pl={1} width={1} border={1} borderColor={theme.palette.divider} borderRadius={12} height={46}>
-          <img
-            src={UniIcon}
-            alt='Select Amount'
-          />
-          <input
-            value={optionSize}
-            className={classes.input}
-            onChange={(ev) => { setOptionSize(Number(ev.target.value)) }}
-          />
-          <Button color="primary" variant="outlined" size="small">
-            MAX
+    <Box width={1}>
+      <Box display='flex' border={1} borderColor={theme.palette.divider} borderRadius={12}>
+        <Box clone width={1 / 2}>
+          <Button
+            variant='contained'
+            color={optionType === 'call' ? 'primary' : undefined}
+            onClick={() =>
+              setOptionType('call')
+            }
+          >
+            <ArrowUpwardIcon />
+            &nbsp;Call
           </Button>
         </Box>
+
+        <Box clone width={1 / 2}>
+          <Button
+            variant='contained'
+            color={optionType === 'put' ? 'secondary' : undefined}
+            onClick={() =>
+              setOptionType('put')
+            }
+          >
+            <ArrowDownwardIcon />
+            &nbsp;Put
+          </Button>
+        </Box>
+      </Box>
+
+      <Box width={1} mt={2}>
+        <Typography color='textPrimary'>
+          Strike Price
+        </Typography>
+
+        <Box width={1}>
+          <ColoredSlider
+            min={50}
+            max={1500}
+            marks={[50, 1500].map((value) => ({
+              label: value,
+              value
+            }))}
+            value={strikePrice}
+            valueLabelDisplay='on'
+            onChange={(event: any, value) => {
+              setStrikePrice(value);
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Box width={1} marginTop={2} marginBottom={2}>
+        <Typography color='textPrimary'>
+          Maturity
+        </Typography>
+        <Box position='relative' width={1} marginTop={1} className={classes.singleDatePicker}>
+          <SingleDatePicker
+            date={maturityDate}
+            id='maturityDate'
+            orientation={ mobile ? 'vertical' : 'horizontal' }
+            placeholder='Select date'
+            focused={maturityFocused}
+            onDateChange={(date) =>
+              setMaturityDate(date)
+            }
+            onFocusChange={({ focused }) => {
+              setMaturityFocused(focused)
+            }}
+          />
+          <img src={CalendarIcon} alt='Calendar Icon' />
+        </Box>
+      </Box>
+      
+      <Box display='flex' justifyContent='space-between' alignItems='center' width={1} mt={2}>
+        <Typography color='textPrimary'>
+          Option Size
+        </Typography>
+        <Typography color='textSecondary' component='span' variant='body2'>
+          Max size available: 40012
+        </Typography>
+      </Box>
+      <Box display='flex' alignItems='center' pl={1} width={1} border={1} borderColor={theme.palette.divider} borderRadius={12} height={46}>
+        <img
+          src={UniIcon}
+          alt='Select Amount'
+        />
+        <input
+          value={optionSize}
+          className={classes.input}
+          onChange={(ev) => { setOptionSize(Number(ev.target.value)) }}
+        />
+        <Button color="primary" variant="outlined" size="small">
+          MAX
+        </Button>
       </Box>
     </Box>
   );
