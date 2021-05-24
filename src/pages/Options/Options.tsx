@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Box, Grid, Typography, TextField, Button, Divider } from '@material-ui/core';
 import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -51,7 +51,9 @@ const useStyles = makeStyles(({ palette }) => ({
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const [ tokenIndex, setTokenIndex ] = useState(2);
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
@@ -108,7 +110,7 @@ const Options: React.FC = () => {
             <OptionsFilter />
           </Grid>
           <Grid item container xs={12} sm={6} direction='column' justify='space-between'>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Current Price
               </Typography>
@@ -125,7 +127,7 @@ const Options: React.FC = () => {
                 </Box>
               </Grid>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Breakeven
               </Typography>
@@ -133,7 +135,7 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Total cost
               </Typography>
@@ -141,7 +143,7 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 0 : 3}>
               <Button
                 variant='contained'
                 fullWidth
@@ -151,8 +153,16 @@ const Options: React.FC = () => {
               </Button>
             </Box>
           </Grid>
+          { tablet && 
+            <Grid item xs={12}>
+              <Box mb={3}>
+                <OptionsPrice />
+              </Box>
+              <Divider />
+            </Grid>
+          }
           <Grid item xs={12}>
-            <Box py={3} px={3}>
+            <Box py={3} px={tablet ? 0 : 3}>
               <Typography color='textPrimary' component='h2' className={classes.price}>
                 Pool price level
               </Typography>
@@ -172,8 +182,9 @@ const Options: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
+        { }
         <Grid item container lg={4}>
-          <OptionsPrice />
+          { !tablet && <OptionsPrice /> }
         </Grid>
       </Grid>
     </PageWithSidebar>
