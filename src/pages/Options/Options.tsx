@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Container, Grid, Typography, TextField, Button, Divider } from '@material-ui/core';
+import { Box, Container, Grid, Typography, Button, Divider } from '@material-ui/core';
 import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import SearchIcon from '@material-ui/icons/Search';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
