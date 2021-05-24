@@ -698,12 +698,12 @@ export const darkTheme = responsiveFontSizes(
           borderRadius: 12,
           padding: 8,
           width: 'fit-content',
+          minWidth: 315,
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
         },
       },
       MuiBottomNavigationAction: {
         root: {
-          flex: 'none',
           fontSize: 14,
           lineHeight: '18px',
           fontWeight: 'normal',

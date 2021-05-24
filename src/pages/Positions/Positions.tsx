@@ -113,9 +113,11 @@ const SellAllButton: React.FC = () => {
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
-    fontSize: '28px',
-    lineHeight: '27.5px',
+    fontSize: 28,
     fontWeight: 700,
+  },
+  fullWidth: {
+    width: '100%'
   },
   yieldBox: {
     width: 38,
@@ -155,7 +157,7 @@ const useStyles = makeStyles(({ palette }) => ({
   errorIcon: {
     position: 'absolute',
     top: 0,
-    right: -4,
+    right: 8,
     width: '12px !important',
     '& path': {
       fill: `${palette.error.main} !important`      
@@ -217,7 +219,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [ yieldFilter, setYieldFilter ] = useState(0);
   const [ optionFilter, setOptionFilter ] = useState(0);
 
@@ -307,65 +309,74 @@ const Positions: React.FC = () => {
         </Typography>
         <Box>
           <Grid container>
-            <Box p={1} border={1} display='flex' alignItems='center' borderRadius={12} mr={2} borderColor={theme.palette.divider}>
-              <Box className={classes.yieldBox}>
-                <Box width={1} height={1} borderRadius={12} className={classes.capital} />
-                <img src={CapitalIcon} alt='Capital Active' />
+            <Box width={mobile ? 1 : 'auto'} display='flex'>
+              <Box width={mobile ? 1/2 : 'auto'} p={1} border={1} display='flex' alignItems='center' borderRadius={12} borderColor={theme.palette.divider}>
+                <Box className={classes.yieldBox}>
+                  <Box width={1} height={1} borderRadius={12} className={classes.capital} />
+                  <img src={CapitalIcon} alt='Capital Active' />
+                </Box>
+                <Box ml={1}>
+                  <Typography color='textSecondary' className={classes.subtitle}>
+                    Capital active
+                  </Typography>
+                  <Typography color='textPrimary' component='h2' className={classes.price}>
+                    124,098
+                    <img src={DaiIcon} alt='Dai Icon' />
+                  </Typography>
+                </Box>
               </Box>
-              <Box ml={1}>
-                <Typography color='textSecondary' className={classes.subtitle}>
-                  Capital active
-                </Typography>
-                <Typography color='textPrimary' component='h2' className={classes.price}>
-                  124,098
-                  <img src={DaiIcon} alt='Dai Icon' />
-                </Typography>
+              <Box width={mobile ? 1/2 : 'auto'} p={1} border={1} display='flex' alignItems='center' borderRadius={12} borderColor={theme.palette.divider}>
+                <Box className={classes.yieldBox}>
+                  <Box width={1} height={1} borderRadius={12} className={classes.return} />
+                  <img src={ReturnIcon} alt='Current Return' />
+                </Box>
+                <Box ml={1}>
+                  <Typography color='textSecondary' className={classes.subtitle}>
+                    Current return
+                  </Typography>
+                  <Typography color='textPrimary' component='h2' className={classes.price}>
+                    12%
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-            <Box p={1} border={1} display='flex' alignItems='center' borderRadius={12} mr={1.5} borderColor={theme.palette.divider}>
-              <Box className={classes.yieldBox}>
-                <Box width={1} height={1} borderRadius={12} className={classes.return} />
-                <img src={ReturnIcon} alt='Current Return' />
-              </Box>
-              <Box ml={1}>
-                <Typography color='textSecondary' className={classes.subtitle}>
-                  Current return
-                </Typography>
-                <Typography color='textPrimary' component='h2' className={classes.price}>
-                  12%
-                </Typography>
-              </Box>
-            </Box>
-            <BottomNavigation
-              value={yieldFilter}
-              onChange={(event, newValue) => {
-                setYieldFilter(newValue);
-              }}
-              showLabels={true}
-            >
-              <BottomNavigationAction label='Today' />
-              <BottomNavigationAction label='This week' />
-              <BottomNavigationAction label='This month' />
-            </BottomNavigation>            
+            <Grid item xs={12} sm={6}>
+              <BottomNavigation
+                value={yieldFilter}
+                className={classes.fullWidth}
+                onChange={(event, newValue) => {
+                  setYieldFilter(newValue);
+                }}
+                showLabels={true}
+              >
+                <BottomNavigationAction label='Today' />
+                <BottomNavigationAction label='This week' />
+                <BottomNavigationAction label='This month' />
+              </BottomNavigation>
+            </Grid>
           </Grid>
         </Box>
       </Grid>
       <Box my={3}>
-        <DataTable
-          headCells={yieldHeadCells}
-          data={yieldData}
-          rowPerPage={4}
-          renderRow={(item: any, index) => {
-            return (<TableRow key={index}>
-              <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell> 
-              <TableCell><Box ml={2}>{formatNumber(item.capital)}</Box></TableCell>
-              <TableCell><Box ml={2} display='flex' alignItems='center'><Box mr={1} className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>{item.name}</Box></TableCell>
-              <TableCell><Box ml={2}>{item.earned}</Box></TableCell>
-              <TableCell><Box ml={2}>{item.apy}</Box></TableCell>
-              <TableCell><Button color='primary'>Add</Button><Button variant='outlined'>Remove</Button></TableCell>
-            </TableRow>);
-          }}
-        />
+        {
+          mobile
+            ? <></>
+            : <DataTable
+              headCells={yieldHeadCells}
+              data={yieldData}
+              rowPerPage={5}
+              renderRow={(item: any, index) => {
+                return (<TableRow key={index}>
+                  <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell> 
+                  <TableCell><Box ml={2}>{formatNumber(item.capital)}</Box></TableCell>
+                  <TableCell><Box ml={2} display='flex' alignItems='center'><Box mr={1} className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>{item.name}</Box></TableCell>
+                  <TableCell><Box ml={2}>{item.earned}</Box></TableCell>
+                  <TableCell><Box ml={2}>{item.apy}</Box></TableCell>
+                  <TableCell><Button color='primary'>Add</Button><Button variant='outlined'>Remove</Button></TableCell>
+                </TableRow>);
+              }}
+            />  
+        }
       </Box>
       <Grid container alignItems='center' justify='space-between'>
         <Typography
@@ -377,6 +388,7 @@ const Positions: React.FC = () => {
         </Typography>
         <BottomNavigation
           value={optionFilter}
+          className={cx(mobile && classes.fullWidth)}
           onChange={(event, newValue) => {
             setOptionFilter(newValue);
           }}
@@ -387,22 +399,25 @@ const Positions: React.FC = () => {
         </BottomNavigation>            
       </Grid>
       <Box mt={3}>
-        <DataTable
-          headCells={optionsHeadCells}
-          data={optionsData}
-          rowPerPage={4}
-          renderRow={(item: any, index) => {
-            return (<TableRow key={index}>
-              <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell>
-              <TableCell><Box ml={1}>{formatNumber(item.size)}</Box></TableCell>
-              <TableCell><Box className={cx(classes.typeBox, item.type === 'call' ? classes.call : classes.put)}><Box />{item.type === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box></TableCell>
-              <TableCell><Box ml={1}>{item.strike}</Box></TableCell>
-              <TableCell><Box ml={1}>{item.value}</Box></TableCell>
-              <TableCell><Box ml={1} className={classes.expirationCell}>{Moment(item.expiration).format('DD MMM') } <Typography color='textSecondary'>2 days left</Typography></Box></TableCell>
-              <TableCell><Box ml={1}><Button color='primary'>Sell</Button></Box></TableCell>
-            </TableRow>);
-          }}
-        />
+        {mobile
+          ? <></>
+          : <DataTable
+              headCells={optionsHeadCells}
+              data={optionsData}
+              rowPerPage={5}
+              renderRow={(item: any, index) => {
+                return (<TableRow key={index}>
+                  <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell>
+                  <TableCell><Box ml={1}>{formatNumber(item.size)}</Box></TableCell>
+                  <TableCell><Box className={cx(classes.typeBox, item.type === 'call' ? classes.call : classes.put)}><Box />{item.type === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box></TableCell>
+                  <TableCell><Box ml={1}>{item.strike}</Box></TableCell>
+                  <TableCell><Box ml={1}>{item.value}</Box></TableCell>
+                  <TableCell><Box ml={1} className={classes.expirationCell}>{Moment(item.expiration).format('DD MMM') } <Typography color='textSecondary'>2 days left</Typography></Box></TableCell>
+                  <TableCell><Box ml={1}><Button color='primary'>Sell</Button></Box></TableCell>
+                </TableRow>);
+              }}
+            />
+        }
       </Box>
     </PageWithSidebar>
   );
