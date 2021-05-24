@@ -20,7 +20,7 @@ import ThemeSwitch from 'components/ThemeSwitch';
 const navigation = [
   {
     title: 'My positions',
-    link: '/positions',
+    link: '/',
     Icon: PositionsIcon,
   },
   {
@@ -112,7 +112,11 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           {!mobile && (
             <Grid container justify='center' component={Link} to='/'>
               <Box pb={3}>
-                <img src={darkMode ? MainLogo : MainLogoBlack} alt='Logo' style={{}} />
+                <img
+                  src={darkMode ? MainLogo : MainLogoBlack}
+                  alt='Logo'
+                  style={{}}
+                />
               </Box>
             </Grid>
           )}
@@ -134,9 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
               />
             ))}
           </Box>
-          { !mobile && 
-            <ThemeSwitch />
-          }
+          {!mobile && <ThemeSwitch />}
         </Box>
       </Grid>
     </Box>
