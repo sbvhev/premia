@@ -6,6 +6,8 @@ import {
   Box,
   Typography,
   Button,
+  Menu, 
+  MenuItem,
 } from '@material-ui/core';
 
 import LockPremiaIcon from 'assets/images/lockPremia-icon.png';
@@ -223,7 +225,26 @@ const useStyles = makeStyles(({ palette }) => ({
     background: '#FF9152',
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
-  }
+  },
+  selectionItem: {
+    color: palette.text.secondary,
+    fontSize: '14px',
+    height: '44px',
+    lineHeight: '18px',
+    borderBottom: `1px ${palette.text.secondary} solid`,
+    '&:hover': {
+      color: palette.text.primary,
+    },
+  },
+  selectionItemLast: {
+    color: palette.text.secondary,
+    fontSize: '14px',
+    height: '44px',
+    lineHeight: '18px',
+    '&:hover': {
+      color: palette.text.primary,
+    },
+  },
 }));
 
 const LockPremiaCard: React.FC = () => {
@@ -232,6 +253,15 @@ const LockPremiaCard: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const progress = '75%';
   const { palette } = theme;
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -274,7 +304,7 @@ const LockPremiaCard: React.FC = () => {
                 Lock period
               </Typography>
             </Box>
-              <Box className={classes.borderedBox}>
+              <Box className={classes.borderedBox} onClick={handleClick}>
                 <Typography
                   component='p'
                   color='textSecondary'
@@ -289,6 +319,42 @@ const LockPremiaCard: React.FC = () => {
                   style={{ marginRight: '10px' }}
                 />
               </Box>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  onClick={handleClose}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  1 Month
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  3 Months
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  6 Months
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={classes.selectionItemLast}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  12 Months
+                </MenuItem>
+              </Menu>
           </Box>
 
           <Box className={classes.col}>
