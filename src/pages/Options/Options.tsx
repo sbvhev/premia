@@ -4,11 +4,11 @@ import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SearchIcon from '@material-ui/icons/Search';
-import WBTCIcon from 'assets/svg/wBTCIcon.svg';
-import UniIcon from 'assets/svg/UniIcon.svg';
-import LinkIcon from 'assets/svg/LinkIcon.svg';
-import YFIIcon from 'assets/svg/YFIIcon.svg';
-import EthIcon from 'assets/svg/EthIcon.svg';
+import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
+import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
+import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
+import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
 import HelpIcon from '@material-ui/icons/Help';
@@ -48,6 +48,31 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
+const tabItems = [
+  {
+    image: WBTCIcon,
+    label: 'wBTC'
+  },
+  {
+    image: UniIcon,
+    label: 'Uni',
+    highlight: true
+  },
+  {
+    image: LinkIcon,
+    label: 'Link'
+  },
+  {
+    image: YFIIcon,
+    label: 'YFI',
+    highlight: true
+  },
+  {
+    image: EthIcon,
+    label: 'ETH'
+  }
+];
+
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -57,30 +82,7 @@ const Options: React.FC = () => {
   const [ tokenIndex, setTokenIndex ] = useState(2);
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
-  const tabItems = [
-    {
-      image: WBTCIcon,
-      label: 'wBTC'
-    },
-    {
-      image: UniIcon,
-      label: 'Uni',
-      highlight: true
-    },
-    {
-      image: LinkIcon,
-      label: 'Link'
-    },
-    {
-      image: YFIIcon,
-      label: 'YFI',
-      highlight: true
-    },
-    {
-      image: EthIcon,
-      label: 'ETH'
-    }
-  ]
+
   return (
     <PageWithSidebar>
       {!mobile &&
@@ -93,18 +95,7 @@ const Options: React.FC = () => {
         </Typography>
       }
       <Box mt={2} mb={4}>
-        <Container fixed>
-          <Grid container alignItems='center' spacing={2}>
-            <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
-              <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
-            </Grid>
-            <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
-              <Box p={1}>
-                <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
+        <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
       </Box>
       <Grid container>
         <Grid item container lg={8}>
