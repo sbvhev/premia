@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -172,9 +173,11 @@ const tabItems = [
 
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
+  const history = useHistory();
+  const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(new URLSearchParams(location.search).get('tab') === 'pro' ? 1: 0);
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -189,7 +192,7 @@ const ProVault: React.FC = () => {
   return (
     <PageWithSidebar>
       <Grid container direction='column'>
-        <Box width={1} style={{ paddingBottom: '60px' }}>
+        <Box width={1}>
           <Typography
             component='h1'
             variant='h3'
@@ -203,6 +206,10 @@ const ProVault: React.FC = () => {
               value={value}
               onChange={(event, newValue) => {
                 setValue(newValue);
+                history.push({
+                  pathname: '/vaults',
+                  search: `?tab=${newValue === 0 ? 'basic': 'pro'}`
+                });
               }}
               showLabels={true}
               style={{
@@ -492,7 +499,7 @@ const ProVault: React.FC = () => {
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={12} md={6} style={{ marginBottom: 40 }}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Paper>
                   <Box component='div' className={classes.topSector}>
                     <Box component='div' className={classes.header}>
