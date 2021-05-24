@@ -8,7 +8,7 @@ import multicall from './multicall/reducer';
 import transactions from './transactions/reducer';
 import options from './options/reducer';
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions'];
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'options'];
 
 const store = configureStore({
   reducer: {
@@ -16,7 +16,7 @@ const store = configureStore({
     multicall,
     user,
     transactions,
-    options
+    options,
   },
   middleware: [
     ...getDefaultMiddleware({
