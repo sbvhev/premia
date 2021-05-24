@@ -47,6 +47,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '55px',
     alignItems: 'center',
     border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
     padding: '0 7px',
   },
