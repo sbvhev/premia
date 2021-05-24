@@ -99,6 +99,15 @@ export const lightTheme = responsiveFontSizes(
       fontFamily: 'DM Sans',
       fontSize: 14,
     },
+    breakpoints: {
+      values: {
+        xl,
+        lg,
+        md,
+        sm,
+        xs,
+      },
+    },
     overrides: {
       MuiButton: {
         root: {
