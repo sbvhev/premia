@@ -47,9 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export interface HeadCell<T> {
   id: string;
-  label: string;
+  label: React.ReactNode | string;
   numeric: boolean;
   sortDisabled?: boolean;
+  element?: React.ReactNode;
   sortKey: (optionBalance: T) => string | number;
 }
 
@@ -64,7 +65,8 @@ export interface DataTableProps<T> {
   loading?: boolean;
   isSinglelineHeader?: boolean;
   onChange?: Function;
-  size?: number
+  size?: number,
+  rowPerPage?: number
 }
 
 const DataTable: React.FC<DataTableProps<any>> = ({
@@ -78,13 +80,14 @@ const DataTable: React.FC<DataTableProps<any>> = ({
   loading = false,
   isSinglelineHeader = false,
   onChange = () => {},
-  size = 0
+  size = 0,
+  rowPerPage = 10,
 }) => {
   const classes = useStyles({ isSinglelineHeader });
   const [order, setOrder] = useState<SortOrder>(defaultOrder);
   const [orderBy, setOrderBy] = useState<HeadCell<any>>(defaultOrderBy);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(rowPerPage);
   const count = size || data.length;
 
   const handleRequestSort = (
@@ -134,6 +137,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                     padding='default'
                     sortDirection={orderBy.id === headCell.id ? order : false}
                   >
+                    { headCell.element }
                     <TableSortLabel
                       className={classes.label}
                       active={orderBy.id === headCell.id}

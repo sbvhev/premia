@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Box, Container, Grid, Typography, TextField, Button, Divider } from '@material-ui/core';
 import { CustomTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -45,13 +45,15 @@ const useStyles = makeStyles(({ palette }) => ({
     top: 0,
     left: 0,
     borderRadius: 4
-  }
+  },
 }));
 
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const [ tokenIndex, setTokenIndex ] = useState(2);
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
@@ -90,25 +92,31 @@ const Options: React.FC = () => {
           Options
         </Typography>
       }
-      <Box border={1} mt={2} mb={4} borderRadius={12} borderColor={theme.palette.divider}>
-        <Grid container alignItems='center' spacing={2}>
-          <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
-            <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+      <Box mt={2} mb={4}>
+        <Container fixed>
+          <Grid container alignItems='center' spacing={2}>
+            <Grid item container={mobile} justify={ mobile ? 'center' : undefined } sm={12} md={9}>
+              <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+            </Grid>
+            <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
+              <Box p={1}>
+                <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item container justify={ mobile ? 'center' : 'flex-end' } sm={12} md={3}>
-            <Box p={1}>
-              <TextField placeholder='Search...' variant='filled' InputProps={{ endAdornment: <SearchIcon />}} />
-            </Box>
-          </Grid>
-        </Grid>
+        </Container>
       </Box>
       <Grid container>
         <Grid item container lg={8}>
           <Grid item xs={12} sm={6}>
-            <OptionsFilter />
+            <Container fixed>
+              <Box py={2} px={2}>
+                <OptionsFilter />
+              </Box>
+            </Container>
           </Grid>
           <Grid item container xs={12} sm={6} direction='column' justify='space-between'>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Current Price
               </Typography>
@@ -125,7 +133,7 @@ const Options: React.FC = () => {
                 </Box>
               </Grid>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Breakeven
               </Typography>
@@ -133,7 +141,7 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>
                 Total cost
               </Typography>
@@ -141,7 +149,7 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} px={3}>
+            <Box py={1} pl={xs ? 0 : 3}>
               <Button
                 variant='contained'
                 fullWidth
@@ -151,8 +159,16 @@ const Options: React.FC = () => {
               </Button>
             </Box>
           </Grid>
+          { tablet && 
+            <Grid item xs={12}>
+              <Box mb={3}>
+                <OptionsPrice />
+              </Box>
+              <Divider />
+            </Grid>
+          }
           <Grid item xs={12}>
-            <Box py={3} px={3}>
+            <Box py={3} px={tablet ? 0 : 3}>
               <Typography color='textPrimary' component='h2' className={classes.price}>
                 Pool price level
               </Typography>
@@ -172,8 +188,9 @@ const Options: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
+        { }
         <Grid item container lg={4}>
-          <OptionsPrice />
+          { !tablet && <OptionsPrice /> }
         </Grid>
       </Grid>
     </PageWithSidebar>
