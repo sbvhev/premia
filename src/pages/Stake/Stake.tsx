@@ -7,6 +7,8 @@ import { PageWithSidebar } from 'layouts';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
+import { SwapModal } from 'components';
+
 import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
 import PremiaRed from 'assets/svg/PremiaLogoSmallRed.svg';
 
@@ -196,6 +198,7 @@ const Stake: React.FC = () => {
         >
           <StakePremiaCard />
           <LockPremiaCard />
+          <SwapModal open={true} onClose={() => {}} />
         </Box>
       </Box>
     </PageWithSidebar>
