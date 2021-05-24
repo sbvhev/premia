@@ -8,8 +8,8 @@ import {
   Button,
 } from '@material-ui/core';
 
-import StakePremiaIcon from 'assets/images/stakePremia-icon.png';
-import StakePremiaMobile from 'assets/images/StakePremiaMobile.png';
+import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
+import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
 import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -38,7 +38,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '384px',
     height: '545px',
     border: `1px solid ${palette.divider}`,
-    backgroundColor: palette.background.default,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
   },
   borderedCardMobile: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '335px',
     height: '480px',
     border: `1px solid ${palette.divider}`,
-    backgroundColor: palette.background.default,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
   },
   stakeImg: {
@@ -244,6 +244,7 @@ const StakePremiaCard: React.FC = () => {
           {mobile && <img
             src={StakePremiaMobile}
             alt='Stake premia'
+            style={{ height: '80px', width: '52px' }}
           />}
           <Box>
             <Typography

@@ -1,6 +1,5 @@
 export { default as AccountButtons } from './AccountButtons';
 export { default as AccountRequired } from './AccountRequired';
-export { default as AntSwitch } from './AntSwitch';
 export { default as BetaSoftwareModal } from './BetaSoftwareModal';
 export { default as Breadcrumb } from './Breadcrumb';
 export { default as BorderLinearProgress } from './BorderLinearProgress';
@@ -18,8 +17,6 @@ export { default as ModalContainer } from './ModalContainer';
 export { default as Sidebar, SidebarItem } from './Sidebar';
 export { default as ThemeSwitch } from './ThemeSwitch';
 export { default as TokenPriceChip } from './TokenPriceChip';
-export { default as TokenWallet, TokenWalletItem } from './TokenWallet';
-export { default as TokensTable } from './TokensTable';
 export { default as TransactionCancelledModal } from './TransactionCancelledModal';
 export { default as TransactionFailedModal } from './TransactionFailedModal';
 export { default as TransactionLoadingModal } from './TransactionLoadingModal';

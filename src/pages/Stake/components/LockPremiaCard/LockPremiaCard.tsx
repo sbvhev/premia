@@ -10,8 +10,8 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-import LockPremiaIcon from 'assets/images/lockPremia-icon.png';
-import LockPremiaMobile from 'assets/images/LockPremiaMobile.png';
+import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
+import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
 import calendarIcon from 'assets/svg/CalendarIcon.svg';
 import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
 
@@ -41,7 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '384px',
     height: '545px',
     border: `1px solid ${palette.divider}`,
-    backgroundColor: palette.background.default,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
   },
   borderedCardMobile: {
@@ -51,7 +51,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '335px',
     height: '566px',
     border: `1px solid ${palette.divider}`,
-    backgroundColor: palette.background.default,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
   },
   lockImg: {
@@ -275,6 +275,7 @@ const LockPremiaCard: React.FC = () => {
           {mobile && <img
             src={LockPremiaMobile}
             alt='Stake premia'
+            style={{ height: '80px', width: '58.24px' }}
           />}
           <Box>
             <Typography
