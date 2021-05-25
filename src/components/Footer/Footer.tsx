@@ -61,7 +61,6 @@ const Footer: React.FC = () => {
     <Box
       height={mobile ? 70 : 45}
       width={1}
-      bottom={0}
       borderTop={1}
       borderColor={theme.palette.divider}
     >

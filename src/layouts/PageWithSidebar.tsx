@@ -108,7 +108,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           }
 
-          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} bgcolor='background.default'>
+          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} zIndex={10} bgcolor='background.default'>
             <Footer />
           </Box>
         </Box>
