@@ -121,9 +121,9 @@ const Footer: React.FC = () => {
           justify={mobile ? 'center' : 'flex-start'}
           style={{ order: mobile ? 1 : 0 }}
         >
-          <TwitterIcon className={classes.footerIcon} />
-          <MediumIcon className={classes.footerIcon} />
-          <DiscordIcon className={classes.footerIcon} />
+          <a href='https://twitter.com/PremiaFinance' target='_blank' rel='noreferrer'><TwitterIcon className={classes.footerIcon} /></a>
+          <a href='https://premia.medium.com/' target='_blank' rel='noreferrer'><MediumIcon className={classes.footerIcon} /></a>
+          <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel='noreferrer'><DiscordIcon className={classes.footerIcon} /></a>
         </Grid>
         <Grid
           item
