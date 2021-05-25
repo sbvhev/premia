@@ -125,6 +125,9 @@ export const lightTheme = responsiveFontSizes(
             backgroundColor: primaryOnHover,
           },
         },
+        startIcon: {
+          marginLeft: 0,
+        },
         textPrimary: {
           color: white,
         },
@@ -150,13 +153,16 @@ export const lightTheme = responsiveFontSizes(
         },
         contained: {
           backgroundColor: 'transparent',
-          color: greySecondaryNight,
+          color: greySecondaryDay,
           boxShadow: 'none',
-          padding: '6px 8px'
+          padding: '6px 8px',
+          '& svg path': {
+            fill: greySecondaryDay
+          },
         },
         outlined: {
           backgroundColor: 'transparent',
-          color: greySecondaryNight,
+          color: greySecondaryDay,
           padding: '6px 8px'
         },
         containedPrimary: {
@@ -238,8 +244,9 @@ export const lightTheme = responsiveFontSizes(
         paper: {
           overflowX: "unset",
           overflowY: "unset",
-          maxWidth: 350,
+          maxWidth: 368,
           transform: 'translateY(-11px) !important',
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
           "&::before": {
             content: '""',
             position: "absolute",
@@ -249,7 +256,7 @@ export const lightTheme = responsiveFontSizes(
             width: 16,
             height: 16,
             background: white,
-            boxShadow: '0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%)',
+            boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
             transform: "translate(-50%, 50%) rotate(135deg)",
             clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
           },
@@ -658,6 +665,9 @@ export const darkTheme = responsiveFontSizes(
             backgroundColor: primaryOnHover,
           },
         },
+        startIcon: {
+          marginLeft: 0,
+        },
         sizeSmall: {
           borderRadius: '10px',
           height: '35px',
@@ -748,8 +758,9 @@ export const darkTheme = responsiveFontSizes(
         paper: {
           overflowX: "unset",
           overflowY: "unset",
-          maxWidth: 350,
+          maxWidth: 368,
           transform: 'translateY(-11px) !important',
+          boxShadow: 'none',
           "&::before": {
             content: '""',
             position: "absolute",
@@ -759,7 +770,6 @@ export const darkTheme = responsiveFontSizes(
             width: 16,
             height: 16,
             background: black,
-            boxShadow: '0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%)',
             border: `1px solid ${dividerGreyNight}`,
             transform: "translate(-50%, 50%) rotate(135deg)",
             clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
