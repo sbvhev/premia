@@ -86,6 +86,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.primary.main,
     },
   },
+
+  light: {
+    background: theme.palette.background.paper,
+  },
 }));
 
 export interface SidebarProps {
@@ -105,7 +109,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
       pb={{ sm: 1 }}
       position='relative'
       height={mobile ? 'auto' : '100vh'}
-      className={cx(!mobile && classes.rightBorder)}
+      className={cx({
+        [classes.rightBorder]: !mobile,
+        [classes.light]: !darkMode,
+      })}
     >
       <Grid container direction='column' justify='space-between'>
         <Box>
