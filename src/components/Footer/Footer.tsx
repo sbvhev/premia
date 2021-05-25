@@ -1,29 +1,43 @@
-import React from 'react';
-import { Box, Grid, Typography, Divider } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, Grid, Typography, Divider, Popover, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import { BorderLinearProgress } from 'components';
-import TwitterIcon from 'assets/svg/TwitterIcon.svg';
-import MediumIcon from 'assets/svg/MediumIcon.svg';
-import DiscordIcon from 'assets/svg/DiscordIcon.svg';
-import LockIcon from 'assets/svg/LockIcon.svg';
-import GasIcon from 'assets/svg/GasIcon.svg';
+import cx from 'classnames';
+import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
+import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
+import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
+import { ReactComponent as LockIcon } from 'assets/svg/LockIcon.svg';
+import { ReactComponent as GasIcon } from 'assets/svg/GasIcon.svg';
+import { ReactComponent as GasStandardIcon } from 'assets/svg/GasStandardIcon.svg';
+import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
+import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
   footer: {
     height: '100%',
   },
 
   footerIcon: {
+    cursor: 'pointer',
     marginLeft: 16,
+    '&:hover path': {
+      fill: palette.text.primary
+    },
+    '& path': {
+      fill: palette.text.secondary
+    }
   },
 
   footerRightItem: {
-    padding: '0 18px',
+    padding: '0px 18px',
     display: 'flex',
     alignItems: 'center',
-    '& img': {
+    color: palette.text.secondary,
+    '&:last-child': {
+      cursor: 'pointer'
+    },
+    '& svg': {
       marginRight: 8,
     },
   },
@@ -36,18 +50,61 @@ const useStyles = makeStyles(() => ({
   footerDivider: {
     width: '100%',
   },
+
+  subheading: {
+    fontSize: 18,
+    fontWeight: 700,
+    lineHeight: 1.12,
+    color: palette.text.primary,
+  },
+
+  text: {
+    fontSize: 14,
+    lineHeight: 1.18,
+    color: palette.text.secondary
+  },
+
+  gasPriceText: {
+    fontSize: 14,
+    lineHeight: 1,
+    textAlign: 'left'
+  },
+
+  button: {
+    background: 'transparent',
+    color: palette.text.secondary,
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+    '&:hover': {
+      background: palette.primary.dark,
+      color: palette.primary.main,
+      '& svg path': {
+        fill: palette.primary.main,
+      }  
+    }
+  },
+
+  activeButton: {
+    background: palette.primary.dark,
+    color: palette.primary.main,
+    '& svg path': {
+      fill: palette.primary.main,
+    }
+  },
 }));
 
 const Footer: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const [anchorEl, setAnchorEl] = useState<any>(null);
+  const [gasType, setGasType] = useState('standard');
 
   return (
     <Box
       height={mobile ? 70 : 45}
       width={1}
-      bottom={0}
       borderTop={1}
       borderColor={theme.palette.divider}
     >
@@ -64,9 +121,9 @@ const Footer: React.FC = () => {
           justify={mobile ? 'center' : 'flex-start'}
           style={{ order: mobile ? 1 : 0 }}
         >
-          <img src={TwitterIcon} alt='Twitter' className={classes.footerIcon} />
-          <img src={MediumIcon} alt='Medium' className={classes.footerIcon} />
-          <img src={DiscordIcon} alt='Discord' className={classes.footerIcon} />
+          <a href='https://twitter.com/PremiaFinance' target='_blank' rel='noreferrer'><TwitterIcon className={classes.footerIcon} /></a>
+          <a href='https://premia.medium.com/' target='_blank' rel='noreferrer'><MediumIcon className={classes.footerIcon} /></a>
+          <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel='noreferrer'><DiscordIcon className={classes.footerIcon} /></a>
         </Grid>
         <Grid
           item
@@ -76,12 +133,12 @@ const Footer: React.FC = () => {
           style={{ order: mobile ? 0 : 1 }}
         >
           <Box className={classes.footerRightItem}>
-            <img src={LockIcon} alt='TVL' />
+            <LockIcon />
             <Typography component='span'>TVL: 1000004$</Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
-          <Box className={classes.footerRightItem}>
-            <img src={GasIcon} alt='GAS' />
+          <Box className={classes.footerRightItem} onClick={(event) => {setAnchorEl(event.currentTarget)}}>
+            <GasIcon />
             <Typography component='span'>Gas Price</Typography>
             <BorderLinearProgress
               variant='determinate'
@@ -95,6 +152,43 @@ const Footer: React.FC = () => {
             <Divider className={classes.footerDivider} />
         }
       </Grid>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => { setAnchorEl(null) }}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <Box p={1.6}>
+          <Box p={1}>
+            <Typography className={classes.subheading}>Select gas price</Typography>
+            <Typography className={classes.text}>Gas prices depend on the Ethereum network's congestion.</Typography>
+          </Box>
+          <Box borderRadius={12} border={1} p={0.5} pr={0.8} borderColor={theme.palette.divider} display='flex' justifyContent='space-between'>
+            <Box width='33%'>
+              <Button className={cx(classes.button, gasType === 'standard' && classes.activeButton)} startIcon={<GasStandardIcon />} fullWidth onClick={() => { setGasType('standard') }}>
+                <Typography className={classes.gasPriceText} component='div'><b>Standard</b><div>90 Gwei</div></Typography>
+              </Button>
+            </Box>
+            <Box width='33%'>
+              <Button className={cx(classes.button, gasType === 'fast' && classes.activeButton)} startIcon={<GasFastIcon />} fullWidth onClick={() => { setGasType('fast') }}>
+                <Typography className={classes.gasPriceText} component='div'><b>Fast</b><div>100 Gwei</div></Typography>
+              </Button>
+            </Box>
+            <Box width='33%'>
+              <Button className={cx(classes.button, gasType === 'instant' && classes.activeButton)} startIcon={<ProIcon />} fullWidth onClick={() => { setGasType('instant') }}>
+                <Typography className={classes.gasPriceText} component='div'><b>Instant</b><div>120 Gwei</div></Typography>
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Popover>
     </Box>
   );
 };
