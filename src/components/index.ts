@@ -25,3 +25,5 @@ export { default as TransactionFailedNotification } from './TransactionFailedNot
 export { default as TransactionStartNotification } from './TransactionStartNotification';
 export { default as TransactionSentNotification } from './TransactionSentNotification';
 export { default as TransactionSuccessNotification } from './TransactionSuccessNotification';
+export { default as ChainModal } from './ChainModal';
+export { default as PositionModal } from './PositionModal';
