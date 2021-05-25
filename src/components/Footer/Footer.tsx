@@ -50,6 +50,12 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 14,
     color: palette.text.secondary
   },
+
+  gasPriceText: {
+    fontSize: 14,
+    lineHeight: 1,
+    textAlign: 'left'
+  }
 }));
 
 const Footer: React.FC = () => {
@@ -125,20 +131,20 @@ const Footer: React.FC = () => {
         <Box p={1.5}>
           <Typography className={classes.subheading}>Select gas price</Typography>
           <Typography className={classes.text}>Gas prices depend on the Ethereum network's congestion.</Typography>
-          <Box borderRadius={12} border={1} mt={1} p={0.3} pr={0.6} borderColor={theme.palette.divider} display='flex' justifyContent='space-between'>
+          <Box borderRadius={12} border={1} mt={1} p={0.5} pr={0.8} borderColor={theme.palette.divider} display='flex' justifyContent='space-between'>
             <Box width='32%'>
               <Button color='secondary' startIcon={<GasStandardIcon />} fullWidth>
-                <Typography variant='body2' align='left'><b>Standard</b><div>90 Gwei</div></Typography>
+                <Typography className={classes.gasPriceText}><b>Standard</b><div>90 Gwei</div></Typography>
               </Button>
             </Box>
             <Box width='32%'>
               <Button variant='contained' startIcon={<GasFastIcon />} fullWidth>
-                <Typography variant='body2' align='left'><b>Fast</b><div>100 Gwei</div></Typography>
+                <Typography className={classes.gasPriceText}><b>Fast</b><div>100 Gwei</div></Typography>
               </Button>
             </Box>
             <Box width='32%'>
               <Button variant='contained' startIcon={<ProIcon />} fullWidth>
-                <Typography variant='body2' align='left'><b>Instant</b><div>120 Gwei</div></Typography>
+                <Typography className={classes.gasPriceText}><b>Instant</b><div>120 Gwei</div></Typography>
               </Button>
             </Box>
           </Box>
