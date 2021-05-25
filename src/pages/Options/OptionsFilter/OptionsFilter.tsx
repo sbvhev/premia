@@ -116,7 +116,7 @@ const OptionFilter: React.FC = () => {
           Strike Price
         </Typography>
 
-        <Box width={1}>
+        <Box width={1} mt={1}>
           <ColoredSlider
             min={50}
             max={1500}
@@ -133,7 +133,7 @@ const OptionFilter: React.FC = () => {
         </Box>
       </Box>
 
-      <Box width={1} marginTop={2} marginBottom={2}>
+      <Box width={1} marginBottom={2}>
         <Typography color='textPrimary'>
           Maturity
         </Typography>
