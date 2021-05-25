@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Grid, Typography, Divider } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -42,6 +42,7 @@ const Footer: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const [anchorEl, setAnchorEl] = useState<any>(null);
 
   return (
     <Box
@@ -80,7 +81,7 @@ const Footer: React.FC = () => {
             <Typography component='span'>TVL: 1000004$</Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
-          <Box className={classes.footerRightItem}>
+          <Box className={classes.footerRightItem} onClick={(event) => {setAnchorEl(event.currentTarget)}}>
             <img src={GasIcon} alt='GAS' />
             <Typography component='span'>Gas Price</Typography>
             <BorderLinearProgress
@@ -95,6 +96,21 @@ const Footer: React.FC = () => {
             <Divider className={classes.footerDivider} />
         }
       </Grid>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => { setAnchorEl(null) }}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Typography color='textSecondary'>The content of the Popover.</Typography>
+      </Popover>
     </Box>
   );
 };
