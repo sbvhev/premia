@@ -5,23 +5,16 @@ import {
   Box,
   Button,
   Paper,
-  Container,
-  Divider,
-  Grid,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import {
-  ArrowDownward as ArrowDownwardIcon,
   ArrowUpward as ArrowUpwardIcon,
 } from '@material-ui/icons';
-import { useCurrentTx } from 'state/transactions/hooks';
 import { ModalContainer } from 'components';
 
-import { formatNumber } from 'utils/formatNumber';
-import VaultIcon from 'assets/svg/VaultIcon.svg';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
 import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
 import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
@@ -33,7 +26,6 @@ import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
-import theme from 'theme';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -350,19 +342,8 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const { txLink } = useCurrentTx();
   const txStateMsg = 'Tell your friends about Premia and earn fees';
   const { palette } = theme;
-  const item = {
-    tokenIcon: UniswapIcon,
-    symbol: 'Uni',
-    capital: 15002,
-    option: 'call',
-    type: 'vault',
-    name: 'call',
-    earned: 100,
-    apy: 24,
-  };
 
   return (
     <Modal open={open} onClose={onClose}>
