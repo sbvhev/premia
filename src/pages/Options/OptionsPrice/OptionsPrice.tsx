@@ -8,8 +8,10 @@ import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
 import PriceRectangleMobileLight from 'assets/svg/PriceRectangleMobileLight.svg';
 import BarometerBg1 from 'assets/svg/BarometerBg1.svg';
+import BarometerBg1Light from 'assets/svg/BarometerBg1Light.svg';
 import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
+import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
@@ -193,7 +195,7 @@ const OptionsPrice: React.FC = () => {
       <Box position='relative' width={mobile ? 1 : 80} height={mobile ? 80 : 540}>
         <Box position='absolute' left={mobile ? 'calc(50% - 80px)' : 'unset'} top={mobile ? 15 : 'calc(50% - 90px)'} zIndex={2} className={cx(classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered)}>
           <Box width={mobile ? 1.1 : 12} height={mobile ? 28 : 1.1} bgcolor='#29CB84' position='absolute' top={mobile ? -26 : 21} left={mobile ? '50%' : -12} />
-          <img src={mobile ? BarometerBg3 : BarometerBg1} alt='Barometer Bg1' />
+          <img src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light} alt='Barometer Bg1' />
           <Box textAlign={mobile ? 'center' : 'right'} position='absolute' width={1} height={1} top={mobile ? 15 : 7} right={mobile ? 'unset' : 10}>
             <Typography className={classes.priceFont}>Possible P&L</Typography>
             <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
