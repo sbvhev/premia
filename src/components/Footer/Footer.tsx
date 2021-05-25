@@ -25,6 +25,7 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: '0px 18px',
     display: 'flex',
     alignItems: 'center',
+    cursor: 'pointer',
     '& svg': {
       marginRight: 8,
     },
