@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
+import { Box, Grid, Typography, Divider, Popover, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import { BorderLinearProgress } from 'components';
-import TwitterIcon from 'assets/svg/TwitterIcon.svg';
-import MediumIcon from 'assets/svg/MediumIcon.svg';
-import DiscordIcon from 'assets/svg/DiscordIcon.svg';
-import LockIcon from 'assets/svg/LockIcon.svg';
-import GasIcon from 'assets/svg/GasIcon.svg';
+import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
+import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
+import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
+import { ReactComponent as LockIcon } from 'assets/svg/LockIcon.svg';
+import { ReactComponent as GasIcon } from 'assets/svg/GasIcon.svg';
+import { ReactComponent as GasStandardIcon } from 'assets/svg/GasStandardIcon.svg';
+import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
+import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
   footer: {
     height: '100%',
   },
@@ -20,10 +22,10 @@ const useStyles = makeStyles(() => ({
   },
 
   footerRightItem: {
-    padding: '0 18px',
+    padding: '0px 18px',
     display: 'flex',
     alignItems: 'center',
-    '& img': {
+    '& svg': {
       marginRight: 8,
     },
   },
@@ -35,6 +37,17 @@ const useStyles = makeStyles(() => ({
 
   footerDivider: {
     width: '100%',
+  },
+
+  subheading: {
+    fontSize: 18,
+    fontWeight: 700,
+    color: palette.text.primary,
+  },
+
+  text: {
+    fontSize: 14,
+    color: palette.text.secondary
   },
 }));
 
@@ -65,9 +78,9 @@ const Footer: React.FC = () => {
           justify={mobile ? 'center' : 'flex-start'}
           style={{ order: mobile ? 1 : 0 }}
         >
-          <img src={TwitterIcon} alt='Twitter' className={classes.footerIcon} />
-          <img src={MediumIcon} alt='Medium' className={classes.footerIcon} />
-          <img src={DiscordIcon} alt='Discord' className={classes.footerIcon} />
+          <TwitterIcon className={classes.footerIcon} />
+          <MediumIcon className={classes.footerIcon} />
+          <DiscordIcon className={classes.footerIcon} />
         </Grid>
         <Grid
           item
@@ -77,12 +90,12 @@ const Footer: React.FC = () => {
           style={{ order: mobile ? 0 : 1 }}
         >
           <Box className={classes.footerRightItem}>
-            <img src={LockIcon} alt='TVL' />
+            <LockIcon />
             <Typography component='span'>TVL: 1000004$</Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
           <Box className={classes.footerRightItem} onClick={(event) => {setAnchorEl(event.currentTarget)}}>
-            <img src={GasIcon} alt='GAS' />
+            <GasIcon />
             <Typography component='span'>Gas Price</Typography>
             <BorderLinearProgress
               variant='determinate'
@@ -105,11 +118,31 @@ const Footer: React.FC = () => {
           horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: 'bottom',
           horizontal: 'center',
         }}
       >
-        <Typography color='textSecondary'>The content of the Popover.</Typography>
+        <Box p={1.5}>
+          <Typography className={classes.subheading}>Select gas price</Typography>
+          <Typography className={classes.text}>Gas prices depend on the Ethereum network's congestion.</Typography>
+          <Box borderRadius={12} border={1} mt={1} p={0.3} pr={0.6} borderColor={theme.palette.divider} display='flex' justifyContent='space-between'>
+            <Box width='32%'>
+              <Button color='secondary' startIcon={<GasStandardIcon />} fullWidth>
+                <Typography variant='body2' align='left'><b>Standard</b><div>90 Gwei</div></Typography>
+              </Button>
+            </Box>
+            <Box width='32%'>
+              <Button variant='contained' startIcon={<GasFastIcon />} fullWidth>
+                <Typography variant='body2' align='left'><b>Fast</b><div>100 Gwei</div></Typography>
+              </Button>
+            </Box>
+            <Box width='32%'>
+              <Button variant='contained' startIcon={<ProIcon />} fullWidth>
+                <Typography variant='body2' align='left'><b>Instant</b><div>120 Gwei</div></Typography>
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Popover>
     </Box>
   );

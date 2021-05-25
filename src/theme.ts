@@ -151,11 +151,13 @@ export const lightTheme = responsiveFontSizes(
         contained: {
           backgroundColor: 'transparent',
           color: greySecondaryNight,
-          boxShadow: 'none'
+          boxShadow: 'none',
+          padding: '6px 8px'
         },
         outlined: {
           backgroundColor: 'transparent',
           color: greySecondaryNight,
+          padding: '6px 8px'
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -230,6 +232,27 @@ export const lightTheme = responsiveFontSizes(
         rounded: {
           borderRadius: 12,
           border: `1px solid ${dividerGreyDay}`,
+        },
+      },
+      MuiPopover: {
+        paper: {
+          overflowX: "unset",
+          overflowY: "unset",
+          maxWidth: 350,
+          transform: 'translateY(-11px) !important',
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            marginRight: "-0.71em",
+            bottom: 0,
+            right: 40,
+            width: 16,
+            height: 16,
+            background: white,
+            boxShadow: '0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%)',
+            transform: "translate(-50%, 50%) rotate(135deg)",
+            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
+          },
         },
       },
       MuiOutlinedInput: {
@@ -654,13 +677,24 @@ export const darkTheme = responsiveFontSizes(
         textSecondary: {
           background: premiaBlueNight,
           color: primary,
+          '&:hover': {
+            '& svg path': {
+              fill: textSecondaryNight
+            },
+            color: textSecondaryNight
+          },
         },
         contained: {
           backgroundColor: 'transparent',
-          color: greySecondaryNight
+          color: greySecondaryNight,
+          padding: '6px 8px',
+          '& svg path': {
+            fill: greySecondaryNight
+          },
         },
         outlined: {
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
+          padding: '6px 8px'
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -708,6 +742,28 @@ export const darkTheme = responsiveFontSizes(
         rounded: {
           borderRadius: 12,
           border: `1px solid ${dividerGreyNight}`,
+        },
+      },
+      MuiPopover: {
+        paper: {
+          overflowX: "unset",
+          overflowY: "unset",
+          maxWidth: 350,
+          transform: 'translateY(-11px) !important',
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            marginRight: "-0.71em",
+            bottom: 0,
+            right: 40,
+            width: 16,
+            height: 16,
+            background: black,
+            boxShadow: '0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%)',
+            border: `1px solid ${dividerGreyNight}`,
+            transform: "translate(-50%, 50%) rotate(135deg)",
+            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
+          },
         },
       },
       MuiBottomNavigation: {
