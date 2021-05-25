@@ -103,9 +103,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     zIndex: 1,
   },
   maxButton: {
-    position: 'relative',
-    top: -60,
-    left: 190,
+    position: 'absolute',
+    top: 4,
+    right: 2,
     zIndex: 3,
   },
   elementHeader: {
@@ -362,7 +362,7 @@ const BasicVault: React.FC = () => {
               </Typography>
             </Box>
 
-            <Box width='100%' height='46px'>
+            <Box width='100%' height='46px' style={{ position: 'relative' }}>
               <input
                 value={'100'}
                 onChange={() => {}}

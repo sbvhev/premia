@@ -5,7 +5,7 @@ export { default as Breadcrumb } from './Breadcrumb';
 export { default as BorderLinearProgress } from './BorderLinearProgress';
 export { default as ColoredSlider } from './ColoredSlider';
 export { default as SwitchTab } from './SwitchTab';
-export { default as CustomTabs } from './CustomTabs';
+export { default as SearchTabs } from './SearchTabs';
 export { default as LineChart } from './LineChart';
 export { default as RadialChart } from './RadialChart';
 export { default as ConfirmTermsModal } from './ConfirmTermsModal';
