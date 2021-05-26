@@ -265,9 +265,9 @@ const OptionsPrice: React.FC = () => {
             axis={mobile ? 'x' : 'y'}
             bounds={{
               left: -1 * pLBoxPos - 55,
-              right: possiblePLBoxContainer?.current?.clientWidth - pLBoxPos - 65,
+              right: possiblePLBoxContainer.current?.clientWidth - pLBoxPos - 65,
               top: -1 * pLBoxPos - 15,
-              bottom: possiblePLBoxContainer?.current?.clientHeight - pLBoxPos - 30
+              bottom: possiblePLBoxContainer.current?.clientHeight - pLBoxPos - 30
             }}
             scale={1}
             ref={possiblePLBox}
