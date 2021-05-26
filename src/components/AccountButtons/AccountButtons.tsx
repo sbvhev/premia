@@ -20,7 +20,7 @@ import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
     width: 'calc(100% - 260px)',
@@ -115,7 +115,14 @@ const useStyles = makeStyles(({ palette }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10
-    }
+    },
+
+    [breakpoints.down('sm')]: {
+      width: '100%',
+      marginLeft: 4,
+      marginRight: 4,
+      marginBottom: 8
+    },
   }
 }));
 
