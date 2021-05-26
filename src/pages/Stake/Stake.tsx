@@ -46,6 +46,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-start',
     height: '55px',
     alignItems: 'center',
+    backgroundColor: palette.background.paper,
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
     padding: '0 7px',
