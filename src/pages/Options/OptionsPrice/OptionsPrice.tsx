@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   makeStyles,
   useTheme,
@@ -155,6 +155,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 const OptionsPrice: React.FC = () => {
   const possiblePLBox = useRef<any>(null);
   const possiblePLBoxContainer = useRef<any>(null);
+  const [possiblePLBoxDimensions, setPossiblePLBoxDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setPossiblePLBoxDimensions({
+        width: possiblePLBoxContainer.current.clientWidth,
+        height: possiblePLBoxContainer.current.clientHeight,
+      });
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const classes = useStyles();
   const theme = useTheme();
   const { optionType } = useOptionType();
@@ -167,7 +184,7 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const pLBoxPos = 250;
-  
+
   return (
     <Grid container direction={mobile ? 'column' : 'row'} justify='center' alignItems='center'>
       <Box
@@ -260,14 +277,14 @@ const OptionsPrice: React.FC = () => {
         </Box>
       </Box>
       <RootRef rootRef={possiblePLBoxContainer}>
-        <Box position='relative' width={mobile ? 1 : 80} height={mobile ? 80 : '70vh'}>
+        <Box position='relative' width={mobile ? 1 : 40} height={mobile ? 80 : '70vh'}>
           <Draggable
             axis={mobile ? 'x' : 'y'}
             bounds={{
               left: -1 * pLBoxPos - 55,
-              right: possiblePLBoxContainer.current?.clientWidth - pLBoxPos - 65,
+              right: possiblePLBoxDimensions.width - pLBoxPos - 65,
               top: -1 * pLBoxPos - 15,
-              bottom: possiblePLBoxContainer.current?.clientHeight - pLBoxPos - 30
+              bottom: possiblePLBoxDimensions.height - pLBoxPos - 30
             }}
             scale={1}
             ref={possiblePLBox}
