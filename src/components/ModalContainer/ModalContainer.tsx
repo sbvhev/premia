@@ -19,21 +19,25 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
     width: ({ size }) => {
       switch (size) {
         case 'sm':
-          return 'auto';
+          return '448px';
         case 'md':
           return '490px';
         case 'lg':
           return '80vw';
       }
     },
-    maxHeight: '90vh',
+    // maxHeight: '90vh',
     minWidth: '400px',
     margin: '0 auto',
     outline: 'none',
     overflowY: 'hidden',
     backgroundColor: 'transparent',
+    display: 'flex',
+    justifyContent: 'center',
   },
   containerMobile: {
+    display: 'flex',
+    justifyContent: 'center',
     backgroundColor: 'transparent',
     border: 'none',
     width: 'calc(100vw - 12px)',
