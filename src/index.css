@@ -94,7 +94,7 @@ ul.bn-notify-custom.bn-notify-notifications {
   padding: 30px 20px;
 }
 
-.bn-onboard-custom.bn-onboard-modal-select-wallets ul {
+ul.bn-onboard-custom.bn-onboard-modal-select-wallets {
   justify-content: center;
 }
 
