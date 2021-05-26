@@ -27,10 +27,14 @@ import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
     height: 510,
     backgroundColor: 'transparent',
+
+    [breakpoints.down('sm')]: {
+      height: 650
+    },
   },
   topIconWraper: {
     position: 'absolute',
@@ -116,6 +120,10 @@ const useStyles = makeStyles(({ palette }) => ({
     background: `linear-gradient(316.57deg, ${palette.success.dark} 18.89%, ${palette.success.main} 95.84%);`,
     borderRadius: '12px',
     zIndex: 2,
+
+    [breakpoints.down('sm')]: {
+      height: 570
+    },
   },
   mainCard: {
     boxSizing: 'border-box',
@@ -180,7 +188,11 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    marginBottom: 20
+    marginBottom: 20,
+
+    [breakpoints.down('sm')]: {
+      flexWrap: 'wrap'
+    },
   },
   tableCellIcon: {
     marginRight: 4,
@@ -243,6 +255,17 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:last-child': {
       padding: '24px 22px',
       borderLeft: `1px solid ${palette.divider}`,
+
+      [breakpoints.down('sm')]: {
+        borderTop: `1px solid ${palette.divider}`,
+        borderLeft: 'none',
+        width: '100%',
+        padding: '8px 0',
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'column'
+      },
     },
 
     '&:nth-child(4)': {
@@ -251,6 +274,24 @@ const useStyles = makeStyles(({ palette }) => ({
 
     '& $subTitle': {
       marginBottom: 8,
+    },
+
+    [breakpoints.down('sm')]: {
+      width: '50%',
+      padding: '20px 47px 20px 47px',
+
+      '&:first-child': {
+        paddingRight: 0
+      },
+
+      '&:nth-child(3)': {
+        paddingRight: 0,
+        paddingTop: 0
+      },
+
+      '&:nth-child(4)': {
+        paddingTop: 0
+      }
     },
   },
   boxLine: {
