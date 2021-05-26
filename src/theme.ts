@@ -199,6 +199,11 @@ export const lightTheme = responsiveFontSizes(
             },
           }
       },
+      MuiTableCell: {
+        root: {
+          padding: '16px 23px'
+        },
+      },
       MuiContainer: {
         fixed: {
           border: `1px solid ${dividerGreyDay}`,
@@ -590,7 +595,9 @@ export const darkTheme = responsiveFontSizes(
         },
       },
       MuiTableCell: {
-        root: {},
+        root: {
+          padding: '16px 23px'
+        },
       },
       MuiTableSortLabel: {
         root: {

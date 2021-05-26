@@ -22,6 +22,7 @@ const useStyles = makeStyles(({ palette }) => ({
   footerIcon: {
     cursor: 'pointer',
     marginLeft: 16,
+    display: 'flex',
     '&:hover path': {
       fill: palette.text.primary
     },
@@ -121,12 +122,13 @@ const Footer: React.FC = () => {
           sm={4}
           container
           justify={mobile ? 'center' : 'flex-start'}
+          alignItems='center'
           style={{ order: mobile ? 1 : 0 }}
         >
-          <a href='https://twitter.com/PremiaFinance' target='_blank' rel='noreferrer'><TwitterIcon className={classes.footerIcon} /></a>
-          <a href='https://premia.medium.com/' target='_blank' rel='noreferrer'><MediumIcon className={classes.footerIcon} /></a>
-          <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel='noreferrer'><DiscordIcon className={classes.footerIcon} /></a>
-          <a href='https://github.com/PremiaFinance' target='_blank' rel='noreferrer'><GithubIcon className={classes.footerIcon} /></a>
+          <a href='https://twitter.com/PremiaFinance' target='_blank' rel='noreferrer' className={classes.footerIcon}><TwitterIcon /></a>
+          <a href='https://premia.medium.com/' target='_blank' rel='noreferrer' className={classes.footerIcon}><MediumIcon /></a>
+          <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel='noreferrer' className={classes.footerIcon}><DiscordIcon /></a>
+          <a href='https://github.com/PremiaFinance' target='_blank' rel='noreferrer' className={classes.footerIcon}><GithubIcon /></a>
         </Grid>
         <Grid
           item

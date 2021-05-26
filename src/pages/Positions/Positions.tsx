@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Box, Grid, Container, Divider, Typography, BottomNavigation, BottomNavigationAction, TableRow, TableCell, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -261,6 +262,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& img': {
       marginTop: 3,
       marginBottom: -3
+    },
+    '& a': {
+      textDecoration: 'none'
     }
   },
   noPositionButton: {
@@ -362,7 +366,7 @@ const Positions: React.FC = () => {
     }
   ]
 
-  const noPositions = true;
+  const noPositions = false;
 
   return (
     <PageWithSidebar>
@@ -383,7 +387,7 @@ const Positions: React.FC = () => {
                   <img src={NoPositionYield} alt='No Yield' />
                   <Box ml={3}>
                     <Typography component='h2'>Your yield</Typography>
-                    <Button className={classes.noPositionButton} color='primary'>Earn yield</Button>
+                    <Link to='/vaults'><Button className={classes.noPositionButton} color='primary'>Earn yield</Button></Link>
                   </Box>
                 </Container>
               </Grid>
@@ -392,7 +396,7 @@ const Positions: React.FC = () => {
                   <img src={NoPositionOptions} alt='No Options' />
                   <Box ml={3}>
                     <Typography component='h2'>Your options</Typography>
-                    <Button className={classes.noPositionButton} color='primary'>Buy options</Button>
+                    <Link to='/options'><Button className={classes.noPositionButton} color='primary'>Buy options</Button></Link>
                   </Box>
                 </Container>
               </Grid>
@@ -520,10 +524,10 @@ const Positions: React.FC = () => {
                   renderRow={(item: any, index) => {
                     return (<TableRow key={index}>
                       <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell> 
-                      <TableCell><Box ml={2}>{formatNumber(item.capital)}</Box></TableCell>
-                      <TableCell><Box ml={2} display='flex' alignItems='center'><Box mr={1} className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>{item.name}</Box></TableCell>
-                      <TableCell><Box ml={2}>{item.earned}</Box></TableCell>
-                      <TableCell><Box ml={2}>{item.apy}</Box></TableCell>
+                      <TableCell>{formatNumber(item.capital)}</TableCell>
+                      <TableCell><Box display='flex' alignItems='center'><Box mr={1} className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>{item.name}</Box></TableCell>
+                      <TableCell>{item.earned}</TableCell>
+                      <TableCell>{item.apy}</TableCell>
                       <TableCell><Button color='primary'>Add</Button><Button variant='outlined'>Remove</Button></TableCell>
                     </TableRow>);
                   }}
@@ -597,12 +601,12 @@ const Positions: React.FC = () => {
                   renderRow={(item: any, index) => {
                     return (<TableRow key={index}>
                       <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell>
-                      <TableCell><Box ml={1}>{formatNumber(item.size)}</Box></TableCell>
+                      <TableCell>{formatNumber(item.size)}</TableCell>
                       <TableCell><Box className={cx(classes.typeBox, item.type === 'call' ? classes.call : classes.put)}><Box />{item.type === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box></TableCell>
-                      <TableCell><Box ml={1}>{item.strike}</Box></TableCell>
-                      <TableCell><Box ml={1}>{item.value}</Box></TableCell>
-                      <TableCell><Box ml={1} className={classes.expirationCell}>{Moment(item.expiration).format('DD MMM') } <Typography color='textSecondary'>2 days left</Typography></Box></TableCell>
-                      <TableCell><Box ml={1}><Button color='primary'>Sell</Button></Box></TableCell>
+                      <TableCell>{item.strike}</TableCell>
+                      <TableCell>{item.value}</TableCell>
+                      <TableCell><Box className={classes.expirationCell}>{Moment(item.expiration).format('DD MMM') } <Typography color='textSecondary'>2 days left</Typography></Box></TableCell>
+                      <TableCell><Button color='primary'>Sell</Button></TableCell>
                     </TableRow>);
                   }}
                 />
