@@ -23,6 +23,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { PageWithSidebar } from 'layouts';
 import { DataTable } from 'components';
+import PositionModal from 'components/PositionModal';
 
 const getYieldHeadCells = () => [
   {
@@ -291,6 +292,7 @@ const Positions: React.FC = () => {
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const [ yieldFilter, setYieldFilter ] = useState(0);
   const [ optionFilter, setOptionFilter ] = useState(0);
+  const [ positionModalOpen, setPositionModalOpen ] = useState(false);
 
   const yieldHeadCells = getYieldHeadCells();
   const optionsHeadCells = getOptionsHeadCells();
@@ -370,6 +372,12 @@ const Positions: React.FC = () => {
 
   return (
     <PageWithSidebar>
+      <PositionModal
+        open={positionModalOpen}
+        onClose={() => {
+          setPositionModalOpen(false);
+        }}
+      />
       {noPositions ?
         <Box className={classes.noPositionsContainer}>
           <Typography

@@ -157,13 +157,13 @@ export const lightTheme = responsiveFontSizes(
           boxShadow: 'none',
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryDay
+            fill: greySecondaryDay,
           },
         },
         outlined: {
           backgroundColor: 'transparent',
           color: greySecondaryDay,
-          padding: '6px 8px'
+          padding: '6px 8px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -190,14 +190,14 @@ export const lightTheme = responsiveFontSizes(
         },
         outlinedSecondary: {
           backgroundColor: white,
-            color: textSecondaryDay,
-            border: `1px solid ${dividerGreyDay}`,
-            '&:hover': {
-              backgroundColor: white,
-              color: black,
-              border: `1px solid ${primaryOnHover}`,
-            },
-          }
+          color: textSecondaryDay,
+          border: `1px solid ${dividerGreyDay}`,
+          '&:hover': {
+            backgroundColor: white,
+            color: black,
+            border: `1px solid ${primaryOnHover}`,
+          },
+        },
       },
       MuiTableCell: {
         root: {
@@ -211,13 +211,13 @@ export const lightTheme = responsiveFontSizes(
           background: white,
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
           padding: 0,
-        }
+        },
       },
       MuiFilledInput: {
         root: {
           borderRadius: 10,
           borderTopLeftRadius: 10,
-          borderTopRightRadius: 10
+          borderTopRightRadius: 10,
         },
         underline: {
           '&::after': {
@@ -235,6 +235,9 @@ export const lightTheme = responsiveFontSizes(
         },
       },
       MuiPaper: {
+        elevation1: {
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+        },
         root: {
           '&:focus': {
             outline: 'none',
@@ -247,23 +250,24 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiPopover: {
         paper: {
-          overflowX: "unset",
-          overflowY: "unset",
+          overflowX: 'unset',
+          overflowY: 'unset',
           maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-          "&::before": {
+          '&::before': {
             content: '""',
-            position: "absolute",
-            marginRight: "-0.71em",
+            position: 'absolute',
+            marginRight: '-0.71em',
             bottom: 0,
             right: 40,
             width: 16,
             height: 16,
             background: white,
             boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-            transform: "translate(-50%, 50%) rotate(135deg)",
-            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
+            transform: 'translate(-50%, 50%) rotate(135deg)',
+            clipPath:
+              'polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))',
           },
         },
       },
@@ -283,17 +287,17 @@ export const lightTheme = responsiveFontSizes(
             '& svg': {
               width: 16,
               height: 16,
-              marginRight: 8, 
+              marginRight: 8,
 
               '& path': {
-                fill: primary
-              }
+                fill: primary,
+              },
             },
 
             '&:focus': {
-              background: 'transparent'
-            }
-          }
+              background: 'transparent',
+            },
+          },
         },
         notchedOutline: {
           border: 'none',
@@ -309,7 +313,7 @@ export const lightTheme = responsiveFontSizes(
         indicator: {
           background: primary,
           borderRadius: 1.25,
-          boxShadow: '0px 0px 11px rgba(82, 148, 255, 0.0001)'
+          boxShadow: '0px 0px 11px rgba(82, 148, 255, 0.0001)',
         },
       },
       MuiTab: {
@@ -320,7 +324,7 @@ export const lightTheme = responsiveFontSizes(
           padding: 0,
           '&.Mui-selected': {
             color: primary,
-          }
+          },
         },
         wrapper: {
           display: 'flex',
@@ -331,19 +335,19 @@ export const lightTheme = responsiveFontSizes(
             marginBottom: '0px !important',
             width: 16,
             height: 16,
-            marginRight: 8
+            marginRight: 8,
           },
-          
+
           '& img:first-child': {
             marginBottom: '0 !important',
             marginRight: 6,
-            height: 24
+            height: 24,
           },
           '& img:nth-child(2)': {
             position: 'absolute',
             top: 8,
-            right: 0
-          }
+            right: 0,
+          },
         },
       },
       MuiTableSortLabel: {
@@ -351,7 +355,7 @@ export const lightTheme = responsiveFontSizes(
           '& img': {
             width: 16,
             marginLeft: 4,
-          }            
+          },
         },
       },
       MuiBottomNavigation: {
@@ -387,8 +391,8 @@ export const lightTheme = responsiveFontSizes(
             borderRadius: 10,
 
             '& path': {
-              fill: primary
-            }
+              fill: primary,
+            },
           },
         },
         wrapper: {
@@ -398,13 +402,13 @@ export const lightTheme = responsiveFontSizes(
           '& img:first-child': {
             marginBottom: '0 !important',
             marginRight: 6,
-            height: 24
+            height: 24,
           },
           '& img:nth-child(2)': {
             position: 'absolute',
             top: 8,
-            right: 0
-          }
+            right: 0,
+          },
         },
         label: {
           fontSize: 14,
@@ -415,8 +419,8 @@ export const lightTheme = responsiveFontSizes(
           },
         },
       },
-    }
-  })
+    },
+  }),
 );
 
 export const darkTheme = responsiveFontSizes(
@@ -492,9 +496,14 @@ export const darkTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyNight}`,
           borderRadius: 12,
           padding: 0,
-        }
+        },
       },
       MuiInputBase: {
+        root: {
+          '&.Mui-focused > input::placeholder': {
+            color: 'transparent',
+          },
+        },
       },
       MuiInput: {
         underline: {
@@ -532,17 +541,17 @@ export const darkTheme = responsiveFontSizes(
             '& svg': {
               width: 16,
               height: 16,
-              marginRight: 8, 
+              marginRight: 8,
 
               '& path': {
-                fill: primary
-              }
+                fill: primary,
+              },
             },
 
             '&:focus': {
-              background: 'transparent'
-            }
-          }
+              background: 'transparent',
+            },
+          },
         },
         notchedOutline: {
           border: 'none',
@@ -555,7 +564,7 @@ export const darkTheme = responsiveFontSizes(
         root: {
           borderRadius: 10,
           borderTopLeftRadius: 10,
-          borderTopRightRadius: 10
+          borderTopRightRadius: 10,
         },
         underline: {
           '&::after': {
@@ -604,7 +613,7 @@ export const darkTheme = responsiveFontSizes(
           '& img': {
             width: 16,
             marginLeft: 4,
-          }            
+          },
         },
       },
       MuiTabs: {
@@ -614,7 +623,8 @@ export const darkTheme = responsiveFontSizes(
         indicator: {
           background: whiteColor,
           borderRadius: 1.25,
-          boxShadow: '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF'
+          boxShadow:
+            '0px 0px 2px rgba(82, 148, 255, 0.514578), 0px 0px 6px rgba(255, 255, 255, 0.538381), 0px 0px 11px #5294FF',
         },
       },
       MuiTab: {
@@ -625,7 +635,7 @@ export const darkTheme = responsiveFontSizes(
           padding: 0,
           '&.Mui-selected': {
             color: primary,
-          }
+          },
         },
         wrapper: {
           display: 'flex',
@@ -636,19 +646,19 @@ export const darkTheme = responsiveFontSizes(
             width: 16,
             height: 16,
             marginRight: 8,
-            marginBottom: '0px !important;'
+            marginBottom: '0px !important;',
           },
-          
+
           '& img:first-child': {
             marginBottom: '0 !important',
             marginRight: 6,
-            height: 24
+            height: 24,
           },
           '& img:nth-child(2)': {
             position: 'absolute',
             top: 8,
-            right: 0
-          }
+            right: 0,
+          },
         },
       },
       MuiFab: {
@@ -696,9 +706,9 @@ export const darkTheme = responsiveFontSizes(
           color: primary,
           '&:hover': {
             '& svg path': {
-              fill: textSecondaryNight
+              fill: textSecondaryNight,
             },
-            color: textSecondaryNight
+            color: textSecondaryNight,
           },
         },
         contained: {
@@ -706,12 +716,12 @@ export const darkTheme = responsiveFontSizes(
           color: greySecondaryNight,
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryNight
+            fill: greySecondaryNight,
           },
         },
         outlined: {
           backgroundColor: 'transparent',
-          padding: '6px 8px'
+          padding: '6px 8px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -741,14 +751,14 @@ export const darkTheme = responsiveFontSizes(
         },
         outlinedSecondary: {
           backgroundColor: black,
-            color: greySecondaryNight,
-            border: `1px solid ${dividerGreyNight}`,
-            '&:hover': {
-              color: textPrimaryNight,
-              backgroundColor: black,
-              border: `1px solid ${primary}`,
-            },
-          }
+          color: greySecondaryNight,
+          border: `1px solid ${dividerGreyNight}`,
+          '&:hover': {
+            color: textPrimaryNight,
+            backgroundColor: black,
+            border: `1px solid ${primary}`,
+          },
+        },
       },
       MuiPaper: {
         root: {
@@ -763,23 +773,24 @@ export const darkTheme = responsiveFontSizes(
       },
       MuiPopover: {
         paper: {
-          overflowX: "unset",
-          overflowY: "unset",
+          overflowX: 'unset',
+          overflowY: 'unset',
           maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: 'none',
-          "&::before": {
+          '&::before': {
             content: '""',
-            position: "absolute",
-            marginRight: "-0.71em",
+            position: 'absolute',
+            marginRight: '-0.71em',
             bottom: 0,
             right: 40,
             width: 16,
             height: 16,
             background: black,
             border: `1px solid ${dividerGreyNight}`,
-            transform: "translate(-50%, 50%) rotate(135deg)",
-            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
+            transform: 'translate(-50%, 50%) rotate(135deg)',
+            clipPath:
+              'polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))',
           },
         },
       },
@@ -816,8 +827,8 @@ export const darkTheme = responsiveFontSizes(
             borderRadius: 10,
 
             '& path': {
-              fill: primary
-            }
+              fill: primary,
+            },
           },
         },
         wrapper: {
@@ -834,8 +845,8 @@ export const darkTheme = responsiveFontSizes(
         },
       },
     },
-  }
-));
+  }),
+);
 
 const theme = { lightTheme, darkTheme };
 

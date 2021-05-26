@@ -75,7 +75,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     }
   },
   rotate: {
-    transform: 'matrix(0, 1, 1, 0, 0, 0)'
+    transform: 'matrix(0, 1, 1, 0, 0, 0)',
   },
   currentPrice: {
     position: 'absolute',
@@ -85,7 +85,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 'calc(50% - 5px)',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      textAlign: 'center'
+      textAlign: 'center',
     },
     '& p': {
       color: palette.text.hint,
@@ -161,7 +161,9 @@ const OptionsPrice: React.FC = () => {
         <img src={darkMode ? mobile ? PriceRectangleMobile : PriceRectangle : mobile ? PriceRectangleMobileLight : PriceRectangleLight} alt='Current Price' />
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current Price</p>
-          <p><b>$1,749.37</b></p>
+          <p>
+            <b>$1,749.37</b>
+          </p>
         </Box>
       </Box>
       <Box width={mobile ? 1.1 : 30} height={mobile ? 30 : 1.5} mb={mobile ? -1.5 : 0} mr={mobile ? 0 : -1.5} bgcolor={ darkMode ? theme.palette.common.white : theme.palette.secondary.main } zIndex={1} />
