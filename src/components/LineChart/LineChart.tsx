@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
+import moment from 'moment';
+
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export interface LineChartProps {
   color: string;
@@ -47,7 +50,9 @@ const LineChart: React.FC<LineChartProps> = ({
       },
     },
     xaxis: {
-      categories,
+      categories: categories.map(
+        (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
+      ),
       axisBorder: {
         show: false,
       },
@@ -90,7 +95,7 @@ const LineChart: React.FC<LineChartProps> = ({
         return (
           '<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none;">' +
           '<span style="padding: 0.5rem; border: 2px solid #646464;">' +
-          props.w.globals.categoryLabels[props.dataPointIndex] +
+          moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format('DD MMM, YYYY') +
           '</span>' +
           '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
           'Price: ' +

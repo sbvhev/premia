@@ -214,7 +214,15 @@ const Options: React.FC = () => {
                     : theme.palette.error.main
                 }
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+                categories={[
+                  '2021/5/24',
+                  '2021/5/25',
+                  '2021/5/26',
+                  '2021/5/27',
+                  '2021/5/28',
+                  '2021/5/29',
+                  '2021/5/30',
+                ]}
                 width='100%'
                 height={200}
               />
