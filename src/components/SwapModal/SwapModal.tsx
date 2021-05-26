@@ -224,7 +224,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     lineHeight: '18px',
     marginLeft: '15px',
-    color: palette.common.black,
+    color: palette.background.paper,
   },
   maxButton: {
     position: 'relative',
@@ -558,13 +558,13 @@ const SwapModal: React.FC<SwapModalProps> = ({
                         Select token
                       </Typography>
                       <Box marginRight={!mobile ? '20px' : '16px'}>
-                        {!toAssetOpen ? (
+                        {!fromAssetOpen ? (
                           <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 1L6 6L1 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 1L6 6L1 1" stroke={palette.background.paper} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         ) : (
                           <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 6L6 1L1 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 6L6 1L1 6" stroke={palette.background.paper} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         )}
                       </Box>
@@ -648,11 +648,11 @@ const SwapModal: React.FC<SwapModalProps> = ({
                       <Box marginRight={!mobile ? '20px' : '16px'}>
                         {!toAssetOpen ? (
                           <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 1L6 6L1 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 1L6 6L1 1" stroke={palette.background.paper} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         ) : (
                           <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 6L6 1L1 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 6L6 1L1 6" stroke={palette.background.paper} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         )}
                       </Box>
@@ -670,7 +670,7 @@ const SwapModal: React.FC<SwapModalProps> = ({
                         </Typography>
                       </Box>
                       <Box marginRight="20px">
-                        {!fromAssetOpen ? (
+                        {!toAssetOpen ? (
                           <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11 1L6 6L1 1" stroke={palette.secondary.main} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
