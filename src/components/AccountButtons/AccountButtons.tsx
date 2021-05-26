@@ -28,7 +28,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   avatar: {
-    margin: '0.6rem 1.5rem 0.6rem 0',
+    width: 30,
+    height: 30,
+    marginRight: 8,
     backgroundColor: palette.text.primary,
   },
 
@@ -41,17 +43,28 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   account: {
-    padding: '0 1rem',
+    padding: '0 12px',
+    height: 45,
+    width: 180,
     border: `1px solid ${palette.divider}`,
-    width: '100%',
     borderRadius: 12,
   },
 
   connect: {
-    padding: '1rem',
+    padding: '0 12px',
+    height: 45,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center'
+  },
+
+  disconnect: {
+    display: 'flex',
+    '& button': {
+      padding: 0
+    }
   },
 
   address: {
@@ -69,7 +82,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   button: {
-    marginRight: 10,
+    margin: '0 10px 0 0',
+    height: 45,
     '& img': {
       marginLeft: 10,
     },
@@ -95,7 +109,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     borderRadius: 12,
     marginRight: 10,
     padding: 6,
-    height: 62,
+    height: 45,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -109,8 +123,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     '& svg': {
-      width: 50,
-      height: 50,
+      width: 33,
+      height: 33,
       marginRight: 8,
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
@@ -217,6 +231,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 container
                 direction='row'
                 alignItems='center'
+                justify='space-between'
                 className={classes.account}
               >
                 <Grid item container alignItems='center' xs={9}>
@@ -229,19 +244,19 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={3}>
-                  <Box
-                    borderLeft={1}
-                    borderColor={theme.palette.divider}
-                    p={0.8}
-                  >
-                    <Tooltip title='Disconnect'>
-                      <IconButton onClick={disconnect}>
-                        <ExitToApp color='action' />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </Grid>
+                <Box
+                  height={1}
+                  borderLeft={1}
+                  pl={1.5}
+                  borderColor={theme.palette.divider}
+                  className={classes.disconnect}
+                >
+                  <Tooltip title='Disconnect'>
+                    <IconButton onClick={disconnect}>
+                      <ExitToApp color='action' />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </Grid>
             </Link>
           </Box>
@@ -251,11 +266,8 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           onClick={() => setConfirmTermsModalOpen(true)}
           className={cx(classes.connect, mobile && classes.fullWidth)}
         >
-          <Grid container direction='row' alignItems='center'>
-            <Lock className={classes.walletIcon} />
-
-            <Typography className={classes.address}>Connect Wallet</Typography>
-          </Grid>
+          <Lock className={classes.walletIcon} />
+          <Typography className={classes.address}>Connect Wallet</Typography>
         </Box>
       )}
 
