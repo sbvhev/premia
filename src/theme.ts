@@ -252,7 +252,6 @@ export const lightTheme = responsiveFontSizes(
         paper: {
           overflowX: 'unset',
           overflowY: 'unset',
-          maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
           '&::before': {
@@ -775,7 +774,6 @@ export const darkTheme = responsiveFontSizes(
         paper: {
           overflowX: 'unset',
           overflowY: 'unset',
-          maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: 'none',
           '&::before': {

@@ -93,7 +93,13 @@ const useStyles = makeStyles(({ palette }) => ({
     '& svg path': {
       fill: palette.primary.main,
     }
-  }
+  },
+
+  gasPricePopup: {
+    '& .MuiPopover-paper': {
+      maxWidth: 368
+    }
+  },
 }));
 
 const Footer: React.FC = () => {
@@ -158,6 +164,7 @@ const Footer: React.FC = () => {
         }
       </Grid>
       <Popover
+        className={classes.gasPricePopup}
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={() => { setAnchorEl(null) }}
