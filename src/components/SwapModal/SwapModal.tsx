@@ -12,17 +12,7 @@ import ETH from 'assets/images/ETH-icon.png';
 import WBTC from 'assets/images/WBTC-icon.png';
 import LINK from 'assets/svg/LINK-icon.svg';
 
-import { ETHER, ChainId } from '@uniswap/sdk';
-// import { BigNumber } from 'ethers';
-
-import { useAllTokens } from 'hooks';
-import { Token } from 'web3/tokens';
-import { useWeb3 } from 'state/application/hooks';
 import { useSwapSettings } from 'state/swap/hooks';
-import { useCurrencyBalance } from 'state/wallet/hooks';
-// import { calculateGasMargin } from 'utils';
-// import { formatUnits } from 'ethers/lib/utils';
-// import { DAI } from '../../constants';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -116,7 +106,6 @@ const useStyles = makeStyles(({ palette }) => ({
     left: 'calc(50% - 22.5px)',
     display: 'flex',
     backgroundColor: palette.background.paper,
-    // backgroundColor: 'blue',
     margin: 0,
     borderRadius: '12px',
   },
@@ -252,16 +241,17 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 40,
-    right: 'calc(50% - 210px)',
+    top: 32,
+    right: 'calc(50% - 200px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '12px 6px',
-    width: '24px',
-    height: '24px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
     cursor: 'pointer',
-    zIndex: 1000,
+    zIndex: 10,
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark
@@ -269,14 +259,15 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainerMobile: {
     position: 'absolute',
-    top: 'calc(20vh + 38px)',
-    right: 'calc(50% - 170px)',
+    top: 'calc(20vh + 40px)',
+    right: 'calc(50% - 150px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '12px 6px',
     width: '24px',
     height: '24px',
+    borderRadius: '50%',
     cursor: 'pointer',
     zIndex: 1000,
     backgroundColor: 'transparent',
@@ -288,9 +279,9 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '378px',
+    width: '375px',
     height: '70px',
-    padding: '15px',
+    padding: '15px 11px 15px 15px',
   },
   searchAssetMenuContainerMobile: {
     display: 'flex',
@@ -305,7 +296,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '378px',
+    width: '375px',
     height: '54px',
     paddingRight: '20px',
     borderTop: `1px solid ${palette.divider}`,
@@ -426,62 +417,24 @@ const SwapModal: React.FC<SwapModalProps> = ({
   } = useSwapSettings();
   const [topInputValue, setTopInputValue] = React.useState<string | number>('0'); 
   const [botInputValue, setBotInputValue] = React.useState<string | number>('0'); 
-  const [searchValueFrom, setSearchValueFrom] = React.useState(null);
-  const [searchValueTo, setSearchValueTo] = React.useState(null);
-  // const [tokenFrom, setTokenFrom] = React.useState<swapToken>(
-  //   {
-  //     ticker: 'LINK',
-  //     name: 'Chainlink',
-  //     icon: LINK,
-  //     number: 876,
-  //   },
-  // );
-  // const [tokenTo, setTokenTo] = React.useState<null | swapToken>(null);
-  const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  const [approved, setApproved] = React.useState(true);
+  // const [searchValueFrom, setSearchValueFrom] = React.useState(null);
+  // const [searchValueTo, setSearchValueTo] = React.useState(null);
+  // const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
+  // const [approved, setApproved] = React.useState(true);
   const [fromAssetOpen, setFromAssetOpen] = React.useState<null | HTMLElement>(null);
   const [toAssetOpen, setToAssetOpen] = React.useState<null | HTMLElement>(null);
 
-  const { account, chainId, web3 } = useWeb3();
-  // const allTokens = [...useAllTokens(), DAI[chainId ?? ChainId.MAINNET] as Token, ETHER as Token];
-
-  const swapReady = fromToken && toToken && fromAmount && toAmount;
-
-
-
-
-  // const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
-  // const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
-
-  // const handleConfirmSwap = async () => {
-  //   if (!web3 || !account || !chainId) {
-  //     return;
-  //   }
-
-  //   const zeroXQuote = await getSwapQuote(
-  //     fromToken,
-  //     toToken,
-  //     fromAmount ?? '0',
-  //   );
-
-  //   setSwapSettings({ toAmount: formatUnits(zeroXQuote.buyAmount, toToken?.decimals) })
-
-  //   await web3?.getSigner(account).sendTransaction({
-  //     to: zeroXQuote.to,
-  //     data: zeroXQuote.data,
-  //     gasPrice: BigNumber.from(zeroXQuote.gasPrice),
-  //     value: BigNumber.from(zeroXQuote.value),
-  //     gasLimit: calculateGasMargin(BigNumber.from(zeroXQuote.estimatedGas)),
-  //   });
-  // };
+  const swapReady = fromToken && toToken && fromAmount && fromAmount !== '0' && toAmount && toAmount !== '0';
 
   const handleSwapTokenPositions = () => {
-    // setSwapSettings({
-    //   fromToken: toToken,
-    //   toToken: fromToken,
-    //   fromAmount: toAmount,
-    //   toAmount: fromAmount,
-    // });
+    if (fromToken && toToken) {
+      setSwapSettings({
+        fromToken: toToken,
+        toToken: fromToken,
+        fromAmount: toAmount,
+        toAmount: fromAmount,
+      });
+    }
   };
 
   const handleMax = () => {
@@ -526,8 +479,35 @@ const SwapModal: React.FC<SwapModalProps> = ({
     setToAssetOpen(null);
   };
 
-  const mappedItems = coinsForSwap.map((item, index) => (
-    <MenuItem className={!mobile ? classes.menuItem : classes.menuItemMobile} key={item.ticker}>
+  const handleSelectFromToken = (index: number) => {
+    setSwapSettings({ fromToken: coinsForSwap[index] });
+    handleClosefromAsset();
+  };
+
+  const handleSelectToToken = (index: number) => {
+    setSwapSettings({ toToken: coinsForSwap[index] });
+    handleCloseToAsset();
+  };
+
+  const mappedItemsFrom = coinsForSwap.map((item, index) => (
+    <MenuItem className={!mobile ? classes.menuItem : classes.menuItemMobile} key={item.ticker} onClick={() => handleSelectFromToken(index)}>
+      <Box display="flex" alignItems="center">
+        <img
+          src={item.icon}
+          alt={item.ticker}
+          style={{ width: '28px', height: '28px' }}
+        />
+        <Box display="flex" flexDirection="column" justifyContent="center" marginLeft="6px" height="28px">
+          <Typography className={classes.elementHeader} color='textPrimary'>{item.ticker}</Typography>
+          <Typography className={classes.menuItemAssetName}>{item.name}</Typography>
+        </Box>
+      </Box>
+      <Typography color='textSecondary'>{item.number}</Typography>
+    </MenuItem>
+  ));
+
+  const mappedItemsTo = coinsForSwap.map((item, index) => (
+    <MenuItem className={!mobile ? classes.menuItem : classes.menuItemMobile} key={item.ticker} onClick={() => handleSelectToToken(index)}>
       <Box display="flex" alignItems="center">
         <img
           src={item.icon}
@@ -563,20 +543,27 @@ const SwapModal: React.FC<SwapModalProps> = ({
                     onChange={handleChangeFromAmount}
                     className={classes.borderedInput}
                   />
-                  <Button color="primary" variant="outlined" size="small" className={!mobile ? classes.maxButton : classes.maxButtonMobile}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                    className={!mobile ? classes.maxButton : classes.maxButtonMobile}
+                    onClick={handleMax}
+                  >
                     MAX
                   </Button>
                 </Box>
 
                 <Box className={classes.borderedSelector} onClick={handleChangeFromAsset}>
-                  <Box display="flex" width="58px" justifyContent="space-between" marginLeft="12px">
+                  <Box display="flex" justifyContent="space-between" marginLeft="12px" alignItems="center">
                     {fromToken && (
                       <>
                         <img
-                          src={fromToken ? fromToken.icon : ''}
+                          src={fromToken.icon}
                           alt={fromToken.ticker}
+                          style={{ height: '18px' }}
                         />
-                        <Typography component='span' color='textPrimary'>
+                        <Typography component='span' color='textPrimary' style={{ marginLeft: '8px' }}>
                           {fromToken.ticker}
                         </Typography>
                       </>
@@ -601,7 +588,7 @@ const SwapModal: React.FC<SwapModalProps> = ({
                   keepMounted
                   open={Boolean(fromAssetOpen)}
                   onClose={handleClosefromAsset}
-                  style={{ marginTop: "74px" }} 
+                  style={{ marginTop: "85px" }} 
                 >
                   <Box className={!mobile ? classes.searchAssetMenuContainer : classes.searchAssetMenuContainerMobile}>
                     <Input
@@ -616,8 +603,8 @@ const SwapModal: React.FC<SwapModalProps> = ({
                         </Box>)}
                     />
                   </Box>
-                  <Box style={{ maxHeight: '28vh', overflowX: 'auto', borderBottomLeftRadius: '12px', WebkitBorderBottomRightRadius: '12px' }} >
-                    {mappedItems}
+                  <Box style={{ maxHeight: '22vh', overflowX: 'auto', }} >
+                    {mappedItemsFrom}
                   </Box>
                 </Menu>
 
@@ -689,7 +676,7 @@ const SwapModal: React.FC<SwapModalProps> = ({
                   keepMounted
                   open={Boolean(toAssetOpen)}
                   onClose={handleCloseToAsset}
-                  style={{ marginTop: "12px" }} 
+                  style={{ marginTop: "21px" }} 
                 >
                   <Box className={! mobile ? classes.searchAssetMenuContainer : classes.searchAssetMenuContainerMobile}>
                     <Input
@@ -705,14 +692,14 @@ const SwapModal: React.FC<SwapModalProps> = ({
                     />
                   </Box>
                   <Box style={{ maxHeight: '20vh', overflowX: 'auto', borderBottomLeftRadius: '12px', WebkitBorderBottomRightRadius: '12px' }} >
-                    {mappedItems}
+                    {mappedItemsTo}
                   </Box>
                 </Menu>
               </Box>
               <>
-                {tokenNeedsapproval && (
+                {true && (
                   <>
-                    {!approved ? (
+                    {!true ? (
                       <Button
                         color="primary"
                         variant="contained"
@@ -745,7 +732,7 @@ const SwapModal: React.FC<SwapModalProps> = ({
                         startIcon={
                           (
                             <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M4.59551 8.82662C4.48097 8.93791 4.32468 9 4.16234 9C4 9 3.84372 8.93791 3.72917 8.82662L0.269748 5.48465C-0.0892649 5.13789 -0.0892649 4.57558 0.269748 4.22947L0.702919 3.81096C1.06204 3.4642 1.64353 3.4642 2.00255 3.81096L4.16234 5.8972L9.99843 0.260075C10.3576 -0.0866916 10.9396 -0.0866916 11.2981 0.260075L11.7312 0.678579C12.0902 1.02535 12.0902 1.58754 11.7312 1.93377L4.59551 8.82662Z" fill={palette.background.default}/>
+                              <path d="M4.59551 8.82662C4.48097 8.93791 4.32468 9 4.16234 9C4 9 3.84372 8.93791 3.72917 8.82662L0.269748 5.48465C-0.0892649 5.13789 -0.0892649 4.57558 0.269748 4.22947L0.702919 3.81096C1.06204 3.4642 1.64353 3.4642 2.00255 3.81096L4.16234 5.8972L9.99843 0.260075C10.3576 -0.0866916 10.9396 -0.0866916 11.2981 0.260075L11.7312 0.678579C12.0902 1.02535 12.0902 1.58754 11.7312 1.93377L4.59551 8.82662Z" fill={palette.background.paper} />
                             </svg>
                           )
                         }
@@ -815,13 +802,13 @@ const SwapModal: React.FC<SwapModalProps> = ({
             </Box>
           </Box>
 
-          <Button id="exitId" className={!mobile ? classes.exitContainer : classes.exitContainerMobile} onClick={onClose}>
+          <Box id="exitId" className={!mobile ? classes.exitContainer : classes.exitContainerMobile} onClick={onClose}>
             <img
               src={XOut}
               alt="Exit"
-              style={{ padding: '6px 0'}}
+              style={{ padding: '6px'}}
             />
-          </Button>
+          </Box>
         </Box>
       </ModalContainer>
     </Modal>

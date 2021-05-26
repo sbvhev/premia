@@ -15,7 +15,7 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import { BetaSoftwareModal, ConfirmTermsModal } from 'components';
+import { BetaSoftwareModal, ConfirmTermsModal, SwapModal } from 'components';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 
@@ -97,9 +97,18 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const classes = useStyles();
+
+  const handleShowSwapModal = () => {
+    setShowSwapModal(true);
+  };
+
+  const handleHideSwapModal = () => {
+    setShowSwapModal(false);
+  };
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end'>
@@ -139,6 +148,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             color='secondary'
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
+            onClick={handleShowSwapModal}
           >
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
@@ -199,6 +209,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       <Grid item xs={1} />
+      <SwapModal open={showSwapModal} onClose={handleHideSwapModal} />
     </Grid>
   );
 };

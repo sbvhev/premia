@@ -8,7 +8,7 @@ import {
   setSwapSettings,
 } from './actions';
 
-interface swapTokenTest {
+export interface SwapTokenTest {
   ticker?: string;
   name?: string;
   icon?: string;
@@ -16,8 +16,8 @@ interface swapTokenTest {
 }
 
 export interface SwapSettings {
-  fromToken?: swapTokenTest | null;
-  toToken?: swapTokenTest | null;
+  fromToken?: SwapTokenTest | null;
+  toToken?: SwapTokenTest | null;
   fromAmount?: string | null;
   toAmount?: string | null;
 }

@@ -163,7 +163,6 @@ export const lightTheme = responsiveFontSizes(
           boxShadow: 'none',
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryDay
           },
         },
         outlined: {
@@ -254,7 +253,6 @@ export const lightTheme = responsiveFontSizes(
         paper: {
           overflowX: "unset",
           overflowY: "unset",
-          maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
           "&::before": {
@@ -267,7 +265,7 @@ export const lightTheme = responsiveFontSizes(
             height: 16,
             background: white,
             boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-            transform: "translate(-50%, 50%) rotate(135deg)",
+            // transform: "translate(-50%, 50%) rotate(135deg)",
             clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
           },
         },
@@ -710,7 +708,6 @@ export const darkTheme = responsiveFontSizes(
           color: greySecondaryNight,
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryNight
           },
         },
         outlined: {
@@ -773,7 +770,7 @@ export const darkTheme = responsiveFontSizes(
         paper: {
           overflowX: "unset",
           overflowY: "unset",
-          maxWidth: 368,
+          // maxWidth: 368,
           transform: 'translateY(-11px) !important',
           boxShadow: 'none',
           "&::before": {
@@ -786,7 +783,7 @@ export const darkTheme = responsiveFontSizes(
             height: 16,
             background: black,
             border: `1px solid ${dividerGreyNight}`,
-            transform: "translate(-50%, 50%) rotate(135deg)",
+            // transform: "translate(-50%, 50%) rotate(135deg)",
             clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
           },
         },
