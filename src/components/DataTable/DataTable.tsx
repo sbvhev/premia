@@ -50,6 +50,7 @@ export interface HeadCell<T> {
   label: React.ReactNode | string;
   numeric: boolean;
   sortDisabled?: boolean;
+  align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
   element?: React.ReactNode;
   sortKey: (optionBalance: T) => string | number;
 }
@@ -132,7 +133,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                 {headCells.map((headCell, index) => (
                   <TableCell
                     key={`${headCell.id}_${index}`}
-                    align='center'
+                    align={headCell.align}
                     padding='default'
                     sortDirection={orderBy.id === headCell.id ? order : false}
                   >

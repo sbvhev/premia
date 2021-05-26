@@ -63,7 +63,6 @@ const wallets = (chainId: number) => {
     {
       walletName: 'portis',
       apiKey: PORTIS_KEY,
-      preferred: true,
       label: 'Portis',
     },
     { walletName: 'opera' },
