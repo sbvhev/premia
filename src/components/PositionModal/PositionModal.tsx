@@ -167,6 +167,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontWeight: 500,
     fontSize: '14px',
     LineHeight: '24px',
+    cursor: 'pointer',
     textDecoration: 'underline'
   },
   exitContainer: {
@@ -505,7 +506,7 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                     <DiscordIcon />
                     <ForumIcon />
                   </Box>
-                  <Typography color="secondary" className={classes.hyperlink}>
+                  <Typography color="secondary" className={classes.hyperlink} onClick={onClose}>
                     Not right now
                   </Typography>
                 </Box>
