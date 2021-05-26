@@ -1,10 +1,12 @@
 import React from 'react';
+import cn from 'classnames';
 import { Paper } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 export interface ModalContainerProps {
   children: any;
+  className?: string;
   size: 'lg' | 'md' | 'sm';
 }
 
@@ -50,13 +52,21 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
 }));
 
 const ModalContainer = React.forwardRef<ModalContainerProps, any>(
-  ({ children, size = 'sm' }, ref) => {
+  ({ children, size = 'sm', className }, ref) => {
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('xs'));
     const classes = useStyles({ children, size });
 
     return (
-      <Paper innerRef={ref} tabIndex={-1} className={!mobile ? classes.container : classes.containerMobile}>
+      <Paper
+        innerRef={ref}
+        tabIndex={-1}
+        className={
+          !mobile
+            ? cn(className, classes.container)
+            : cn(className, classes.containerMobile)
+        }
+      >
         {children}
       </Paper>
     );

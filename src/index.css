@@ -77,7 +77,8 @@ ul.bn-notify-custom.bn-notify-notifications {
   margin-bottom: 0;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode .bn-onboard-select-description {
+.bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode
+  .bn-onboard-select-description {
   color: #646464;
 }
 
@@ -103,23 +104,28 @@ ul.bn-notify-custom.bn-notify-notifications {
   margin: auto auto 0 auto;
   justify-content: center;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode li button {
   background: #0e212a;
 }
 
-.bn-onboard-custom.bn-onboard-modal .bn-onboard-custom.bn-onboard-modal-content {
+.bn-onboard-custom.bn-onboard-modal
+  .bn-onboard-custom.bn-onboard-modal-content {
   padding: 25px;
   width: 496px;
   box-sizing: border-box;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-select-info-container {
+.bn-onboard-custom.bn-onboard-modal-content
+  .bn-onboard-custom.bn-onboard-select-info-container {
   display: none;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button {
+.bn-onboard-custom.bn-onboard-modal-content
+  .bn-onboard-custom.bn-onboard-prepare-button {
   border: 1px solid #212121;
   border-radius: 12px;
   color: #646464;
@@ -128,7 +134,8 @@ ul.bn-notify-custom.bn-notify-notifications {
   transition: all 0.3s ease-in;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button:hover {
+.bn-onboard-custom.bn-onboard-modal-content
+  .bn-onboard-custom.bn-onboard-prepare-button:hover {
   background: transparent;
   border: 1px solid #181818;
   color: #181818;

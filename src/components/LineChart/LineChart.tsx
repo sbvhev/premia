@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
+import moment from 'moment';
+
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export interface LineChartProps {
   color: string;
@@ -18,7 +21,7 @@ const LineChart: React.FC<LineChartProps> = ({
   height = 200,
 }) => {
   const theme = useTheme();
-  
+
   const options = {
     chart: {
       sparkline: {
@@ -41,13 +44,15 @@ const LineChart: React.FC<LineChartProps> = ({
       gradient: {
         gradientToColors: [theme.palette.background.paper],
         shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.9,
-        stops: [0, 70, 100],
+        opacityFrom: 1,
+        opacityTo: 0,
+        stops: [0, 90, 100],
       },
     },
     xaxis: {
-      categories,
+      categories: categories.map(
+        (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
+      ),
       axisBorder: {
         show: false,
       },
@@ -90,10 +95,11 @@ const LineChart: React.FC<LineChartProps> = ({
         return (
           '<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none;">' +
           '<span style="padding: 0.5rem; border: 2px solid #646464;">' +
-          props.w.globals.categoryLabels[props.dataPointIndex] +
+          moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format('DD MMM, YYYY') +
           '</span>' +
           '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
-          'Price: ' + props.series[props.seriesIndex][props.dataPointIndex] +
+          'Price: ' +
+          props.series[props.seriesIndex][props.dataPointIndex] +
           '</span>' +
           '</div>'
         );
