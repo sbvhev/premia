@@ -177,7 +177,9 @@ const ProVault: React.FC = () => {
   const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
-  const [value, setValue] = useState(new URLSearchParams(location.search).get('tab') === 'pro' ? 1: 0);
+  const [value, setValue] = useState(
+    new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
+  );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -208,7 +210,7 @@ const ProVault: React.FC = () => {
                 setValue(newValue);
                 history.push({
                   pathname: '/vaults',
-                  search: `?tab=${newValue === 0 ? 'basic': 'pro'}`
+                  search: `?tab=${newValue === 0 ? 'basic' : 'pro'}`,
                 });
               }}
               showLabels={true}
@@ -485,13 +487,13 @@ const ProVault: React.FC = () => {
                       color='#14A887'
                       data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                       categories={[
-                        'Mon',
-                        'Tue',
-                        'Wed',
-                        'Thu',
-                        'Fri',
-                        'Sat',
-                        'Sun',
+                        '2021/5/24',
+                        '2021/5/25',
+                        '2021/5/26',
+                        '2021/5/27',
+                        '2021/5/28',
+                        '2021/5/29',
+                        '2021/5/30',
                       ]}
                       width='100%'
                       height={200}

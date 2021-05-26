@@ -18,7 +18,7 @@ const LineChart: React.FC<LineChartProps> = ({
   height = 200,
 }) => {
   const theme = useTheme();
-  
+
   const options = {
     chart: {
       sparkline: {
@@ -41,9 +41,9 @@ const LineChart: React.FC<LineChartProps> = ({
       gradient: {
         gradientToColors: [theme.palette.background.paper],
         shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.9,
-        stops: [0, 70, 100],
+        opacityFrom: 1,
+        opacityTo: 0,
+        stops: [0, 90, 100],
       },
     },
     xaxis: {
@@ -93,7 +93,8 @@ const LineChart: React.FC<LineChartProps> = ({
           props.w.globals.categoryLabels[props.dataPointIndex] +
           '</span>' +
           '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
-          'Price: ' + props.series[props.seriesIndex][props.dataPointIndex] +
+          'Price: ' +
+          props.series[props.seriesIndex][props.dataPointIndex] +
           '</span>' +
           '</div>'
         );
