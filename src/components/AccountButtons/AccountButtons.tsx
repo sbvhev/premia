@@ -15,7 +15,7 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import { BetaSoftwareModal, ConfirmTermsModal, SwapModal, ChainModal } from 'components';
+import { BetaSoftwareModal, SwapModal, ChainModal, DisclaimerModal } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
@@ -136,6 +136,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [chainModalOpen, setChainModalOpen] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const classes = useStyles();
@@ -148,19 +149,20 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
     setShowSwapModal(false);
   };
 
+  const handleShowDisclaimer = () => {
+    setShowDisclaimer(true);
+  };
+
+  const handleHideDisclaimer = () => {
+    setShowDisclaimer(false);
+  };
+
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
       />
-
-      {confirmTermsModalOpen && (
-        <ConfirmTermsModal
-          open={confirmTermsModalOpen}
-          onClose={() => setConfirmTermsModalOpen(false)}
-        />
-      )}
 
       {chainModalOpen && (
         <ChainModal
@@ -248,7 +250,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         </Grid>
       ) : (
         <Box
-          onClick={() => setConfirmTermsModalOpen(true)}
+          onClick={handleShowDisclaimer}
           className={cx(classes.connect, mobile && classes.fullWidth)}
         >
           <Grid container direction='row' alignItems='center'>
@@ -261,6 +263,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
 
       <Grid item xs={1} />
       <SwapModal open={showSwapModal} onClose={handleHideSwapModal} />
+      <DisclaimerModal open={showDisclaimer} onClose={handleHideDisclaimer} />
     </Grid>
   );
 };
