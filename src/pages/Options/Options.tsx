@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Container, Grid, Typography, Button, Divider } from '@material-ui/core';
-import { CustomTabs } from 'components';
+import { SearchTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
@@ -94,7 +94,7 @@ const Options: React.FC = () => {
         </Typography>
       }
       <Box mt={2} mb={4}>
-        <CustomTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+        <SearchTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
       </Box>
       <Grid container>
         <Grid item container lg={8}>
