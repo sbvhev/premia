@@ -3,7 +3,7 @@ import { Box, Grid, Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
 
-import { DisclaimerModal } from 'components';
+import { ConfirmTermsModal } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -39,7 +39,7 @@ const AccountRequired: React.FC = () => {
     <Box clone className={classes.wrapper}>
       <Grid container justify='center' alignItems='center'>
         {confirmTermsModalOpen && (
-          <DisclaimerModal
+          <ConfirmTermsModal
             open={confirmTermsModalOpen}
             onClose={() => setConfirmTermsModalOpen(false)}
           />
