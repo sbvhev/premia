@@ -208,6 +208,11 @@ export const lightTheme = responsiveFontSizes(
           },
         },
       },
+      MuiTableCell: {
+        root: {
+          padding: '16px 23px'
+        },
+      },
       MuiContainer: {
         fixed: {
           border: `1px solid ${dividerGreyDay}`,
@@ -254,8 +259,8 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiPopover: {
         paper: {
-          overflowX: "unset",
-          overflowY: "unset",
+          overflowX: 'unset',
+          overflowY: 'unset',
           transform: 'translateY(-11px) !important',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
           '&::before': {
@@ -607,7 +612,9 @@ export const darkTheme = responsiveFontSizes(
         },
       },
       MuiTableCell: {
-        root: {},
+        root: {
+          padding: '16px 23px'
+        },
       },
       MuiTableSortLabel: {
         root: {
@@ -777,9 +784,8 @@ export const darkTheme = responsiveFontSizes(
       },
       MuiPopover: {
         paper: {
-          overflowX: "unset",
-          overflowY: "unset",
-          // maxWidth: 368,
+          overflowX: 'unset',
+          overflowY: 'unset',
           transform: 'translateY(-11px) !important',
           boxShadow: 'none',
           '&::before': {

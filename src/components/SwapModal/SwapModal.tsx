@@ -115,6 +115,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '45px',
     justifyContent: 'center',
     alignItems: 'center',
+    cursor: 'pointer',
     backgroundColor: palette.background.paper,
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
@@ -174,6 +175,7 @@ const useStyles = makeStyles(({ palette }) => ({
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
+    cursor: 'pointer',
     '&:hover': {
       backgroundColor: palette.primary.dark,
     },
@@ -204,6 +206,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'space-between',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
+    cursor: 'pointer',
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%);`,
     '&:hover': {
       backgroundColor: palette.primary.main,
