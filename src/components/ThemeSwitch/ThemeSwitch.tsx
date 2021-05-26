@@ -1,6 +1,6 @@
 import React from 'react';
-import DayIcon from 'assets/svg/DayIcon.svg';
-import NightIcon from 'assets/svg/NightIcon.svg';
+import { ReactComponent as DayIcon } from 'assets/svg/DayIcon.svg';
+import { ReactComponent as NightIcon } from 'assets/svg/NightIcon.svg';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import cx from 'classnames';
@@ -11,16 +11,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '4px 8px',
     borderRadius: 10,
     cursor: 'pointer',
-    '& img': {
-      filter: 'grayscale(1)',
+    '& svg': {
       marginRight: 8,
     },
+    '& svg path': {
+      fill: theme.palette.text.secondary
+    }
   },
 
   inactiveMode: {
     background: theme.palette.primary.dark,
-    '& img': {
-      filter: 'none',
+    '& svg path': {
+      fill: theme.palette.primary.main,
     },
     '& span': {
       color: theme.palette.primary.main,
@@ -44,8 +46,8 @@ const ThemeSwitch: React.FC = () => {
           })}
           onClick={() => setDarkMode(false)}
         >
-          <img src={DayIcon} alt='Day' />
-          <Typography component='span'>Day</Typography>
+          <DayIcon />
+          <Typography component='span' color='textSecondary'>Day</Typography>
         </Grid>
       </Grid>
       <Grid item xs={6}>
@@ -58,8 +60,8 @@ const ThemeSwitch: React.FC = () => {
           })}
           onClick={() => setDarkMode(true)}
         >
-          <img src={NightIcon} alt='Night' />
-          <Typography component='span'>Night</Typography>
+          <NightIcon />
+          <Typography component='span' color='textSecondary'>Night</Typography>
         </Grid>
       </Grid>
     </Grid>

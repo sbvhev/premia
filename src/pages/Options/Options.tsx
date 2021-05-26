@@ -158,7 +158,7 @@ const Options: React.FC = () => {
             </Grid>
           }
           <Grid item xs={12}>
-            <Box py={3} px={tablet ? 0 : 3}>
+            <Box pt={3} px={tablet ? 0 : 3}>
               <Typography color='textPrimary' component='h2' className={classes.price}>
                 Pool price level
               </Typography>
