@@ -10,6 +10,7 @@ import { ethers } from 'ethers';
 import { get } from 'lodash';
 
 import { getPrice, useBlockNumber, usePrices } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
 import {
   updateBlockNumber,
@@ -65,6 +66,7 @@ export default function Updater(): null {
   const denominatorDecimals = useDenominatorDecimals();
   const prices = usePrices();
   const tokens = useAllTokens();
+  const dark = useIsDarkMode();
 
   // const { denominator } = useOptionSettings();
   const {
@@ -307,7 +309,7 @@ export default function Updater(): null {
       networkId: chainId || 1,
       dappId: process.env.REACT_APP_BLOCKNATIVE_KEY,
       hideBranding: true,
-      darkMode: true,
+      darkMode: dark,
       walletSelect: { wallets: wallets(chain) },
       walletCheck: [
         { checkName: 'derivationPath' },
@@ -317,7 +319,7 @@ export default function Updater(): null {
     });
 
     dispatch(setWeb3Settings({ onboard }));
-  }, [dispatch, _onboard, chainId, signer]);
+  }, [dispatch, _onboard, chainId, signer, dark]);
 
   useEffect(() => {
     const previouslySelectedWallet = window.localStorage

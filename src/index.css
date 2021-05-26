@@ -119,7 +119,7 @@ ul.bn-notify-custom.bn-notify-notifications {
   display: none;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-dark-mode-link {
+.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button {
   border: 1px solid #212121;
   border-radius: 12px;
   color: #646464;
@@ -128,8 +128,14 @@ ul.bn-notify-custom.bn-notify-notifications {
   transition: all 0.3s ease-in;
 }
 
-.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-dark-mode-link:hover {
+.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button:hover {
   background: transparent;
-  border: 1px solid #E9E9E9;
-  color: #E9E9E9;
+  border: 1px solid #181818;
+  color: #181818;
+}
+
+/* light mode */
+
+.bn-onboard-custom.bn-onboard-modal-content li button {
+  background: rgba(82, 148, 255, 0.1);
 }
