@@ -59,6 +59,7 @@
     "react-dates": "^21.8.0",
     "react-device-detect": "^1.14.0",
     "react-dom": "^17.0.1",
+    "react-draggable": "^4.4.3",
     "react-hook-form": "^6.12.2",
     "react-i18next": "^11.8.7",
     "react-number-format": "^4.4.4",
