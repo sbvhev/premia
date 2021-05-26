@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { API as NotifyAPI } from 'bnc-notify';
 import { get } from 'lodash';
+import { ethers } from 'ethers';
+import { Token } from 'web3/tokens';
 
 import { AppState, AppDispatch } from 'state';
 import { ApplicationNotification, setActiveNotification, ApplicationModal, setActiveModal, setWeb3Settings, setApprovalType as _setApprovalType, setWrapEthModalOpen as _setWrapEthModalOpen, setWrapEth as _setWrapEth } from './actions';

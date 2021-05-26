@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { Box, Grid } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
@@ -15,8 +15,7 @@ import PositionsIcon from 'assets/svg/PositionsIcon.svg';
 import VaultsIcon from 'assets/svg/VaultIcon.svg';
 import OptionsIcon from 'assets/svg/OptionsIcon.svg';
 import StakeIcon from 'assets/svg/StakeIcon.svg';
-import DayIcon from 'assets/svg/DayIcon.svg';
-import NightIcon from 'assets/svg/NightIcon.svg';
+import ThemeSwitch from 'components/ThemeSwitch';
 
 const navigation = [
   {
@@ -94,9 +93,8 @@ export interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
-  const [darkMode, setDarkMode] = useDarkModeManager();
+  const [darkMode] = useDarkModeManager();
   const classes = useStyles();
-  const theme = useTheme();
 
   return (
     <Box
@@ -107,7 +105,6 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
       pb={{ sm: 1 }}
       position='relative'
       height={mobile ? 'auto' : '100vh'}
-      bgcolor={darkMode ? theme.palette.common.black : theme.palette.common.white}
       className={cx(!mobile && classes.rightBorder)}
     >
       <Grid container direction='column' justify='space-between'>
@@ -115,7 +112,11 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           {!mobile && (
             <Grid container justify='center' component={Link} to='/'>
               <Box pb={3}>
-                <img src={darkMode ? MainLogo : MainLogoBlack} alt='Logo' style={{}} />
+                <img
+                  src={darkMode ? MainLogo : MainLogoBlack}
+                  alt='Logo'
+                  style={{}}
+                />
               </Box>
             </Grid>
           )}
@@ -125,8 +126,8 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           ))}
         </Box>
 
-        <Box>
-          <Box mt={mobile ? 0 : 4} mb={2}>
+        <Box mb={mobile ? 0 : 2}>
+          <Box mt={mobile ? 0 : 4} mb={mobile ? 0 : 2}>
             {insights.map(({ href, title, link, Icon }, i) => (
               <SidebarItem
                 key={i}
@@ -137,39 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
               />
             ))}
           </Box>
-
-          <Box>
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid
-                  container
-                  justify='center'
-                  alignItems='center'
-                  className={cx(classes.modeItem, {
-                    [classes.inactiveMode]: !darkMode,
-                  })}
-                  onClick={() => setDarkMode(false)}
-                >
-                  <img src={DayIcon} alt='Day' />
-                  <Typography component='span'>Day</Typography>
-                </Grid>
-              </Grid>
-              <Grid item xs={6}>
-                <Grid
-                  container
-                  justify='center'
-                  alignItems='center'
-                  className={cx(classes.modeItem, {
-                    [classes.inactiveMode]: darkMode,
-                  })}
-                  onClick={() => setDarkMode(true)}
-                >
-                  <img src={NightIcon} alt='Night' />
-                  <Typography component='span'>Night</Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
+          {!mobile && <ThemeSwitch />}
         </Box>
       </Grid>
     </Box>

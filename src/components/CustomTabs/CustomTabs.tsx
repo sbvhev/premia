@@ -1,6 +1,16 @@
 import React from 'react';
-import { Tabs, Tab } from '@material-ui/core';
-import FireIcon from 'assets/svg/FireIcon.svg';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  Tabs,
+  Tab,
+  InputAdornment,
+  IconButton,
+  TextField,
+  Box
+} from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import { useIsDarkMode } from 'state/user/hooks';
+import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 
 export interface SwitchProps {
   items: any[];
@@ -8,23 +18,77 @@ export interface SwitchProps {
   onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
 }
 
+const useStyles = makeStyles((theme: Theme) => ({
+  searchField: {
+    right: 5,
+    top: 5,
+    position: 'absolute',
+    color: '#646464',
+
+    '& label': {
+      top: -6,
+    },
+
+    '& > div': {
+      background: (props: any) => (props.dark ? '#181818' : 'white'),
+    },
+
+    '& path': {
+      fill: '#646464',
+    },
+  },
+  box: {
+    width: '100%',
+    position: 'relative',
+    borderRadius: 12,
+    background: theme.palette.background.paper,
+    height: 56,
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)'
+  },
+}));
+
 const CustomTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
+
   return (
-    <Tabs variant='scrollable' value={value} onChange={onChange}>
-      {
-        items.map((val, index) => (
-          <Tab key={index} icon={
-            <>
-              <img src={val.image} alt={val.label} />
-              {
-                val.highlight &&
-                  <img src={FireIcon} alt='Highlight' />
+    <Box component='div' className={classes.box}>
+      <Tabs variant='scrollable' value={value} onChange={onChange}>
+        {items.map((val, index) => {
+          const Icon = val.image;
+          return (
+            <Tab
+              key={index}
+              icon={
+                <>
+                  <Icon />
+                  {val.highlight && <FireIcon />}
+                </>
               }
-            </>
-          } label={val.label} />
-        ))
-      }
-    </Tabs>
+              label={val.label}
+            />
+          );
+        })}
+      </Tabs>
+      <TextField
+        placeholder='Search...'
+        variant='outlined'
+        className={classes.searchField}
+        InputLabelProps={{
+          shrink: false,
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment component='div' position='end'>
+              <IconButton>
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Box>
   );
 };
 
