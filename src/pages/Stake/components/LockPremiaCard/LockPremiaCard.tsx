@@ -2,13 +2,7 @@ import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import {
-  Box,
-  Typography,
-  Button,
-  Menu, 
-  MenuItem,
-} from '@material-ui/core';
+import { Box, Typography, Button, Menu, MenuItem } from '@material-ui/core';
 
 import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
 import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
@@ -19,7 +13,7 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     height: '610px',
     width: '384px',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundcolor: 'transparent',
@@ -28,7 +22,7 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapperMobile: {
     height: '566px',
     width: '335px',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundcolor: 'transparent',
@@ -142,7 +136,7 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: '3px',
     '&:hover': {
       backgroundColor: palette.primary.dark,
-    }
+    },
   },
   borderedInput: {
     position: 'relative',
@@ -160,7 +154,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 400,
     '&:hover': {
       backgroundColor: palette.primary.dark,
-    }
+    },
   },
   inputIcon: {
     position: 'relative',
@@ -265,18 +259,24 @@ const LockPremiaCard: React.FC = () => {
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-      {!mobile && <img
+      {!mobile && (
+        <img
           src={LockPremiaIcon}
           alt='Lock premia'
           className={classes.lockImg}
-        />}
-      <Box className={!mobile ? classes.borderedCard : classes.borderedCardMobile}>
+        />
+      )}
+      <Box
+        className={!mobile ? classes.borderedCard : classes.borderedCardMobile}
+      >
         <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
-          {mobile && <img
-            src={LockPremiaMobile}
-            alt='Stake premia'
-            style={{ height: '80px', width: '58.24px' }}
-          />}
+          {mobile && (
+            <img
+              src={LockPremiaMobile}
+              alt='Stake premia'
+              style={{ height: '80px', width: '58.24px' }}
+            />
+          )}
           <Box>
             <Typography
               component='h2'
@@ -294,9 +294,14 @@ const LockPremiaCard: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
+        <Box
+          className={!mobile ? classes.topSection : classes.topSectionMobile}
+        >
           <Box className={classes.col}>
-            <Box display="flex" style={{ margin: '0 8px 2px', justifyContent: 'flex-start' }}>
+            <Box
+              display='flex'
+              style={{ margin: '0 8px 2px', justifyContent: 'flex-start' }}
+            >
               <Typography
                 component='p'
                 color='textPrimary'
@@ -305,61 +310,64 @@ const LockPremiaCard: React.FC = () => {
                 Lock period
               </Typography>
             </Box>
-              <Box className={classes.borderedBox} onClick={handleClick}>
-                <Typography
-                  component='p'
-                  color='textSecondary'
-                  className={classes.subTitle}
-                  style={{ marginLeft: '10px' }}
-                >
-                  Select period
-                </Typography>
-                <img
-                  src={calendarIcon}
-                  alt='Pick a date'
-                  style={{ marginRight: '10px' }}
-                />
-              </Box>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
+            <Box className={classes.borderedBox} onClick={handleClick}>
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.subTitle}
+                style={{ marginLeft: '10px' }}
               >
-                <MenuItem
-                  onClick={handleClose}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  1 Month
-                </MenuItem>
-                <MenuItem
-                  onClick={handleClose}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  3 Months
-                </MenuItem>
-                <MenuItem
-                  onClick={handleClose}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  6 Months
-                </MenuItem>
-                <MenuItem
-                  onClick={handleClose}
-                  className={classes.selectionItemLast}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  12 Months
-                </MenuItem>
-              </Menu>
+                Select period
+              </Typography>
+              <img
+                src={calendarIcon}
+                alt='Pick a date'
+                style={{ marginRight: '10px' }}
+              />
+            </Box>
+            <Menu
+              id='simple-menu'
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem
+                onClick={handleClose}
+                className={classes.selectionItem}
+                style={!mobile ? { width: '350px' } : { width: '315px' }}
+              >
+                1 Month
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                className={classes.selectionItem}
+                style={!mobile ? { width: '350px' } : { width: '315px' }}
+              >
+                3 Months
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                className={classes.selectionItem}
+                style={!mobile ? { width: '350px' } : { width: '315px' }}
+              >
+                6 Months
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                className={classes.selectionItemLast}
+                style={!mobile ? { width: '350px' } : { width: '315px' }}
+              >
+                12 Months
+              </MenuItem>
+            </Menu>
           </Box>
 
           <Box className={classes.col}>
-            <Box className={classes.horizontalBox} style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}>
+            <Box
+              className={classes.horizontalBox}
+              style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
+            >
               <Typography
                 component='p'
                 color='textPrimary'
@@ -375,8 +383,8 @@ const LockPremiaCard: React.FC = () => {
                 {'Max size available: 8,912'}
               </Typography>
             </Box>
-              
-            <Box width="100%" height="46px">
+
+            <Box width='100%' height='46px'>
               <input
                 value={'100'}
                 onChange={() => {}}
@@ -387,25 +395,42 @@ const LockPremiaCard: React.FC = () => {
                 alt='Select Amount'
                 className={classes.inputIcon}
               />
-              <Button color="primary" variant="outlined" size="small" className={!mobile ? classes.maxButton : classes.maxButtonMobile}>
+              <Button
+                color='primary'
+                variant='outlined'
+                size='small'
+                className={
+                  !mobile ? classes.maxButton : classes.maxButtonMobile
+                }
+              >
                 MAX
               </Button>
             </Box>
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Button color="secondary" variant="contained" size="large" className={classes.buttonLeft}>
-              Stake
+            <Button
+              color='secondary'
+              variant='contained'
+              size='large'
+              className={classes.buttonLeft}
+            >
+              Lock
             </Button>
-            <Button color="secondary" variant="outlined" size="large" className={classes.buttonRight}>
-              Unstake
+            <Button
+              color='secondary'
+              variant='outlined'
+              size='large'
+              className={classes.buttonRight}
+            >
+              Unlock
             </Button>
           </Box>
-
         </Box>
 
-        <Box className={!mobile ? classes.botSection : classes.botSectionMobile}>
-
+        <Box
+          className={!mobile ? classes.botSection : classes.botSectionMobile}
+        >
           <Box className={classes.horizontalBox}>
             <Typography
               component='h3'
@@ -415,7 +440,10 @@ const LockPremiaCard: React.FC = () => {
               My stats
             </Typography>
           </Box>
-          <Box className={classes.horizontalBox} style={{ alignItems: 'center' }}>
+          <Box
+            className={classes.horizontalBox}
+            style={{ alignItems: 'center' }}
+          >
             <Typography
               component='p'
               color='textSecondary'
@@ -427,7 +455,11 @@ const LockPremiaCard: React.FC = () => {
               <Box className={classes.progressContainer}>
                 <Box
                   className={classes.progressBar}
-                  style={palette && palette.type === 'dark' ? { width: progress } : { width: progress, boxShadow: 'none' }}
+                  style={
+                    palette && palette.type === 'dark'
+                      ? { width: progress }
+                      : { width: progress, boxShadow: 'none' }
+                  }
                 />
               </Box>
               <Typography
@@ -487,11 +519,10 @@ const LockPremiaCard: React.FC = () => {
               {`11`}
             </Typography>
           </Box>
-
         </Box>
       </Box>
     </Box>
-  )
+  );
 };
 
 export default LockPremiaCard;

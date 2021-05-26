@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Container, Grid, Typography, Button, Divider } from '@material-ui/core';
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  Button,
+  Divider,
+} from '@material-ui/core';
 import { SearchTabs } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -24,52 +31,52 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 700,
   },
   price: {
-    fontSize: 18
+    fontSize: 18,
   },
   subText: {
     marginLeft: 8,
-    fontSize: 14
+    fontSize: 14,
   },
   priceIcon: {
-    color: palette.success.dark
+    color: palette.success.dark,
   },
   helpIcon: {
     color: palette.text.secondary,
     fontSize: 16,
-    marginLeft: 4
+    marginLeft: 4,
   },
   currentPricePercent: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
     position: 'absolute',
     top: 0,
     left: 0,
-    borderRadius: 4
+    borderRadius: 4,
   },
 }));
 
 const tabItems = [
   {
     image: WBTCIcon,
-    label: 'wBTC'
+    label: 'wBTC',
   },
   {
     image: UniIcon,
     label: 'Uni',
-    highlight: true
+    highlight: true,
   },
   {
     image: LinkIcon,
-    label: 'Link'
+    label: 'Link',
   },
   {
     image: YFIIcon,
     label: 'YFI',
-    highlight: true
+    highlight: true,
   },
   {
     image: EthIcon,
-    label: 'ETH'
-  }
+    label: 'ETH',
+  },
 ];
 
 const Options: React.FC = () => {
@@ -78,13 +85,13 @@ const Options: React.FC = () => {
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
-  const [ tokenIndex, setTokenIndex ] = useState(2);
+  const [tokenIndex, setTokenIndex] = useState(2);
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
 
   return (
     <PageWithSidebar>
-      {!mobile &&
+      {!mobile && (
         <Typography
           component='h1'
           color='textPrimary'
@@ -92,12 +99,18 @@ const Options: React.FC = () => {
         >
           Options
         </Typography>
-      }
+      )}
       <Box mt={2} mb={4}>
-        <SearchTabs items={tabItems} value={tokenIndex} onChange={(ev, index) => { setTokenIndex(index) } } />
+        <SearchTabs
+          items={tabItems}
+          value={tokenIndex}
+          onChange={(ev, index) => {
+            setTokenIndex(index);
+          }}
+        />
       </Box>
       <Grid container>
-        <Grid item container lg={8}>
+        <Grid item container lg={9}>
           <Grid item xs={12} sm={6}>
             <Container fixed>
               <Box py={2} px={2}>
@@ -105,71 +118,101 @@ const Options: React.FC = () => {
               </Box>
             </Container>
           </Grid>
-          <Grid item container xs={12} sm={6} direction='column' justify='space-between'>
-            <Box py={1} pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>
-                Current Price
-              </Typography>
-              <Grid container alignItems='center'>
-                <Typography color='textPrimary' component='h2' className={classes.price}>
-                  $1,222
+          <Grid
+            item
+            container
+            xs={12}
+            sm={6}
+            direction='column'
+            justify='space-between'
+          >
+            <Box mx={2}>
+              <Box py={1} pl={xs ? 1 : 3}>
+                <Typography color='textSecondary'>Current Price</Typography>
+                <Grid container alignItems='center'>
+                  <Typography
+                    color='textPrimary'
+                    component='h2'
+                    className={classes.price}
+                  >
+                    $1,222
+                  </Typography>
+                  <Box
+                    position='relative'
+                    display='flex'
+                    alignItems='center'
+                    ml={1}
+                  >
+                    <Box
+                      width={1}
+                      height={1}
+                      style={{ opacity: darkMode ? 0.1 : 0.2 }}
+                      className={classes.currentPricePercent}
+                    ></Box>
+                    <span className={classes.subText}>+13%</span>
+                    <ArrowDropUpIcon className={classes.priceIcon} />
+                  </Box>
+                </Grid>
+              </Box>
+              <Box py={1} pl={xs ? 1 : 3}>
+                <Typography color='textSecondary'>Breakeven</Typography>
+                <Typography
+                  color='textPrimary'
+                  component='h2'
+                  className={classes.price}
+                >
+                  $1,749.37
                 </Typography>
-                <Box position='relative' display='flex' alignItems='center' ml={1}>
-                  <Box width={1} height={1} style={{opacity: darkMode ? 0.1 : 0.2}} className={classes.currentPricePercent}></Box>
-                  <span className={classes.subText}>
-                    +13%
-                  </span>
-                  <ArrowDropUpIcon className={classes.priceIcon} />
-                </Box>
-              </Grid>
-            </Box>
-            <Box py={1} pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>
-                Breakeven
-              </Typography>
-              <Typography color='textPrimary' component='h2' className={classes.price}>
-                $1,749.37
-              </Typography>
-            </Box>
-            <Box py={1} pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>
-                Total cost
-              </Typography>
-              <Typography color='textPrimary' component='h2' className={classes.price}>
-                $1,749.37
-              </Typography>
-            </Box>
-            <Box py={1} pl={xs ? 0 : 3}>
-              <Button
-                variant='contained'
-                fullWidth
-                color={ optionType === 'call' ? 'primary' : 'secondary' }
-              >
-                Deposit
-              </Button>
+              </Box>
+              <Box py={1} pl={xs ? 1 : 3}>
+                <Typography color='textSecondary'>Total cost</Typography>
+                <Typography
+                  color='textPrimary'
+                  component='h2'
+                  className={classes.price}
+                >
+                  $1,749.37
+                </Typography>
+              </Box>
+              <Box py={1} pl={xs ? 0 : 3}>
+                <Button
+                  fullWidth
+                  variant='contained'
+                  size='large'
+                  color={optionType === 'call' ? 'primary' : 'secondary'}
+                >
+                  Buy Option
+                </Button>
+              </Box>
             </Box>
           </Grid>
-          { tablet && 
+          {tablet && (
             <Grid item xs={12}>
               <Box mb={3}>
                 <OptionsPrice />
               </Box>
               <Divider />
             </Grid>
-          }
+          )}
           <Grid item xs={12}>
             <Box pt={3} px={tablet ? 0 : 3}>
-              <Typography color='textPrimary' component='h2' className={classes.price}>
+              <Typography
+                color='textPrimary'
+                component='h2'
+                className={classes.price}
+              >
                 Pool price level
               </Typography>
               <Grid container alignItems='center'>
-                <Typography color='textSecondary'>
-                  Last 7 days
-                </Typography>
+                <Typography color='textSecondary'>Last 7 days</Typography>
                 <HelpIcon className={classes.helpIcon} />
               </Grid>
               <LineChart
-                color={ optionType === 'call' ? theme.palette.success.dark : theme.palette.error.main }
+                color={
+                  optionType === 'call'
+                    ? theme.palette.success.dark
+                    : theme.palette.error.main
+                }
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
                 width='100%'
@@ -178,9 +221,9 @@ const Options: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
-        { }
-        <Grid item container lg={4}>
-          { !tablet && <OptionsPrice /> }
+
+        <Grid item container lg={3}>
+          {!tablet && <OptionsPrice />}
         </Grid>
       </Grid>
     </PageWithSidebar>
