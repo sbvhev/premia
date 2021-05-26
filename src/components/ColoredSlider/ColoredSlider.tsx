@@ -28,7 +28,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
 
   valueLabel: {
     left: 'calc(-50% - 8px)',
-    top: 20,
+    top: -20,
     fontSize: 12,
     '& > span': {
       color: 'transparent'
@@ -49,7 +49,6 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   },
 
   markLabel: {
-    marginTop: 4,
     fontSize: 12,
     top: 32,
     color: theme.palette.text.secondary,
