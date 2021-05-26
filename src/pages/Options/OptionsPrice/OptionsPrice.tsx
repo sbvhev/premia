@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  makeStyles,
-  useTheme,
-} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
@@ -29,7 +26,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       background: `linear-gradient(90deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`,
       borderTopRightRadius: 0,
-      borderBottomLeftRadius: 12,  
+      borderBottomLeftRadius: 12,
     },
   },
   chartCallBottom: {
@@ -73,8 +70,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
     '&:hover > div:last-child': {
-      zIndex: 3
-    }
+      zIndex: 3,
+    },
   },
   rotate: {
     transform: 'matrix(0, 1, 1, 0, 0, 0)',
@@ -107,7 +104,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 0,
       left: '50%',
       transform: 'translateX(-50%)',
-      textAlign: 'center'
+      textAlign: 'center',
     },
   },
   limitBox: {
@@ -115,10 +112,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginLeft: 9,
     zIndex: 1,
     transition: 'all 0.5s',
-    color: palette.text.secondary,
+    color: palette.text.primary,
     [breakpoints.down('md')]: {
       marginLeft: 0,
-      top: 8
+      top: 8,
     },
     '& div': {
       position: 'absolute',
@@ -128,28 +125,28 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 2,
       left: 20,
       [breakpoints.down('md')]: {
-        position: 'relative'
+        position: 'relative',
       },
     },
     '& svg': {
       width: 14,
-      margin: '0 4px'
-    }
+      margin: '0 4px',
+    },
   },
   priceFont: {
     fontSize: 12,
-    lineHeight: 1.2
+    lineHeight: 1.2,
   },
   transitionItem: {
     transition: 'all 1s',
   },
   hovered: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   draggableItem: {
     cursor: 'pointer',
     transition: 'opacity 1s',
-  }
+  },
 }));
 
 const OptionsPrice: React.FC = () => {
@@ -166,10 +163,10 @@ const OptionsPrice: React.FC = () => {
         width: possiblePLBoxContainer.current.clientWidth,
         height: possiblePLBoxContainer.current.clientHeight,
       });
-    }
-    window.addEventListener("resize", handleResize);
+    };
+    window.addEventListener('resize', handleResize);
     handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const classes = useStyles();
@@ -177,8 +174,8 @@ const OptionsPrice: React.FC = () => {
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [ hoveredTop, setHoveredTop ] = useState(false);
-  const [ hoveredBottom, setHoveredBottom ] = useState(false);
+  const [hoveredTop, setHoveredTop] = useState(false);
+  const [hoveredBottom, setHoveredBottom] = useState(false);
 
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
@@ -186,7 +183,12 @@ const OptionsPrice: React.FC = () => {
   const pLBoxPos = 250;
 
   return (
-    <Grid container direction={mobile ? 'column' : 'row'} justify='center' alignItems='center'>
+    <Grid
+      container
+      direction={mobile ? 'column' : 'row'}
+      justify='center'
+      alignItems='center'
+    >
       <Box
         position='relative'
         mt={mobile ? 0 : 1}
@@ -194,11 +196,20 @@ const OptionsPrice: React.FC = () => {
         mr={mobile ? 0 : -0.75}
         zIndex={2}
         className={cx(
-          classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered
+          classes.transitionItem,
+          (hoveredTop || hoveredBottom) && classes.hovered,
         )}
       >
         <img
-          src={darkMode ? mobile ? PriceRectangleMobile : PriceRectangle : mobile ? PriceRectangleMobileLight : PriceRectangleLight}
+          src={
+            darkMode
+              ? mobile
+                ? PriceRectangleMobile
+                : PriceRectangle
+              : mobile
+              ? PriceRectangleMobileLight
+              : PriceRectangleLight
+          }
           alt='Current Price'
         />
         <Box zIndex={2} className={classes.currentPrice}>
@@ -220,7 +231,7 @@ const OptionsPrice: React.FC = () => {
       />
       <Box
         display='flex'
-        flexDirection={mobile ? 'row' : 'column' }
+        flexDirection={mobile ? 'row' : 'column'}
         justifyContent='space-between'
         width={barWidth}
         height={barHeight}
@@ -229,46 +240,78 @@ const OptionsPrice: React.FC = () => {
         borderRadius={12}
       >
         <Box
-          width={mobile ? 1/3 : 1}
-          height={mobile ? 1 : 1/3}
+          width={mobile ? 1 / 3 : 1}
+          height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop, classes.chartItem, hoveredBottom && classes.hovered)
-          } 
-          onMouseEnter={() => { setHoveredTop(true) }}
-          onMouseLeave={() => { setHoveredTop(false) }}
+            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
+            classes.chartItem,
+            hoveredBottom && classes.hovered,
+          )}
+          onMouseEnter={() => {
+            setHoveredTop(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredTop(false);
+          }}
           position='relative'
         >
           <Box className={classes.unlimitedText}>
-            <Typography className={classes.priceFont}>Unlimited upside</Typography>
+            <Typography className={classes.priceFont}>
+              Unlimited upside
+            </Typography>
           </Box>
           <Box
             className={classes.limitBox}
             bottom={mobile ? 'unset' : -24}
             right={mobile ? 20 : 'unset'}
           >
-            {!mobile && <img src={darkMode ? BarometerBg2 : BarometerBg2Light} alt='Barometer Bg2' />}
+            {!mobile && (
+              <img
+                src={darkMode ? BarometerBg2 : BarometerBg2Light}
+                alt='Barometer Bg2'
+              />
+            )}
             <Box>
-              { mobile && <HelpIcon />}
+              {mobile && <HelpIcon />}
               <Typography className={classes.priceFont}>$1,843</Typography>
-              { !mobile && <HelpIcon />}
+              {!mobile && <HelpIcon />}
             </Box>
           </Box>
         </Box>
         <Box
-          width={mobile ? 1/3 : 1}
-          height={mobile ? 1 : 1/3}
+          width={mobile ? 1 / 3 : 1}
+          height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call' ? classes.chartPutBottom : classes.chartCallBottom, classes.chartItem, hoveredTop && classes.hovered
+            optionType === 'call'
+              ? classes.chartPutBottom
+              : classes.chartCallBottom,
+            classes.chartItem,
+            hoveredTop && classes.hovered,
           )}
-          onMouseEnter={() => { setHoveredBottom(true) }}
-          onMouseLeave={() => { setHoveredBottom(false) }}
+          onMouseEnter={() => {
+            setHoveredBottom(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredBottom(false);
+          }}
           position='relative'
         >
           <Box className={classes.unlimitedText}>
-            <Typography className={classes.priceFont}>Unlimited upside</Typography>
+            <Typography className={classes.priceFont}>
+              Unlimited upside
+            </Typography>
           </Box>
-          <Box className={classes.limitBox} top={mobile ? 'unset' : -16} left={mobile ? -20 : 'unset'}>
-            {!mobile && <img src={darkMode ? BarometerBg2 : BarometerBg2Light} alt='Barometer Bg2' />}
+          <Box
+            className={classes.limitBox}
+            top={mobile ? 'unset' : -16}
+            left={mobile ? -20 : 'unset'}
+          >
+            {!mobile && (
+              <img
+                src={darkMode ? BarometerBg2 : BarometerBg2Light}
+                alt='Barometer Bg2'
+              />
+            )}
             <Box>
               <Typography className={classes.priceFont}>$1,504</Typography>
               <HelpIcon />
@@ -277,14 +320,18 @@ const OptionsPrice: React.FC = () => {
         </Box>
       </Box>
       <RootRef rootRef={possiblePLBoxContainer}>
-        <Box position='relative' width={mobile ? 1 : 40} height={mobile ? 80 : '70vh'}>
+        <Box
+          position='relative'
+          width={mobile ? 1 : 40}
+          height={mobile ? 80 : '70vh'}
+        >
           <Draggable
             axis={mobile ? 'x' : 'y'}
             bounds={{
               left: -1 * pLBoxPos - 55,
               right: possiblePLBoxDimensions.width - pLBoxPos - 65,
               top: -1 * pLBoxPos - 15,
-              bottom: possiblePLBoxDimensions.height - pLBoxPos - 30
+              bottom: possiblePLBoxDimensions.height - pLBoxPos - 30,
             }}
             scale={1}
             ref={possiblePLBox}
@@ -296,19 +343,28 @@ const OptionsPrice: React.FC = () => {
               zIndex={2}
               id='possiblePLBox'
               className={cx(
-                classes.draggableItem, (hoveredTop || hoveredBottom) && classes.hovered)
-              }
+                classes.draggableItem,
+                (hoveredTop || hoveredBottom) && classes.hovered,
+              )}
             >
               <Box
                 width={mobile ? 1.1 : 16}
                 height={mobile ? 28 : 1.1}
-                bgcolor={ darkMode ? '#29CB84' : theme.palette.secondary.main }
+                bgcolor={darkMode ? '#29CB84' : theme.palette.secondary.main}
                 position='absolute'
                 top={mobile ? -26 : 21}
                 left={mobile ? '50%' : -16}
               />
-              <img 
-                src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light}
+              <img
+                src={
+                  mobile
+                    ? darkMode
+                      ? BarometerBg3
+                      : BarometerBg3Light
+                    : darkMode
+                    ? BarometerBg1
+                    : BarometerBg1Light
+                }
                 alt='Barometer Bg1'
               />
               <Box
@@ -320,8 +376,12 @@ const OptionsPrice: React.FC = () => {
                 right={mobile ? 'unset' : 10}
                 color='white'
               >
-                <Typography className={classes.priceFont}>Possible P&L</Typography>
-                <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
+                <Typography className={classes.priceFont}>
+                  Possible P&L
+                </Typography>
+                <Typography className={classes.priceFont}>
+                  <b>$1,749.37</b>
+                </Typography>
               </Box>
             </Box>
           </Draggable>
