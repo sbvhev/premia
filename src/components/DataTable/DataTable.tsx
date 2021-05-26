@@ -65,8 +65,8 @@ export interface DataTableProps<T> {
   loading?: boolean;
   isSinglelineHeader?: boolean;
   onChange?: Function;
-  size?: number,
-  rowPerPage?: number
+  size?: number;
+  rowPerPage?: number;
 }
 
 const DataTable: React.FC<DataTableProps<any>> = ({
@@ -101,8 +101,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-    if ((newPage + 1) * rowsPerPage >= size)
-      onChange(false);
+    if ((newPage + 1) * rowsPerPage >= size) onChange(false);
   };
 
   const handleChangeRowsPerPage = (
@@ -117,7 +116,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
     rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   return (
-    <Box clone boxShadow={3} borderRadius={16}>
+    <Box clone borderRadius={16}>
       <Paper className={classes.paper}>
         {toolbar}
 
@@ -137,7 +136,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                     padding='default'
                     sortDirection={orderBy.id === headCell.id ? order : false}
                   >
-                    { headCell.element }
+                    {headCell.element}
                     <TableSortLabel
                       className={classes.label}
                       active={orderBy.id === headCell.id}
