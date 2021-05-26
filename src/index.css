@@ -49,3 +49,93 @@ a:-webkit-any-link:hover {
 ul.bn-notify-custom.bn-notify-notifications {
   display: none;
 }
+
+.bn-onboard-custom.bn-onboard-modal {
+  z-index: 99;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content-header-icon {
+  display: none;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content-header-heading {
+  margin-left: 0;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode {
+  background: black;
+  border: 1px solid #212121;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content-header {
+  margin-bottom: 0;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode .bn-onboard-select-description {
+  color: #646464;
+}
+
+.bn-onboard-modal-content p.bn-onboard-custom.bn-onboard-select-description {
+  margin-top: 0;
+}
+
+.bn-onboard-custom.bn-onboard-modal-select-wallets li button {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  height: 140px;
+  border-radius: 12px;
+  padding: 30px 20px;
+}
+
+.bn-onboard-modal-content ul.bn-onboard-custom.bn-onboard-modal-select-wallets {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.bn-onboard-custom.bn-onboard-modal-select-wallets li button span {
+  margin: auto auto 0 auto;
+  justify-content: center;
+  text-align: center;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content.bn-onboard-dark-mode li button {
+  background: #0e212a;
+}
+
+.bn-onboard-custom.bn-onboard-modal .bn-onboard-custom.bn-onboard-modal-content {
+  padding: 25px;
+  width: 496px;
+  box-sizing: border-box;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-select-info-container {
+  display: none;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button {
+  border: 1px solid #212121;
+  border-radius: 12px;
+  color: #646464;
+  text-align: center;
+  padding: 13px 23px;
+  transition: all 0.3s ease-in;
+}
+
+.bn-onboard-custom.bn-onboard-modal-content .bn-onboard-custom.bn-onboard-prepare-button:hover {
+  background: transparent;
+  border: 1px solid #181818;
+  color: #181818;
+}
+
+/* light mode */
+
+.bn-onboard-custom.bn-onboard-modal-content li button {
+  background: rgba(82, 148, 255, 0.1);
+}

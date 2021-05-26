@@ -4,6 +4,7 @@ import { ReactComponent as NightIcon } from 'assets/svg/NightIcon.svg';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import cx from 'classnames';
+import { useWeb3 } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ThemeSwitch: React.FC = () => {
   const [darkMode, setDarkMode] = useDarkModeManager();
+  const { onboard } = useWeb3();
   const classes = useStyles();
 
   return (
@@ -44,7 +46,12 @@ const ThemeSwitch: React.FC = () => {
           className={cx(classes.modeItem, {
             [classes.inactiveMode]: !darkMode,
           })}
-          onClick={() => setDarkMode(false)}
+          onClick={() => {
+            setDarkMode(false);
+            onboard?.config({
+              darkMode: false
+            });
+          }}
         >
           <DayIcon />
           <Typography component='span' color='textSecondary'>Day</Typography>
@@ -58,7 +65,12 @@ const ThemeSwitch: React.FC = () => {
           className={cx(classes.modeItem, {
             [classes.inactiveMode]: darkMode,
           })}
-          onClick={() => setDarkMode(true)}
+          onClick={() => {
+            setDarkMode(true);
+            onboard?.config({
+              darkMode: true
+            });
+          }}
         >
           <NightIcon />
           <Typography component='span' color='textSecondary'>Night</Typography>

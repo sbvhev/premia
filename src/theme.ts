@@ -13,6 +13,7 @@ const primaryOnHover = '#80B5FF';
 
 const greySecondaryDay = '#8D97A0';
 const greySecondaryNight = '#646464';
+const searchBarGrey = '#181818';
 
 const black = '#000000';
 const white = '#ffffff';
@@ -60,12 +61,17 @@ function createTheme(
 export const lightTheme = responsiveFontSizes(
   createTheme({
     palette: {
+      action: {
+        disabledBackground: '',
+        disabled: 'set color of text here'
+      },
       primary: {
         main: primary,
         dark: premiaBlueDay,
       },
       secondary: {
         main: greySecondaryDay,
+        dark: backgroundDay,
       },
       common: {
         black,
@@ -157,7 +163,6 @@ export const lightTheme = responsiveFontSizes(
           boxShadow: 'none',
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryDay,
           },
         },
         outlined: {
@@ -170,6 +175,10 @@ export const lightTheme = responsiveFontSizes(
           color: white,
           '&:hover': {
             background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
+          },
+          '&$disabled': {
+            opacity: '0.3',
+            color: white,
           },
         },
         containedSecondary: {
@@ -264,9 +273,8 @@ export const lightTheme = responsiveFontSizes(
             height: 16,
             background: white,
             boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-            transform: 'translate(-50%, 50%) rotate(135deg)',
-            clipPath:
-              'polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))',
+            // transform: "translate(-50%, 50%) rotate(135deg)",
+            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
           },
         },
       },
@@ -432,6 +440,7 @@ export const darkTheme = responsiveFontSizes(
       },
       secondary: {
         main: greySecondaryNight,
+        dark: searchBarGrey,
       },
       common: {
         black,
@@ -715,7 +724,6 @@ export const darkTheme = responsiveFontSizes(
           color: greySecondaryNight,
           padding: '6px 8px',
           '& svg path': {
-            fill: greySecondaryNight,
           },
         },
         outlined: {
@@ -728,6 +736,10 @@ export const darkTheme = responsiveFontSizes(
           boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
           '&:hover': {
             background: `linear-gradient(121.21deg, ${callGradientB} 7.78%, ${callGradientA} 118.78%);`,
+          },
+          '&$disabled': {
+            opacity: '0.3',
+            color: black,
           },
         },
         containedSecondary: {
@@ -786,9 +798,8 @@ export const darkTheme = responsiveFontSizes(
             height: 16,
             background: black,
             border: `1px solid ${dividerGreyNight}`,
-            transform: 'translate(-50%, 50%) rotate(135deg)',
-            clipPath:
-              'polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))',
+            // transform: "translate(-50%, 50%) rotate(135deg)",
+            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
           },
         },
       },
