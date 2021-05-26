@@ -10,6 +10,7 @@ import PriceRectangleMobileLight from 'assets/svg/PriceRectangleMobileLight.svg'
 import BarometerBg1 from 'assets/svg/BarometerBg1.svg';
 import BarometerBg1Light from 'assets/svg/BarometerBg1Light.svg';
 import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
+import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -17,6 +18,7 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import HelpIcon from '@material-ui/icons/HelpOutline';
+import Draggable from 'react-draggable';
 import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -110,13 +112,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   limitBox: {
     position: 'absolute',
-    marginLeft: 6,
+    marginLeft: 9,
     zIndex: 1,
     transition: 'all 0.5s',
     color: palette.text.secondary,
     [breakpoints.down('md')]: {
       marginLeft: 0,
-      top: 6
+      top: 8
     },
     '& div': {
       position: 'absolute',
@@ -143,8 +145,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   hovered: {
     opacity: 0.5
+  },
+  draggableItem: {
+    cursor: 'pointer'
   }
 }));
+
+const handleStart = (ev: any) => {
+  console.log(ev)
+}
+
+const handleDrag = (ev: any) => {
+  console.log(ev)
+}
+
+const handleStop = (ev: any) => {
+  console.log(ev)
+}
 
 const OptionsPrice: React.FC = () => {
   const classes = useStyles();
@@ -154,11 +171,27 @@ const OptionsPrice: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const [ hoveredTop, setHoveredTop ] = useState(false);
   const [ hoveredBottom, setHoveredBottom ] = useState(false);
+
+  const standardWidth = 16;
+  const barHeight = mobile ? standardWidth : '70vh';
+  const barWidth = mobile ? 1 : standardWidth;
   
   return (
     <Grid container direction={mobile ? 'column' : 'row'} justify='center' alignItems='center'>
-      <Box position='relative' mt={mobile ? 0 : 1} mb={mobile ? -4 : 0} mr={mobile ? 0 : -0.75} zIndex={2} className={cx(classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered)}>
-        <img src={darkMode ? mobile ? PriceRectangleMobile : PriceRectangle : mobile ? PriceRectangleMobileLight : PriceRectangleLight} alt='Current Price' />
+      <Box
+        position='relative'
+        mt={mobile ? 0 : 1}
+        mb={mobile ? -4 : 0}
+        mr={mobile ? 0 : -0.75}
+        zIndex={2}
+        className={cx(
+          classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered
+        )}
+      >
+        <img
+          src={darkMode ? mobile ? PriceRectangleMobile : PriceRectangle : mobile ? PriceRectangleMobileLight : PriceRectangleLight}
+          alt='Current Price'
+        />
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current Price</p>
           <p>
@@ -166,14 +199,45 @@ const OptionsPrice: React.FC = () => {
           </p>
         </Box>
       </Box>
-      <Box width={mobile ? 1.1 : 30} height={mobile ? 30 : 1.5} mb={mobile ? -1.5 : 0} mr={mobile ? 0 : -1.5} bgcolor={ darkMode ? theme.palette.common.white : theme.palette.secondary.main } zIndex={1} />
-      <Box display='flex' flexDirection={mobile ? 'row' : 'column' } justifyContent='space-between' width={mobile ? 1 : 12} height={mobile ? 12 : 540} border={1} borderColor={theme.palette.divider} borderRadius={12}>
-        <Box width={mobile ? 1/3 : 1} height={mobile ? 1 : 1/3} className={cx(optionType === 'call' ? classes.chartCallTop : classes.chartPutTop, classes.chartItem, hoveredBottom && classes.hovered)} onMouseEnter={() => { setHoveredTop(true) }} onMouseLeave={() => { setHoveredTop(false) }} position='relative'>
+      <Box
+        width={mobile ? 1.1 : 30}
+        height={mobile ? 30 : 1.5}
+        mb={mobile ? -2 : 0}
+        mr={mobile ? 0 : -2}
+        bgcolor={
+          darkMode ? theme.palette.common.white : theme.palette.secondary.main
+        }
+        zIndex={1}
+      />
+      <Box
+        display='flex'
+        flexDirection={mobile ? 'row' : 'column' }
+        justifyContent='space-between'
+        width={barWidth}
+        height={barHeight}
+        border={1}
+        borderColor={theme.palette.divider}
+        borderRadius={12}
+      >
+        <Box
+          width={mobile ? 1/3 : 1}
+          height={mobile ? 1 : 1/3}
+          className={cx(
+            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop, classes.chartItem, hoveredBottom && classes.hovered)
+          } 
+          onMouseEnter={() => { setHoveredTop(true) }}
+          onMouseLeave={() => { setHoveredTop(false) }}
+          position='relative'
+        >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>Unlimited upside</Typography>
           </Box>
-          <Box className={classes.limitBox} bottom={mobile ? 'unset' : -24} right={mobile ? 20 : 'unset'}>
-            {!mobile && <img src={BarometerBg2} alt='Barometer Bg2' />}
+          <Box
+            className={classes.limitBox}
+            bottom={mobile ? 'unset' : -24}
+            right={mobile ? 20 : 'unset'}
+          >
+            {!mobile && <img src={darkMode ? BarometerBg2 : BarometerBg2Light} alt='Barometer Bg2' />}
             <Box>
               { mobile && <HelpIcon />}
               <Typography className={classes.priceFont}>$1,843</Typography>
@@ -181,12 +245,21 @@ const OptionsPrice: React.FC = () => {
             </Box>
           </Box>
         </Box>
-        <Box width={mobile ? 1/3 : 1} height={mobile ? 1 : 1/3} className={cx(optionType === 'call' ? classes.chartPutBottom : classes.chartCallBottom, classes.chartItem, hoveredTop && classes.hovered )} onMouseEnter={() => { setHoveredBottom(true) }} onMouseLeave={() => { setHoveredBottom(false) }} position='relative'>
+        <Box
+          width={mobile ? 1/3 : 1}
+          height={mobile ? 1 : 1/3}
+          className={cx(
+            optionType === 'call' ? classes.chartPutBottom : classes.chartCallBottom, classes.chartItem, hoveredTop && classes.hovered
+          )}
+          onMouseEnter={() => { setHoveredBottom(true) }}
+          onMouseLeave={() => { setHoveredBottom(false) }}
+          position='relative'
+        >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>Unlimited upside</Typography>
           </Box>
           <Box className={classes.limitBox} top={mobile ? 'unset' : -16} left={mobile ? -20 : 'unset'}>
-            {!mobile && <img src={BarometerBg2} alt='Barometer Bg2' />}
+            {!mobile && <img src={darkMode ? BarometerBg2 : BarometerBg2Light} alt='Barometer Bg2' />}
             <Box>
               <Typography className={classes.priceFont}>$1,504</Typography>
               <HelpIcon />
@@ -195,14 +268,51 @@ const OptionsPrice: React.FC = () => {
         </Box>
       </Box>
       <Box position='relative' width={mobile ? 1 : 80} height={mobile ? 80 : 540}>
-        <Box position='absolute' left={mobile ? 'calc(50% - 80px)' : 'unset'} top={mobile ? 15 : 'calc(50% - 90px)'} zIndex={2} className={cx(classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered)}>
-          <Box width={mobile ? 1.1 : 12} height={mobile ? 28 : 1.1} bgcolor='#29CB84' position='absolute' top={mobile ? -26 : 21} left={mobile ? '50%' : -12} />
-          <img src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light} alt='Barometer Bg1' />
-          <Box textAlign={mobile ? 'center' : 'right'} position='absolute' width={1} height={1} top={mobile ? 15 : 7} right={mobile ? 'unset' : 10}>
-            <Typography className={classes.priceFont}>Possible P&L</Typography>
-            <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
+        <Draggable
+          axis={mobile ? 'x' : 'y'}
+          handle="#possiblePLBox"
+          defaultPosition={{x: 0, y: 0}}
+          scale={1}
+          onStart={handleStart}
+          onDrag={handleDrag}
+          onStop={handleStop}
+        >
+          <Box
+            position='absolute'
+            left={mobile ? 'calc(50% - 80px)' : 'unset'}
+            top={mobile ? 11 : 'calc(50% - 90px)'}
+            zIndex={2}
+            id='possiblePLBox'
+            className={cx(
+              classes.draggableItem, classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered)
+            }
+          >
+            <Box
+              width={mobile ? 1.1 : 16}
+              height={mobile ? 28 : 1.1}
+              bgcolor={ darkMode ? '#29CB84' : theme.palette.secondary.main }
+              position='absolute'
+              top={mobile ? -26 : 21}
+              left={mobile ? '50%' : -16}
+            />
+            <img 
+              src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light}
+              alt='Barometer Bg1'
+            />
+            <Box
+              textAlign={mobile ? 'center' : 'right'}
+              position='absolute'
+              width={1}
+              height={1}
+              top={mobile ? 15 : 7}
+              right={mobile ? 'unset' : 10}
+              color='white'
+            >
+              <Typography className={classes.priceFont}>Possible P&L</Typography>
+              <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
+            </Box>
           </Box>
-        </Box>
+        </Draggable>
       </Box>
     </Grid>
   );
