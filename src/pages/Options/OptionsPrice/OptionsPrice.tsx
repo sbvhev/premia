@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   makeStyles,
   useTheme,
@@ -14,7 +14,7 @@ import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography, RootRef } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import HelpIcon from '@material-ui/icons/HelpOutline';
@@ -147,23 +147,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     opacity: 0.5
   },
   draggableItem: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    transition: 'opacity 1s',
   }
 }));
 
-const handleStart = (ev: any) => {
-  console.log(ev)
-}
-
-const handleDrag = (ev: any) => {
-  console.log(ev)
-}
-
-const handleStop = (ev: any) => {
-  console.log(ev)
-}
-
 const OptionsPrice: React.FC = () => {
+  const possiblePLBox = useRef<any>(null);
+  const possiblePLBoxContainer = useRef<any>(null);
   const classes = useStyles();
   const theme = useTheme();
   const { optionType } = useOptionType();
@@ -175,6 +166,7 @@ const OptionsPrice: React.FC = () => {
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
+  const pLBoxPos = 250;
   
   return (
     <Grid container direction={mobile ? 'column' : 'row'} justify='center' alignItems='center'>
@@ -267,53 +259,57 @@ const OptionsPrice: React.FC = () => {
           </Box>
         </Box>
       </Box>
-      <Box position='relative' width={mobile ? 1 : 80} height={mobile ? 80 : 540}>
-        <Draggable
-          axis={mobile ? 'x' : 'y'}
-          handle="#possiblePLBox"
-          defaultPosition={{x: 0, y: 0}}
-          scale={1}
-          onStart={handleStart}
-          onDrag={handleDrag}
-          onStop={handleStop}
-        >
-          <Box
-            position='absolute'
-            left={mobile ? 'calc(50% - 80px)' : 'unset'}
-            top={mobile ? 11 : 'calc(50% - 90px)'}
-            zIndex={2}
-            id='possiblePLBox'
-            className={cx(
-              classes.draggableItem, classes.transitionItem, (hoveredTop || hoveredBottom) && classes.hovered)
-            }
+      <RootRef rootRef={possiblePLBoxContainer}>
+        <Box position='relative' width={mobile ? 1 : 80} height={mobile ? 80 : '70vh'}>
+          <Draggable
+            axis={mobile ? 'x' : 'y'}
+            bounds={{
+              left: -1 * pLBoxPos - 55,
+              right: possiblePLBoxContainer?.current?.clientWidth - pLBoxPos - 65,
+              top: -1 * pLBoxPos - 15,
+              bottom: possiblePLBoxContainer?.current?.clientHeight - pLBoxPos - 30
+            }}
+            scale={1}
+            ref={possiblePLBox}
           >
             <Box
-              width={mobile ? 1.1 : 16}
-              height={mobile ? 28 : 1.1}
-              bgcolor={ darkMode ? '#29CB84' : theme.palette.secondary.main }
               position='absolute'
-              top={mobile ? -26 : 21}
-              left={mobile ? '50%' : -16}
-            />
-            <img 
-              src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light}
-              alt='Barometer Bg1'
-            />
-            <Box
-              textAlign={mobile ? 'center' : 'right'}
-              position='absolute'
-              width={1}
-              height={1}
-              top={mobile ? 15 : 7}
-              right={mobile ? 'unset' : 10}
-              color='white'
+              left={mobile ? pLBoxPos : 'unset'}
+              top={mobile ? 11 : pLBoxPos}
+              zIndex={2}
+              id='possiblePLBox'
+              className={cx(
+                classes.draggableItem, (hoveredTop || hoveredBottom) && classes.hovered)
+              }
             >
-              <Typography className={classes.priceFont}>Possible P&L</Typography>
-              <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
+              <Box
+                width={mobile ? 1.1 : 16}
+                height={mobile ? 28 : 1.1}
+                bgcolor={ darkMode ? '#29CB84' : theme.palette.secondary.main }
+                position='absolute'
+                top={mobile ? -26 : 21}
+                left={mobile ? '50%' : -16}
+              />
+              <img 
+                src={mobile ? darkMode ? BarometerBg3 : BarometerBg3Light : darkMode ? BarometerBg1 : BarometerBg1Light}
+                alt='Barometer Bg1'
+              />
+              <Box
+                textAlign={mobile ? 'center' : 'right'}
+                position='absolute'
+                width={1}
+                height={1}
+                top={mobile ? 15 : 7}
+                right={mobile ? 'unset' : 10}
+                color='white'
+              >
+                <Typography className={classes.priceFont}>Possible P&L</Typography>
+                <Typography className={classes.priceFont}><b>$1,749.37</b></Typography>
+              </Box>
             </Box>
-          </Box>
-        </Draggable>
-      </Box>
+          </Draggable>
+        </Box>
+      </RootRef>
     </Grid>
   );
 };
