@@ -14,7 +14,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart, CustomTabs } from 'components';
+import { LineChart, RadialChart, SearchTabs } from 'components';
 import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
@@ -222,7 +222,7 @@ const ProVault: React.FC = () => {
             </BottomNavigation>
             {!mobile && value === 1 && (
               <Box component='div' className={classes.box}>
-                <CustomTabs
+                <SearchTabs
                   items={tabItems}
                   value={tabIndex}
                   onChange={(ev, index) => {

@@ -19,6 +19,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { PageWithSidebar } from 'layouts';
 import { DataTable } from 'components';
+import PositionModal from 'components/PositionModal';
 
 const getYieldHeadCells = () => [
   {
@@ -233,6 +234,7 @@ const Positions: React.FC = () => {
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const [ yieldFilter, setYieldFilter ] = useState(0);
   const [ optionFilter, setOptionFilter ] = useState(0);
+  const [ positionModalOpen, setPositionModalOpen ] = useState(false);
 
   const yieldHeadCells = getYieldHeadCells();
   const optionsHeadCells = getOptionsHeadCells();
@@ -310,6 +312,12 @@ const Positions: React.FC = () => {
 
   return (
     <PageWithSidebar>
+      <PositionModal
+        open={positionModalOpen}
+        onClose={() => {
+          setPositionModalOpen(false);
+        }}
+      />
       <Grid container alignItems='center' justify='space-between'>
         <Typography
           component='h1'
@@ -421,7 +429,9 @@ const Positions: React.FC = () => {
               data={yieldData}
               rowPerPage={5}
               renderRow={(item: any, index) => {
-                return (<TableRow key={index}>
+                return (<TableRow key={index} onClick={() => {
+                  setPositionModalOpen(true);
+                }}>
                   <TableCell><img src={item.tokenIcon} alt={item.symbol} className={classes.tableCellIcon} />{item.symbol}</TableCell> 
                   <TableCell><Box ml={2}>{formatNumber(item.capital)}</Box></TableCell>
                   <TableCell><Box ml={2} display='flex' alignItems='center'><Box mr={1} className={cx(classes.typeBox, item.type === 'vault' ? classes.vault : item.option === 'call' ? classes.call : classes.put)}><Box />{item.type === 'vault' ? <img src={VaultIcon} alt='vault' /> : item.option === 'call' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}{item.type}</Box>{item.name}</Box></TableCell>

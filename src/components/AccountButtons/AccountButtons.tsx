@@ -15,11 +15,12 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import { BetaSoftwareModal, ConfirmTermsModal, SwapModal } from 'components';
+import { BetaSoftwareModal, ConfirmTermsModal, SwapModal, ChainModal } from 'components';
+import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
     width: 'calc(100% - 260px)',
@@ -87,6 +88,42 @@ const useStyles = makeStyles(({ palette }) => ({
   swapButton: {
     backgroundColor: palette.primary.dark,
   },
+
+  chain: {
+    border: `1px solid ${palette.divider}`,
+    width: 'fit-content',
+    borderRadius: 12,
+    marginRight: 10,
+    padding: 6,
+    height: 62,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontSize: 14,
+
+    '&:hover': {
+      '& svg': {
+        background: 'rgba(82, 148, 255, 0.5)',
+      }
+    },
+
+    '& svg': {
+      width: 50,
+      height: 50,
+      marginRight: 8,
+      padding: '8px 11px',
+      background: 'rgba(82, 148, 255, 0.2)',
+      borderRadius: 10
+    },
+
+    [breakpoints.down('sm')]: {
+      width: '100%',
+      marginLeft: 4,
+      marginRight: 4,
+      marginBottom: 8
+    },
+  }
 }));
 
 interface AccountButtonsProps {
@@ -98,6 +135,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showSwapModal, setShowSwapModal] = useState(false);
+  const [chainModalOpen, setChainModalOpen] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const classes = useStyles();
@@ -121,6 +159,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         <ConfirmTermsModal
           open={confirmTermsModalOpen}
           onClose={() => setConfirmTermsModalOpen(false)}
+        />
+      )}
+
+      {chainModalOpen && (
+        <ChainModal
+          open={chainModalOpen}
+          onClose={() => setChainModalOpen(false)}
         />
       )}
 
@@ -153,6 +198,12 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
           </Button>
+          <Box className={classes.chain} onClick={() => {
+            setChainModalOpen(true);
+          }}>
+            <EthIcon />
+            <Typography color="secondary">Ethereum</Typography>
+          </Box>
           <Box
             clone
             mb={mobile ? 1 : 0}

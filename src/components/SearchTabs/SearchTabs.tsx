@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CustomTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
+const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
 
@@ -92,4 +92,4 @@ const CustomTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
   );
 };
 
-export default CustomTabs;
+export default SearchTabs;
