@@ -262,20 +262,7 @@ export const lightTheme = responsiveFontSizes(
           overflowX: 'unset',
           overflowY: 'unset',
           transform: 'translateY(-11px) !important',
-          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            marginRight: '-0.71em',
-            bottom: 0,
-            right: 40,
-            width: 16,
-            height: 16,
-            background: white,
-            boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-            // transform: "translate(-50%, 50%) rotate(135deg)",
-            clipPath: "polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))",
-          },
+          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
         },
       },
       MuiOutlinedInput: {
