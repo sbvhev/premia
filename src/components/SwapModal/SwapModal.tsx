@@ -594,34 +594,7 @@ const SwapModal: React.FC<SwapModalProps> = ({
                       </Box>
                     </Box>
                   )}
-                {/* <Box className={classes.borderedSelector} onClick={handleChangeFromAsset}>
-                  <Box display="flex" justifyContent="space-between" marginLeft="12px" alignItems="center">
-                    {fromToken && (
-                      <>
-                        <img
-                          src={fromToken.icon}
-                          alt={fromToken.ticker}
-                          style={{ height: '18px' }}
-                        />
-                        <Typography component='span' color='textPrimary' style={{ marginLeft: '8px' }}>
-                          {fromToken.ticker}
-                        </Typography>
-                      </>
-                    )}
-                  </Box>
-                  <Box marginRight="20px">
-                    {!fromAssetOpen ? (
-                      <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 1L6 6L1 1" stroke={palette.secondary.main} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    ) : (
-                      <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 6L6 1L1 6" stroke={palette.secondary.main} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    )}
-                  </Box>
-                </Box> */}
-
+                
                 <Menu
                   id="simple-menu"
                   anchorEl={fromAssetOpen}
