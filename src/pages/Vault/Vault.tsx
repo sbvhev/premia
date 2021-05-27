@@ -191,9 +191,11 @@ const ProVault: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+  
+  const handeLeave = () => setAnchorEl(null);
 
   const open = Boolean(anchorEl);
 
@@ -495,7 +497,8 @@ const ProVault: React.FC = () => {
                         Last 7 days
                       </Typography>
                       <IconButton
-                        onClick={handleClick}
+                        onMouseEnter={handleEnter}
+                        onMouseLeave={handleLeave}
                       >
                         <Help />
                       </IconButton>
@@ -707,7 +710,8 @@ const ProVault: React.FC = () => {
                         Last 7 days
                       </Typography>
                       <IconButton
-                        onClick={handleClick}
+                        onMouseEnter={handleEnter}
+                        onMouseLeave={handleLeave}
                       >
                         <Help />
                       </IconButton>
