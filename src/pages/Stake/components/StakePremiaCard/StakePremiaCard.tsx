@@ -159,7 +159,13 @@ const useStyles = makeStyles(({ palette }) => ({
     zIndex: 2,
     '&:hover': {
       backgroundColor: palette.primary.dark,
-    }
+    },
+    '&:focus': {
+      borderColor: palette.primary.main,
+      outline: 'none',
+      boxShadow: 'none',
+      borderWidth: '1px',
+    },
   },
   inputIcon: {
     position: 'relative',
@@ -172,12 +178,20 @@ const useStyles = makeStyles(({ palette }) => ({
     top: -43,
     right: -260,
     zIndex: 3,
+    '&:hover': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+    },
   },
   maxButtonMobile: {
     position: 'relative',
     top: -43,
     right: -227,
     zIndex: 3,
+    '&:hover': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+    },
   },
   elementHeader: {
     fontWeight: 500,
@@ -187,10 +201,14 @@ const useStyles = makeStyles(({ palette }) => ({
   buttonLeft: {
     width: '48%',
     marginRight: '4px',
+    fontSize: '16px',
+    fontWeight: 700,
   },
   buttonRight: {
     width: '52%',
     marginLeft: '4px',
+    fontSize: '16px',
+    fontWeight: 500,
   },
   botSection: {
     boxSizing: 'border-box',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box, Button } from '@material-ui/core';
+import { Typography, Modal, Box } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -152,13 +152,15 @@ const useStyles = makeStyles(({ palette }) => ({
   exitContainer: {
     position: 'absolute',
     top: 30,
-    right: 10,
+    right: 24,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '6px',
+    padding: '12px',
     cursor: 'pointer',
-    width: '20px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark
@@ -231,12 +233,12 @@ const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
                 )}
               </Box>
             </Box>
-           <Button className={classes.exitContainer} onClick={onClose}>
+            <Box className={classes.exitContainer} onClick={onClose}>
               <img
                 src={XOut}
                 alt="Exit"
               />
-            </Button>
+            </Box>
           </Box>
         </Box>
       </ModalContainer>

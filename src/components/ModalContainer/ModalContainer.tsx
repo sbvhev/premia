@@ -19,16 +19,6 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
     transform: 'translate(-50%, -50%)',
     border: 'none',
     boxShadow: 'none',
-    width: ({ size }) => {
-      switch (size) {
-        case 'sm':
-          return 'auto';
-        case 'md':
-          return '490px';
-        case 'lg':
-          return '80vw';
-      }
-    },
     maxHeight: '90vh',
     minWidth: '400px',
     margin: '0 auto',
