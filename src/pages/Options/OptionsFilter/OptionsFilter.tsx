@@ -199,8 +199,6 @@ const OptionFilter: React.FC = () => {
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
 
-  console.log(maturityDate);
-
   return (
     <Box width={1}>
       <Box display='flex' border={1} borderColor={theme.palette.divider} borderRadius={12}>
