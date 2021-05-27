@@ -13,6 +13,7 @@ export interface ModalContainerProps {
 const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
   container: {
     position: 'absolute',
+    display: 'flex',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -34,6 +35,7 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
     outline: 'none',
     overflowY: 'hidden',
     backgroundColor: 'transparent',
+    justifyContent: 'center',
   },
   containerMobile: {
     backgroundColor: 'transparent',

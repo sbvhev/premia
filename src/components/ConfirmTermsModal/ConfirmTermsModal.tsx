@@ -25,13 +25,13 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '364px',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
-    border: `2px solid ${palette.divider}`,
+    border: `1px solid ${palette.divider}`,
   },
   mainCardMobile: {
     width: '340px',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
-    border: `2px solid ${palette.divider}`,
+    border: `1px solid ${palette.divider}`,
   },
   topSection: {
     boxSizing: 'border-box',
