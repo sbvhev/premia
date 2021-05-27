@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box, Button } from '@material-ui/core';
+import { Typography, Modal, Box } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 

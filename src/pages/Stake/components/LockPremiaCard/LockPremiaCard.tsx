@@ -264,7 +264,6 @@ const LockPremiaCard: React.FC = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const progress = '75%';
-  const { palette } = theme;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
