@@ -815,20 +815,9 @@ const Positions: React.FC = () => {
                         {formatNumber(item.strike)}
                       </Box>
                       <Box className={classes.cardRow}>
-<<<<<<< HEAD
                         <Typography color='textSecondary'>Expiration</Typography>
                         <Box textAlign='right'>
                           {Moment(item.expiration).format('DD MMM') }<Typography color='textSecondary'>2 days left</Typography>
-=======
-                        <Typography color='textSecondary'>
-                          Expiration
-                        </Typography>
-                        <Box display='flex' alignItems='center'>
-                          {Moment(item.expiration).format('DD MMM')}&nbsp;&nbsp;
-                          <Typography color='textSecondary'>
-                            2 days left
-                          </Typography>
->>>>>>> master
                         </Box>
                       </Box>
                       <Box px={1} my={1.5}>
@@ -879,14 +868,6 @@ const Positions: React.FC = () => {
                       </TableCell>
                       <TableCell>{item.strike}</TableCell>
                       <TableCell>{item.value}</TableCell>
-<<<<<<< HEAD
-                      <TableCell><Box className={classes.expirationCell}>{Moment(item.expiration).format('DD MMM') }<Typography color='textSecondary'>2 days left</Typography></Box></TableCell>
-                      <TableCell><Button color='primary'>Sell</Button></TableCell>
-                    </TableRow>);
-                  }}
-                />
-            }
-=======
                       <TableCell>
                         <Box className={classes.expirationCell}>
                           {Moment(item.expiration).format('DD MMM')}{' '}
@@ -908,7 +889,6 @@ const Positions: React.FC = () => {
                 }}
               />
             )}
->>>>>>> master
           </Box>
         </>
       )}
