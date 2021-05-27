@@ -249,7 +249,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   expirationCell: {
     '& p': {
       fontSize: 14,
-    }
+    },
   },
   cardRow: {
     display: 'flex',
@@ -815,9 +815,14 @@ const Positions: React.FC = () => {
                         {formatNumber(item.strike)}
                       </Box>
                       <Box className={classes.cardRow}>
-                        <Typography color='textSecondary'>Expiration</Typography>
+                        <Typography color='textSecondary'>
+                          Expiration
+                        </Typography>
                         <Box textAlign='right'>
-                          {Moment(item.expiration).format('DD MMM') }<Typography color='textSecondary'>2 days left</Typography>
+                          {Moment(item.expiration).format('DD MMM')}
+                          <Typography color='textSecondary'>
+                            2 days left
+                          </Typography>
                         </Box>
                       </Box>
                       <Box px={1} my={1.5}>

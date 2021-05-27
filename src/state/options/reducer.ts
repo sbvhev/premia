@@ -4,7 +4,7 @@ import {
   updateMaturityDate,
   updateOptionSize,
   updateOptionType,
-  updateStrikePrice
+  updateStrikePrice,
 } from './actions';
 
 export interface OptionsState {
@@ -18,7 +18,7 @@ export const initialState: OptionsState = {
   optionType: 'call',
   maturityDate: null,
   strikePrice: 50,
-  optionSize: 0
+  optionSize: 0,
 };
 
 export default createReducer(initialState, (builder) =>

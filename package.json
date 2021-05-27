@@ -87,13 +87,12 @@
     "deploy:dev": "yarn build && tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./build/* && caprover deploy -t ./deploy.tar -n captain-01 -a dev"
   },
   "lint-staged": {
-    "*.{ts,tsx,json}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{ts,tsx,json}": "prettier --write"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "eslintConfig": {
     "extends": [

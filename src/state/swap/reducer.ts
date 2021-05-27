@@ -3,10 +3,7 @@ import { createReducer } from '@reduxjs/toolkit';
 // import { Token } from 'web3/tokens';
 import LINK from 'assets/svg/LINK-icon.svg';
 
-import {
-  SetSwapSettings,
-  setSwapSettings,
-} from './actions';
+import { SetSwapSettings, setSwapSettings } from './actions';
 
 export interface SwapTokenTest {
   ticker?: string;
@@ -48,11 +45,10 @@ export const initialState: SwapState = {
 };
 
 export default createReducer(initialState, (builder) =>
-  builder
-    .addCase(
-      setSwapSettings,
-      (state, { payload: swapSettings }: { payload: SetSwapSettings }) => {
-        state.swapSettings = { ...state.swapSettings, ...swapSettings };
-      },
-    ),
+  builder.addCase(
+    setSwapSettings,
+    (state, { payload: swapSettings }: { payload: SetSwapSettings }) => {
+      state.swapSettings = { ...state.swapSettings, ...swapSettings };
+    },
+  ),
 );

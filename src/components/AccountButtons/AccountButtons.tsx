@@ -15,7 +15,12 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import { BetaSoftwareModal, ConfirmTermsModal, SwapModal, ChainModal } from 'components';
+import {
+  BetaSoftwareModal,
+  ConfirmTermsModal,
+  SwapModal,
+  ChainModal,
+} from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
@@ -57,14 +62,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     borderRadius: 12,
     cursor: 'pointer',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   disconnect: {
     display: 'flex',
     '& button': {
-      padding: 0
-    }
+      padding: 0,
+    },
   },
 
   address: {
@@ -119,7 +124,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '&:hover': {
       '& svg': {
         background: 'rgba(82, 148, 255, 0.5)',
-      }
+      },
     },
 
     '& svg': {
@@ -128,16 +133,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginRight: 8,
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
-      borderRadius: 10
+      borderRadius: 10,
     },
 
     [breakpoints.down('sm')]: {
       width: '100%',
       marginLeft: 4,
       marginRight: 4,
-      marginBottom: 8
+      marginBottom: 8,
     },
-  }
+  },
 }));
 
 interface AccountButtonsProps {
@@ -212,17 +217,16 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
           </Button>
-          <Box className={classes.chain} onClick={() => {
-            setChainModalOpen(true);
-          }}>
-            <EthIcon />
-            <Typography color="secondary">Ethereum</Typography>
-          </Box>
           <Box
-            clone
-            mb={mobile ? 1 : 0}
-            style={{ order: mobile ? 0 : 1 }}
+            className={classes.chain}
+            onClick={() => {
+              setChainModalOpen(true);
+            }}
           >
+            <EthIcon />
+            <Typography color='secondary'>Ethereum</Typography>
+          </Box>
+          <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
             <Link
               to='/'
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}

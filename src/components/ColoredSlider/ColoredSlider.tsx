@@ -9,7 +9,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   },
 
   mark: {
-    display: 'none'
+    display: 'none',
   },
 
   thumb: {
@@ -31,11 +31,11 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     top: -20,
     fontSize: 12,
     '& > span': {
-      color: 'transparent'
+      color: 'transparent',
     },
     '& > span > span': {
-      color: theme.palette.text.primary
-    }
+      color: theme.palette.text.primary,
+    },
   },
 
   track: {
@@ -54,8 +54,8 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     color: theme.palette.text.secondary,
     transform: 'none',
     '&[data-index="1"]': {
-      transform: 'translateX(-100%)'
-    }
+      transform: 'translateX(-100%)',
+    },
   },
 }))(Slider);
 

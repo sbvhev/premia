@@ -50,7 +50,7 @@ export interface HeadCell<T> {
   label: React.ReactNode | string;
   numeric: boolean;
   sortDisabled?: boolean;
-  align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
+  align?: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined;
   element?: React.ReactNode;
   sortKey: (optionBalance: T) => string | number;
 }

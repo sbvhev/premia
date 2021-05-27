@@ -15,4 +15,3 @@ export const updateStrikePrice = createAction<number | number[]>(
 export const updateOptionSize = createAction<number>(
   'options/updateOptionSize',
 );
-

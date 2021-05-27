@@ -2,7 +2,12 @@ import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { AppState, AppDispatch } from 'state';
-import { updateOptionType, updateMaturityDate, updateStrikePrice, updateOptionSize } from './actions';
+import {
+  updateOptionType,
+  updateMaturityDate,
+  updateStrikePrice,
+  updateOptionSize,
+} from './actions';
 
 export function useOptionType() {
   const dispatch = useDispatch<AppDispatch>();
