@@ -327,21 +327,8 @@ export const lightTheme = responsiveFontSizes(
 
           '& svg': {
             marginBottom: '0px !important',
-            width: 16,
-            height: 16,
-            marginRight: 8,
-          },
-
-          '& img:first-child': {
-            marginBottom: '0 !important',
             marginRight: 6,
-            height: 24,
-          },
-          '& img:nth-child(2)': {
-            position: 'absolute',
-            top: 8,
-            right: 0,
-          },
+          }
         },
       },
       MuiTableSortLabel: {
@@ -638,21 +625,8 @@ export const darkTheme = responsiveFontSizes(
           alignItems: 'center',
 
           '& svg': {
-            width: 16,
-            height: 16,
-            marginRight: 8,
-            marginBottom: '0px !important;',
-          },
-
-          '& img:first-child': {
-            marginBottom: '0 !important',
             marginRight: 6,
-            height: 24,
-          },
-          '& img:nth-child(2)': {
-            position: 'absolute',
-            top: 8,
-            right: 0,
+            marginBottom: '0px !important;',
           },
         },
       },
