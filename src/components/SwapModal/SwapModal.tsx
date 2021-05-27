@@ -224,6 +224,12 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:after': {
       borderColor: palette.background.paper,
     },
+    '&:active': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+      background: 'none',
+      opacity: '1'
+    },
   },
   selectorText: {
     fontWeight: 400,
@@ -238,6 +244,9 @@ const useStyles = makeStyles(({ palette }) => ({
     right: -170,
     zIndex: 3,
     width: '74px',
+    '&:hover': {
+      opacity: '0.8'
+    },
   },
   maxButtonMobile: {
     position: 'relative',

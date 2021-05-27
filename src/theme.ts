@@ -180,6 +180,12 @@ export const lightTheme = responsiveFontSizes(
             opacity: '0.3',
             color: white,
           },
+          '&:active': {
+            backgroundColor: primary,
+            color: white,
+            background: 'none',
+            opacity: '1'
+          },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
@@ -187,14 +193,26 @@ export const lightTheme = responsiveFontSizes(
           '&:hover': {
             background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
+          '&:active': {
+            backgroundColor: putGradientB,
+            color: white,
+            background: 'none',
+            opacity: '1'
+          },
         },
         outlinedPrimary: {
           backgroundColor: premiaBlueDay,
           color: primary,
           border: 'none',
           '&:hover': {
-            backgroundColor: 'grey',
+            backgroundColor: premiaBlueDay,
+            color: primary,
             border: 'none',
+            opacity: '0.8',
+          },
+          "&:active": {
+            backgroundColor: primaryOnHover,
+            color: white,
           },
         },
         outlinedSecondary: {
@@ -205,6 +223,12 @@ export const lightTheme = responsiveFontSizes(
             backgroundColor: white,
             color: black,
             border: `1px solid ${primaryOnHover}`,
+          },
+          "&:active": {
+            backgroundColor: white,
+            color: black,
+            border: `1px solid ${primaryOnHover}`,
+            opacity: '0.8',
           },
         },
       },
@@ -751,6 +775,12 @@ export const darkTheme = responsiveFontSizes(
             opacity: '0.3',
             color: black,
           },
+          '&:active': {
+            backgroundColor: primary,
+            color: black,
+            background: 'none',
+            opacity: '1'
+          },
         },
         containedSecondary: {
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
@@ -760,14 +790,26 @@ export const darkTheme = responsiveFontSizes(
           '&:hover': {
             background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
+          '&:active': {
+            backgroundColor: putGradientB,
+            color: black,
+            background: 'none',
+            opacity: '1'
+          },
         },
         outlinedPrimary: {
           backgroundColor: premiaBlueNight,
           color: primary,
           border: 'none',
           '&:hover': {
-            backgroundColor: 'grey',
+            backgroundColor: premiaBlueNight,
+            color: primary,
             border: 'none',
+            opacity: '0.8',
+          },
+          '&:active': {
+            backgroundColor: primary,
+            color: white,
           },
         },
         outlinedSecondary: {
