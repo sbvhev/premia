@@ -81,13 +81,13 @@
     "eject": "react-scripts eject",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "lint": "eslint src",
-    "lint-fix": "eslint ./ --fix",
+    "lint-fix": "eslint src --fix",
     "postinstall": "typechain --target ethers-v5 --outDir ./src/contracts \"./src/constants/abi/*.json\"",
     "deploy:prod": "yarn build && tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./build/* && caprover deploy -t ./deploy.tar -n captain-01 -a prod",
     "deploy:dev": "yarn build && tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./build/* && caprover deploy -t ./deploy.tar -n captain-01 -a dev"
   },
   "lint-staged": {
-    "*.js": "eslint"
+    "*.ts": "eslint"
   },
   "husky": {
     "hooks": {
