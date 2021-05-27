@@ -194,8 +194,8 @@ const ProVault: React.FC = () => {
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-  
-  const handeLeave = () => setAnchorEl(null);
+
+  const handleLeave = () => setAnchorEl(null);
 
   const open = Boolean(anchorEl);
 
