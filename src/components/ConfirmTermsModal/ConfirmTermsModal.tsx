@@ -143,6 +143,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
@@ -171,7 +172,10 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
     <Modal open={open} onClose={onClose}>
       <ModalContainer size='md'>
         <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-          <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
+          <Box
+            className={!mobile ? classes.mainCard : classes.mainCardMobile}
+            style={palette.type === 'light' ? { border: 'none' } : {}}
+          >
             <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
               <Box>
                 <svg width="33" height="30" viewBox="0 0 33 30" fill="none" xmlns="http://www.w3.org/2000/svg">

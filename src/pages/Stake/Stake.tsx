@@ -64,7 +64,7 @@ const useStyles = makeStyles(({ palette }) => ({
   text: {
     fontWeight: 500,
     fontSize: '14px',
-    lineHeight: '24px',
+    lineHeight: '16px',
   },
   textMobile: {
     fontWeight: 500,
@@ -144,7 +144,7 @@ const Stake: React.FC = () => {
                   style={{ marginTop: '3px' }}
                 />
               </Box>
-              <Box className={classes.col} style={{ marginBottom: '4px' }}>
+              <Box className={classes.col} style={{ margin: '4px 0' }}>
                 <Typography
                   component='p'
                   color='textSecondary'
@@ -169,7 +169,7 @@ const Stake: React.FC = () => {
                   alt="xPremia"
                   className={classes.redPremiaIcon}
                 />
-              <Box className={classes.colRelative} style={{ marginBottom: '4px' }}>
+              <Box className={classes.colRelative} style={{ margin: '4px 0' }}>
                 <Typography
                   component='p'
                   color='textSecondary'

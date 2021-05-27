@@ -155,6 +155,12 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:hover': {
       backgroundColor: palette.primary.dark,
     },
+    '&:focus': {
+      borderColor: palette.primary.main,
+      outline: 'none',
+      boxShadow: 'none',
+      borderWidth: '1px',
+    },
   },
   inputIcon: {
     position: 'relative',
@@ -167,12 +173,20 @@ const useStyles = makeStyles(({ palette }) => ({
     top: -43,
     right: -260,
     zIndex: 3,
+    '&:hover': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+    },
   },
   maxButtonMobile: {
     position: 'relative',
     top: -43,
     right: -227,
     zIndex: 3,
+    '&:hover': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+    },
   },
   elementHeader: {
     fontWeight: 500,
@@ -182,10 +196,14 @@ const useStyles = makeStyles(({ palette }) => ({
   buttonLeft: {
     width: '48%',
     marginRight: '4px',
+    fontSize: '16px',
+    fontWeight: 700,
   },
   buttonRight: {
     width: '52%',
     marginLeft: '4px',
+    fontSize: '16px',
+    fontWeight: 500,
   },
   botSection: {
     boxSizing: 'border-box',
@@ -209,7 +227,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     width: '145px',
     height: '5px',
-    background: 'rgb(100,100,100, 0.4)',
+    background: 'rgb(141, 151, 160, 0.4)',
     borderRadius: '5px',
     marginRight: '8px',
   },
@@ -225,7 +243,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     height: '44px',
     lineHeight: '18px',
-    borderBottom: `1px ${palette.text.secondary} solid`,
+    borderBottom: `1px ${palette.divider} solid`,
     '&:hover': {
       color: palette.text.primary,
     },
@@ -455,11 +473,7 @@ const LockPremiaCard: React.FC = () => {
               <Box className={classes.progressContainer}>
                 <Box
                   className={classes.progressBar}
-                  style={
-                    palette && palette.type === 'dark'
-                      ? { width: progress }
-                      : { width: progress, boxShadow: 'none' }
-                  }
+                  style={{ width: progress }}
                 />
               </Box>
               <Typography

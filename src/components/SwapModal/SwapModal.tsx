@@ -272,7 +272,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '24px',
     borderRadius: '50%',
     cursor: 'pointer',
-    zIndex: 1000,
+    zIndex: 10,
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark
