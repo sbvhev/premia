@@ -56,8 +56,27 @@ const useStyles = makeStyles(({ palette }) => ({
       width: '100%',
     },
 
+    '& .DateInput_fang': {
+      display: 'none'
+    },
+
     '& .SingleDatePicker_picker': {
-      zIndex: 3
+      zIndex: 3,
+      width: '100%',
+      marginTop: -16,
+      borderRadius: 12,
+      display: 'flex',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+
+    '& .DayPicker__withBorder': {
+      boxShadow: 'none',
+      // width: '100% !important',
+      // background: 'transparent',
+      '& > div > div': {
+        // width: '100% !important'
+      }
     },
 
     '& .DateInput_input.DateInput_input__focused': {
@@ -188,6 +207,7 @@ const OptionFilter: React.FC = () => {
             placeholder='Select date'
             focused={maturityFocused}
             numberOfMonths={1}
+            hideKeyboardShortcutsPanel={true}
             onDateChange={(date) =>
               setMaturityDate(moment(date).format('YYYY-MM-DD'))
             }
