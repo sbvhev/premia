@@ -11,7 +11,9 @@ import {
   MenuItem,
   Grid,
   useMediaQuery,
+  IconButton,
 } from '@material-ui/core';
+import { ExpandMore, Check, Help } from '@material-ui/icons';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
@@ -20,7 +22,7 @@ import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as VaultBlueIcon } from 'assets/svg/VaultBlue.svg';
 import { ReactComponent as VaultGreenIcon } from 'assets/svg/VaultGreen.svg';
 import { ReactComponent as VaultRedIcon } from 'assets/svg/VaultRed.svg';
-import { ExpandMore, Check } from '@material-ui/icons';
+import { TooltipPan } from 'components';
 import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -241,7 +243,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       height: 32,
       marginTop: 4,
-      width: '100%'
+      width: '100%',
     },
   },
   background: {
@@ -263,6 +265,13 @@ const BasicVault: React.FC = () => {
   const [coin, setCoin] = useState<any>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [lowRiskAnchorEl, setLowRiskAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [mediumRiskAnchorEl, setMediumRiskAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [highRiskAnchorEl, setHighRiskAnchorEl] =
+    React.useState<null | HTMLElement>(null);
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
@@ -433,6 +442,37 @@ const BasicVault: React.FC = () => {
                     variant='body2'
                   >
                     Low risk
+                    <IconButton
+                      onMouseEnter={(event: React.MouseEvent<HTMLElement>) =>
+                        setLowRiskAnchorEl(event.currentTarget)
+                      }
+                      onMouseLeave={() => setLowRiskAnchorEl(null)}
+                    >
+                      <Help />
+                    </IconButton>
+                    <TooltipPan open={!!lowRiskAnchorEl} anchorEl={lowRiskAnchorEl}>
+                      <Typography
+                        component='h2'
+                        color='textPrimary'
+                        variant='body2'
+                        style={{ marginBottom: '0.5rem' }}
+                      >
+                        <b>Low risk position<br />has exposure to:</b>
+                      </Typography>
+                      <Typography
+                        component='h2'
+                        color='textSecondary'
+                        variant='body2'
+                      >
+                        ETH price
+                        <br />
+                        ETH volatility
+                        <br />
+                        Call option spreads
+                        <br />
+                        Lending rate
+                      </Typography>
+                    </TooltipPan>
                   </Typography>
                   <Typography component='h2' color='textPrimary'>
                     10% Expected APY
@@ -468,6 +508,37 @@ const BasicVault: React.FC = () => {
                     variant='body2'
                   >
                     Medium risk
+                    <IconButton
+                      onMouseEnter={(event: React.MouseEvent<HTMLElement>) =>
+                        setMediumRiskAnchorEl(event.currentTarget)
+                      }
+                      onMouseLeave={() => setMediumRiskAnchorEl(null)}
+                    >
+                      <Help />
+                    </IconButton>
+                    <TooltipPan open={!!mediumRiskAnchorEl} anchorEl={mediumRiskAnchorEl}>
+                      <Typography
+                        component='h2'
+                        color='textPrimary'
+                        variant='body2'
+                        style={{ marginBottom: '0.5rem' }}
+                      >
+                        <b>Medium risk position<br/>has exposure to:</b>
+                      </Typography>
+                      <Typography
+                        component='h2'
+                        color='textSecondary'
+                        variant='body2'
+                      >
+                        ETH price
+                        <br />
+                        ETH volatility
+                        <br />
+                        Call option spreads
+                        <br />
+                        Lending rate rate
+                      </Typography>
+                    </TooltipPan>
                   </Typography>
                   <Typography component='h2' color='textPrimary'>
                     20% Expected APY
@@ -503,6 +574,37 @@ const BasicVault: React.FC = () => {
                     variant='body2'
                   >
                     High risk
+                    <IconButton
+                      onMouseEnter={(event: React.MouseEvent<HTMLElement>) =>
+                        setHighRiskAnchorEl(event.currentTarget)
+                      }
+                      onMouseLeave={() => setHighRiskAnchorEl(null)}
+                    >
+                      <Help />
+                    </IconButton>
+                    <TooltipPan open={!!highRiskAnchorEl} anchorEl={highRiskAnchorEl}>
+                      <Typography
+                        component='h2'
+                        color='textPrimary'
+                        variant='body2'
+                        style={{ marginBottom: '0.5rem' }}
+                      >
+                        <b>High risk position<br/>has exposure to:</b>
+                      </Typography>
+                      <Typography
+                        component='h2'
+                        color='textSecondary'
+                        variant='body2'
+                      >
+                        ETH price
+                        <br />
+                        ETH volatility
+                        <br />
+                        Call option spreads
+                        <br />
+                        Lending rate
+                      </Typography>
+                    </TooltipPan>
                   </Typography>
                   <Typography component='h2' color='textPrimary'>
                     60% Expected APY

@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  Typography,
-  Modal,
-  Box,
-  Button,
-  Paper,
-} from '@material-ui/core';
+import { Typography, Modal, Box, Button, Paper } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import {
-  ArrowUpward as ArrowUpwardIcon,
-} from '@material-ui/icons';
+import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
 import { ModalContainer } from 'components';
 
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
@@ -33,7 +25,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     backgroundColor: 'transparent',
 
     [breakpoints.down('sm')]: {
-      height: 650
+      height: 650,
     },
   },
   topIconWraper: {
@@ -122,7 +114,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     zIndex: 2,
 
     [breakpoints.down('sm')]: {
-      height: 570
+      height: 570,
     },
   },
   mainCard: {
@@ -168,7 +160,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: '14px',
     LineHeight: '24px',
     cursor: 'pointer',
-    textDecoration: 'underline'
+    textDecoration: 'underline',
   },
   exitContainer: {
     position: 'absolute',
@@ -192,7 +184,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 20,
 
     [breakpoints.down('sm')]: {
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
     },
   },
   tableCellIcon: {
@@ -265,7 +257,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         alignItems: 'center',
         justifyContent: 'center',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
       },
     },
 
@@ -282,17 +274,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '20px 47px 20px 47px',
 
       '&:first-child': {
-        paddingRight: 0
+        paddingRight: 0,
       },
 
       '&:nth-child(3)': {
         paddingRight: 0,
-        paddingTop: 0
+        paddingTop: 0,
       },
 
       '&:nth-child(4)': {
-        paddingTop: 0
-      }
+        paddingTop: 0,
+      },
     },
   },
   boxLine: {
@@ -360,19 +352,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         border: `1px solid ${palette.secondary.main}`,
 
         '& path': {
-          fill: palette.secondary.main
-        }
+          fill: palette.secondary.main,
+        },
       },
 
       '&:last-child': {
-        marginRight: 0
+        marginRight: 0,
       },
 
       '& path': {
-        fill: palette.text.secondary
-      }
-    }
-  }
+        fill: palette.text.secondary,
+      },
+    },
+  },
+  container: {
+    width: 'auto !important',
+  },
 }));
 
 export interface PositionModalProps {
@@ -389,7 +384,7 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <ModalContainer size='sm'>
+      <ModalContainer className={classes.container} size='sm'>
         <Box width={1} className={classes.wrapper}>
           <Box
             className={classes.topIconWraper}
@@ -496,9 +491,7 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                       </Box>
                     </Box>
                   </Paper>
-                  <Typography style={{ marginBottom: 8 }}>
-                    Share on:
-                  </Typography>
+                  <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
                   <Box className={classes.socialLinks}>
                     <TwitterIcon />
                     <TelegramIcon />
@@ -506,7 +499,11 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                     <DiscordIcon />
                     <ForumIcon />
                   </Box>
-                  <Typography color="secondary" className={classes.hyperlink} onClick={onClose}>
+                  <Typography
+                    color='secondary'
+                    className={classes.hyperlink}
+                    onClick={onClose}
+                  >
                     Not right now
                   </Typography>
                 </Box>

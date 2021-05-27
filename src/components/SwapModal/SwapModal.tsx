@@ -115,6 +115,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '45px',
     justifyContent: 'center',
     alignItems: 'center',
+    cursor: 'pointer',
     backgroundColor: palette.background.paper,
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
@@ -138,7 +139,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'relative',
     boxSizing: 'border-box',
     backgroundColor: 'transparent',
-    height: '46px',
+    height: '47px',
     width: '100%',
     maxWidth: '250px',
     border: `1px solid ${palette.divider}`,
@@ -155,14 +156,18 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
     '&:after': {
-      borderColor: palette.primary,
+      borderColor: palette.primary.dark,
     },
-  },
-  form: {
-    borderTopLeftRadius: '0',
-    borderBottomLeftRadius: '0',
-    borderTopRightRadius: '12px',
-    borderBottomRightRadius: '12px',
+    '&:focus': {
+      borderColor: palette.primary.main,
+      outline: 'none',
+      boxShadow: 'none',
+      borderWidth: '1px',
+      borderTopLeftRadius: '12px',
+      borderBottomLeftRadius: '12px',
+      borderTopRightRadius: '2px',
+      borderBottomRightRadius: '2px',
+    },
   },
   borderedSelector: {
     height: '46px',
@@ -174,6 +179,7 @@ const useStyles = makeStyles(({ palette }) => ({
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
+    cursor: 'pointer',
     '&:hover': {
       backgroundColor: palette.primary.dark,
     },
@@ -204,10 +210,10 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'space-between',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
+    cursor: 'pointer',
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%);`,
     '&:hover': {
-      backgroundColor: palette.primary.main,
-      background: 'none',
+      background: `linear-gradient(121.21deg, ${palette.success.dark} 7.78%, ${palette.success.main} 118.78%);`,
     },
     '&:before': {
       borderColor: palette.background.paper,
@@ -217,6 +223,12 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     '&:after': {
       borderColor: palette.background.paper,
+    },
+    '&:active': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+      background: 'none',
+      opacity: '1'
     },
   },
   selectorText: {
@@ -228,10 +240,14 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   maxButton: {
     position: 'relative',
-    top: -42.5,
+    top: -43,
     right: -170,
     zIndex: 3,
     width: '74px',
+    '&:hover': {
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
+    },
   },
   maxButtonMobile: {
     position: 'relative',
@@ -269,7 +285,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '24px',
     borderRadius: '50%',
     cursor: 'pointer',
-    zIndex: 1000,
+    zIndex: 10,
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark
@@ -553,7 +569,11 @@ const SwapModal: React.FC<SwapModalProps> = ({
                 </Box>
 
                 {!fromToken ? (
-                    <Box className={classes.coloredSelector} onClick={handleChangeFromAsset}>
+                    <Box
+                      className={classes.coloredSelector}
+                      onClick={handleChangeFromAsset}
+                      style={fromAssetOpen ? { background: 'none', backgroundColor: palette.primary.main } : {}}
+                    >
                       <Typography className={classes.selectorText} style={mobile ? { marginLeft: '8px' } : {}}>
                         Select token
                       </Typography>
@@ -570,7 +590,11 @@ const SwapModal: React.FC<SwapModalProps> = ({
                       </Box>
                     </Box>
                   ) : (
-                    <Box className={classes.borderedSelector} onClick={handleChangeFromAsset}>
+                    <Box
+                      className={classes.borderedSelector}
+                      onClick={handleChangeFromAsset}
+                      style={fromAssetOpen ? { borderColor: palette.primary.main } : {}}
+                    >
                       <Box display="flex" justifyContent="space-between" marginLeft="12px" alignItems="center">
                         <img
                           src={fromToken.icon}
@@ -641,7 +665,11 @@ const SwapModal: React.FC<SwapModalProps> = ({
                 </Box>
                 <>
                   {!toToken ? (
-                    <Box className={classes.coloredSelector} onClick={handleChangeToAsset}>
+                    <Box
+                    className={classes.coloredSelector}
+                    onClick={handleChangeToAsset}
+                    style={toAssetOpen ? { background: 'none', backgroundColor: palette.primary.main } : {}}
+                  >
                       <Typography className={classes.selectorText} style={mobile ? { marginLeft: '8px' } : {}}>
                         Select token
                       </Typography>
@@ -658,7 +686,11 @@ const SwapModal: React.FC<SwapModalProps> = ({
                       </Box>
                     </Box>
                   ) : (
-                    <Box className={classes.borderedSelector} onClick={handleChangeToAsset}>
+                    <Box
+                      className={classes.borderedSelector}
+                      onClick={handleChangeToAsset}
+                      style={toAssetOpen ? { borderColor: palette.primary.main } : {}}
+                    >
                       <Box display="flex" justifyContent="space-between" marginLeft="12px" alignItems="center">
                         <img
                           src={toToken.icon}

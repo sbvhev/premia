@@ -8,13 +8,14 @@ import {
   BottomNavigationAction,
   Paper,
   Button,
+  IconButton,
   FormControl,
   Select,
   MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart, SearchTabs } from 'components';
+import { LineChart, RadialChart, SearchTabs, TooltipPan } from 'components';
 import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
@@ -57,10 +58,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& svg': {
       width: 18,
       height: 18,
-      marginLeft: 8,
 
       '& path': {
-        fill: theme.palette.secondary.main,
+        fill: (props: any) => (props.dark ? 'white' : 'black'),
       },
     },
   },
@@ -144,6 +144,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
     lineHeight: '24px',
   },
+  readMore: {
+    color: theme.palette.primary.main,
+    fontSize: 14,
+    lineHeight: '18px',
+    marginTop: 6,
+  },
 }));
 
 const tabItems = [
@@ -177,10 +183,21 @@ const ProVault: React.FC = () => {
   const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
-  const [value, setValue] = useState(new URLSearchParams(location.search).get('tab') === 'pro' ? 1: 0);
+  const [value, setValue] = useState(
+    new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
+  );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleLeave = () => setAnchorEl(null);
+
+  const open = Boolean(anchorEl);
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
@@ -208,7 +225,7 @@ const ProVault: React.FC = () => {
                 setValue(newValue);
                 history.push({
                   pathname: '/vaults',
-                  search: `?tab=${newValue === 0 ? 'basic': 'pro'}`
+                  search: `?tab=${newValue === 0 ? 'basic' : 'pro'}`,
                 });
               }}
               showLabels={true}
@@ -479,19 +496,34 @@ const ProVault: React.FC = () => {
                       >
                         Last 7 days
                       </Typography>
-                      <Help />
+                      <IconButton
+                        onMouseEnter={handleEnter}
+                        onMouseLeave={handleLeave}
+                      >
+                        <Help />
+                      </IconButton>
+                      <TooltipPan open={open} anchorEl={anchorEl}>
+                        <b>Premia pools</b> use state of the art liquidity-aware
+                        pricing models. When there is excess capital available,
+                        options become cheaper. When capital starts to dry up,
+                        price of options increases. The price level updates
+                        after every trade.
+                        <Typography className={classes.readMore}>
+                          Read more
+                        </Typography>
+                      </TooltipPan>
                     </Box>
                     <LineChart
                       color='#14A887'
                       data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                       categories={[
-                        'Mon',
-                        'Tue',
-                        'Wed',
-                        'Thu',
-                        'Fri',
-                        'Sat',
-                        'Sun',
+                        '2021/5/24',
+                        '2021/5/25',
+                        '2021/5/26',
+                        '2021/5/27',
+                        '2021/5/28',
+                        '2021/5/29',
+                        '2021/5/30',
                       ]}
                       width='100%'
                       height={200}
@@ -677,19 +709,34 @@ const ProVault: React.FC = () => {
                       >
                         Last 7 days
                       </Typography>
-                      <Help />
+                      <IconButton
+                        onMouseEnter={handleEnter}
+                        onMouseLeave={handleLeave}
+                      >
+                        <Help />
+                      </IconButton>
+                      <TooltipPan open={open} anchorEl={anchorEl}>
+                        <b>Premia pools</b> use state of the art liquidity-aware
+                        pricing models. When there is excess capital available,
+                        options become cheaper. When capital starts to dry up,
+                        price of options increases. The price level updates
+                        after every trade.
+                        <Typography className={classes.readMore}>
+                          Read more
+                        </Typography>
+                      </TooltipPan>
                     </Box>
                     <LineChart
                       color='#BF47C3'
                       data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                       categories={[
-                        'Mon',
-                        'Tue',
-                        'Wed',
-                        'Thu',
-                        'Fri',
-                        'Sat',
-                        'Sun',
+                        '2021/5/24',
+                        '2021/5/25',
+                        '2021/5/26',
+                        '2021/5/27',
+                        '2021/5/28',
+                        '2021/5/29',
+                        '2021/5/30',
                       ]}
                       width='100%'
                       height={200}
