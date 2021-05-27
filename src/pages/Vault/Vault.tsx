@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       height: 18,
 
       '& path': {
-        fill: theme.palette.secondary.main,
+        fill: (props: any) => (props.dark ? 'white' : 'black'),
       },
     },
   },
@@ -144,6 +144,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
     lineHeight: '24px',
   },
+  readMore: {
+    color: theme.palette.primary.main,
+    fontSize: 14,
+    lineHeight: '18px',
+    marginTop: 6,
+  },
 }));
 
 const tabItems = [
@@ -185,8 +191,8 @@ const ProVault: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const onMouseOver = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
   const open = Boolean(anchorEl);
@@ -488,17 +494,20 @@ const ProVault: React.FC = () => {
                       >
                         Last 7 days
                       </Typography>
-                      <IconButton onMouseEnter={onMouseOver} onMouseLeave={() => {
-                        setAnchorEl(null);
-                      }}>
+                      <IconButton
+                        onClick={handleClick}
+                      >
                         <Help />
                       </IconButton>
                       <TooltipPan open={open} anchorEl={anchorEl}>
-                        Premia pools use state of the art liquidity-aware
+                        <b>Premia pools</b> use state of the art liquidity-aware
                         pricing models. When there is excess capital available,
                         options become cheaper. When capital starts to dry up,
                         price of options increases. The price level updates
                         after every trade.
+                        <Typography className={classes.readMore}>
+                          Read more
+                        </Typography>
                       </TooltipPan>
                     </Box>
                     <LineChart
@@ -697,7 +706,21 @@ const ProVault: React.FC = () => {
                       >
                         Last 7 days
                       </Typography>
-                      <Help />
+                      <IconButton
+                        onClick={handleClick}
+                      >
+                        <Help />
+                      </IconButton>
+                      <TooltipPan open={open} anchorEl={anchorEl}>
+                        <b>Premia pools</b> use state of the art liquidity-aware
+                        pricing models. When there is excess capital available,
+                        options become cheaper. When capital starts to dry up,
+                        price of options increases. The price level updates
+                        after every trade.
+                        <Typography className={classes.readMore}>
+                          Read more
+                        </Typography>
+                      </TooltipPan>
                     </Box>
                     <LineChart
                       color='#BF47C3'

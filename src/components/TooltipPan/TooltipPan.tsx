@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Popper } from '@material-ui/core';
@@ -13,7 +13,7 @@ export interface TooltipPanProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   popper: {
-    zIndex: 1,
+    zIndex: 100,
     border: `1px solid ${theme.palette.divider}`,
     background: theme.palette.background.paper,
     padding: 24,
@@ -31,7 +31,6 @@ const TooltipPan: React.FC<TooltipPanProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
-  const [arrowRef, setArrowRef] = React.useState(null);
 
   return (
     <Popper
