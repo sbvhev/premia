@@ -132,34 +132,34 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
-	element: {
-		'& svg': {
-			width: 14,
-			height: 17
-		},
+  element: {
+    '& svg': {
+      width: 14,
+      height: 17,
+    },
 
-		'& p': {
-			lineHeight: '24px',
-			fontSize: 14,
+    '& p': {
+      lineHeight: '24px',
+      fontSize: 14,
 
-			'& svg': {
-				position: 'relative',
-				top: 4,
-				marginLeft: 4,
+      '& svg': {
+        position: 'relative',
+        top: 4,
+        marginLeft: 4,
 
-				'& path': {
-					fill: (props: any) => (props.dark ? 'white' : 'black'),
-				}
-			}
-		},
+        '& path': {
+          fill: (props: any) => (props.dark ? 'white' : 'black'),
+        },
+      },
+    },
 
-		'& h2': {
-			lineHeight: '24px',
-			fontSize: 14,
-			marginRight: 8,
-			fontWeight: 'bold'
-		}
-	}
+    '& h2': {
+      lineHeight: '24px',
+      fontSize: 14,
+      marginRight: 8,
+      fontWeight: 'bold',
+    },
+  },
 }));
 
 export interface BuyConfirmationModalProps {
@@ -171,7 +171,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
 }) => {
-	const dark = useIsDarkMode();
+  const dark = useIsDarkMode();
   const classes = useStyles({ dark });
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -208,7 +208,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                 >
                   <Typography color='secondary'>Option size</Typography>
                   <Box display='flex' flexDirection='row'>
-                    <Typography component="h2">321</Typography>
+                    <Typography component='h2'>321</Typography>
                     <Typography color='secondary'>Uni</Typography>
                     <UniswapIcon />
                   </Box>
@@ -226,26 +226,26 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     flexDirection='row'
                     justifyContent='flex-end'
                   >
-                    <Typography component="h2">27 March</Typography>
+                    <Typography component='h2'>27 March</Typography>
                   </Box>
                 </Box>
                 <Box
                   display='flex'
                   flexDirection='column'
                   width='50%'
-									mt={1}
+                  mt={1}
                   className={classes.element}
                 >
                   <Typography color='secondary'>Breakeven</Typography>
                   <Box display='flex' flexDirection='row'>
-                    <Typography component="h2">$1,700</Typography>
+                    <Typography component='h2'>$1,700</Typography>
                   </Box>
                 </Box>
                 <Box
                   display='flex'
                   flexDirection='column'
                   width='50%'
-									mt={1}
+                  mt={1}
                   textAlign='right'
                   className={classes.element}
                 >
@@ -258,7 +258,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     flexDirection='row'
                     justifyContent='flex-end'
                   >
-                    <Typography component="h2">2.29%</Typography>
+                    <Typography component='h2'>2.29%</Typography>
                   </Box>
                 </Box>
               </Box>
