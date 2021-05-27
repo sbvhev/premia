@@ -8,13 +8,14 @@ import {
   BottomNavigationAction,
   Paper,
   Button,
+  IconButton,
   FormControl,
   Select,
   MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart, SearchTabs } from 'components';
+import { LineChart, RadialChart, SearchTabs, TooltipPan } from 'components';
 import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
@@ -57,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& svg': {
       width: 18,
       height: 18,
-      marginLeft: 8,
 
       '& path': {
         fill: theme.palette.secondary.main,
@@ -183,6 +183,13 @@ const ProVault: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const onMouseOver = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
@@ -481,7 +488,18 @@ const ProVault: React.FC = () => {
                       >
                         Last 7 days
                       </Typography>
-                      <Help />
+                      <IconButton onMouseEnter={onMouseOver} onMouseLeave={() => {
+                        setAnchorEl(null);
+                      }}>
+                        <Help />
+                      </IconButton>
+                      <TooltipPan open={open} anchorEl={anchorEl}>
+                        Premia pools use state of the art liquidity-aware
+                        pricing models. When there is excess capital available,
+                        options become cheaper. When capital starts to dry up,
+                        price of options increases. The price level updates
+                        after every trade.
+                      </TooltipPan>
                     </Box>
                     <LineChart
                       color='#14A887'
