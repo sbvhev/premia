@@ -1,4 +1,3 @@
-import { Moment } from 'moment';
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -28,7 +27,7 @@ export function useMaturityDate() {
   );
 
   const setMaturityDate = useCallback(
-    (maturityDate: Moment | null) => {
+    (maturityDate: string | null) => {
       dispatch(updateMaturityDate(maturityDate));
     },
     [dispatch],

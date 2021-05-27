@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import {
   makeStyles,
-  Theme,
   useTheme,
 } from '@material-ui/core/styles';
-import CalendarIcon from 'assets/svg/CalendarIcon.svg';
-import UniIcon from 'assets/svg/UniIcon.svg';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
+import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import { ColoredSlider } from 'components';
+import cx from 'classnames';
 import {
   Box,
   Typography,
@@ -16,22 +15,61 @@ import {
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import { SingleDatePicker } from 'react-dates';
+import moment from 'moment';
 import { useOptionType, useMaturityDate, useStrikePrice, useOptionSize } from 'state/options/hooks';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    flexGrow: 1,
-    outline: 'none',
-    color: theme.palette.text.primary,
-    background: 'transparent',
-    border: 'none'
+const useStyles = makeStyles(({ palette }) => ({
+  optionSizeInputBox: {
+    padding: 3,
+    marginTop: 3,
+    width: '100%',
+    borderRadius: 12,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    border: `1px solid ${palette.divider}`,
+    '& svg': {
+      margin: '-4px 4px 0 2px'
+    },
+    '& svg path': {
+      fill: palette.secondary.main
+    },
+    '& input': {
+      flexGrow: 1,
+      outline: 'none',
+      fontSize: 14,
+      fontFamily: 'DM Sans',
+      color: palette.text.primary,
+      background: 'transparent',
+      border: 'none'
+    }
+  },
+
+  focusedDatepicker: {
+    '& > svg path': {
+      fill: palette.primary.main
+    }
   },
 
   singleDatePicker: {
     '& .SingleDatePicker': {
       width: '100%',
     },
-    '& img': {
+
+    '& .SingleDatePicker_picker': {
+      zIndex: 3
+    },
+
+    '& .DateInput_input.DateInput_input__focused': {
+      backgroundColor: 'rgba(82, 148, 255, 0.2)',
+      border: `1px solid ${palette.primary.main}`,
+      color: palette.primary.main,
+      '& svg path': {
+        fill: palette.primary.main
+      }
+    },
+
+    '& > svg': {
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
@@ -53,20 +91,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .DateInput_input': {
-      color: theme.palette.text.primary,
+      color: palette.text.primary,
+      fontFamily: 'DM Sans',
       fontSize: 14,
-      backgroundColor: 'transparent !important',
-      border: `1px solid ${theme.palette.divider}`,
+      backgroundColor: 'transparent',
+      border: `1px solid ${palette.divider}`,
       padding: '8px 32px 8px 8px',
       borderRadius: 8,
 
       '&::placeholder': {
-        color: theme.palette.text.secondary,
+        color: palette.text.secondary,
       },
-    },
-
-    '& .DateInput_input__focused': {
-      borderColor: 'transparent',
     },
   }
 }));
@@ -79,7 +114,8 @@ const OptionFilter: React.FC = () => {
   const [ maturityFocused, setMaturityFocused ] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+
+  console.log(maturityDate);
 
   return (
     <Box width={1}>
@@ -137,21 +173,29 @@ const OptionFilter: React.FC = () => {
         <Typography color='textPrimary'>
           Maturity
         </Typography>
-        <Box position='relative' width={1} marginTop={1} className={classes.singleDatePicker}>
+        <Box
+          position='relative'
+          width={1}
+          marginTop={1}
+          className={cx(
+            classes.singleDatePicker,
+            maturityFocused && classes.focusedDatepicker
+          )}
+        >
           <SingleDatePicker
-            date={maturityDate}
+            date={moment(maturityDate)}
             id='maturityDate'
-            orientation={ mobile ? 'vertical' : 'horizontal' }
             placeholder='Select date'
             focused={maturityFocused}
+            numberOfMonths={1}
             onDateChange={(date) =>
-              setMaturityDate(date)
+              setMaturityDate(moment(date).format('YYYY-MM-DD'))
             }
             onFocusChange={({ focused }) => {
               setMaturityFocused(focused)
             }}
           />
-          <img src={CalendarIcon} alt='Calendar Icon' />
+          <CalendarIcon />
         </Box>
       </Box>
       
@@ -163,14 +207,10 @@ const OptionFilter: React.FC = () => {
           Max size available: 40012
         </Typography>
       </Box>
-      <Box display='flex' alignItems='center' pl={1} width={1} border={1} borderColor={theme.palette.divider} borderRadius={12} height={46}>
-        <img
-          src={UniIcon}
-          alt='Select Amount'
-        />
+      <Box className={classes.optionSizeInputBox}>
+        <UniIcon />
         <input
           value={optionSize}
-          className={classes.input}
           onChange={(ev) => { setOptionSize(Number(ev.target.value)) }}
         />
         <Button color="primary" variant="outlined" size="small">

@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Moment } from 'moment';
 
 import {
   updateMaturityDate,
@@ -10,7 +9,7 @@ import {
 
 export interface OptionsState {
   optionType: string;
-  maturityDate: Moment | null;
+  maturityDate: string | null;
   strikePrice: number | number[];
   optionSize: number;
 }
