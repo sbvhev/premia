@@ -77,11 +77,17 @@
   "scripts": {
     "start": "react-scripts --max_old_space_size=4096 start",
     "build": "react-scripts --max_old_space_size=4096 build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+    "lint": "eslint src",
     "postinstall": "typechain --target ethers-v5 --outDir ./src/contracts \"./src/constants/abi/*.json\"",
     "deploy:prod": "yarn build && tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./build/* && caprover deploy -t ./deploy.tar -n captain-01 -a prod",
     "deploy:dev": "yarn build && tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./build/* && caprover deploy -t ./deploy.tar -n captain-01 -a dev"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm test"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -116,6 +122,8 @@
     "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.4",
     "@types/utf8": "^2.1.6",
+    "cross-env": "^7.0.3",
+    "husky": "^6.0.0",
     "prettier": "^2.2.1",
     "typechain": "^4.0.1"
   }
