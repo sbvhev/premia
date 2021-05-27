@@ -245,7 +245,8 @@ const useStyles = makeStyles(({ palette }) => ({
     zIndex: 3,
     width: '74px',
     '&:hover': {
-      opacity: '0.8'
+      backgroundColor: palette.primary.main,
+      color: palette.background.paper,
     },
   },
   maxButtonMobile: {
