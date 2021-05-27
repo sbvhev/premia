@@ -6,6 +6,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 
+import { useIsDarkMode } from 'state/user/hooks';
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -144,7 +145,11 @@ const useStyles = makeStyles(({ palette }) => ({
 			'& svg': {
 				position: 'relative',
 				top: 4,
-				marginLeft: 4
+				marginLeft: 4,
+
+				'& path': {
+					fill: (props: any) => (props.dark ? 'white' : 'black'),
+				}
 			}
 		},
 
@@ -166,7 +171,8 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
 }) => {
-  const classes = useStyles();
+	const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [checkIsOn, setCheckIsOn] = useState(false);
