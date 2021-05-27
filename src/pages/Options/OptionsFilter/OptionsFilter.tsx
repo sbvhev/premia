@@ -60,6 +60,68 @@ const useStyles = makeStyles(({ palette }) => ({
       display: 'none'
     },
 
+    '& .CalendarMonth, & .CalendarMonthGrid, & .DayPickerNavigation_button__default, & .CalendarDay__default': {
+      background: 'transparent',
+      border: 'none'
+    },
+
+    '& .CalendarMonth_caption': {
+      color: palette.text.primary,
+    },
+
+    '& .CalendarDay__today': {
+      color: palette.primary.main,
+      position: 'relative',
+      '&:before': {
+        content: '""',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        background: palette.primary.dark,
+        borderRadius: 6,  
+      }
+    },
+
+    '& .CalendarDay__default:not(.CalendarDay__blocked_out_of_range):not(.CalendarDay__today):not(.CalendarDay__selected)': {
+      color: palette.text.primary,
+      position: 'relative',
+      '&:hover, &:active': {
+        color: palette.primary.main,
+        '&:before': {
+          content: '""',
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          background: palette.primary.dark,
+          borderRadius: 6  
+        }
+      }
+    },
+
+    '& .CalendarDay__blocked_out_of_range': {
+      color: palette.text.secondary
+    },
+
+    '& .CalendarDay__default.CalendarDay__selected': {
+      position: 'relative',
+      color: palette.primary.main,
+      '&:before': {
+        content: '""',
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        background: palette.primary.dark,
+        border: `1px solid ${palette.primary.main}`,
+        borderRadius: 6  
+      }
+    },
+
     '& .SingleDatePicker_picker': {
       zIndex: 3,
       width: '100%',
@@ -68,12 +130,15 @@ const useStyles = makeStyles(({ palette }) => ({
       display: 'flex',
       justifyContent: 'center',
       overflow: 'hidden',
+      background: palette.background.paper,
+      border: `1px solid ${palette.divider}`,
+      boxShadow: '0px 2px 5px rgb(0 0 0 / 7%)'
     },
 
     '& .DayPicker__withBorder': {
       boxShadow: 'none',
       // width: '100% !important',
-      // background: 'transparent',
+      background: 'transparent',
       '& > div > div': {
         // width: '100% !important'
       }
