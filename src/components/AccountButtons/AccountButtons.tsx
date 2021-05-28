@@ -130,7 +130,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
 
       '& p': {
-        color: palette.common.white,
+        color: palette.text.primary,
       },
     },
 
