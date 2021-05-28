@@ -28,7 +28,7 @@ import SwapIcon from 'assets/svg/SwapIcon.svg';
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100% - 210px)',
     minHeight: '100vh',
   },
 

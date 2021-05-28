@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
   inactiveMode: {
     background: theme.palette.primary.dark,
+    fontWeight: 'bold',
     '& img': {
       filter: 'none',
     },

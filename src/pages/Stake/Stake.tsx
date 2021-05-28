@@ -135,7 +135,7 @@ const Stake: React.FC = () => {
             style={
               !mobile
                 ? { marginLeft: '12px' }
-                : { justifyContent: 'space-between' }
+                : { justifyContent: 'space-between', padding: '0 6px' }
             }
           >
             <Typography
