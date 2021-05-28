@@ -104,9 +104,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
     <Box
       clone
       width={1}
-      px={{ sm: 0, md: 3 }}
-      pt={{ sm: 3, md: 5 }}
-      pb={{ sm: 1 }}
+      px={{ sm: 0, md: '15px' }}
+      pt={{ sm: 3, md: '30px' }}
+      pb={{ sm: 1, md: '15px' }}
       position='relative'
       height={mobile ? 'auto' : '100vh'}
       className={cx({
@@ -133,8 +133,8 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           ))}
         </Box>
 
-        <Box mb={mobile ? 0 : 2}>
-          <Box mt={mobile ? 0 : 4} mb={mobile ? 0 : 2}>
+        <Box>
+          <Box mb={mobile ? 0 : 2}>
             {insights.map(({ href, title, link, Icon }, i) => (
               <SidebarItem
                 key={i}

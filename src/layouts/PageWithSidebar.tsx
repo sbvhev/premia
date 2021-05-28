@@ -12,12 +12,12 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100% - 210px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
-    marginLeft: 260,
+    marginLeft: 210,
   },
   pageMobile: {
     backgroundColor: palette.background.paper,
@@ -49,7 +49,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
         {!mobile && (
-          <Box position='fixed' left={0} width={260}>
+          <Box position='fixed' left={0} width={210}>
             <Sidebar />
           </Box>
         )}
@@ -57,24 +57,26 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           {!hideAccountButtons && (
             <Box
               position='fixed'
-              width={mobile ? 1 : 'calc(100% - 260px)'}
+              width={mobile ? 1 : 'calc(100% - 210px)'}
               zIndex={10}
               bgcolor={!mobile ? palette.background.default : palette.background.paper}
-              p={mobile ? 1 : 3} px={mobile ? 2 : 3}
+              p={mobile ? 1 : 3} px={mobile ? 1 : 3}
               className={cx(mobile && classes.border)}
+              height="60px"
             >
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
-                  <Grid item>
+                  <Box display="flex" alignItems="center" marginLeft="8px">
                     <img
                       src={darkMode ? MainLogo : MainLogoBlack}
                       alt='main logo'
                     />
-                  </Grid>
+                  </Box>
                 )}
-                <Grid>
+                <Grid style={{ height: '48px' }}>
                   {mobile && (
                     <IconButton
+                    style={{ height: '48px' }}
                       onClick={() =>
                         setMobileSidebarHidden(!mobileSidebarHidden)
                       }
@@ -100,7 +102,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <Box
               width={1}
               position='relative'
-              mt={12} mb={mobile ? 10 : 7}
+              mt="60px" mb={mobile ? 8 : 7}
               style={{ backgroundColor: palette.background.paper}}
             >
               <Box p={1}>

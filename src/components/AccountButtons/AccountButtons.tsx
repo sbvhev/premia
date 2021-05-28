@@ -28,7 +28,7 @@ import SwapIcon from 'assets/svg/SwapIcon.svg';
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100% - 210px)',
     minHeight: '100vh',
   },
 
@@ -55,6 +55,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     borderRadius: 12,
   },
 
+  accountMobile: {
+    padding: '0 12px',
+    height: 45,
+    width: 'calc(60vw - 8px)',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+  },
+
   connect: {
     padding: '0 12px',
     height: 45,
@@ -75,6 +83,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   address: {
     color: palette.text.primary,
     fontSize: 10,
+  },
+
+  addressMobile: {
+    color: palette.secondary.main,
+    fontSize: 14,
   },
 
   noDecoration: {
@@ -157,6 +170,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [chainModalOpen, setChainModalOpen] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
+  const { palette } = theme;
   const classes = useStyles();
 
   const handleShowSwapModal = () => {
@@ -239,12 +253,20 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 className={classes.account}
               >
                 <Grid item container alignItems='center' xs={9}>
-                  <Avatar className={classes.avatar} />
+                  {!mobile ? (
+                    <Avatar className={classes.avatar} />
+                  ) : (
+                    <Box marginRight="4px">
+                      <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z" fill={palette.secondary.main} />
+                      </svg>
+                    </Box>
+                  )}
                   <Box>
-                    <Typography className={classes.address}>
+                    <Typography className={!mobile ? classes.address : classes.addressMobile}>
                       {shortenAddress(account ?? '')}
                     </Typography>
-                    <Typography className={classes.tier}>Tier 1</Typography>
+                    {!mobile && <Typography className={classes.tier}>Tier 1</Typography>}
                   </Box>
                 </Grid>
 
