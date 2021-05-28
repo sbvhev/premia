@@ -31,6 +31,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiOutlinedInput-root': {
       paddingRight: 0,
       height: 42,
+
+      '& input': {
+        '&:focus::placeholder': {
+          color: 'transparent',
+        },
+      },
     },
 
     '& .MuiIconButton-root': {
