@@ -84,8 +84,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   fireIcon: {
     position: 'absolute',
-    right: -7,
-    top: 8,
+    right: '-2px !important',
+    top: '-8px !important',
     width: '25px !important',
     height: '26px !important',
 

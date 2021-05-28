@@ -354,6 +354,7 @@ export const lightTheme = responsiveFontSizes(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          position: 'relative',
 
           '& svg': {
             marginBottom: '0px !important',
@@ -663,6 +664,7 @@ export const darkTheme = responsiveFontSizes(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          position: 'relative',
 
           '& svg': {
             marginRight: 6,
