@@ -173,11 +173,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         zIndex: 1,
         margin: -2,
         borderRadius: 'inherit',
-        background: `linear-gradient(to right, #5294FF, #1EFF78)`,
+        background: `linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)`,
       },
 
       '& $background': {
         zIndex: 0,
+      },
+
+      '& $riskTitle': {
+        color: 'white',
+
+        '& path': {
+          fill: 'white',
+        },
+      },
+
+      '& $subTitle': {
+        color: 'white',
       },
 
       '& $select': {
@@ -255,6 +267,28 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     left: 0,
     width: '100%',
     height: '100%',
+  },
+  riskTitle: {
+    color: '#646464',
+    fontSize: 14,
+    lineHeight: '18px',
+
+    '& svg': {
+      width: 14,
+      height: 14,
+      position: 'relative',
+      top: -2,
+
+      '& path': {
+        fill: '#646464',
+      },
+    },
+  },
+  subTitle: {
+    fontWeight: 'bold',
+    marginTop: -4,
+    fontSize: 16,
+    lineHeight: '18px',
   },
 }));
 
@@ -437,8 +471,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     Low risk
@@ -450,14 +484,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!lowRiskAnchorEl} anchorEl={lowRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!lowRiskAnchorEl}
+                      anchorEl={lowRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>Low risk position<br />has exposure to:</b>
+                        <b>
+                          Low risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'
@@ -474,7 +515,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     10% Expected APY
                   </Typography>
                   <Box className={classes.select}>
@@ -503,8 +548,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     Medium risk
@@ -516,14 +561,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!mediumRiskAnchorEl} anchorEl={mediumRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!mediumRiskAnchorEl}
+                      anchorEl={mediumRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>Medium risk position<br/>has exposure to:</b>
+                        <b>
+                          Medium risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'
@@ -540,7 +592,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     20% Expected APY
                   </Typography>
                   <Box className={classes.select}>
@@ -569,8 +625,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     High risk
@@ -582,14 +638,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!highRiskAnchorEl} anchorEl={highRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!highRiskAnchorEl}
+                      anchorEl={highRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>High risk position<br/>has exposure to:</b>
+                        <b>
+                          High risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'
@@ -606,7 +669,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     60% Expected APY
                   </Typography>
                   <Box className={classes.select}>
