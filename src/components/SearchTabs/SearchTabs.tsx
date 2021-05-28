@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiOutlinedInput-root': {
       paddingRight: 0,
       height: 42,
+      borderColor: (props: any) =>
+        props.dark ? 'transparent' : theme.palette.divider,
 
       '& input': {
         '&:focus::placeholder': {
