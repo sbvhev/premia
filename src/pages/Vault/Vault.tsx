@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import { LineChart, RadialChart, SearchTabs, TooltipPan } from 'components';
-import { Help, ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@material-ui/icons';
+import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   mainContent: {},
   subtitle: {
     display: 'flex',
+    marginTop: -6,
     alignItems: 'center',
 
     '& svg': {
@@ -73,8 +75,15 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: 8,
     },
 
+    '& h2': {
+      position: 'relative',
+      top: 1,
+    },
+
     '& svg': {
       marginRight: 8,
+      top: -1,
+      position: 'relative',
     },
   },
   topSector: {
@@ -97,9 +106,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& svg': {
       position: 'relative',
-      top: -2,
+      top: -1,
+      marginLeft: 4,
       width: 20,
       height: 20,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+      },
     },
 
     '& > div > h2': {
@@ -118,7 +132,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   box: {
-    width: 'calc(100% - 286px)',
+    width: 'calc(100% - 226px)',
     position: 'relative',
   },
   menuItem: {
@@ -327,6 +341,7 @@ const ProVault: React.FC = () => {
                         variant='h6'
                         component='h1'
                         color='textPrimary'
+                        style={{ fontWeight: 'bold' }}
                       >
                         Call Pool
                       </Typography>
@@ -455,7 +470,12 @@ const ProVault: React.FC = () => {
                             </Grid>
                           </Grid>
                         </Grid>
-                        <Grid container direction='row' spacing={2}>
+                        <Grid
+                          container
+                          direction='row'
+                          spacing={1}
+                          style={{ marginTop: '21px' }}
+                        >
                           <Grid item xs={6}>
                             <Button
                               size='large'
@@ -540,6 +560,7 @@ const ProVault: React.FC = () => {
                         variant='h6'
                         component='h1'
                         color='textPrimary'
+                        style={{ fontWeight: 'bold' }}
                       >
                         Put Pool
                       </Typography>
@@ -668,7 +689,12 @@ const ProVault: React.FC = () => {
                             </Grid>
                           </Grid>
                         </Grid>
-                        <Grid container direction='row' spacing={2}>
+                        <Grid
+                          container
+                          direction='row'
+                          spacing={1}
+                          style={{ marginTop: '21px' }}
+                        >
                           <Grid item xs={6}>
                             <Button
                               size='large'

@@ -34,6 +34,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginRight: 32,
     width: 340,
     border: `1px solid ${palette.divider}`,
+    boxShadow: (props: any) =>
+      props.dark ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
 
@@ -103,11 +105,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     left: 14,
     width: 20,
     zIndex: 1,
+
+    '& path': {
+      fill: (props: any) => (props.dark ? '' : palette.secondary.main),
+    },
   },
   maxButton: {
     position: 'absolute',
     top: 4,
-    right: 2,
+    right: 4,
+    height: 34,
     zIndex: 3,
   },
   elementHeader: {
@@ -127,7 +134,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   rightCard: {
-    paddingTop: 32,
+    paddingTop: 28,
     width: 'calc(100% - 460px)',
 
     [breakpoints.down('md')]: {
@@ -260,7 +267,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   background: {
     background: (props: any) => (props.dark ? '#080f19' : '#e2eaf6'),
-    borderRadius: 12,
+    borderRadius: 11,
     zIndex: 3,
     position: 'absolute',
     top: 0,
@@ -289,6 +296,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginTop: -4,
     fontSize: 16,
     lineHeight: '18px',
+  },
+  expandMore: {
+    marginRight: 8,
+    position: 'absolute',
+    right: 0,
+
+    '& path': {
+      fill: palette.secondary.main,
+    },
   },
 }));
 
@@ -348,43 +364,30 @@ const BasicVault: React.FC = () => {
               <FormControl variant='outlined' fullWidth>
                 <Select
                   IconComponent={() => {
-                    return <ExpandMore />;
+                    return <ExpandMore className={classes.expandMore} />;
                   }}
                   value={coin}
                   onChange={handleChange}
-                  inputProps={{
-                    name: 'age',
-                  }}
                 >
-                  <MenuItem className={classes.menuItem} value='wBTC'>
+                  <MenuItem className={classes.menuItem} value='WBTC'>
                     <WBTCIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Uni
-                    </Typography>
+                    <Typography component='span'>WBTC</Typography>
                   </MenuItem>
-                  <MenuItem className={classes.menuItem} value='Uni'>
+                  <MenuItem className={classes.menuItem} value='UNI'>
                     <UniswapIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Uni
-                    </Typography>
+                    <Typography component='span'>UNI</Typography>
                   </MenuItem>
-                  <MenuItem className={classes.menuItem} value='Link'>
+                  <MenuItem className={classes.menuItem} value='LINK'>
                     <LinkIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Link
-                    </Typography>
+                    <Typography component='span'>LINK</Typography>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} value='YFI'>
                     <YFIIcon />
-                    <Typography component='span' color='textSecondary'>
-                      YFI
-                    </Typography>
+                    <Typography component='span'>YFI</Typography>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} value='ETH'>
                     <ETHIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Eth
-                    </Typography>
+                    <Typography component='span'>ETH</Typography>
                   </MenuItem>
                 </Select>
               </FormControl>

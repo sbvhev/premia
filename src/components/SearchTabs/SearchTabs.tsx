@@ -6,9 +6,9 @@ import {
   InputAdornment,
   IconButton,
   TextField,
-  Box
+  Box,
 } from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 
@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 5,
     position: 'absolute',
     color: '#646464',
+
+    '& input': {
+      fontSize: 14,
+      paddingLeft: 10,
+    },
 
     '& label': {
       top: -6,
@@ -44,7 +49,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: theme.palette.background.paper,
     height: 56,
     border: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)'
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+  },
+  fireIcon: {
+    position: 'absolute',
+    right: -7,
+    top: 8,
+    width: '25px !important',
+    height: '26px !important',
   },
 }));
 
@@ -63,7 +75,7 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
               icon={
                 <>
                   <Icon />
-                  {val.highlight && <FireIcon />}
+                  {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
               label={val.label}

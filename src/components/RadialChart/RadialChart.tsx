@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
   chart: {
@@ -9,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& circle': {
       strokeWidth: 1,
-      stroke: theme.palette.divider,
+      stroke: (props: any) => (props.dark ? '#070707' : '#FBFBFB'),
     },
   },
   formatter: {
@@ -44,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 export interface RadialChartProps {
   color?: string;
   secondaryColor?: string;
-  dark?: boolean;
   data?: Array<number>;
   width?: number;
   height?: number;
@@ -54,13 +54,14 @@ export interface RadialChartProps {
 const RadialChart: React.FC<RadialChartProps> = ({
   color = '#1EFF78',
   secondaryColor = '#5294FF',
-  dark = true,
   data = [],
   width = 300,
   height = 300,
   children,
 }) => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
+
   const options = {
     plotOptions: {
       radialBar: {
@@ -72,7 +73,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
           size: '75%',
           background: 'transparent',
           imageWidth: width,
-          imageHeight: height, 
+          imageHeight: height,
 
           dropShadow: {
             enabled: true,
@@ -120,7 +121,13 @@ const RadialChart: React.FC<RadialChartProps> = ({
 
   return (
     <div className={classes.chart}>
-      <Chart options={options} series={data} type='radialBar' width={width} height={height} />
+      <Chart
+        options={options}
+        series={data}
+        type='radialBar'
+        width={width}
+        height={height}
+      />
       <div className={classes.formatter}>{children}</div>
     </div>
   );
