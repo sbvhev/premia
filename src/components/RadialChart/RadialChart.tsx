@@ -72,7 +72,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
           size: '75%',
           background: 'transparent',
           imageWidth: width,
-          imageHeight: height, 
+          imageHeight: height,
 
           dropShadow: {
             enabled: true,
@@ -120,7 +120,13 @@ const RadialChart: React.FC<RadialChartProps> = ({
 
   return (
     <div className={classes.chart}>
-      <Chart options={options} series={data} type='radialBar' width={width} height={height} />
+      <Chart
+        options={options}
+        series={data}
+        type='radialBar'
+        width={width}
+        height={height}
+      />
       <div className={classes.formatter}>{children}</div>
     </div>
   );

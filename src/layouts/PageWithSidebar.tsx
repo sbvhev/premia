@@ -46,18 +46,29 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   return (
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
-        {!mobile && 
+        {!mobile && (
           <Box position='fixed' left={0} width={260}>
             <Sidebar />
           </Box>
-        }
+        )}
         <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
-            <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} zIndex={10} bgcolor='background.default' p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
+            <Box
+              position='fixed'
+              width={mobile ? 1 : 'calc(100% - 260px)'}
+              zIndex={10}
+              bgcolor='background.default'
+              p={mobile ? 1 : 3}
+              px={mobile ? 2 : 3}
+              className={cx(mobile && classes.border)}
+            >
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
                   <Grid item>
-                    <img src={darkMode ? MainLogo : MainLogoBlack} alt='main logo' />
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
+                    />
                   </Grid>
                 )}
                 <Grid item>
@@ -84,7 +95,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           )}
 
-          { mobile && !mobileSidebarHidden &&
+          {mobile && !mobileSidebarHidden && (
             <Box width={1} position='relative' mt={12} mb={mobile ? 10 : 7}>
               <Box p={1}>
                 <AccountButtons mobile />
@@ -99,16 +110,27 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               </Box>
               <Divider />
             </Box>
-          }
+          )}
 
-
-          { mobileSidebarHidden && 
-            <Box px={mobile ? 0 : 3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
+          {mobileSidebarHidden && (
+            <Box
+              px={mobile ? 0 : 3}
+              width={1}
+              mx='auto'
+              mt={14}
+              mb={mobile ? 10 : 7}
+            >
               <Container>{children}</Container>
             </Box>
-          }
+          )}
 
-          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} zIndex={10} bgcolor='background.default'>
+          <Box
+            position='fixed'
+            width={mobile ? 1 : 'calc(100% - 260px)'}
+            bottom={0}
+            zIndex={10}
+            bgcolor='background.default'
+          >
             <Footer />
           </Box>
         </Box>

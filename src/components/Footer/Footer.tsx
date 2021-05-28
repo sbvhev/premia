@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Divider, Popover, Button } from '@material-ui/core';
+import {
+  Box,
+  Grid,
+  Typography,
+  Divider,
+  Popover,
+  Button,
+} from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { BorderLinearProgress } from 'components';
@@ -24,11 +31,11 @@ const useStyles = makeStyles(({ palette }) => ({
     marginLeft: 16,
     display: 'flex',
     '&:hover path': {
-      fill: palette.text.primary
+      fill: palette.text.primary,
     },
     '& path': {
-      fill: palette.text.secondary
-    }
+      fill: palette.text.secondary,
+    },
   },
 
   footerRightItem: {
@@ -37,7 +44,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     color: palette.text.secondary,
     '&:last-child': {
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     '& svg': {
       marginRight: 8,
@@ -63,13 +70,13 @@ const useStyles = makeStyles(({ palette }) => ({
   text: {
     fontSize: 14,
     lineHeight: 1.18,
-    color: palette.text.secondary
+    color: palette.text.secondary,
   },
 
   gasPriceText: {
     fontSize: 14,
     lineHeight: 1,
-    textAlign: 'left'
+    textAlign: 'left',
   },
 
   button: {
@@ -83,8 +90,8 @@ const useStyles = makeStyles(({ palette }) => ({
       color: palette.primary.main,
       '& svg path': {
         fill: palette.primary.main,
-      }  
-    }
+      },
+    },
   },
 
   activeButton: {
@@ -92,13 +99,27 @@ const useStyles = makeStyles(({ palette }) => ({
     color: palette.primary.main,
     '& svg path': {
       fill: palette.primary.main,
-    }
+    },
   },
 
   gasPricePopup: {
     '& .MuiPopover-paper': {
-      maxWidth: 368
-    }
+      maxWidth: 368,
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        marginRight: '-0.71em',
+        bottom: 0,
+        right: 40,
+        width: 16,
+        height: 16,
+        background: palette.background.paper,
+        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+        transform: 'translate(-50%, 50%) rotate(135deg)',
+        clipPath:
+          'polygon(-8px -8px, calc(100% + 8px) -8px, calc(100% + 8px) calc(100% + 8px))',
+      },
+    },
   },
 }));
 
@@ -131,10 +152,38 @@ const Footer: React.FC = () => {
           alignItems='center'
           style={{ order: mobile ? 1 : 0 }}
         >
-          <a href='https://twitter.com/PremiaFinance' target='_blank' rel='noreferrer' className={classes.footerIcon}><TwitterIcon /></a>
-          <a href='https://premia.medium.com/' target='_blank' rel='noreferrer' className={classes.footerIcon}><MediumIcon /></a>
-          <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel='noreferrer' className={classes.footerIcon}><DiscordIcon /></a>
-          <a href='https://github.com/PremiaFinance' target='_blank' rel='noreferrer' className={classes.footerIcon}><GithubIcon /></a>
+          <a
+            href='https://twitter.com/PremiaFinance'
+            target='_blank'
+            rel='noreferrer'
+            className={classes.footerIcon}
+          >
+            <TwitterIcon />
+          </a>
+          <a
+            href='https://premia.medium.com/'
+            target='_blank'
+            rel='noreferrer'
+            className={classes.footerIcon}
+          >
+            <MediumIcon />
+          </a>
+          <a
+            href='https://discord.com/invite/6MhRmzmdHN'
+            target='_blank'
+            rel='noreferrer'
+            className={classes.footerIcon}
+          >
+            <DiscordIcon />
+          </a>
+          <a
+            href='https://github.com/PremiaFinance'
+            target='_blank'
+            rel='noreferrer'
+            className={classes.footerIcon}
+          >
+            <GithubIcon />
+          </a>
         </Grid>
         <Grid
           item
@@ -148,26 +197,36 @@ const Footer: React.FC = () => {
             <Typography component='span'>TVL: 1000004$</Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
-          <Box className={classes.footerRightItem} onClick={(event) => {setAnchorEl(event.currentTarget)}}>
+          <Box
+            className={classes.footerRightItem}
+            onClick={(event) => {
+              setAnchorEl(event.currentTarget);
+            }}
+          >
             <GasIcon />
             <Typography component='span'>Gas Price</Typography>
             <BorderLinearProgress
               value={gasValue}
-              color={gasType === 'instant' ? theme.palette.primary.main : gasType === 'fast' ? '#FF9152' : '#C2235C'}
+              color={
+                gasType === 'instant'
+                  ? theme.palette.primary.main
+                  : gasType === 'fast'
+                  ? '#FF9152'
+                  : '#C2235C'
+              }
               className={classes.gasProgress}
             />
           </Box>
         </Grid>
-        {
-          mobile &&
-            <Divider className={classes.footerDivider} />
-        }
+        {mobile && <Divider className={classes.footerDivider} />}
       </Grid>
       <Popover
         className={classes.gasPricePopup}
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
-        onClose={() => { setAnchorEl(null) }}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'center',
@@ -179,23 +238,77 @@ const Footer: React.FC = () => {
       >
         <Box p={1.6}>
           <Box p={1}>
-            <Typography className={classes.subheading}>Select gas price</Typography>
-            <Typography className={classes.text}>Gas prices depend on the Ethereum network's congestion.</Typography>
+            <Typography className={classes.subheading}>
+              Select gas price
+            </Typography>
+            <Typography className={classes.text}>
+              Gas prices depend on the Ethereum network's congestion.
+            </Typography>
           </Box>
-          <Box borderRadius={12} border={1} p={0.5} pr={0.8} borderColor={theme.palette.divider} display='flex' justifyContent='space-between'>
+          <Box
+            borderRadius={12}
+            border={1}
+            p={0.5}
+            pr={0.8}
+            borderColor={theme.palette.divider}
+            display='flex'
+            justifyContent='space-between'
+          >
             <Box width='33%'>
-              <Button className={cx(classes.button, gasType === 'standard' && classes.activeButton)} startIcon={<GasStandardIcon />} fullWidth onClick={() => { setGasType('standard'); setGasValue(25); }}>
-                <Typography className={classes.gasPriceText} component='div'><b>Standard</b><div>90 Gwei</div></Typography>
+              <Button
+                className={cx(
+                  classes.button,
+                  gasType === 'standard' && classes.activeButton,
+                )}
+                startIcon={<GasStandardIcon />}
+                fullWidth
+                onClick={() => {
+                  setGasType('standard');
+                  setGasValue(25);
+                }}
+              >
+                <Typography className={classes.gasPriceText} component='div'>
+                  <b>Standard</b>
+                  <div>90 Gwei</div>
+                </Typography>
               </Button>
             </Box>
             <Box width='33%'>
-              <Button className={cx(classes.button, gasType === 'fast' && classes.activeButton)} startIcon={<GasFastIcon />} fullWidth onClick={() => { setGasType('fast'); setGasValue(50); }}>
-                <Typography className={classes.gasPriceText} component='div'><b>Fast</b><div>100 Gwei</div></Typography>
+              <Button
+                className={cx(
+                  classes.button,
+                  gasType === 'fast' && classes.activeButton,
+                )}
+                startIcon={<GasFastIcon />}
+                fullWidth
+                onClick={() => {
+                  setGasType('fast');
+                  setGasValue(50);
+                }}
+              >
+                <Typography className={classes.gasPriceText} component='div'>
+                  <b>Fast</b>
+                  <div>100 Gwei</div>
+                </Typography>
               </Button>
             </Box>
             <Box width='33%'>
-              <Button className={cx(classes.button, gasType === 'instant' && classes.activeButton)} startIcon={<ProIcon />} fullWidth onClick={() => { setGasType('instant'); setGasValue(100); }}>
-                <Typography className={classes.gasPriceText} component='div'><b>Instant</b><div>120 Gwei</div></Typography>
+              <Button
+                className={cx(
+                  classes.button,
+                  gasType === 'instant' && classes.activeButton,
+                )}
+                startIcon={<ProIcon />}
+                fullWidth
+                onClick={() => {
+                  setGasType('instant');
+                  setGasValue(100);
+                }}
+              >
+                <Typography className={classes.gasPriceText} component='div'>
+                  <b>Instant</b>
+                  <div>120 Gwei</div>
+                </Typography>
               </Button>
             </Box>
           </Box>

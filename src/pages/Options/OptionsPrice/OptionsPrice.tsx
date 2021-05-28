@@ -96,6 +96,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 80,
     position: 'absolute',
     top: '50%',
+    zIndex: 3,
     marginLeft: 0,
     transition: 'all 1s',
     opacity: 0,
