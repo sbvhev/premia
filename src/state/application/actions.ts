@@ -49,9 +49,10 @@ export const setActiveModal = createAction<ApplicationModal | null>(
   'application/setActiveModal',
 );
 
-export const setActiveNotification = createAction<ApplicationNotification | null>(
-  'application/setActiveNotification',
-);
+export const setActiveNotification =
+  createAction<ApplicationNotification | null>(
+    'application/setActiveNotification',
+  );
 
 export const setApprovalType = createAction<string | null>(
   'application/setApprovalType',
@@ -61,6 +62,4 @@ export const setWrapEthModalOpen = createAction<boolean>(
   'application/setWrapEthModalOpen',
 );
 
-export const setWrapEth = createAction<boolean>(
-  'application/setWrapEth',
-);
+export const setWrapEth = createAction<boolean>('application/setWrapEth');

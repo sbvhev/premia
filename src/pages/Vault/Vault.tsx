@@ -76,8 +76,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& h2': {
-      position: 'relative',
       top: 1,
+      position: 'relative',
     },
 
     '& svg': {
@@ -343,8 +343,9 @@ const ProVault: React.FC = () => {
                         color='textPrimary'
                         style={{ fontWeight: 'bold' }}
                       >
-                        Call Pool
+                        Call pool
                       </Typography>
+                      <Help />
                       <Typography
                         variant='body1'
                         component='h2'
@@ -562,8 +563,9 @@ const ProVault: React.FC = () => {
                         color='textPrimary'
                         style={{ fontWeight: 'bold' }}
                       >
-                        Put Pool
+                        Put pool
                       </Typography>
+                      <Help />
                       <Typography
                         variant='body1'
                         component='h2'

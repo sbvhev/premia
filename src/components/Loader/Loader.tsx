@@ -5,12 +5,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     '@keyframes Rotate': {
       from: {
-        transform: 'rotate(0deg)'
+        transform: 'rotate(0deg)',
       },
 
       to: {
-        transform: 'rotate(360deg)'
-      }
+        transform: 'rotate(360deg)',
+      },
     },
 
     svg: {
@@ -22,10 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: (props: any) => props.size,
 
       '& path': {
-        stroke: (props: any) => props.stroke ?? theme.palette.common.white
-      }
+        stroke: (props: any) => props.stroke ?? theme.palette.common.white,
+      },
     },
-
   }),
 );
 
@@ -44,7 +43,7 @@ export default function Loader({
 }) {
   const classes = useStyles({
     size,
-    stroke
+    stroke,
   });
 
   return (

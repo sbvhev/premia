@@ -20,10 +20,25 @@ export interface SwitchProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   searchField: {
-    right: 5,
-    top: 5,
-    position: 'absolute',
     color: '#646464',
+    margin: '0 7px',
+
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      margin: '10px 10px 8px',
+    },
+
+    '& .MuiOutlinedInput-root': {
+      paddingRight: 0,
+      height: 42,
+    },
+
+    '& .MuiIconButton-root': {
+      padding: '12px 6px 12px 0',
+      '&:hover': {
+        background: 'transparent',
+      },
+    },
 
     '& input': {
       fontSize: 14,
@@ -42,12 +57,28 @@ const useStyles = makeStyles((theme: Theme) => ({
       fill: '#646464',
     },
   },
+  tab: {
+    position: 'relative',
+    '& svg:first-child path': {
+      fill: theme.palette.secondary.main,
+    },
+    '&.Mui-selected svg:first-child path': {
+      fill: theme.palette.primary.main,
+    },
+    '& svg:nth-child(2)': {
+      position: 'absolute',
+      top: 6,
+      right: 0,
+    },
+  },
   box: {
     width: '100%',
     position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderRadius: 12,
     background: theme.palette.background.paper,
-    height: 56,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
   },
@@ -57,6 +88,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 8,
     width: '25px !important',
     height: '26px !important',
+
+    [theme.breakpoints.down('xs')]: {
+      flexWrap: 'wrap',
+    },
   },
 }));
 
@@ -72,6 +107,7 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
           return (
             <Tab
               key={index}
+              className={classes.tab}
               icon={
                 <>
                   <Icon />

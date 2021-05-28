@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: 8,
     },
     '& svg path': {
-      fill: theme.palette.text.secondary
-    }
+      fill: theme.palette.text.secondary,
+    },
   },
 
   inactiveMode: {
@@ -49,12 +49,14 @@ const ThemeSwitch: React.FC = () => {
           onClick={() => {
             setDarkMode(false);
             onboard?.config({
-              darkMode: false
+              darkMode: false,
             });
           }}
         >
           <DayIcon />
-          <Typography component='span' color='textSecondary'>Day</Typography>
+          <Typography component='span' color='textSecondary'>
+            Day
+          </Typography>
         </Grid>
       </Grid>
       <Grid item xs={6}>
@@ -68,16 +70,18 @@ const ThemeSwitch: React.FC = () => {
           onClick={() => {
             setDarkMode(true);
             onboard?.config({
-              darkMode: true
+              darkMode: true,
             });
           }}
         >
           <NightIcon />
-          <Typography component='span' color='textSecondary'>Night</Typography>
+          <Typography component='span' color='textSecondary'>
+            Night
+          </Typography>
         </Grid>
       </Grid>
     </Grid>
   );
 };
-        
+
 export default ThemeSwitch;
