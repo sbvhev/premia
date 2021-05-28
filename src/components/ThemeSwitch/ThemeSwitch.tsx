@@ -11,8 +11,6 @@ import { useDarkModeManager } from 'state/user/hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
   modeItem: {
-    width: '80px',
-    height: '30px',
     border: `1px solid ${theme.palette.background.paper}`,
     borderRadius: 10,
     cursor: 'pointer',
@@ -62,8 +60,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   gliderMobile: {
     position: 'absolute',
     display: 'flex',
-    height: '32px',
-    width: '152px',
+    height: '36px',
+    width: '172px',
     backgroundColor: theme.palette.primary.dark,
     border: 'none',
     zIndex: 3,
@@ -81,10 +79,16 @@ const ThemeSwitch: React.FC = () => {
   const deviceWidth = window.innerWidth;
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [gliderPosition, setGliderPosition] = React.useState(!darkMode ? 21 : (!mobile ? 107 : (deviceWidth - 166)));
+  const [gliderPosition, setGliderPosition] = React.useState(!darkMode ? (!mobile ? 21 : 11) : (!mobile ? 107 : (deviceWidth - 183)));
+
+  React.useEffect(() => {
+    if (mobile && darkMode) {
+      setGliderPosition(deviceWidth - 183);
+    }
+  }, [mobile]);
   
   const handleDayClick = () => {
-    setGliderPosition(!mobile ? 21 : 25);
+    setGliderPosition(!mobile ? 21 : 11);
     setTimeout(() => {
       setDarkMode(false);
       onboard?.config({
@@ -94,7 +98,7 @@ const ThemeSwitch: React.FC = () => {
   };
 
   const handleNightClick = () => {
-    setGliderPosition(!mobile ? 107 : (deviceWidth - 166));
+    setGliderPosition(!mobile ? 107 : (deviceWidth - 183));
     setTimeout(() => {
       setDarkMode(true);
       onboard?.config({
@@ -104,19 +108,23 @@ const ThemeSwitch: React.FC = () => {
   };
 
   return (
-    <Box display="flex" padding="0 6px" justifyContent='space-between' style={{ backgroundColor: palette.background.paper}}>
+    <Box
+      display="flex"
+      padding={!mobile ? '0 6px' : '0'}
+      justifyContent='space-between'
+      style={{ backgroundColor: palette.background.paper}}
+    >
       <Box>
         <Box
-          // marginTop="6px"
           display="flex"
-          width={!mobile ? '80px' : '150px'}
           alignItems='center'
           justifyContent="center"
           className={cx(classes.modeItem, {
-            [classes.inactiveMode]: !darkMode,
-          })}
+              [classes.inactiveMode]: !darkMode,
+            })}
+          width={!mobile ? '80px' : '172px'}
+          height={!mobile ? '30px' : '36px'}
           onClick={handleDayClick}
-          // style={!darkMode ? { backgroundColor: 'transparent' } : {}}
         >
           <Box display="flex" alignItems="center" >
             <DayIcon />
@@ -128,14 +136,14 @@ const ThemeSwitch: React.FC = () => {
         <Box
           // marginTop="6px"
           display="flex"
-          width={!mobile ? '80px' : '150px'}
+          width={!mobile ? '80px' : '172px'}
+          height={!mobile ? '30px' : '36px'}
           alignItems='center'
           justifyContent="center"
           className={cx(classes.modeItem, {
             [classes.inactiveMode]: darkMode,
           })}
           onClick={handleNightClick}
-          // style={darkMode ? { backgroundColor: 'transparent' } : {}}
         >
           <Box display="flex" alignItems="center" >
             <NightIcon />

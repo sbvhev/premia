@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -20,6 +19,7 @@ import {
   ConfirmTermsModal,
   SwapModal,
   ChainModal,
+  TransactionsModal,
 } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
@@ -53,12 +53,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 180,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
+    cursor: 'pointer',
   },
 
   accountMobile: {
     padding: '0 12px',
     height: 45,
-    width: 'calc(60vw - 8px)',
+    width: 'calc(60vw - 10px)',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
   },
@@ -135,8 +136,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 14,
 
     '&:hover': {
+      borderColor: palette.primary.main,
+
       '& svg': {
-        background: 'rgba(82, 148, 255, 0.5)',
+        background: palette.primary.main,
+      },
+
+      '& p': {
+        color: palette.common.white,
       },
     },
 
@@ -150,9 +157,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
-      width: '100%',
-      marginLeft: 4,
-      marginRight: 4,
+      minWidth: '125px',
+      width: '33vw',
+      marginRight: 0,
       marginBottom: 8,
     },
   },
@@ -168,21 +175,14 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [chainModalOpen, setChainModalOpen] = useState(false);
+  const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const { palette } = theme;
   const classes = useStyles();
 
-  const handleShowSwapModal = () => {
-    setShowSwapModal(true);
-  };
-
-  const handleHideSwapModal = () => {
-    setShowSwapModal(false);
-  };
-
   return (
-    <Grid container direction='row' alignItems='center' justify='flex-end'>
+    <Grid container direction='row' alignItems='center' justify='flex-end' style={!mobile ? { paddingRight: '24px' } : {}}>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -213,80 +213,164 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Grid item container xs={12}>
-          <Button
-            color='primary'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-          >
-            Get
-            <img src={LogoIcon} alt='Logo Icon' />
-          </Button>
-          <Button
-            color='secondary'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-            onClick={handleShowSwapModal}
-          >
-            Swap
-            <img src={SwapIcon} alt='Swap Icon' />
-          </Button>
-          <Box
-            className={classes.chain}
-            onClick={() => {
-              setChainModalOpen(true);
-            }}
-          >
-            <EthIcon />
-            <Typography color='secondary'>Ethereum</Typography>
-          </Box>
-          <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Link
-              to='/'
-              className={cx(classes.noDecoration, mobile && classes.fullWidth)}
-            >
-              <Grid
-                container
-                direction='row'
-                alignItems='center'
-                justify='space-between'
-                className={classes.account}
+        <Box display="flex" width="100%">
+          {!mobile ? (
+            <>
+              <Button
+                color='primary'
+                className={classes.button}
               >
-                <Grid item container alignItems='center' xs={9}>
-                  {!mobile ? (
-                    <Avatar className={classes.avatar} />
-                  ) : (
-                    <Box marginRight="4px">
-                      <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z" fill={palette.secondary.main} />
-                      </svg>
-                    </Box>
-                  )}
-                  <Box>
-                    <Typography className={!mobile ? classes.address : classes.addressMobile}>
-                      {shortenAddress(account ?? '')}
-                    </Typography>
-                    {!mobile && <Typography className={classes.tier}>Tier 1</Typography>}
-                  </Box>
-                </Grid>
-
+                Get
+                <img src={LogoIcon} alt='Logo Icon' />
+              </Button>
+              <Button
+                color='secondary'
+                className={classes.button}
+                onClick={() => setShowSwapModal(true)}
+              >
+                Swap
+                <img src={SwapIcon} alt='Swap Icon' />
+              </Button>
+              
                 <Box
-                  height={1}
-                  borderLeft={1}
-                  pl={1.5}
-                  borderColor={theme.palette.divider}
-                  className={classes.disconnect}
+                  className={classes.chain}
+                  onClick={() => {
+                    setChainModalOpen(true);
+                  }}
                 >
-                  <Tooltip title='Disconnect'>
-                    <IconButton onClick={disconnect}>
-                      <ExitToApp color='action' />
-                    </IconButton>
-                  </Tooltip>
+                  <EthIcon />
+                  <Typography color='secondary'>Ethereum</Typography>
                 </Box>
-              </Grid>
-            </Link>
-          </Box>
-        </Grid>
+              <Box clone mb={mobile ? 1 : 0}>
+                <Box
+                  display="flex"
+                  id="test"
+                >
+                  <Grid
+                    container
+                    direction='row'
+                    alignItems='center'
+                    justify='space-between'
+                    className={classes.account}
+                  >
+                    <Grid
+                      item
+                      container
+                      alignItems='center'
+                      xs={9}
+                      onClick={() => setShowTransactions(true)}
+                    >
+                      <Avatar className={classes.avatar} />
+                      <Box>
+                        <Typography className={!mobile ? classes.address : classes.addressMobile}>
+                          {shortenAddress(account ?? '')}
+                        </Typography>
+                        <Typography className={classes.tier}>Tier 1</Typography>
+                      </Box>
+                    </Grid>
+
+                    <Box
+                      height={1}
+                      borderLeft={1}
+                      pl={1.5}
+                      borderColor={theme.palette.divider}
+                      className={classes.disconnect}
+                    >
+                      <Tooltip title='Disconnect'>
+                        <IconButton onClick={disconnect}>
+                          <ExitToApp color='action' />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
+                </Box>
+              </Box>
+            </>
+          ) : (
+            <Box display="flex" flexDirection="column" width="100%" paddingY={1}>
+              <Box display="flex" justifyContent="space-between" paddingX={'12px'}>
+                <Box clone mb={mobile ? 1 : 0}>
+                  <Box
+                    display="flex"
+                  >
+                    <Grid
+                      container
+                      direction='row'
+                      alignItems='center'
+                      justify='space-between'
+                      className={classes.accountMobile}
+                    >
+                      <Box
+                        display="flex"  
+                        alignItems="center"
+                        justifyContent="center"
+                        onClick={() => setShowTransactions(true)}
+                        paddingTop="2px"
+                      >
+                        <Box style={{ margin: '2px 6px 0 0'}}>
+                          <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z" fill={palette.secondary.main} />
+                          </svg>
+                        </Box>
+                        <Box>
+                          <Typography className={classes.addressMobile}>
+                            {shortenAddress(account ?? '')}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box
+                        height={1}
+                        borderLeft={1}
+                        pl={1.5}
+                        borderColor={theme.palette.divider}
+                        className={classes.disconnect}
+                      >
+                        <Tooltip title='Disconnect'>
+                          <IconButton onClick={disconnect}>
+                            <ExitToApp color='action' />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Grid>
+                  </Box>
+                </Box>
+                <Box
+                  className={classes.chain}
+                  onClick={() => {
+                    setChainModalOpen(true);
+                  }}
+                >
+                  <EthIcon />
+                  <Typography color='secondary'>Ethereum</Typography>
+                </Box>
+              </Box>
+
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                borderTop={`1px solid ${palette.divider}`}
+                style={{ padding: '12px 10px 3px 10px' }}
+              >
+                <Button
+                  color='primary'
+                  className={cx(classes.button, mobile && classes.half)}
+                >
+                  Get
+                  <img src={LogoIcon} alt='Logo Icon' />
+                </Button>
+                <Button
+                  color='secondary'
+                  className={cx(classes.button, mobile && classes.half)}
+                  onClick={() => setShowSwapModal(true)}
+                >
+                  Swap
+                  <img src={SwapIcon} alt='Swap Icon' />
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </Box>
       ) : (
         <Box
           onClick={() => setConfirmTermsModalOpen(true)}
@@ -298,7 +382,11 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       <Grid item xs={1} />
-      <SwapModal open={showSwapModal} onClose={handleHideSwapModal} />
+      <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
+      <TransactionsModal
+        open={showTransactions}
+        onClose={() => setShowTransactions(false)}
+      />
     </Grid>
   );
 };

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -90,15 +91,43 @@ const useStyles = makeStyles((theme: Theme) => ({
   light: {
     background: theme.palette.background.paper,
   },
+
+  glider: {
+    transition: 'top 0.8s ease-out',
+    position: 'absolute',
+    height: '47px',
+    width: '180px',
+    border: 'none',
+    zIndex: 10,
+    borderRadius: '12px',
+    backgroundColor: theme.palette.primary.dark,
+  },
 }));
 
 export interface SidebarProps {
   mobile?: boolean;
+  // history?: object;
+}
+
+interface GliderHerights {
+  [key: string]: number;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation();
+  const { pathname } = location;
+  console.log('history', history);
+  const gliderHeights: GliderHerights = {
+    '/': 98,
+    '/vaults': 155,
+    '/options': 212,
+    '/stake': 269,
+  };
+  const [gliderPosition, setGliderPosition] = React.useState(gliderHeights[pathname]);
+
 
   return (
     <Box
@@ -127,10 +156,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
               </Box>
             </Grid>
           )}
-
-          {navigation.map(({ title, link, Icon }, i) => (
-            <SidebarItem key={i} title={title} link={link} Icon={Icon} />
-          ))}
+          <Box>
+            {navigation.map(({ title, link, Icon }, i) => (
+              <SidebarItem key={i} title={title} link={link} Icon={Icon} />
+            ))}
+            <Box top={gliderPosition} className={classes.glider} />
+          </Box>
         </Box>
 
         <Box>

@@ -62,7 +62,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               bgcolor={!mobile ? palette.background.default : palette.background.paper}
               p={mobile ? 1 : 3} px={mobile ? 1 : 3}
               className={cx(mobile && classes.border)}
-              height="60px"
+              height={mobile ? "60px" : '96px'}
             >
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
@@ -105,7 +105,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               mt="60px" mb={mobile ? 8 : 7}
               style={{ backgroundColor: palette.background.paper}}
             >
-              <Box p={1}>
+              <Box p={!mobile ? 1 : 0}>
                 <AccountButtons mobile />
               </Box>
               <Divider />
@@ -116,7 +116,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Box p={1.5}>
                 <ThemeSwitch />
               </Box>
-              <Divider />
+              <Box
+                borderBottom={`1px solid ${palette.divider}`}
+                boxShadow={darkMode ? '' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'}
+              />
             </Box>
           }
 
@@ -125,8 +128,9 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               px={mobile ? 0 : 3}
               width={1}
               mx='auto'
-              mt={14}
+              mt={!mobile ? 14 : 10}
               mb={mobile ? 10 : 7}
+              overflow="auto"
             >
               <Container>{children}</Container>
             </Box>
