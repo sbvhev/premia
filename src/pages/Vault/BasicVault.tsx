@@ -90,7 +90,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: '100%',
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
-    padding: '13px 50px 13px 40px',
+    padding: '13px 50px 13px 36px',
     color: palette.text.primary,
     zIndex: 2,
     fontFamily: 'DM Sans',
@@ -102,9 +102,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: -32,
+    top: -36,
     left: 14,
     width: 20,
+    height: 22,
     zIndex: 1,
 
     '& path': {

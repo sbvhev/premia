@@ -308,11 +308,18 @@ export const lightTheme = responsiveFontSizes(
 
             '& svg': {
               width: 20,
-              marginRight: 8,
+              marginRight: 2,
+              position: 'relative',
+              height: 20,
+              top: -2,
 
               '& path': {
                 fill: primary,
               },
+            },
+
+            '& span': {
+              fontSize: 14,
             },
 
             '&:focus': {
@@ -563,11 +570,18 @@ export const darkTheme = responsiveFontSizes(
 
             '& svg': {
               width: 20,
-              marginRight: 8,
+              marginRight: 2,
+              position: 'relative',
+              height: 20,
+              top: -2,
 
               '& path': {
                 fill: primary,
               },
+            },
+
+            '& span': {
+              fontSize: 14,
             },
 
             '&:focus': {
