@@ -199,6 +199,10 @@ const OptionFilter: React.FC = () => {
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
 
+  if (!moment(maturityDate).isValid()) {
+    setMaturityDate(moment(new Date()).format('YYYY-MM-DD'));
+  }
+
   return (
     <Box width={1}>
       <Box
