@@ -345,7 +345,6 @@ const ProVault: React.FC = () => {
                       >
                         Call pool
                       </Typography>
-                      <Help />
                       <Typography
                         variant='body1'
                         component='h2'
@@ -565,7 +564,6 @@ const ProVault: React.FC = () => {
                       >
                         Put pool
                       </Typography>
-                      <Help />
                       <Typography
                         variant='body1'
                         component='h2'

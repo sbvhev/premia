@@ -13,7 +13,8 @@ import {
   useMediaQuery,
   IconButton,
 } from '@material-ui/core';
-import { ExpandMore, Check, Help } from '@material-ui/icons';
+import { ExpandMore, Check } from '@material-ui/icons';
+import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
@@ -101,7 +102,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: -46,
+    top: -32,
     left: 14,
     width: 20,
     zIndex: 1,
