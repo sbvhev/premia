@@ -20,6 +20,7 @@ const useStyles = makeStyles(({ palette }) => ({
     marginLeft: 260,
   },
   pageMobile: {
+    backgroundColor: palette.background.paper,
     width: '100vw',
     marginLeft: 0,
   },
@@ -39,6 +40,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 }) => {
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
   const theme = useTheme();
+  const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
@@ -53,14 +55,21 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
         }
         <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
-            <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} zIndex={10} bgcolor='background.default' p={mobile ? 1 : 3} px={mobile ? 2 : 3} className={cx(mobile && classes.border)}>
+            <Box
+              position='fixed'
+              width={mobile ? 1 : 'calc(100% - 260px)'}
+              zIndex={10}
+              bgcolor={!mobile ? palette.background.default : palette.background.paper}
+              p={mobile ? 1 : 3} px={mobile ? 2 : 3}
+              className={cx(mobile && classes.border)}
+            >
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
                   <Grid item>
                     <img src={darkMode ? MainLogo : MainLogoBlack} alt='main logo' />
                   </Grid>
                 )}
-                <Grid item>
+                <Grid>
                   {mobile && (
                     <IconButton
                       onClick={() =>
@@ -85,7 +94,12 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           )}
 
           { mobile && !mobileSidebarHidden &&
-            <Box width={1} position='relative' mt={12} mb={mobile ? 10 : 7}>
+            <Box
+              width={1}
+              position='relative'
+              mt={12} mb={mobile ? 10 : 7}
+              style={{ backgroundColor: palette.background.paper}}
+            >
               <Box p={1}>
                 <AccountButtons mobile />
               </Box>
