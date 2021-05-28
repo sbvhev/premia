@@ -304,6 +304,7 @@ export const lightTheme = responsiveFontSizes(
             paddingLeft: 12,
             alignItems: 'center',
             display: 'flex',
+            zIndex: 100,
 
             '& svg': {
               width: 20,
@@ -549,7 +550,7 @@ export const darkTheme = responsiveFontSizes(
       },
       MuiOutlinedInput: {
         root: {
-          border: 'none',
+          border: `1px solid ${dividerGreyNight}`,
           background: 'black',
           borderRadius: 12,
           height: 45,
@@ -558,6 +559,7 @@ export const darkTheme = responsiveFontSizes(
             alignItems: 'center',
             display: 'flex',
             paddingLeft: 12,
+            zIndex: 100,
 
             '& svg': {
               width: 20,
