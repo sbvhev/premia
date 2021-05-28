@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -15,12 +14,7 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import {
-  BetaSoftwareModal,
-  ConfirmTermsModal,
-  SwapModal,
-  ChainModal,
-} from 'components';
+import { BetaSoftwareModal, ConfirmTermsModal, SwapModal, ChainModal, TransactionsModal } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
@@ -53,6 +47,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 180,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
+    cursor: 'pointer',
   },
 
   connect: {
@@ -155,17 +150,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [chainModalOpen, setChainModalOpen] = useState(false);
+  const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const classes = useStyles();
-
-  const handleShowSwapModal = () => {
-    setShowSwapModal(true);
-  };
-
-  const handleHideSwapModal = () => {
-    setShowSwapModal(false);
-  };
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end'>
@@ -212,7 +200,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             color='secondary'
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
-            onClick={handleShowSwapModal}
+            onClick={() => setShowSwapModal(true)}
           >
             Swap
             <img src={SwapIcon} alt='Swap Icon' />
@@ -227,9 +215,9 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             <Typography color='secondary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Link
-              to='/'
+            <Box 
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}
+              style={{ cursor: 'pointer' }}
             >
               <Grid
                 container
@@ -238,7 +226,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 justify='space-between'
                 className={classes.account}
               >
-                <Grid item container alignItems='center' xs={9}>
+                <Grid item container alignItems='center' xs={9} onClick={() => setShowTransactions(true)}>
                   <Avatar className={classes.avatar} />
                   <Box>
                     <Typography className={classes.address}>
@@ -262,7 +250,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   </Tooltip>
                 </Box>
               </Grid>
-            </Link>
+            </Box>
           </Box>
         </Grid>
       ) : (
@@ -276,7 +264,8 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       <Grid item xs={1} />
-      <SwapModal open={showSwapModal} onClose={handleHideSwapModal} />
+      <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
+      <TransactionsModal open={showTransactions} onClose={() => setShowTransactions(false)} />
     </Grid>
   );
 };
