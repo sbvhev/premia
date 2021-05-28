@@ -72,7 +72,8 @@ const useStyles = makeStyles(({ palette }) => ({
       overflow: 'hidden',
 
       '& $selected': {
-        background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+        background:
+          'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
         boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
         transform: 'rotate(45deg)',
         color: 'black',
@@ -85,7 +86,7 @@ const useStyles = makeStyles(({ palette }) => ({
         position: 'absolute',
         right: -26,
         top: 18,
-        fontSize: 12
+        fontSize: 12,
       },
 
       '&:hover': {
@@ -93,13 +94,11 @@ const useStyles = makeStyles(({ palette }) => ({
       },
 
       '& svg': {
-        marginBottom: 16
-      }
+        marginBottom: 16,
+      },
     },
   },
-  selected: {
-
-  }
+  selected: {},
 }));
 
 export interface ChainModalProps {
@@ -121,36 +120,51 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
             </Typography>
             <Grid container direction='row'>
               <Grid item xs={4} className={classes.chain}>
-                <Box component='div' onClick={() => {
-                  setSelectedIndex(1)
-                }}>
+                <Box
+                  component='div'
+                  onClick={() => {
+                    setSelectedIndex(1);
+                  }}
+                >
                   <EthIcon />
                   Ethereum
-                  { selectedIndex === 1 && <Box component="div" className={classes.selected}>
-                    Current
-                  </Box>}
+                  {selectedIndex === 1 && (
+                    <Box component='div' className={classes.selected}>
+                      Current
+                    </Box>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={4} className={classes.chain}>
-                <Box component='div' onClick={() => {
-                  setSelectedIndex(2)
-                }}>
+                <Box
+                  component='div'
+                  onClick={() => {
+                    setSelectedIndex(2);
+                  }}
+                >
                   <BSCIcon />
                   BSC
-                  { selectedIndex === 2 && <Box component="div" className={classes.selected}>
-                    Current
-                  </Box>}
+                  {selectedIndex === 2 && (
+                    <Box component='div' className={classes.selected}>
+                      Current
+                    </Box>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={4} className={classes.chain}>
-                <Box component='div' onClick={() => {
-                  setSelectedIndex(3)
-                }}>
+                <Box
+                  component='div'
+                  onClick={() => {
+                    setSelectedIndex(3);
+                  }}
+                >
                   <PolygonIcon />
                   Polygon
-                  { selectedIndex === 3 && <Box component="div" className={classes.selected}>
-                    Current
-                  </Box>}
+                  {selectedIndex === 3 && (
+                    <Box component='div' className={classes.selected}>
+                      Current
+                    </Box>
+                  )}
                 </Box>
               </Grid>
             </Grid>

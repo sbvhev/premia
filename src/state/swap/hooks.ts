@@ -9,9 +9,7 @@ import {
 
 export const useSwapSettings = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector<AppState, AppState['swap']>(
-    (state) => state.swap,
-  );
+  const state = useSelector<AppState, AppState['swap']>((state) => state.swap);
 
   const setSwapSettings = (swapSettings: SetSwapSettings) =>
     dispatch(_setSwapSettings(swapSettings));

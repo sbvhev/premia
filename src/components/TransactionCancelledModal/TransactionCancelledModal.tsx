@@ -72,7 +72,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   innerCoreBackgroundFill: {
     backgroundColor: palette.background.paper,
-    borderRadius: '12px',    
+    borderRadius: '12px',
     position: 'absolute',
     top: 42.5,
     left: 'calc(50% - 25px)',
@@ -163,15 +163,15 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '50%',
     backgroundColor: 'transparent',
     '&:hover': {
-      backgroundColor: palette.primary.dark
-    }
+      backgroundColor: palette.primary.dark,
+    },
   },
 }));
 
 export interface TransactionCancelledModalProps {
   open: boolean;
   onClose: () => void;
-  swapModal?: boolean; 
+  swapModal?: boolean;
 }
 
 const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
@@ -189,44 +189,58 @@ const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
     <Modal open={open} onClose={onClose}>
       <ModalContainer size='md'>
         <Box width={1} className={classes.wrapper}>
-          <Box className={classes.topIconWraper} style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}>
-            <Box className={classes.innerMainBorderedCircle}>
-            </Box>
+          <Box
+            className={classes.topIconWraper}
+            style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}
+          >
+            <Box className={classes.innerMainBorderedCircle}></Box>
           </Box>
           <img
             src={MostOuterErrorRadial}
-            alt="---"
+            alt='---'
             className={classes.firstOuterRadial}
             style={!mobile ? {} : { top: 'calc(20vh + 3.5px)' }}
           />
           <img
             src={SecondErrorRadial}
-            alt="--"
+            alt='--'
             className={classes.secondOuterRadial}
             style={!mobile ? {} : { top: 'calc(20vh + 10px)' }}
-            />
-            <img
-              src={ErrorIcon}
-              alt="Cancelled"
-              className={classes.iconCore}
-              style={!mobile ? {} : { top: 'calc(20vh + 23.5px)' }}
-            />
-            <Box className={classes.innerMainTransparent} style={!mobile ? {} : { top: 'calc(20vh + 18px)' }}/>
-            <Box className={classes.innerCoreBackgroundFill} style={!mobile ? {} : { top: 'calc(20vh + 42px)' }}/>
-          <Box className={classes.coloredBorderBackgroundForCard} style={palette && palette.type === 'light' ? { background: 'none' } : {}}>
+          />
+          <img
+            src={ErrorIcon}
+            alt='Cancelled'
+            className={classes.iconCore}
+            style={!mobile ? {} : { top: 'calc(20vh + 23.5px)' }}
+          />
+          <Box
+            className={classes.innerMainTransparent}
+            style={!mobile ? {} : { top: 'calc(20vh + 18px)' }}
+          />
+          <Box
+            className={classes.innerCoreBackgroundFill}
+            style={!mobile ? {} : { top: 'calc(20vh + 42px)' }}
+          />
+          <Box
+            className={classes.coloredBorderBackgroundForCard}
+            style={
+              palette && palette.type === 'light' ? { background: 'none' } : {}
+            }
+          >
             <Box className={classes.mainCard}>
               <Box className={classes.textColumn}>
                 <Box className={classes.topTextWrapper}>
-                  <Typography variant="h2" className={classes.title}>{!swapModal ? 'Transaction cancelled' : 'Swap cancelled'}</Typography>
-                  <Typography color="secondary" className={classes.subTitle}>{txStateMsg}</Typography>
+                  <Typography variant='h2' className={classes.title}>
+                    {!swapModal ? 'Transaction cancelled' : 'Swap cancelled'}
+                  </Typography>
+                  <Typography color='secondary' className={classes.subTitle}>
+                    {txStateMsg}
+                  </Typography>
                 </Box>
               </Box>
             </Box>
             <Box className={classes.exitContainer} onClick={onClose}>
-              <img
-                src={XOut}
-                alt="Exit"
-              />
+              <img src={XOut} alt='Exit' />
             </Box>
           </Box>
         </Box>

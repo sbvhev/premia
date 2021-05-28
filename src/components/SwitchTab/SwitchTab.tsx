@@ -18,7 +18,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const SwitchTab: React.FC<SwitchProps> = ({ children, ...props}) => {
+const SwitchTab: React.FC<SwitchProps> = ({ children, ...props }) => {
   const classes = useStyles();
 
   return (

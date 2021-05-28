@@ -2,11 +2,7 @@ import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import {
-  Box,
-  Typography,
-  Button,
-} from '@material-ui/core';
+import { Box, Typography, Button } from '@material-ui/core';
 
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
@@ -16,7 +12,7 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     height: '610px',
     width: '384px',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundcolor: 'transparent',
@@ -25,7 +21,7 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapperMobile: {
     height: '480px',
     width: '335px',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundcolor: 'transparent',
@@ -141,7 +137,7 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: '3px',
     '&:hover': {
       backgroundColor: palette.primary.dark,
-    }
+    },
   },
   borderedInput: {
     position: 'relative',
@@ -242,7 +238,7 @@ const useStyles = makeStyles(({ palette }) => ({
     background: '#FF9152',
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
-  }
+  },
 }));
 
 const StakePremiaCard: React.FC = () => {
@@ -252,18 +248,24 @@ const StakePremiaCard: React.FC = () => {
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-      {!mobile && <img
+      {!mobile && (
+        <img
           src={StakePremiaIcon}
           alt='Stake premia'
           className={classes.stakeImg}
-        />}
-      <Box className={!mobile ? classes.borderedCard : classes.borderedCardMobile}>
+        />
+      )}
+      <Box
+        className={!mobile ? classes.borderedCard : classes.borderedCardMobile}
+      >
         <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
-          {mobile && <img
-            src={StakePremiaMobile}
-            alt='Stake premia'
-            style={{ height: '80px', width: '52px' }}
-          />}
+          {mobile && (
+            <img
+              src={StakePremiaMobile}
+              alt='Stake premia'
+              style={{ height: '80px', width: '52px' }}
+            />
+          )}
           <Box>
             <Typography
               component='h2'
@@ -281,12 +283,23 @@ const StakePremiaCard: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
-          <Box className={classes.col} style={{ margin: '0 8px 2px', justifyContent: 'flex-start', width: 'calc(100% - 16px)' }}>
-          </Box>
+        <Box
+          className={!mobile ? classes.topSection : classes.topSectionMobile}
+        >
+          <Box
+            className={classes.col}
+            style={{
+              margin: '0 8px 2px',
+              justifyContent: 'flex-start',
+              width: 'calc(100% - 16px)',
+            }}
+          ></Box>
 
           <Box className={classes.col}>
-            <Box className={classes.horizontalBox} style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}>
+            <Box
+              className={classes.horizontalBox}
+              style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
+            >
               <Typography
                 component='p'
                 color='textPrimary'
@@ -302,8 +315,8 @@ const StakePremiaCard: React.FC = () => {
                 {'Max size available: 124,098'}
               </Typography>
             </Box>
-              
-            <Box width="100%" height="46px">
+
+            <Box width='100%' height='46px'>
               <input
                 value={'100'}
                 onChange={() => {}}
@@ -314,25 +327,42 @@ const StakePremiaCard: React.FC = () => {
                 alt='Select Amount'
                 className={classes.inputIcon}
               />
-              <Button color="primary" variant="outlined" size="small" className={!mobile ? classes.maxButton : classes.maxButtonMobile}>
+              <Button
+                color='primary'
+                variant='outlined'
+                size='small'
+                className={
+                  !mobile ? classes.maxButton : classes.maxButtonMobile
+                }
+              >
                 MAX
               </Button>
             </Box>
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Button  size="large" color="primary" variant="contained" className={classes.buttonLeft}>
+            <Button
+              size='large'
+              color='primary'
+              variant='contained'
+              className={classes.buttonLeft}
+            >
               Stake
             </Button>
-            <Button color="secondary" variant="outlined" size="large" className={classes.buttonRight}>
+            <Button
+              color='secondary'
+              variant='outlined'
+              size='large'
+              className={classes.buttonRight}
+            >
               Unstake
             </Button>
           </Box>
-
         </Box>
 
-        <Box className={!mobile ? classes.botSection : classes.botSectionMobile}>
-
+        <Box
+          className={!mobile ? classes.botSection : classes.botSectionMobile}
+        >
           <Box className={classes.horizontalBox}>
             <Typography
               component='h3'
@@ -342,7 +372,10 @@ const StakePremiaCard: React.FC = () => {
               My stats
             </Typography>
           </Box>
-          <Box className={classes.horizontalBox} style={{ alignItems: 'center' }}>
+          <Box
+            className={classes.horizontalBox}
+            style={{ alignItems: 'center' }}
+          >
             <Typography
               component='p'
               color='textSecondary'
@@ -350,14 +383,14 @@ const StakePremiaCard: React.FC = () => {
             >
               xPremia Unlocked
             </Typography>
-              <Typography
-                component='p'
-                color='textPrimary'
-                className={classes.elementHeader}
-              >
-                {`1000`}
-              </Typography>
-            </Box>
+            <Typography
+              component='p'
+              color='textPrimary'
+              className={classes.elementHeader}
+            >
+              {`1000`}
+            </Typography>
+          </Box>
           <Box className={classes.horizontalBox}>
             <Typography
               component='p'
@@ -406,11 +439,10 @@ const StakePremiaCard: React.FC = () => {
               {`11`}
             </Typography>
           </Box>
-
         </Box>
       </Box>
     </Box>
-  )
+  );
 };
 
 export default StakePremiaCard;

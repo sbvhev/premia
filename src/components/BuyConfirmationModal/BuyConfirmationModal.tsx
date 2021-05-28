@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { useWeb3 } from 'state/application/hooks';
+import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
+import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 
+import { useIsDarkMode } from 'state/user/hooks';
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -25,23 +27,23 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '364px',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
-    border: `1px solid ${palette.divider}`,
+    border: `2px solid ${palette.divider}`,
   },
   mainCardMobile: {
     width: '340px',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
-    border: `1px solid ${palette.divider}`,
+    border: `2px solid ${palette.divider}`,
   },
   topSection: {
     boxSizing: 'border-box',
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '24px 26px 24px 28px',
-    height: '376px',
+    padding: '16px 26px 16px 26px',
+    height: '185px',
     borderBottom: `1px solid ${palette.divider}`,
   },
   topSectionMobile: {
@@ -52,7 +54,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     padding: '24px 16px 24px',
-    height: '376px',
+    height: '185px',
     borderBottom: `1px solid ${palette.divider}`,
   },
   botSection: {
@@ -130,147 +132,134 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
+  element: {
+    '& svg': {
+      width: 14,
+      height: 17,
+    },
+
+    '& p': {
+      lineHeight: '24px',
+      fontSize: 14,
+
+      '& svg': {
+        position: 'relative',
+        top: 4,
+        marginLeft: 4,
+
+        '& path': {
+          fill: (props: any) => (props.dark ? 'white' : 'black'),
+        },
+      },
+    },
+
+    '& h2': {
+      lineHeight: '24px',
+      fontSize: 14,
+      marginRight: 8,
+      fontWeight: 'bold',
+    },
+  },
 }));
 
-export interface ConfirmTermsModalProps {
+export interface BuyConfirmationModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
+const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
 }) => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const theme = useTheme();
-  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
 
-  useEffect(() => {
-    const doNotShowDisclaimerAgain = localStorage.getItem(
-      'doNotShowDisclaimerAgain',
-    );
-    if (doNotShowDisclaimerAgain) {
-      onboard?.walletSelect();
-      onClose();
-    }
-  });
-
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (checkIsOn) {
-      localStorage.setItem('doNotShowDisclaimerAgain', 'true');
-    }
-    onboard?.walletSelect();
     onClose();
-  };
-
-  const handleDisclaimerCheck = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setCheckIsOn(!checkIsOn);
   };
 
   return (
     <Modal open={open} onClose={onClose}>
       <ModalContainer size='md'>
         <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-          <Box
-            className={!mobile ? classes.mainCard : classes.mainCardMobile}
-            style={palette.type === 'light' ? { border: 'none' } : {}}
-          >
+          <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
             <Box
               className={
                 !mobile ? classes.topSection : classes.topSectionMobile
               }
             >
-              <Box>
-                <svg
-                  width='33'
-                  height='30'
-                  viewBox='0 0 33 30'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    fill-rule='evenodd'
-                    clip-rule='evenodd'
-                    d='M31.4913 23.8605L19.2595 2.67442C18.5794 1.49637 17.3611 0.792969 16.0007 0.792969C14.6403 0.792969 13.422 1.49637 12.7419 2.67442L0.510163 23.8604C-0.170054 25.0386 -0.170054 26.4453 0.510163 27.6234C1.19038 28.8015 2.40856 29.5048 3.76899 29.5048H28.2324C29.5928 29.5048 30.811 28.8014 31.4913 27.6234C32.1715 26.4453 32.1715 25.0386 31.4913 23.8605ZM29.8676 26.686C29.5263 27.2772 28.915 27.6301 28.2324 27.6301H3.76899C3.08634 27.6301 2.47506 27.2772 2.13379 26.686C1.79253 26.0949 1.79253 25.3891 2.13379 24.7979L14.3656 3.6119C14.7069 3.02075 15.3182 2.66786 16.0008 2.66786C16.6833 2.66786 17.2946 3.02075 17.6359 3.6119L29.8677 24.7979C30.2089 25.3891 30.2089 26.0949 29.8676 26.686ZM16.8748 10.9374C16.8748 10.4197 16.4551 10 15.9374 10C15.4197 10 15 10.4197 15 10.9374V18.4369C15 18.9546 15.4197 19.3743 15.9374 19.3743C16.4551 19.3743 16.8748 18.9546 16.8748 18.4369V10.9374ZM14.7504 22.6484C14.7504 21.9592 15.3111 21.3985 16.0003 21.3985C16.6896 21.3985 17.2503 21.9592 17.2503 22.6484C17.2503 23.3376 16.6895 23.8983 16.0003 23.8983C15.3111 23.8983 14.7504 23.3376 14.7504 22.6484Z'
-                    fill='url(#paint0_linear)'
-                  />
-                  <defs>
-                    <linearGradient
-                      id='paint0_linear'
-                      x1='4.00018'
-                      y1='0.792968'
-                      x2='43.1746'
-                      y2='27.2498'
-                      gradientUnits='userSpaceOnUse'
-                    >
-                      <stop stop-color='#5294FF' />
-                      <stop offset='1' stop-color='#1EFF78' />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </Box>
-              <Typography className={classes.title}>Disclaimer</Typography>
+              <Typography className={classes.title}>
+                Buy confirmation
+              </Typography>
               <Box
                 display='flex'
-                flexDirection='column'
+                flexDirection='row'
                 justifyContent='space-between'
+                flexWrap='wrap'
               >
-                <Typography className={classes.smallInfoText}>
-                  Premia is currently in beta, please use at your own risk. Beta
-                  software is used with the expectation and understanding that
-                  there may still be minor to fatal bugs & vulnerabilities that
-                  may not have been uncovered by previous security reviews,
-                  testing, or audits. There are economic risks with every
-                  interaction of the protocol, and you may lose 100% of your
-                  funds with no possibility of compensation. Do not deposit more
-                  than you are willing to lose.
-                </Typography>
-
-                <Box style={{ margin: '20px 4px 0px 0px' }}>
-                  <Typography className={classes.smallInfoText}>
-                    By proceeding, you accept the{' '}
-                    <a
-                      className={classes.anchor}
-                      href='https://files.premia.finance/$/CZIOi'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Term of Service
-                    </a>
-                    ,{' '}
-                    <a
-                      className={classes.anchor}
-                      href='https://files.premia.finance/$/F2rmu'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Privacy Policy
-                    </a>
-                    ,{' '}
-                    <a
-                      className={classes.anchor}
-                      href='https://files.premia.finance/$/rw34x'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Cookie Policy
-                    </a>
-                    , and{' '}
-                    <a
-                      className={classes.anchor}
-                      href='https://files.premia.finance/$/YCDeQ'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Risk Disclaimer
-                    </a>
-                    .
+                <Box
+                  display='flex'
+                  flexDirection='column'
+                  width='50%'
+                  className={classes.element}
+                >
+                  <Typography color='secondary'>Option size</Typography>
+                  <Box display='flex' flexDirection='row'>
+                    <Typography component='h2'>321</Typography>
+                    <Typography color='secondary'>Uni</Typography>
+                    <UniswapIcon />
+                  </Box>
+                </Box>
+                <Box
+                  display='flex'
+                  flexDirection='column'
+                  width='50%'
+                  textAlign='right'
+                  className={classes.element}
+                >
+                  <Typography color='secondary'>Maturity</Typography>
+                  <Box
+                    display='flex'
+                    flexDirection='row'
+                    justifyContent='flex-end'
+                  >
+                    <Typography component='h2'>27 March</Typography>
+                  </Box>
+                </Box>
+                <Box
+                  display='flex'
+                  flexDirection='column'
+                  width='50%'
+                  mt={1}
+                  className={classes.element}
+                >
+                  <Typography color='secondary'>Breakeven</Typography>
+                  <Box display='flex' flexDirection='row'>
+                    <Typography component='h2'>$1,700</Typography>
+                  </Box>
+                </Box>
+                <Box
+                  display='flex'
+                  flexDirection='column'
+                  width='50%'
+                  mt={1}
+                  textAlign='right'
+                  className={classes.element}
+                >
+                  <Typography color='secondary'>
+                    Slippage
+                    <HelpIcon />
                   </Typography>
+                  <Box
+                    display='flex'
+                    flexDirection='row'
+                    justifyContent='flex-end'
+                  >
+                    <Typography component='h2'>2.29%</Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -288,7 +277,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
               >
                 <Checkbox
                   checked={checkIsOn}
-                  onChange={handleDisclaimerCheck}
+                  onChange={() => setCheckIsOn(!checkIsOn)}
                   name='agreeToTerms'
                   size='small'
                   className={classes.checkbox}
@@ -361,7 +350,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                 size='large'
                 onClick={handleChangeAgree}
               >
-                Agree
+                Buy for $1,749.37
               </Button>
             </Box>
           </Box>
@@ -379,4 +368,4 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
   );
 };
 
-export default ConfirmTermsModal;
+export default BuyConfirmationModal;
