@@ -7,7 +7,7 @@ import cx from 'classnames';
 import { Box, Typography, Button } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import { SingleDatePicker } from 'react-dates';
+import Calendar from 'react-calendar';
 import moment from 'moment';
 import {
   useOptionType,
@@ -43,151 +43,52 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
 
-  focusedDatepicker: {
-    '& > svg path': {
-      fill: palette.primary.main,
-    },
-  },
-
-  singleDatePicker: {
-    '& .SingleDatePicker': {
-      width: '100%',
-    },
-
-    '& .DateInput_fang': {
-      display: 'none',
-    },
-
-    '& .CalendarMonth, & .CalendarMonthGrid, & .DayPickerNavigation_button__default, & .CalendarDay__default':
-      {
-        background: 'transparent',
-        border: 'none',
-      },
-
-    '& .CalendarMonth_caption': {
-      color: palette.text.primary,
-    },
-
-    '& .CalendarDay__today': {
-      color: palette.primary.main,
-      position: 'relative',
-      '&:before': {
-        content: '""',
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        background: palette.primary.dark,
-        borderRadius: 6,
-      },
-    },
-
-    '& .CalendarDay__default:not(.CalendarDay__blocked_out_of_range):not(.CalendarDay__today):not(.CalendarDay__selected)':
-      {
-        color: palette.text.primary,
-        position: 'relative',
-        '&:hover, &:active': {
-          color: palette.primary.main,
-          '&:before': {
-            content: '""',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            background: palette.primary.dark,
-            borderRadius: 6,
-          },
-        },
-      },
-
-    '& .CalendarDay__blocked_out_of_range': {
-      color: palette.text.secondary,
-    },
-
-    '& .CalendarDay__default.CalendarDay__selected': {
-      position: 'relative',
-      color: palette.primary.main,
-      '&:before': {
-        content: '""',
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: 0,
-        left: 0,
-        background: palette.primary.dark,
-        border: `1px solid ${palette.primary.main}`,
-        borderRadius: 6,
-      },
-    },
-
-    '& .SingleDatePicker_picker': {
-      zIndex: 3,
-      width: '100%',
-      marginTop: -16,
-      borderRadius: 12,
-      display: 'flex',
-      justifyContent: 'center',
-      overflow: 'hidden',
-      background: palette.background.paper,
-      border: `1px solid ${palette.divider}`,
-      boxShadow: '0px 2px 5px rgb(0 0 0 / 7%)',
-    },
-
-    '& .DayPicker__withBorder': {
-      boxShadow: 'none',
-      // width: '100% !important',
-      background: 'transparent',
-      '& > div > div': {
-        // width: '100% !important'
-      },
-    },
-
-    '& .DateInput_input.DateInput_input__focused': {
-      backgroundColor: 'rgba(82, 148, 255, 0.2)',
-      border: `1px solid ${palette.primary.main}`,
-      color: palette.primary.main,
-      '& svg path': {
-        fill: palette.primary.main,
-      },
-    },
-
-    '& > svg': {
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      right: 8,
-    },
-
-    '& .SingleDatePickerInput': {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: 'transparent !important',
-      border: 'none',
-    },
-
-    '& .DateInput': {
-      width: '100%',
-      backgroundColor: 'transparent !important',
-    },
-
-    '& .DateInput_input': {
-      color: palette.text.primary,
-      fontFamily: 'DM Sans',
+  dateInput: {
+    width: '100%',
+    height: 45,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+    padding: 12,
+    '& p': {
       fontSize: 14,
-      backgroundColor: 'transparent',
-      border: `1px solid ${palette.divider}`,
-      padding: '8px 32px 8px 8px',
-      borderRadius: 8,
-
-      '&::placeholder': {
-        color: palette.text.secondary,
-      },
+      color: palette.text.secondary
+    },
+    '& svg': {
+      width: 20
     },
   },
+
+  focusedDateInput: {
+
+  },
+
+  calendarContainer: {
+    position: 'absolute',
+    width: '100%',
+    zIndex: 3,
+    marginTop: 10,
+    background: palette.background.paper,
+    border: `1px solid ${palette.divider}`,
+    boxShadow: '0px 2px 5px rgb(0 0 0 / 7%)',
+    borderRadius: 12,
+    overflow: 'hidden',
+    '& .react-calendar': {
+      background: palette.background.paper,
+      border: 'none'
+    }
+  },
+
+  maturityContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    height: 44,
+    width: '100%',
+    padding: '0 23px'
+  }
 }));
 
 const OptionFilter: React.FC = () => {
@@ -260,26 +161,23 @@ const OptionFilter: React.FC = () => {
           position='relative'
           width={1}
           marginTop={1}
-          className={cx(
-            classes.singleDatePicker,
-            maturityFocused && classes.focusedDatepicker,
-          )}
         >
-          <SingleDatePicker
-            date={moment(maturityDate)}
-            id='maturityDate'
-            placeholder='Select date'
-            focused={maturityFocused}
-            numberOfMonths={1}
-            hideKeyboardShortcutsPanel={true}
-            onDateChange={(date) =>
-              setMaturityDate(moment(date).format('YYYY-MM-DD'))
-            }
-            onFocusChange={({ focused }) => {
-              setMaturityFocused(focused);
-            }}
-          />
-          <CalendarIcon />
+          <Box className={cx(classes.dateInput, maturityFocused && classes.focusedDateInput)} onClick={() => setMaturityFocused(!maturityFocused)}>
+            <Typography>{ moment(new Date(maturityDate)).isValid() ? moment(new Date(maturityDate)).format('YYYY-MM-DD') : 'Select Date' }</Typography>
+            <CalendarIcon />
+          </Box>
+          { maturityFocused && 
+            <Box className={classes.calendarContainer}>
+            <Calendar
+              onChange={(date) => { setMaturityFocused(false); setMaturityDate(moment(date).toISOString()); }}
+              value={new Date(maturityDate)}
+            />
+            <Box className={classes.maturityContainer}>
+              <Typography>Days to maturity</Typography>
+              <Typography component='span'>7</Typography>
+            </Box>
+            </Box>
+          }
         </Box>
       </Box>
 
