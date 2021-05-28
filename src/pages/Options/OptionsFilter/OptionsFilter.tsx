@@ -77,7 +77,8 @@ const useStyles = makeStyles(({ palette }) => ({
     overflow: 'hidden',
     '& .react-calendar': {
       background: palette.background.paper,
-      border: 'none'
+      border: 'none',
+      width: 'auto'
     }
   },
 
