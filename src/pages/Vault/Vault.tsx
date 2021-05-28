@@ -164,6 +164,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '18px',
     marginTop: 6,
   },
+  expandMore: {
+    marginRight: 8,
+    position: 'absolute',
+    right: 0,
+    cursor: 'pointer',
+
+    '& path': {
+      fill: theme.palette.secondary.main,
+    },
+  },
 }));
 
 const tabItems = [
@@ -285,7 +295,7 @@ const ProVault: React.FC = () => {
                   <FormControl variant='outlined' fullWidth>
                     <Select
                       IconComponent={() => {
-                        return <ExpandMore />;
+                        return <ExpandMore className={classes.expandMore} />;
                       }}
                       value={coin}
                       onChange={handleChange}

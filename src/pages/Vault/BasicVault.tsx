@@ -302,6 +302,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginRight: 8,
     position: 'absolute',
     right: 0,
+    cursor: 'pointer',
 
     '& path': {
       fill: palette.secondary.main,
