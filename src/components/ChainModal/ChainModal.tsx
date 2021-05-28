@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Typography, Modal, Box, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import cx from 'classnames';
+
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
@@ -56,6 +58,10 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 16,
     lineHeight: '18px',
     fontWeight: 700,
+
+    '& > $selected': {
+      border: `1px solid ${palette.divider}`,
+    },
 
     '& > div': {
       background: 'rgba(82, 148, 255, 0.1)',
@@ -122,6 +128,9 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               <Grid item xs={4} className={classes.chain}>
                 <Box
                   component='div'
+                  className={cx({
+                    [classes.selected]: selectedIndex === 1,
+                  })}
                   onClick={() => {
                     setSelectedIndex(1);
                   }}
@@ -138,6 +147,9 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               <Grid item xs={4} className={classes.chain}>
                 <Box
                   component='div'
+                  className={cx({
+                    [classes.selected]: selectedIndex === 2,
+                  })}
                   onClick={() => {
                     setSelectedIndex(2);
                   }}
@@ -154,6 +166,9 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               <Grid item xs={4} className={classes.chain}>
                 <Box
                   component='div'
+                  className={cx({
+                    [classes.selected]: selectedIndex === 3,
+                  })}
                   onClick={() => {
                     setSelectedIndex(3);
                   }}
