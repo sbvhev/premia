@@ -345,8 +345,10 @@ export const lightTheme = responsiveFontSizes(
           '&.Mui-selected': {
             color: primary,
 
-            '& path': {
-              fill: primary,
+            '& svg:first-child': {
+              '& path': {
+                fill: primary,
+              },
             },
           },
         },
