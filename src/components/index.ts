@@ -20,6 +20,7 @@ export { default as Sidebar, SidebarItem } from './Sidebar';
 export { default as SwapModal } from './SwapModal';
 export { default as ThemeSwitch } from './ThemeSwitch';
 export { default as TokenPriceChip } from './TokenPriceChip';
+export { default as TransactionsModal } from './TransactionsModal';
 export { default as TransactionCancelledModal } from './TransactionCancelledModal';
 export { default as TransactionFailedModal } from './TransactionFailedModal';
 export { default as TransactionLoadingModal } from './TransactionLoadingModal';
