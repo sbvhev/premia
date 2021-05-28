@@ -450,14 +450,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!lowRiskAnchorEl} anchorEl={lowRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!lowRiskAnchorEl}
+                      anchorEl={lowRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>Low risk position<br />has exposure to:</b>
+                        <b>
+                          Low risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'
@@ -516,14 +523,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!mediumRiskAnchorEl} anchorEl={mediumRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!mediumRiskAnchorEl}
+                      anchorEl={mediumRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>Medium risk position<br/>has exposure to:</b>
+                        <b>
+                          Medium risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'
@@ -582,14 +596,21 @@ const BasicVault: React.FC = () => {
                     >
                       <Help />
                     </IconButton>
-                    <TooltipPan open={!!highRiskAnchorEl} anchorEl={highRiskAnchorEl}>
+                    <TooltipPan
+                      open={!!highRiskAnchorEl}
+                      anchorEl={highRiskAnchorEl}
+                    >
                       <Typography
                         component='h2'
                         color='textPrimary'
                         variant='body2'
                         style={{ marginBottom: '0.5rem' }}
                       >
-                        <b>High risk position<br/>has exposure to:</b>
+                        <b>
+                          High risk position
+                          <br />
+                          has exposure to:
+                        </b>
                       </Typography>
                       <Typography
                         component='h2'

@@ -95,7 +95,9 @@ const LineChart: React.FC<LineChartProps> = ({
         return (
           '<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none;">' +
           '<span style="padding: 0.5rem; border: 2px solid #646464;">' +
-          moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format('DD MMM, YYYY') +
+          moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format(
+            'DD MMM, YYYY',
+          ) +
           '</span>' +
           '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
           'Price: ' +

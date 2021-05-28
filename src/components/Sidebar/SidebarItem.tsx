@@ -1,10 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from '@material-ui/core';
+import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cn from 'classnames';
 
@@ -12,7 +8,7 @@ const useStyles = makeStyles(({ palette }) => ({
   item: {
     border: '1px solid transparent',
     backgroundColor: ({ active }: any) =>
-    active ? palette.primary.dark : 'transparent',
+      active ? palette.primary.dark : 'transparent',
     borderRadius: 12,
     padding: '12px 16px',
     margin: '2px 0',
@@ -38,12 +34,13 @@ const useStyles = makeStyles(({ palette }) => ({
 
   icon: {
     minWidth: 32,
-    filter: ({ active }: any) => active ? 'none' : 'grayscale(1)',
+    filter: ({ active }: any) => (active ? 'none' : 'grayscale(1)'),
   },
 
   title: {
     whiteSpace: 'nowrap',
-    color: ({ active }: any) => active ? palette.primary.main : palette.text.secondary,
+    color: ({ active }: any) =>
+      active ? palette.primary.main : palette.text.secondary,
 
     '&> span': {
       fontSize: 14,

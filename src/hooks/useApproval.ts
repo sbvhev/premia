@@ -31,26 +31,31 @@ export function useApproval(fromAddress: string, toAddress: string) {
     return () => clearInterval(refreshInterval);
   }, [account, tokenContract, toAddress, fetchAllowance]);
 
-  const handleApprove = useCallback(async (approval: boolean = true) => {
-    if (!tokenContract || !toAddress || !signer) return;
+  const handleApprove = useCallback(
+    async (approval: boolean = true) => {
+      if (!tokenContract || !toAddress || !signer) return;
 
-    try {
-      const symbol = await tokenContract.connect(signer!).symbol();
+      try {
+        const symbol = await tokenContract.connect(signer!).symbol();
 
-      return transact(
-        tokenContract
-          .connect(signer!)
-          .approve(toAddress, approval ? ethers.constants.MaxUint256 : 0),
-        {
-          closeOnSuccess: true,
-          option: null,
-          description: `${approval ? 'Approve' : 'Disapprove'} ${symbol} transfer`,
-        },
-      );
-    } catch (e) {
-      return console.error(e);
-    }
-  }, [signer, transact, toAddress, tokenContract]);
+        return transact(
+          tokenContract
+            .connect(signer!)
+            .approve(toAddress, approval ? ethers.constants.MaxUint256 : 0),
+          {
+            closeOnSuccess: true,
+            option: null,
+            description: `${
+              approval ? 'Approve' : 'Disapprove'
+            } ${symbol} transfer`,
+          },
+        );
+      } catch (e) {
+        return console.error(e);
+      }
+    },
+    [signer, transact, toAddress, tokenContract],
+  );
 
   return { loading, allowance, onApprove: handleApprove };
 }

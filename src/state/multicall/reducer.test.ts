@@ -217,7 +217,6 @@ describe('multicall reducer', () => {
         },
       });
     });
-    ('premiab ');
 
     it('does not do update if fetching newer block', () => {
       store.dispatch(

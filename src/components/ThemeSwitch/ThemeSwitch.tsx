@@ -152,5 +152,5 @@ const ThemeSwitch: React.FC = () => {
     </Box>
   );
 };
-        
+
 export default ThemeSwitch;

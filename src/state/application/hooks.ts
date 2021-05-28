@@ -4,7 +4,16 @@ import { API as NotifyAPI } from 'bnc-notify';
 import { get } from 'lodash';
 
 import { AppState, AppDispatch } from 'state';
-import { ApplicationNotification, setActiveNotification, ApplicationModal, setActiveModal, setWeb3Settings, setApprovalType as _setApprovalType, setWrapEthModalOpen as _setWrapEthModalOpen, setWrapEth as _setWrapEth } from './actions';
+import {
+  ApplicationNotification,
+  setActiveNotification,
+  ApplicationModal,
+  setActiveModal,
+  setWeb3Settings,
+  setApprovalType as _setApprovalType,
+  setWrapEthModalOpen as _setWrapEthModalOpen,
+  setWrapEth as _setWrapEth,
+} from './actions';
 
 export function useBlockNumber(): number | undefined {
   return useSelector((state: AppState) => state.application.blockNumber);
@@ -93,7 +102,9 @@ export function useCloseModals() {
   return useCallback(() => dispatch(setActiveModal(null)), [dispatch]);
 }
 
-export function useNotificationOpen(notification: ApplicationNotification): boolean {
+export function useNotificationOpen(
+  notification: ApplicationNotification,
+): boolean {
   const activeNotification = useSelector(
     (state: AppState) => state.application.activeNotification,
   );
@@ -104,7 +115,8 @@ export function useToggleNotification(notification: ApplicationNotification) {
   const open = useNotificationOpen(notification);
   const dispatch = useDispatch<AppDispatch>();
   return useCallback(
-    (toState = !open) => dispatch(setActiveNotification(toState ? notification : null)),
+    (toState = !open) =>
+      dispatch(setActiveNotification(toState ? notification : null)),
     [dispatch, notification, open],
   );
 }
@@ -161,16 +173,14 @@ export const useToggleWrapEthModal = () => {
 
 export const useWrapEth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const wrapEth = useSelector<
-    AppState,
-    AppState['application']['wrapEth']
-  >((state) => state.application.wrapEth);
+  const wrapEth = useSelector<AppState, AppState['application']['wrapEth']>(
+    (state) => state.application.wrapEth,
+  );
 
-  const setWrapEth = (wrap: boolean) =>
-    dispatch(_setWrapEth(wrap));
+  const setWrapEth = (wrap: boolean) => dispatch(_setWrapEth(wrap));
 
   return { wrapEth, setWrapEth };
-}; 
+};
 
 export const useApprovalType = () => {
   const dispatch = useDispatch<AppDispatch>();

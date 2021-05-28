@@ -48,11 +48,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   return (
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
-        {!mobile && 
+        {!mobile && (
           <Box position='fixed' left={0} width={260}>
             <Sidebar />
           </Box>
-        }
+        )}
         <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
             <Box
@@ -66,7 +66,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
                   <Grid item>
-                    <img src={darkMode ? MainLogo : MainLogoBlack} alt='main logo' />
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
+                    />
                   </Grid>
                 )}
                 <Grid>
@@ -115,14 +118,25 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           }
 
-
-          { mobileSidebarHidden && 
-            <Box px={mobile ? 0 : 3} width={1} mx='auto' mt={14} mb={mobile ? 10 : 7}>
+          {mobileSidebarHidden && (
+            <Box
+              px={mobile ? 0 : 3}
+              width={1}
+              mx='auto'
+              mt={14}
+              mb={mobile ? 10 : 7}
+            >
               <Container>{children}</Container>
             </Box>
-          }
+          )}
 
-          <Box position='fixed' width={mobile ? 1 : 'calc(100% - 260px)'} bottom={0} zIndex={10} bgcolor='background.default'>
+          <Box
+            position='fixed'
+            width={mobile ? 1 : 'calc(100% - 260px)'}
+            bottom={0}
+            zIndex={10}
+            bgcolor='background.default'
+          >
             <Footer />
           </Box>
         </Box>
