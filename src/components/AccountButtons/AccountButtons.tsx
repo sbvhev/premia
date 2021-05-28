@@ -14,7 +14,13 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { shortenAddress } from 'utils';
-import { BetaSoftwareModal, ConfirmTermsModal, SwapModal, ChainModal, TransactionsModal } from 'components';
+import {
+  BetaSoftwareModal,
+  ConfirmTermsModal,
+  SwapModal,
+  ChainModal,
+  TransactionsModal,
+} from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
@@ -117,8 +123,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 14,
 
     '&:hover': {
+      borderColor: palette.primary.main,
+
       '& svg': {
-        background: 'rgba(82, 148, 255, 0.5)',
+        background: palette.primary.main,
+      },
+
+      '& p': {
+        color: palette.common.white,
       },
     },
 
@@ -215,7 +227,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             <Typography color='secondary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Box 
+            <Box
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}
               style={{ cursor: 'pointer' }}
             >
@@ -226,7 +238,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 justify='space-between'
                 className={classes.account}
               >
-                <Grid item container alignItems='center' xs={9} onClick={() => setShowTransactions(true)}>
+                <Grid
+                  item
+                  container
+                  alignItems='center'
+                  xs={9}
+                  onClick={() => setShowTransactions(true)}
+                >
                   <Avatar className={classes.avatar} />
                   <Box>
                     <Typography className={classes.address}>
@@ -265,7 +283,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
 
       <Grid item xs={1} />
       <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
-      <TransactionsModal open={showTransactions} onClose={() => setShowTransactions(false)} />
+      <TransactionsModal
+        open={showTransactions}
+        onClose={() => setShowTransactions(false)}
+      />
     </Grid>
   );
 };
