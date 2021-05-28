@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -48,6 +47,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 180,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
+    cursor: 'pointer',
   },
 
   connect: {
@@ -215,9 +215,9 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             <Typography color='secondary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Link
-              to='/'
+            <Box 
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}
+              style={{ cursor: 'pointer' }}
             >
               <Grid
                 container
@@ -250,7 +250,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   </Tooltip>
                 </Box>
               </Grid>
-            </Link>
+            </Box>
           </Box>
         </Grid>
       ) : (
