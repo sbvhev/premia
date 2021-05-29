@@ -126,6 +126,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Footer: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
@@ -133,10 +134,11 @@ const Footer: React.FC = () => {
 
   return (
     <Box
-      height={mobile ? 70 : 45}
+      height={mobile ? 99 : 42}
       width={1}
       borderTop={1}
       borderColor={theme.palette.divider}
+      style={mobile ? { backgroundColor: palette.background.paper } : {}}
     >
       <Grid
         container
@@ -144,11 +146,11 @@ const Footer: React.FC = () => {
         alignItems='center'
         className={classes.footer}
       >
-        <Grid
-          item
-          sm={4}
-          container
-          justify={mobile ? 'center' : 'flex-start'}
+        <Box
+          display="flex"
+          width={mobile? '100%' : 'auto'}
+          height={mobile ? '48px' : '41px'}
+          justifyContent={mobile ? 'center' : 'flex-start'}
           alignItems='center'
           style={{ order: mobile ? 1 : 0 }}
         >
@@ -184,13 +186,13 @@ const Footer: React.FC = () => {
           >
             <GithubIcon />
           </a>
-        </Grid>
-        <Grid
-          item
-          sm={6}
-          container
-          justify={mobile ? 'space-between' : 'flex-end'}
+        </Box>
+        <Box
+          display="flex"
+          justifyContent={mobile ? 'space-between' : 'flex-end'}
+          height={mobile ? '50px' : '40px'}
           style={{ order: mobile ? 0 : 1 }}
+          width={mobile? '100%' : 'auto'}
         >
           <Box className={classes.footerRightItem}>
             <LockIcon />
@@ -217,7 +219,7 @@ const Footer: React.FC = () => {
               className={classes.gasProgress}
             />
           </Box>
-        </Grid>
+        </Box>
         {mobile && <Divider className={classes.footerDivider} />}
       </Grid>
       <Popover

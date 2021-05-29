@@ -57,7 +57,7 @@ export interface SidebarItemProps {
   link: string;
   Icon: any;
   href?: boolean;
-  // disabled?: boolean;
+  hide?: () => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -65,7 +65,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   link,
   Icon,
   href,
-  // disabled = false,
+  hide,
 }) => {
   const location = useLocation();
   const active = location.pathname === link;
@@ -77,28 +77,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!href) {
       history.push(link, { previous: location.pathname});
+      if (hide) {
+        hide();
+      }
     } else {
       window.open(link, '_blank' );
     }
   };
 
-
   return (
     <ListItem
-      // disabled={disabled}
       className={cn(classes.item, { active })}
-      // {...(href
-      //   ? {
-      //       href: link,
-      //       component: 'a',
-      //       target: '_blank',
-      //       referrer: 'noreferrer',
-      //     }
-      //   : {
-      //       to: disabled ? location.pathname : link,
-      //       component: NavLink,
-      //       activeClassName: 'active',
-      //     })}
       style={mobile ? {} : { backgroundColor: 'transparent'}}
       onClick={handleClick}
     >

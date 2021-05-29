@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.dark,
     border: 'none',
     zIndex: 3,
-    borderRadius: '10px', // just a high number to create pill effect
+    borderRadius: '10px',
     transition: 'left 0.4s ease-out',
   },
 
@@ -134,7 +134,6 @@ const ThemeSwitch: React.FC = () => {
       </Box>
       <Box>
         <Box
-          // marginTop="6px"
           display="flex"
           width={!mobile ? '80px' : '172px'}
           height={!mobile ? '30px' : '36px'}

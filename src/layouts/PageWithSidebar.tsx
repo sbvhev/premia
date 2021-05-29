@@ -45,6 +45,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
 
+  const hideMobileMenu = () => {
+    setMobileSidebarHidden(true);
+  };
+
   return (
     <Box bgcolor='background.default' overflow='auto'>
       <Grid container>
@@ -103,15 +107,18 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <Box
               width={1}
               position='relative'
-              mt="60px" mb={mobile ? 8 : 7}
-              style={{ backgroundColor: palette.background.paper}}
+              mt="60px"
+              mb={mobile ? 0 : 7}
+              height="555px"
+              maxHeight="calc(100vh - 160px)"
+              style={{ backgroundColor: palette.background.paper, overflowX: 'auto'}}
             >
               <Box p={!mobile ? 1 : 0}>
                 <AccountButtons mobile />
               </Box>
               <Divider />
               <Box p={1}>
-                <Sidebar mobile />
+                <Sidebar mobile hide={hideMobileMenu} />
               </Box>
               <Divider />
               <Box p={1.5}>
@@ -125,6 +132,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           }
 
           {mobileSidebarHidden && (
+            <>
             <Box
               px={mobile ? 0 : 3}
               width={1}
@@ -135,17 +143,40 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             >
               <Container>{children}</Container>
             </Box>
+            {!mobile ? (
+            <Box
+              position="fixed"
+              width="calc(100% - 210px)"
+              bottom={0}
+              zIndex={14}
+              bgcolor={palette.background.default}
+            >
+              <Footer />
+            </Box>
+          ) : (
+            <Box
+                position="abolute"
+                width="100%"
+                bottom={0}
+                zIndex={4}
+              >
+                <Footer />
+              </Box>)}
+            </>
           )}
 
-          <Box
-            position='fixed'
-            width={mobile ? 1 : 'calc(100% - 260px)'}
-            bottom={0}
-            zIndex={10}
-            bgcolor='background.default'
-          >
-            <Footer />
-          </Box>
+          {!mobileSidebarHidden && mobile && (
+            <Box
+              position="fixed"
+              width="100%"
+              zIndex={10}
+              bottom={0}
+              height="100px"
+            >
+              <Footer />
+            </Box>
+          )}
+          
         </Box>
       </Grid>
     </Box>

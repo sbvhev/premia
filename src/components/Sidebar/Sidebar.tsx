@@ -107,14 +107,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface SidebarProps {
   mobile?: boolean;
-  // history?: object;
+  hide?: () => void;
 }
 
 interface GliderHerights {
   [key: string]: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
+const Sidebar: React.FC<SidebarProps> = ({ mobile, hide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
   const history = useHistory();
@@ -163,7 +163,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
           )}
           <Box>
             {navigation.map(({ title, link, Icon }, i) => (
-              <SidebarItem key={i} title={title} link={link} Icon={Icon} />
+              <SidebarItem key={i} title={title} link={link} Icon={Icon} hide={hide}/>
             ))}
             {!mobile && <Box top={gliderPosition} className={classes.glider} />}
           </Box>
