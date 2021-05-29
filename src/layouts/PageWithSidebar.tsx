@@ -53,6 +53,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <Sidebar />
           </Box>
         )}
+
         <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
             <Box
@@ -86,15 +87,15 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                         toggled={!mobileSidebarHidden}
                         toggle={setMobileSidebarHidden}
                       />
-                    </IconButton>
+                      </IconButton>
+                    )}
+                  </Grid>
+                  {!mobile && (
+                    <Grid item>
+                      <AccountButtons />
+                    </Grid>
                   )}
                 </Grid>
-                {!mobile && (
-                  <Grid item>
-                    <AccountButtons />
-                  </Grid>
-                )}
-              </Grid>
             </Box>
           )}
 
