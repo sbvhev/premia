@@ -153,7 +153,6 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     borderTopLeftRadius: '12px',
     borderBottomLeftRadius: '12px',
-    borderRight: 'none',
     padding: '13px 90px 13px 14px',
     color: palette.text.primary,
     zIndex: 2,
@@ -184,6 +183,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
+    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
@@ -387,34 +387,34 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const coinsForSwap = [
   {
-    ticker: 'DAI',
+    symbol: 'DAI',
     name: 'Dai Stablecoin',
     icon: DAI,
-    number: 556,
+    balance: 556,
   },
   {
-    ticker: 'ETH',
+    symbol: 'ETH',
     name: 'Ethereum',
     icon: ETH,
-    number: 3543,
+    balance: 3543,
   },
   {
-    ticker: 'WBTC',
+    symbol: 'WBTC',
     name: 'Wrapped Bitcoin',
     icon: WBTC,
-    number: 2,
+    balance: 2,
   },
   {
-    ticker: 'AAVE',
+    symbol: 'AAVE',
     name: 'Aave',
     icon: AAVE,
-    number: 0,
+    balance: 0,
   },
   {
-    ticker: 'LINK',
+    symbol: 'LINK',
     name: 'Chainlink',
     icon: LINK,
-    number: 876,
+    balance: 876,
   },
 ];
 
@@ -429,7 +429,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
-  const balance = 40012;
   const { fromToken, toToken, fromAmount, toAmount, setSwapSettings } =
     useSwapSettings();
   const [topInputValue, setTopInputValue] =
@@ -519,13 +518,13 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const mappedItemsFrom = coinsForSwap.map((item, index) => (
     <MenuItem
       className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.ticker}
+      key={item.symbol}
       onClick={() => handleSelectFromToken(index)}
     >
       <Box display='flex' alignItems='center'>
         <img
           src={item.icon}
-          alt={item.ticker}
+          alt={item.symbol}
           style={{ width: '28px', height: '28px' }}
         />
         <Box
@@ -536,27 +535,27 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           height='28px'
         >
           <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.ticker}
+            {item.symbol}
           </Typography>
           <Typography className={classes.menuItemAssetName}>
             {item.name}
           </Typography>
         </Box>
       </Box>
-      <Typography color='textSecondary'>{item.number}</Typography>
+      <Typography color='textSecondary'>{item.balance}</Typography>
     </MenuItem>
   ));
 
   const mappedItemsTo = coinsForSwap.map((item, index) => (
     <MenuItem
       className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.ticker}
+      key={item.symbol}
       onClick={() => handleSelectToToken(index)}
     >
       <Box display='flex' alignItems='center'>
         <img
           src={item.icon}
-          alt={item.ticker}
+          alt={item.symbol}
           style={{ width: '28px', height: '28px' }}
         />
         <Box
@@ -567,14 +566,14 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           height='28px'
         >
           <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.ticker}
+            {item.symbol}
           </Typography>
           <Typography className={classes.menuItemAssetName}>
             {item.name}
           </Typography>
         </Box>
       </Box>
-      <Typography color='textSecondary'>{item.number}</Typography>
+      <Typography color='textSecondary'>{item.balance}</Typography>
     </MenuItem>
   ));
 
@@ -699,7 +698,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                     >
                       <img
                         src={fromToken.icon}
-                        alt={fromToken.ticker}
+                        alt={fromToken.symbol}
                         style={{ height: '18px' }}
                       />
                       <Typography
@@ -707,7 +706,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         color='textPrimary'
                         style={{ marginLeft: '7px' }}
                       >
-                        {fromToken.ticker}
+                        {fromToken.symbol}
                       </Typography>
                     </Box>
                     <Box marginRight='20px'>
@@ -793,9 +792,11 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 </Menu>
               </Box>
 
-              <Typography
-                className={classes.smallInfoText}
-              >{`Balance: ${balance}`}</Typography>
+              {fromToken && (
+                <Typography className={classes.smallInfoText}>
+                  Balance: {fromToken?.balance} {fromToken?.symbol}
+                </Typography>
+              )}
             </Box>
 
             <Box
@@ -805,195 +806,220 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
               style={true ? { paddingBottom: '0' } : {}}
             >
               <Typography className={classes.elementHeader}>To</Typography>
-              <Box
-                style={{
-                  boxSizing: 'border-box',
-                  width: '100%',
-                  height: '46px',
-                  display: 'flex',
-                  margin: '7px 0px 18px',
-                  maxWidth: '390px',
-                }}
-              >
-                <Box width='65%' height='46px' maxWidth='250px'>
-                  <input
-                    value={botInputValue}
-                    onChange={handleChangeToAmount}
-                    className={classes.borderedInput}
-                  />
-                </Box>
-                <>
-                  {!toToken ? (
-                    <ButtonBase
-                      className={classes.coloredSelector}
-                      onClick={handleChangeToAsset}
-                      style={
-                        toAssetOpen
-                          ? {
-                              background: 'none',
-                              backgroundColor: palette.primary.main,
-                            }
-                          : {}
-                      }
-                    >
-                      <Typography
-                        className={classes.selectorText}
-                        style={mobile ? { marginLeft: '8px' } : {}}
-                      >
-                        Select token
-                      </Typography>
-                      <Box marginRight={!mobile ? '20px' : '16px'}>
-                        {!toAssetOpen ? (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 1L6 6L1 1'
-                              stroke={palette.background.paper}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 6L6 1L1 6'
-                              stroke={palette.background.paper}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        )}
-                      </Box>
-                    </ButtonBase>
-                  ) : (
-                    <ButtonBase
-                      className={classes.borderedSelector}
-                      onClick={handleChangeToAsset}
-                      style={
-                        toAssetOpen ? { borderColor: palette.primary.main } : {}
-                      }
-                    >
-                      <Box
-                        display='flex'
-                        justifyContent='space-between'
-                        marginLeft='12px'
-                        alignItems='center'
-                      >
-                        <img
-                          src={toToken.icon}
-                          alt={toToken.ticker}
-                          style={{ height: '18px' }}
-                        />
-                        <Typography
-                          component='span'
-                          color='textPrimary'
-                          style={{ marginLeft: '7px' }}
-                        >
-                          {toToken.ticker}
-                        </Typography>
-                      </Box>
-                      <Box marginRight='20px'>
-                        {!toAssetOpen ? (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 1L6 6L1 1'
-                              stroke={palette.secondary.main}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 6L6 1L1 6'
-                              stroke={palette.secondary.main}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        )}
-                      </Box>
-                    </ButtonBase>
-                  )}
-                </>
-                <Menu
-                  id='simple-menu2'
-                  anchorEl={toAssetOpen}
-                  keepMounted
-                  open={Boolean(toAssetOpen)}
-                  onClose={handleCloseToAsset}
-                  style={{ marginTop: '21px' }}
+
+              <Box marginBottom={2}>
+                <Box
+                  style={{
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    height: '46px',
+                    display: 'flex',
+                    marginTop: '7px',
+                    maxWidth: '390px',
+                  }}
                 >
-                  <Box
-                    className={
-                      !mobile
-                        ? classes.searchAssetMenuContainer
-                        : classes.searchAssetMenuContainerMobile
-                    }
-                  >
-                    <Input
-                      className={classes.assetSearchInput}
-                      // value={searchValueFrom}
-                      placeholder='Search...'
-                      endAdornment={
-                        <Box>
-                          <svg
-                            width='16'
-                            height='17'
-                            viewBox='0 0 16 17'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              fill-rule='evenodd'
-                              clip-rule='evenodd'
-                              d='M7.04606 0.0878906C3.16097 0.0878906 0 3.24886 0 7.13395C0 11.0193 3.16097 14.18 7.04606 14.18C8.75506 14.18 10.3239 13.5685 11.5452 12.5527L14.8897 15.8973C15.0168 16.0244 15.1831 16.0879 15.3496 16.0879C15.5159 16.0879 15.6824 16.0244 15.8094 15.8973C16.0635 15.6435 16.0635 15.2315 15.8094 14.9776L12.4649 11.6331C13.4806 10.4118 14.0921 8.84295 14.0921 7.13395C14.0921 3.24886 10.9314 0.0878906 7.04606 0.0878906ZM7.04606 12.8792C3.87816 12.8792 1.30081 10.3019 1.30081 7.13398C1.30081 3.96608 3.87816 1.3887 7.04606 1.3887C10.214 1.3887 12.7913 3.96605 12.7913 7.13395C12.7913 10.3019 10.214 12.8792 7.04606 12.8792Z'
-                              fill='#646464'
-                            />
-                          </svg>
-                        </Box>
-                      }
+                  <Box width='65%' height='46px' maxWidth='250px'>
+                    <input
+                      value={botInputValue}
+                      onChange={handleChangeToAmount}
+                      className={classes.borderedInput}
                     />
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      className={
+                        !mobile ? classes.maxButton : classes.maxButtonMobile
+                      }
+                      onClick={handleMax}
+                    >
+                      MAX
+                    </Button>
                   </Box>
-                  <Box
-                    style={{
-                      maxHeight: '20vh',
-                      overflowX: 'auto',
-                      borderBottomLeftRadius: '12px',
-                      WebkitBorderBottomRightRadius: '12px',
-                    }}
+                  <>
+                    {!toToken ? (
+                      <ButtonBase
+                        className={classes.coloredSelector}
+                        onClick={handleChangeToAsset}
+                        style={
+                          toAssetOpen
+                            ? {
+                                background: 'none',
+                                backgroundColor: palette.primary.main,
+                              }
+                            : {}
+                        }
+                      >
+                        <Typography
+                          className={classes.selectorText}
+                          style={mobile ? { marginLeft: '8px' } : {}}
+                        >
+                          Select token
+                        </Typography>
+                        <Box marginRight={!mobile ? '20px' : '16px'}>
+                          {!toAssetOpen ? (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 1L6 6L1 1'
+                                stroke={palette.background.paper}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 6L6 1L1 6'
+                                stroke={palette.background.paper}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          )}
+                        </Box>
+                      </ButtonBase>
+                    ) : (
+                      <ButtonBase
+                        className={classes.borderedSelector}
+                        onClick={handleChangeToAsset}
+                        style={
+                          toAssetOpen
+                            ? { borderColor: palette.primary.main }
+                            : {}
+                        }
+                      >
+                        <Box
+                          display='flex'
+                          justifyContent='space-between'
+                          marginLeft='12px'
+                          alignItems='center'
+                        >
+                          <img
+                            src={toToken.icon}
+                            alt={toToken.symbol}
+                            style={{ height: '18px' }}
+                          />
+                          <Typography
+                            component='span'
+                            color='textPrimary'
+                            style={{ marginLeft: '7px' }}
+                          >
+                            {toToken.symbol}
+                          </Typography>
+                        </Box>
+                        <Box marginRight='20px'>
+                          {!toAssetOpen ? (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 1L6 6L1 1'
+                                stroke={palette.secondary.main}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 6L6 1L1 6'
+                                stroke={palette.secondary.main}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          )}
+                        </Box>
+                      </ButtonBase>
+                    )}
+                  </>
+                  <Menu
+                    id='simple-menu2'
+                    anchorEl={toAssetOpen}
+                    keepMounted
+                    open={Boolean(toAssetOpen)}
+                    onClose={handleCloseToAsset}
+                    style={{ marginTop: '21px' }}
                   >
-                    {mappedItemsTo}
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.searchAssetMenuContainer
+                          : classes.searchAssetMenuContainerMobile
+                      }
+                    >
+                      <Input
+                        className={classes.assetSearchInput}
+                        // value={searchValueFrom}
+                        placeholder='Search...'
+                        endAdornment={
+                          <Box>
+                            <svg
+                              width='16'
+                              height='17'
+                              viewBox='0 0 16 17'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                fill-rule='evenodd'
+                                clip-rule='evenodd'
+                                d='M7.04606 0.0878906C3.16097 0.0878906 0 3.24886 0 7.13395C0 11.0193 3.16097 14.18 7.04606 14.18C8.75506 14.18 10.3239 13.5685 11.5452 12.5527L14.8897 15.8973C15.0168 16.0244 15.1831 16.0879 15.3496 16.0879C15.5159 16.0879 15.6824 16.0244 15.8094 15.8973C16.0635 15.6435 16.0635 15.2315 15.8094 14.9776L12.4649 11.6331C13.4806 10.4118 14.0921 8.84295 14.0921 7.13395C14.0921 3.24886 10.9314 0.0878906 7.04606 0.0878906ZM7.04606 12.8792C3.87816 12.8792 1.30081 10.3019 1.30081 7.13398C1.30081 3.96608 3.87816 1.3887 7.04606 1.3887C10.214 1.3887 12.7913 3.96605 12.7913 7.13395C12.7913 10.3019 10.214 12.8792 7.04606 12.8792Z'
+                                fill='#646464'
+                              />
+                            </svg>
+                          </Box>
+                        }
+                      />
+                    </Box>
+                    <Box
+                      style={{
+                        maxHeight: '20vh',
+                        overflowX: 'auto',
+                        borderBottomLeftRadius: '12px',
+                        WebkitBorderBottomRightRadius: '12px',
+                      }}
+                    >
+                      {mappedItemsTo}
+                    </Box>
+                  </Menu>
+                </Box>
+
+                {toToken && (
+                  <Box marginTop='2px'>
+                    <Typography className={classes.smallInfoText}>
+                      Balance: {toToken?.balance} {toToken?.symbol}
+                    </Typography>
                   </Box>
-                </Menu>
+                )}
               </Box>
+
               <>
                 {true && (
                   <>
@@ -1008,7 +1034,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                             arrow
                             leaveTouchDelay={1500}
                             title={`You must give Premia permission to use your ${
-                              fromToken ? fromToken.ticker : ''
+                              fromToken ? fromToken.symbol : ''
                             } You only have to do this once per token.`}
                           >
                             <svg

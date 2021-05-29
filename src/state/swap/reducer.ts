@@ -6,10 +6,10 @@ import LINK from 'assets/svg/LINK-icon.svg';
 import { SetSwapSettings, setSwapSettings } from './actions';
 
 export interface SwapTokenTest {
-  ticker?: string;
+  symbol?: string;
   name?: string;
   icon?: string;
-  number?: Number;
+  balance?: Number;
 }
 
 export interface SwapSettings {
@@ -33,10 +33,10 @@ export interface SwapState {
 export const initialState: SwapState = {
   swapSettings: {
     fromToken: {
-      ticker: 'LINK',
+      symbol: 'LINK',
       name: 'Chainlink',
       icon: LINK,
-      number: 876,
+      balance: 876,
     },
     toToken: null,
     fromAmount: '0',
