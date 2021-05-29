@@ -22,8 +22,8 @@ import {
   TransactionsModal,
 } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
-import LogoIcon from 'assets/svg/LogoIcon.svg';
-import SwapIcon from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -125,8 +125,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '&:hover': {
       borderColor: palette.primary.main,
 
-      '& svg': {
-        background: palette.primary.main,
+      '& svg path': {
+        fill: palette.primary.main,
       },
 
       '& p': {
@@ -141,6 +141,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10,
+
+      '& path': {
+        fill: palette.text.primary,
+      },
     },
 
     [breakpoints.down('sm')]: {
@@ -206,16 +210,17 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             style={{ order: mobile ? 1 : 0 }}
           >
             Get
-            <img src={LogoIcon} alt='Logo Icon' />
+            <LogoIcon />
           </Button>
           <Button
-            color='secondary'
+            color='primary'
+            variant='outlined'
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
             onClick={() => setShowSwapModal(true)}
           >
             Swap
-            <img src={SwapIcon} alt='Swap Icon' />
+            <SwapIcon />
           </Button>
           <Box
             className={classes.chain}
@@ -224,7 +229,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             }}
           >
             <EthIcon />
-            <Typography color='secondary'>Ethereum</Typography>
+            <Typography color='textPrimary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
             <Box
@@ -250,7 +255,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     <Typography className={classes.address}>
                       {shortenAddress(account ?? '')}
                     </Typography>
-                    <Typography className={classes.tier}>Tier 1</Typography>
                   </Box>
                 </Grid>
 
