@@ -118,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation<{ previous: 'value' }>();
+  const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const gliderHeights: GliderHerights = {
     '/': 98,
@@ -127,13 +127,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
     '/stake': 269,
   };
   const state = location.state ? location.state.previous : false;
-  const startHeight = state ? gliderHeights[state] : gliderHeights[pathname]; 
+  const startHeight = state ? gliderHeights[state] : gliderHeights[pathname];
   const [gliderPosition, setGliderPosition] = React.useState(startHeight);
 
   useEffect(() => {
     setGliderPosition(gliderHeights[pathname]);
   }, [pathname, history]);
-
 
   return (
     <Box
