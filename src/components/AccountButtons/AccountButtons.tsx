@@ -25,10 +25,9 @@ import {
   ChainModal,
   TransactionsModal,
 } from 'components';
-// import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 // import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 // import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import EthIcon from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 
@@ -191,8 +190,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const theme = useTheme();
   const { palette } = theme;
   const classes = useStyles();
-
-  console.log(LogoIcon);
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end' style={!mobile ? { paddingRight: '24px' } : {}}>
