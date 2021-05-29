@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   glider: {
-    transition: 'top 0.8s ease-out',
+    transition: 'top 0.4s ease-out',
     position: 'absolute',
     height: '47px',
     width: '180px',
@@ -117,16 +118,21 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation();
+  const location = useLocation<{ previous: 'value' }>();
   const { pathname } = location;
-  console.log('history', history);
   const gliderHeights: GliderHerights = {
     '/': 98,
     '/vaults': 155,
     '/options': 212,
     '/stake': 269,
   };
-  const [gliderPosition, setGliderPosition] = React.useState(gliderHeights[pathname]);
+  const state = location.state ? location.state.previous : false;
+  const startHeight = state ? gliderHeights[state] : gliderHeights[pathname]; 
+  const [gliderPosition, setGliderPosition] = React.useState(startHeight);
+
+  useEffect(() => {
+    setGliderPosition(gliderHeights[pathname]);
+  }, [pathname, history]);
 
 
   return (
@@ -160,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
             {navigation.map(({ title, link, Icon }, i) => (
               <SidebarItem key={i} title={title} link={link} Icon={Icon} />
             ))}
-            <Box top={gliderPosition} className={classes.glider} />
+            {!mobile && <Box top={gliderPosition} className={classes.glider} />}
           </Box>
         </Box>
 

@@ -85,7 +85,7 @@ const ThemeSwitch: React.FC = () => {
     if (mobile && darkMode) {
       setGliderPosition(deviceWidth - 183);
     }
-  }, [mobile]);
+  }, [mobile, darkMode, deviceWidth]);
   
   const handleDayClick = () => {
     setGliderPosition(!mobile ? 21 : 11);
