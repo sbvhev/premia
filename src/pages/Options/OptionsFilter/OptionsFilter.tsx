@@ -62,7 +62,14 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   focusedDateInput: {
-
+    backgroundColor: palette.primary.dark,
+    border: `1px solid ${palette.primary.main}`,
+    '& p': {
+      color: palette.primary.main
+    },
+    '& svg path': {
+      fill: palette.primary.main
+    }
   },
 
   calendarContainer: {
@@ -78,7 +85,71 @@ const useStyles = makeStyles(({ palette }) => ({
     '& .react-calendar': {
       background: palette.background.paper,
       border: 'none',
-      width: 'auto'
+      width: 'auto',
+      fontFamily: 'DM Sans',
+      '& .react-calendar__month-view__weekdays__weekday abbr': {
+        textDecoration: 'none',
+        fontSize: 14,
+        fontWeight: 400,
+        color: palette.text.secondary
+      },
+      '& .react-calendar__tile': {
+        padding: 0,
+        height: 30,
+        position: 'relative',
+        '&:not(:disabled)': {
+          color: palette.text.primary
+        },
+        '& abbr': {
+          height: '100%',
+          position: 'absolute',
+          top: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 34.31,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          borderRadius: 6,
+        },
+        '&.react-calendar__tile--now': {
+          color: palette.primary.main,
+          '& abbr': {
+            background: palette.primary.dark
+          }
+        },
+        '&.react-calendar__tile--active': {
+          color: palette.primary.main,
+          '& abbr': {
+            border: `1px solid ${palette.primary.main}`,
+            background: palette.primary.dark
+          }
+        }
+      },
+      '& .react-calendar__month-view__days__day--neighboringMonth': {
+        opacity: 0,
+        pointerEvents: 'none'
+      },
+      '& .react-calendar__month-view__days__day': {
+        background: 'none',
+        color: palette.text.secondary
+      },
+      '& .react-calendar__navigation': {
+        borderBottom: `1px solid ${palette.divider}`,
+      },
+      '& .react-calendar__navigation button': {
+        color: palette.text.primary,
+        background: 'none',
+        fontFamily: 'DM Sans',
+        '&.react-calendar__navigation__label': {
+          fontSize: 14,
+          fontWeight: 500
+        },
+        '&.react-calendar__navigation__arrow': {
+          fontSize: 20,
+          color: palette.text.secondary
+        },
+      }
     }
   },
 
@@ -88,7 +159,18 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems:'center',
     height: 44,
     width: '100%',
-    padding: '0 23px'
+    padding: '0 23px',
+    borderTop: `1px solid ${palette.divider}`,
+    marginTop: 14,
+    '& p': {
+      color: palette.text.secondary,
+      fontSize: 14,
+    },
+    '& span': {
+      color: palette.primary.main,
+      fontSize: 14,
+      fontWeight: 500
+    }
   }
 }));
 
@@ -100,6 +182,7 @@ const OptionFilter: React.FC = () => {
   const [maturityFocused, setMaturityFocused] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
+  moment.updateLocale('en', { weekdaysMin: 'S_M_T_W_T_F_S'.split('_') });
 
   if (!moment(maturityDate).isValid()) {
     setMaturityDate(moment(new Date()).format('YYYY-MM-DD'));
@@ -170,12 +253,14 @@ const OptionFilter: React.FC = () => {
           { maturityFocused && 
             <Box className={classes.calendarContainer}>
             <Calendar
+              minDate={new Date()}
+              formatShortWeekday = {(locale, date) => moment(date).format('dd')}
               onChange={(date) => { setMaturityFocused(false); setMaturityDate(moment(date).toISOString()); }}
               value={new Date(maturityDate)}
             />
             <Box className={classes.maturityContainer}>
               <Typography>Days to maturity</Typography>
-              <Typography component='span'>7</Typography>
+              <Typography component='span'>{ moment(new Date(maturityDate)).diff(moment(new Date()), 'days') }</Typography>
             </Box>
             </Box>
           }
