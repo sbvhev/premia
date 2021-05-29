@@ -129,7 +129,7 @@ export const lightTheme = responsiveFontSizes(
           margin: '2px',
         },
         label: {
-          '& svg': {
+          '& svg:not(:first-child)': {
             marginLeft: 6,
           },
         },
@@ -701,7 +701,7 @@ export const darkTheme = responsiveFontSizes(
           margin: '2px',
         },
         label: {
-          '& svg': {
+          '& svg:not(:first-child)': {
             marginLeft: 6,
           },
         },

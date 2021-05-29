@@ -203,7 +203,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
           >
-            Get
+            <span>Get</span>
             <LogoIcon />
           </Button>
           <Button
@@ -213,7 +213,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             style={{ order: mobile ? 1 : 0 }}
             onClick={() => setShowSwapModal(true)}
           >
-            Swap
+            <span>Swap</span>
             <SwapIcon />
           </Button>
           <Box
