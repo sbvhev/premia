@@ -8,7 +8,11 @@ import {
   Avatar,
   Tooltip,
 } from '@material-ui/core';
-import { ExitToApp, SupervisorAccount, Lock } from '@material-ui/icons';
+import {
+  ExitToApp,
+  SupervisorAccount,
+  AccountBalanceWallet,
+} from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -21,7 +25,10 @@ import {
   ChainModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+// import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+// import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+// import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+import EthIcon from 'assets/svg/EthIcon.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 
@@ -40,7 +47,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
-    marginRight: '1.5rem',
+    marginRight: '6px',
   },
 
   divider: {
@@ -138,12 +145,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '&:hover': {
       borderColor: palette.primary.main,
 
-      '& svg': {
-        background: palette.primary.main,
+      '& svg path': {
+        fill: palette.primary.main,
       },
 
       '& p': {
-        color: palette.common.white,
+        color: palette.text.primary,
       },
     },
 
@@ -154,6 +161,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10,
+
+      '& path': {
+        fill: palette.text.primary,
+      },
     },
 
     [breakpoints.down('sm')]: {
@@ -180,6 +191,8 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const theme = useTheme();
   const { palette } = theme;
   const classes = useStyles();
+
+  console.log(LogoIcon);
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end' style={!mobile ? { paddingRight: '24px' } : {}}>
@@ -372,13 +385,16 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           )}
         </Box>
       ) : (
-        <Box
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={cx(mobile && classes.fullWidth)}
           onClick={() => setConfirmTermsModalOpen(true)}
-          className={cx(classes.connect, mobile && classes.fullWidth)}
         >
-          <Lock className={classes.walletIcon} />
-          <Typography className={classes.address}>Connect Wallet</Typography>
-        </Box>
+          <AccountBalanceWallet className={classes.walletIcon} />
+          Connect wallet
+        </Button>
       )}
 
       <Grid item xs={1} />
