@@ -79,7 +79,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     padding: '0 26px 30px',
     height: '132px',
     margin: '36px 0 0',
