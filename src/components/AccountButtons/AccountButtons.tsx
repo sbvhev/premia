@@ -8,7 +8,11 @@ import {
   Avatar,
   Tooltip,
 } from '@material-ui/core';
-import { ExitToApp, SupervisorAccount, Lock } from '@material-ui/icons';
+import {
+  ExitToApp,
+  SupervisorAccount,
+  AccountBalanceWallet,
+} from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -40,7 +44,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
-    marginRight: '1.5rem',
+    marginRight: '6px',
   },
 
   divider: {
@@ -54,16 +58,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
-  },
-
-  connect: {
-    padding: '0 12px',
-    height: 45,
-    border: `1px solid ${palette.divider}`,
-    borderRadius: 12,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
   },
 
   disconnect: {
@@ -276,13 +270,16 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           </Box>
         </Grid>
       ) : (
-        <Box
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={cx(mobile && classes.fullWidth)}
           onClick={() => setConfirmTermsModalOpen(true)}
-          className={cx(classes.connect, mobile && classes.fullWidth)}
         >
-          <Lock className={classes.walletIcon} />
-          <Typography className={classes.address}>Connect Wallet</Typography>
-        </Box>
+          <AccountBalanceWallet className={classes.walletIcon} />
+          Connect wallet
+        </Button>
       )}
 
       <Grid item xs={1} />
