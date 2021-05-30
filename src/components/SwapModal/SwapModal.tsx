@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
   Modal,
   Box,
   Button,
+  ButtonBase,
   Input,
   Menu,
   MenuItem,
@@ -11,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import cx from 'classnames';
 
 import { ModalContainer } from 'components';
 
@@ -94,7 +96,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '36px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
-  switchBtnWrapper: {
+  swapButtonWrapper: {
     position: 'absolute',
     top: 204,
     width: '45px',
@@ -106,7 +108,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: 0,
     borderRadius: '12px',
   },
-  switchBtnWrapperMobile: {
+  swapButtonWrapperMobile: {
     position: 'absolute',
     top: 'calc(20vh + 206px)',
     width: '45px',
@@ -118,18 +120,15 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: 0,
     borderRadius: '12px',
   },
-  switchBtnContainer: {
-    display: 'flex',
-    width: '45px',
-    height: '45px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'pointer',
-    backgroundColor: palette.background.paper,
-    border: `1px solid ${palette.divider}`,
-    borderRadius: '12px',
-    '&:hover': {
-      backgroundColor: palette.primary.dark,
+  swapTokenButton: {
+    transition: 'transform 250ms ease-in-out',
+
+    '&.switched': {
+      transform: 'rotate(180deg)',
+    },
+
+    '&:hover svg path': {
+      fill: palette.text.primary,
     },
   },
   botSection: {
@@ -154,7 +153,6 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     borderTopLeftRadius: '12px',
     borderBottomLeftRadius: '12px',
-    borderRight: 'none',
     padding: '13px 90px 13px 14px',
     color: palette.text.primary,
     zIndex: 2,
@@ -185,6 +183,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
+    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
@@ -241,7 +240,7 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   selectorText: {
-    fontWeight: 400,
+    fontWeight: 700,
     fontSize: '14px',
     lineHeight: '18px',
     marginLeft: '15px',
@@ -388,34 +387,34 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const coinsForSwap = [
   {
-    ticker: 'DAI',
+    symbol: 'DAI',
     name: 'Dai Stablecoin',
     icon: DAI,
-    number: 556,
+    balance: 556,
   },
   {
-    ticker: 'ETH',
+    symbol: 'ETH',
     name: 'Ethereum',
     icon: ETH,
-    number: 3543,
+    balance: 3543,
   },
   {
-    ticker: 'WBTC',
+    symbol: 'WBTC',
     name: 'Wrapped Bitcoin',
     icon: WBTC,
-    number: 2,
+    balance: 2,
   },
   {
-    ticker: 'AAVE',
+    symbol: 'AAVE',
     name: 'Aave',
     icon: AAVE,
-    number: 0,
+    balance: 0,
   },
   {
-    ticker: 'LINK',
+    symbol: 'LINK',
     name: 'Chainlink',
     icon: LINK,
-    number: 876,
+    balance: 876,
   },
 ];
 
@@ -428,8 +427,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const [switched, setSwitched] = useState(false);
   const { palette } = theme;
-  const balance = 40012;
   const { fromToken, toToken, fromAmount, toAmount, setSwapSettings } =
     useSwapSettings();
   const [topInputValue, setTopInputValue] =
@@ -454,6 +453,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     toAmount !== '0';
 
   const handleSwapTokenPositions = () => {
+    setSwitched(!switched);
     setSwapSettings({
       fromToken: toToken,
       toToken: fromToken,
@@ -518,13 +518,13 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const mappedItemsFrom = coinsForSwap.map((item, index) => (
     <MenuItem
       className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.ticker}
+      key={item.symbol}
       onClick={() => handleSelectFromToken(index)}
     >
       <Box display='flex' alignItems='center'>
         <img
           src={item.icon}
-          alt={item.ticker}
+          alt={item.symbol}
           style={{ width: '28px', height: '28px' }}
         />
         <Box
@@ -535,27 +535,27 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           height='28px'
         >
           <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.ticker}
+            {item.symbol}
           </Typography>
           <Typography className={classes.menuItemAssetName}>
             {item.name}
           </Typography>
         </Box>
       </Box>
-      <Typography color='textSecondary'>{item.number}</Typography>
+      <Typography color='textSecondary'>{item.balance}</Typography>
     </MenuItem>
   ));
 
   const mappedItemsTo = coinsForSwap.map((item, index) => (
     <MenuItem
       className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.ticker}
+      key={item.symbol}
       onClick={() => handleSelectToToken(index)}
     >
       <Box display='flex' alignItems='center'>
         <img
           src={item.icon}
-          alt={item.ticker}
+          alt={item.symbol}
           style={{ width: '28px', height: '28px' }}
         />
         <Box
@@ -566,14 +566,14 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           height='28px'
         >
           <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.ticker}
+            {item.symbol}
           </Typography>
           <Typography className={classes.menuItemAssetName}>
             {item.name}
           </Typography>
         </Box>
       </Box>
-      <Typography color='textSecondary'>{item.number}</Typography>
+      <Typography color='textSecondary'>{item.balance}</Typography>
     </MenuItem>
   ));
 
@@ -628,7 +628,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 </Box>
 
                 {!fromToken ? (
-                  <Box
+                  <ButtonBase
                     className={classes.coloredSelector}
                     onClick={handleChangeFromAsset}
                     style={
@@ -681,9 +681,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         </svg>
                       )}
                     </Box>
-                  </Box>
+                  </ButtonBase>
                 ) : (
-                  <Box
+                  <ButtonBase
                     className={classes.borderedSelector}
                     onClick={handleChangeFromAsset}
                     style={
@@ -698,7 +698,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                     >
                       <img
                         src={fromToken.icon}
-                        alt={fromToken.ticker}
+                        alt={fromToken.symbol}
                         style={{ height: '18px' }}
                       />
                       <Typography
@@ -706,7 +706,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         color='textPrimary'
                         style={{ marginLeft: '7px' }}
                       >
-                        {fromToken.ticker}
+                        {fromToken.symbol}
                       </Typography>
                     </Box>
                     <Box marginRight='20px'>
@@ -744,7 +744,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         </svg>
                       )}
                     </Box>
-                  </Box>
+                  </ButtonBase>
                 )}
 
                 <Menu
@@ -792,9 +792,11 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 </Menu>
               </Box>
 
-              <Typography
-                className={classes.smallInfoText}
-              >{`Balance: ${balance}`}</Typography>
+              {fromToken && (
+                <Typography className={classes.smallInfoText}>
+                  Balance: {fromToken?.balance} {fromToken?.symbol}
+                </Typography>
+              )}
             </Box>
 
             <Box
@@ -804,195 +806,220 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
               style={true ? { paddingBottom: '0' } : {}}
             >
               <Typography className={classes.elementHeader}>To</Typography>
-              <Box
-                style={{
-                  boxSizing: 'border-box',
-                  width: '100%',
-                  height: '46px',
-                  display: 'flex',
-                  margin: '7px 0px 18px',
-                  maxWidth: '390px',
-                }}
-              >
-                <Box width='65%' height='46px' maxWidth='250px'>
-                  <input
-                    value={botInputValue}
-                    onChange={handleChangeToAmount}
-                    className={classes.borderedInput}
-                  />
-                </Box>
-                <>
-                  {!toToken ? (
-                    <Box
-                      className={classes.coloredSelector}
-                      onClick={handleChangeToAsset}
-                      style={
-                        toAssetOpen
-                          ? {
-                              background: 'none',
-                              backgroundColor: palette.primary.main,
-                            }
-                          : {}
-                      }
-                    >
-                      <Typography
-                        className={classes.selectorText}
-                        style={mobile ? { marginLeft: '8px' } : {}}
-                      >
-                        Select token
-                      </Typography>
-                      <Box marginRight={!mobile ? '20px' : '16px'}>
-                        {!toAssetOpen ? (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 1L6 6L1 1'
-                              stroke={palette.background.paper}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 6L6 1L1 6'
-                              stroke={palette.background.paper}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        )}
-                      </Box>
-                    </Box>
-                  ) : (
-                    <Box
-                      className={classes.borderedSelector}
-                      onClick={handleChangeToAsset}
-                      style={
-                        toAssetOpen ? { borderColor: palette.primary.main } : {}
-                      }
-                    >
-                      <Box
-                        display='flex'
-                        justifyContent='space-between'
-                        marginLeft='12px'
-                        alignItems='center'
-                      >
-                        <img
-                          src={toToken.icon}
-                          alt={toToken.ticker}
-                          style={{ height: '18px' }}
-                        />
-                        <Typography
-                          component='span'
-                          color='textPrimary'
-                          style={{ marginLeft: '7px' }}
-                        >
-                          {toToken.ticker}
-                        </Typography>
-                      </Box>
-                      <Box marginRight='20px'>
-                        {!toAssetOpen ? (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 1L6 6L1 1'
-                              stroke={palette.secondary.main}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            width='12'
-                            height='7'
-                            viewBox='0 0 12 7'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              d='M11 6L6 1L1 6'
-                              stroke={palette.secondary.main}
-                              stroke-width='2'
-                              stroke-linecap='round'
-                              stroke-linejoin='round'
-                            />
-                          </svg>
-                        )}
-                      </Box>
-                    </Box>
-                  )}
-                </>
-                <Menu
-                  id='simple-menu2'
-                  anchorEl={toAssetOpen}
-                  keepMounted
-                  open={Boolean(toAssetOpen)}
-                  onClose={handleCloseToAsset}
-                  style={{ marginTop: '21px' }}
+
+              <Box marginBottom={2}>
+                <Box
+                  style={{
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    height: '46px',
+                    display: 'flex',
+                    marginTop: '7px',
+                    maxWidth: '390px',
+                  }}
                 >
-                  <Box
-                    className={
-                      !mobile
-                        ? classes.searchAssetMenuContainer
-                        : classes.searchAssetMenuContainerMobile
-                    }
-                  >
-                    <Input
-                      className={classes.assetSearchInput}
-                      // value={searchValueFrom}
-                      placeholder='Search...'
-                      endAdornment={
-                        <Box>
-                          <svg
-                            width='16'
-                            height='17'
-                            viewBox='0 0 16 17'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              fill-rule='evenodd'
-                              clip-rule='evenodd'
-                              d='M7.04606 0.0878906C3.16097 0.0878906 0 3.24886 0 7.13395C0 11.0193 3.16097 14.18 7.04606 14.18C8.75506 14.18 10.3239 13.5685 11.5452 12.5527L14.8897 15.8973C15.0168 16.0244 15.1831 16.0879 15.3496 16.0879C15.5159 16.0879 15.6824 16.0244 15.8094 15.8973C16.0635 15.6435 16.0635 15.2315 15.8094 14.9776L12.4649 11.6331C13.4806 10.4118 14.0921 8.84295 14.0921 7.13395C14.0921 3.24886 10.9314 0.0878906 7.04606 0.0878906ZM7.04606 12.8792C3.87816 12.8792 1.30081 10.3019 1.30081 7.13398C1.30081 3.96608 3.87816 1.3887 7.04606 1.3887C10.214 1.3887 12.7913 3.96605 12.7913 7.13395C12.7913 10.3019 10.214 12.8792 7.04606 12.8792Z'
-                              fill='#646464'
-                            />
-                          </svg>
-                        </Box>
-                      }
+                  <Box width='65%' height='46px' maxWidth='250px'>
+                    <input
+                      value={botInputValue}
+                      onChange={handleChangeToAmount}
+                      className={classes.borderedInput}
                     />
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      className={
+                        !mobile ? classes.maxButton : classes.maxButtonMobile
+                      }
+                      onClick={handleMax}
+                    >
+                      MAX
+                    </Button>
                   </Box>
-                  <Box
-                    style={{
-                      maxHeight: '20vh',
-                      overflowX: 'auto',
-                      borderBottomLeftRadius: '12px',
-                      WebkitBorderBottomRightRadius: '12px',
-                    }}
+                  <>
+                    {!toToken ? (
+                      <ButtonBase
+                        className={classes.coloredSelector}
+                        onClick={handleChangeToAsset}
+                        style={
+                          toAssetOpen
+                            ? {
+                                background: 'none',
+                                backgroundColor: palette.primary.main,
+                              }
+                            : {}
+                        }
+                      >
+                        <Typography
+                          className={classes.selectorText}
+                          style={mobile ? { marginLeft: '8px' } : {}}
+                        >
+                          Select token
+                        </Typography>
+                        <Box marginRight={!mobile ? '20px' : '16px'}>
+                          {!toAssetOpen ? (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 1L6 6L1 1'
+                                stroke={palette.background.paper}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 6L6 1L1 6'
+                                stroke={palette.background.paper}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          )}
+                        </Box>
+                      </ButtonBase>
+                    ) : (
+                      <ButtonBase
+                        className={classes.borderedSelector}
+                        onClick={handleChangeToAsset}
+                        style={
+                          toAssetOpen
+                            ? { borderColor: palette.primary.main }
+                            : {}
+                        }
+                      >
+                        <Box
+                          display='flex'
+                          justifyContent='space-between'
+                          marginLeft='12px'
+                          alignItems='center'
+                        >
+                          <img
+                            src={toToken.icon}
+                            alt={toToken.symbol}
+                            style={{ height: '18px' }}
+                          />
+                          <Typography
+                            component='span'
+                            color='textPrimary'
+                            style={{ marginLeft: '7px' }}
+                          >
+                            {toToken.symbol}
+                          </Typography>
+                        </Box>
+                        <Box marginRight='20px'>
+                          {!toAssetOpen ? (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 1L6 6L1 1'
+                                stroke={palette.secondary.main}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              width='12'
+                              height='7'
+                              viewBox='0 0 12 7'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M11 6L6 1L1 6'
+                                stroke={palette.secondary.main}
+                                stroke-width='2'
+                                stroke-linecap='round'
+                                stroke-linejoin='round'
+                              />
+                            </svg>
+                          )}
+                        </Box>
+                      </ButtonBase>
+                    )}
+                  </>
+                  <Menu
+                    id='simple-menu2'
+                    anchorEl={toAssetOpen}
+                    keepMounted
+                    open={Boolean(toAssetOpen)}
+                    onClose={handleCloseToAsset}
+                    style={{ marginTop: '21px' }}
                   >
-                    {mappedItemsTo}
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.searchAssetMenuContainer
+                          : classes.searchAssetMenuContainerMobile
+                      }
+                    >
+                      <Input
+                        className={classes.assetSearchInput}
+                        // value={searchValueFrom}
+                        placeholder='Search...'
+                        endAdornment={
+                          <Box>
+                            <svg
+                              width='16'
+                              height='17'
+                              viewBox='0 0 16 17'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                fill-rule='evenodd'
+                                clip-rule='evenodd'
+                                d='M7.04606 0.0878906C3.16097 0.0878906 0 3.24886 0 7.13395C0 11.0193 3.16097 14.18 7.04606 14.18C8.75506 14.18 10.3239 13.5685 11.5452 12.5527L14.8897 15.8973C15.0168 16.0244 15.1831 16.0879 15.3496 16.0879C15.5159 16.0879 15.6824 16.0244 15.8094 15.8973C16.0635 15.6435 16.0635 15.2315 15.8094 14.9776L12.4649 11.6331C13.4806 10.4118 14.0921 8.84295 14.0921 7.13395C14.0921 3.24886 10.9314 0.0878906 7.04606 0.0878906ZM7.04606 12.8792C3.87816 12.8792 1.30081 10.3019 1.30081 7.13398C1.30081 3.96608 3.87816 1.3887 7.04606 1.3887C10.214 1.3887 12.7913 3.96605 12.7913 7.13395C12.7913 10.3019 10.214 12.8792 7.04606 12.8792Z'
+                                fill='#646464'
+                              />
+                            </svg>
+                          </Box>
+                        }
+                      />
+                    </Box>
+                    <Box
+                      style={{
+                        maxHeight: '20vh',
+                        overflowX: 'auto',
+                        borderBottomLeftRadius: '12px',
+                        WebkitBorderBottomRightRadius: '12px',
+                      }}
+                    >
+                      {mappedItemsTo}
+                    </Box>
+                  </Menu>
+                </Box>
+
+                {toToken && (
+                  <Box marginTop='2px'>
+                    <Typography className={classes.smallInfoText}>
+                      Balance: {toToken?.balance} {toToken?.symbol}
+                    </Typography>
                   </Box>
-                </Menu>
+                )}
               </Box>
+
               <>
                 {true && (
                   <>
@@ -1007,7 +1034,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                             arrow
                             leaveTouchDelay={1500}
                             title={`You must give Premia permission to use your ${
-                              fromToken ? fromToken.ticker : ''
+                              fromToken ? fromToken.symbol : ''
                             } You only have to do this once per token.`}
                           >
                             <svg
@@ -1155,33 +1182,38 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
               </Box>
             )}
           </Box>
-          <Box
-            className={
+
+          <Button
+            variant='outlined'
+            color='secondary'
+            className={cx(
+              classes.swapTokenButton,
               !mobile
-                ? classes.switchBtnWrapper
-                : classes.switchBtnWrapperMobile
-            }
+                ? classes.swapButtonWrapper
+                : classes.swapButtonWrapperMobile,
+              {
+                switched: switched,
+              },
+            )}
             onClick={handleSwapTokenPositions}
           >
-            <Box className={classes.switchBtnContainer}>
-              <svg
-                width='15'
-                height='21'
-                viewBox='0 0 15 21'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M5.00022 17.1559L5.00022 7.50107C5.00022 7.04084 4.62713 6.66775 4.16689 6.66775C3.70666 6.66775 3.33357 7.04084 3.33357 7.50107L3.33357 17.1559L1.42283 15.2451C1.0974 14.9197 0.569746 14.9197 0.244316 15.2451C-0.0811133 15.5706 -0.0811133 16.0982 0.244316 16.4237L3.57764 19.757C3.59705 19.7764 3.61748 19.7948 3.63873 19.8122C3.64834 19.8201 3.6585 19.827 3.66838 19.8344C3.68025 19.8433 3.69186 19.8524 3.70424 19.8607C3.71607 19.8687 3.72838 19.8755 3.74053 19.8828C3.7517 19.8895 3.76264 19.8965 3.77416 19.9027C3.78654 19.9093 3.79932 19.9149 3.81197 19.9209C3.82396 19.9265 3.83576 19.9325 3.84807 19.9376C3.86037 19.9427 3.87295 19.9469 3.88545 19.9513C3.89861 19.956 3.91158 19.9611 3.92502 19.9651C3.93752 19.9689 3.95021 19.9717 3.96287 19.9749C3.97658 19.9783 3.99014 19.9822 4.00412 19.9849C4.01877 19.9878 4.03354 19.9896 4.04826 19.9917C4.06041 19.9934 4.0724 19.9957 4.08471 19.9969C4.13939 20.0023 4.19451 20.0023 4.2492 19.9969C4.2615 19.9957 4.27346 19.9934 4.28564 19.9917C4.30037 19.9896 4.31518 19.9878 4.32979 19.9849C4.34377 19.9821 4.35729 19.9783 4.371 19.9748C4.38365 19.9717 4.39635 19.9689 4.40885 19.9651C4.42229 19.961 4.43529 19.956 4.44842 19.9513C4.46092 19.9468 4.4735 19.9427 4.4858 19.9376C4.49811 19.9325 4.50986 19.9265 4.52186 19.9208C4.53451 19.9149 4.54729 19.9092 4.55971 19.9026C4.57119 19.8964 4.58209 19.8894 4.59326 19.8828C4.60545 19.8755 4.61775 19.8686 4.62963 19.8607C4.64197 19.8524 4.65353 19.8433 4.66541 19.8344C4.67533 19.827 4.68549 19.8201 4.69514 19.8122C4.71623 19.7949 4.7365 19.7766 4.75576 19.7574C4.75592 19.7572 4.75607 19.7571 4.75619 19.757L8.08951 16.4237C8.41494 16.0982 8.41494 15.5706 8.08951 15.2451C7.76408 14.9197 7.23643 14.9197 6.911 15.2451L5.00022 17.1559Z'
-                  fill='#8D97A0'
-                />
-                <path
-                  d='M10.695 0.18957C10.6853 0.181602 10.6751 0.174726 10.6651 0.167266C10.6533 0.158438 10.6418 0.149259 10.6295 0.141055C10.6176 0.133086 10.6053 0.126211 10.5931 0.118945C10.5819 0.112305 10.571 0.105312 10.5596 0.0991793C10.5472 0.0925388 10.5344 0.086875 10.5217 0.0808983C10.5097 0.0752344 10.4979 0.0692968 10.4857 0.0641794C10.4734 0.0591011 10.4608 0.0549603 10.4483 0.0505075C10.4351 0.0457811 10.4222 0.0407419 10.4087 0.0366793C10.3962 0.0328903 10.3835 0.030117 10.3709 0.0269527C10.3572 0.0234766 10.3436 0.0196486 10.3297 0.0168753C10.315 0.0139847 10.3003 0.0122662 10.2855 0.0101175C10.2734 0.00839901 10.2614 0.00605488 10.2491 0.00484371C10.1944 -0.000546455 10.1393 -0.000546455 10.0846 0.00484371C10.0723 0.00605488 10.0603 0.00835991 10.0481 0.0101175C10.0334 0.0122271 10.0186 0.0139456 10.004 0.0168753C9.99002 0.0196486 9.9765 0.0234766 9.96279 0.0269527C9.95014 0.030117 9.93744 0.0328903 9.92494 0.0366793C9.9115 0.0407419 9.8985 0.0457811 9.88537 0.0505075C9.87287 0.0549994 9.86029 0.0591011 9.84799 0.0641794C9.83572 0.0692577 9.82396 0.0752344 9.81201 0.0808983C9.79932 0.086875 9.7865 0.0924997 9.77408 0.0991793C9.76264 0.105312 9.75174 0.112305 9.74061 0.118945C9.72842 0.126211 9.71607 0.133125 9.7042 0.141055C9.69189 0.149298 9.68033 0.158438 9.66854 0.167266C9.65857 0.174726 9.64838 0.181641 9.63869 0.18957C9.61779 0.206718 9.59768 0.224844 9.57854 0.243945C9.57822 0.244219 9.57791 0.244492 9.57764 0.244765L6.24432 3.57809C5.91889 3.90352 5.91889 4.43117 6.24432 4.7566C6.56975 5.08203 7.0974 5.08203 7.42283 4.7566L9.33357 2.84586V12.5007C9.33357 12.9609 9.70666 13.334 10.1669 13.334C10.6271 13.334 11.0002 12.9609 11.0002 12.5007V2.84586L12.911 4.7566C13.2364 5.08203 13.764 5.08203 14.0895 4.7566C14.4149 4.43117 14.4149 3.90352 14.0895 3.57809L10.7562 0.244765C10.7558 0.244452 10.7555 0.244219 10.7553 0.243945C10.736 0.224844 10.7159 0.206718 10.695 0.18957Z'
-                  fill='#8D97A0'
-                />
-              </svg>
-            </Box>
-          </Box>
+            <svg
+              width='15'
+              height='21'
+              viewBox='0 0 15 21'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M5.00022 17.1559L5.00022 7.50107C5.00022 7.04084 4.62713 6.66775 4.16689 6.66775C3.70666 6.66775 3.33357 7.04084 3.33357 7.50107L3.33357 17.1559L1.42283 15.2451C1.0974 14.9197 0.569746 14.9197 0.244316 15.2451C-0.0811133 15.5706 -0.0811133 16.0982 0.244316 16.4237L3.57764 19.757C3.59705 19.7764 3.61748 19.7948 3.63873 19.8122C3.64834 19.8201 3.6585 19.827 3.66838 19.8344C3.68025 19.8433 3.69186 19.8524 3.70424 19.8607C3.71607 19.8687 3.72838 19.8755 3.74053 19.8828C3.7517 19.8895 3.76264 19.8965 3.77416 19.9027C3.78654 19.9093 3.79932 19.9149 3.81197 19.9209C3.82396 19.9265 3.83576 19.9325 3.84807 19.9376C3.86037 19.9427 3.87295 19.9469 3.88545 19.9513C3.89861 19.956 3.91158 19.9611 3.92502 19.9651C3.93752 19.9689 3.95021 19.9717 3.96287 19.9749C3.97658 19.9783 3.99014 19.9822 4.00412 19.9849C4.01877 19.9878 4.03354 19.9896 4.04826 19.9917C4.06041 19.9934 4.0724 19.9957 4.08471 19.9969C4.13939 20.0023 4.19451 20.0023 4.2492 19.9969C4.2615 19.9957 4.27346 19.9934 4.28564 19.9917C4.30037 19.9896 4.31518 19.9878 4.32979 19.9849C4.34377 19.9821 4.35729 19.9783 4.371 19.9748C4.38365 19.9717 4.39635 19.9689 4.40885 19.9651C4.42229 19.961 4.43529 19.956 4.44842 19.9513C4.46092 19.9468 4.4735 19.9427 4.4858 19.9376C4.49811 19.9325 4.50986 19.9265 4.52186 19.9208C4.53451 19.9149 4.54729 19.9092 4.55971 19.9026C4.57119 19.8964 4.58209 19.8894 4.59326 19.8828C4.60545 19.8755 4.61775 19.8686 4.62963 19.8607C4.64197 19.8524 4.65353 19.8433 4.66541 19.8344C4.67533 19.827 4.68549 19.8201 4.69514 19.8122C4.71623 19.7949 4.7365 19.7766 4.75576 19.7574C4.75592 19.7572 4.75607 19.7571 4.75619 19.757L8.08951 16.4237C8.41494 16.0982 8.41494 15.5706 8.08951 15.2451C7.76408 14.9197 7.23643 14.9197 6.911 15.2451L5.00022 17.1559Z'
+                fill='#8D97A0'
+              />
+              <path
+                d='M10.695 0.18957C10.6853 0.181602 10.6751 0.174726 10.6651 0.167266C10.6533 0.158438 10.6418 0.149259 10.6295 0.141055C10.6176 0.133086 10.6053 0.126211 10.5931 0.118945C10.5819 0.112305 10.571 0.105312 10.5596 0.0991793C10.5472 0.0925388 10.5344 0.086875 10.5217 0.0808983C10.5097 0.0752344 10.4979 0.0692968 10.4857 0.0641794C10.4734 0.0591011 10.4608 0.0549603 10.4483 0.0505075C10.4351 0.0457811 10.4222 0.0407419 10.4087 0.0366793C10.3962 0.0328903 10.3835 0.030117 10.3709 0.0269527C10.3572 0.0234766 10.3436 0.0196486 10.3297 0.0168753C10.315 0.0139847 10.3003 0.0122662 10.2855 0.0101175C10.2734 0.00839901 10.2614 0.00605488 10.2491 0.00484371C10.1944 -0.000546455 10.1393 -0.000546455 10.0846 0.00484371C10.0723 0.00605488 10.0603 0.00835991 10.0481 0.0101175C10.0334 0.0122271 10.0186 0.0139456 10.004 0.0168753C9.99002 0.0196486 9.9765 0.0234766 9.96279 0.0269527C9.95014 0.030117 9.93744 0.0328903 9.92494 0.0366793C9.9115 0.0407419 9.8985 0.0457811 9.88537 0.0505075C9.87287 0.0549994 9.86029 0.0591011 9.84799 0.0641794C9.83572 0.0692577 9.82396 0.0752344 9.81201 0.0808983C9.79932 0.086875 9.7865 0.0924997 9.77408 0.0991793C9.76264 0.105312 9.75174 0.112305 9.74061 0.118945C9.72842 0.126211 9.71607 0.133125 9.7042 0.141055C9.69189 0.149298 9.68033 0.158438 9.66854 0.167266C9.65857 0.174726 9.64838 0.181641 9.63869 0.18957C9.61779 0.206718 9.59768 0.224844 9.57854 0.243945C9.57822 0.244219 9.57791 0.244492 9.57764 0.244765L6.24432 3.57809C5.91889 3.90352 5.91889 4.43117 6.24432 4.7566C6.56975 5.08203 7.0974 5.08203 7.42283 4.7566L9.33357 2.84586V12.5007C9.33357 12.9609 9.70666 13.334 10.1669 13.334C10.6271 13.334 11.0002 12.9609 11.0002 12.5007V2.84586L12.911 4.7566C13.2364 5.08203 13.764 5.08203 14.0895 4.7566C14.4149 4.43117 14.4149 3.90352 14.0895 3.57809L10.7562 0.244765C10.7558 0.244452 10.7555 0.244219 10.7553 0.243945C10.736 0.224844 10.7159 0.206718 10.695 0.18957Z'
+                fill='#8D97A0'
+              />
+            </svg>
+          </Button>
 
           <Box
             id='exitId'

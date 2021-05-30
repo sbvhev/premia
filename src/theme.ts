@@ -127,18 +127,37 @@ export const lightTheme = responsiveFontSizes(
           backgroundColor: primary,
           color: white,
           margin: '2px',
-          '&:hover': {
-            backgroundColor: primaryOnHover,
+        },
+        label: {
+          '& svg:not(:first-child)': {
+            marginLeft: 6,
           },
         },
         startIcon: {
           marginLeft: 0,
         },
-        textPrimary: {
-          color: white,
-        },
         text: {
           width: 90,
+        },
+        textPrimary: {
+          backgroundColor: primary,
+          color: white,
+
+          '&:hover': {
+            backgroundColor: primary,
+            opacity: 0.8,
+          },
+
+          '&:active': {
+            backgroundColor: premiaBlueDay,
+            color: primary,
+            border: 'none',
+            opacity: 1,
+
+            '& .MuiButton-label > svg path': {
+              fill: primary,
+            },
+          },
         },
         textSecondary: {
           background: premiaBlueNight,
@@ -161,13 +180,11 @@ export const lightTheme = responsiveFontSizes(
           backgroundColor: 'transparent',
           color: greySecondaryDay,
           boxShadow: 'none',
-          padding: '6px 8px',
           '& svg path': {},
         },
         outlined: {
           backgroundColor: 'transparent',
           color: greySecondaryDay,
-          padding: '6px 8px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -207,11 +224,16 @@ export const lightTheme = responsiveFontSizes(
             backgroundColor: premiaBlueDay,
             color: primary,
             border: 'none',
-            opacity: '0.8',
+            opacity: 0.8,
           },
           '&:active': {
-            backgroundColor: primaryOnHover,
             color: white,
+            backgroundColor: primary,
+            opacity: 1,
+
+            '& .MuiButton-label > svg path': {
+              fill: white,
+            },
           },
         },
         outlinedSecondary: {
@@ -224,10 +246,8 @@ export const lightTheme = responsiveFontSizes(
             border: `1px solid ${primaryOnHover}`,
           },
           '&:active': {
-            backgroundColor: white,
-            color: black,
+            color: textSecondaryDay,
             border: `1px solid ${primaryOnHover}`,
-            opacity: '0.8',
           },
         },
       },
@@ -706,9 +726,10 @@ export const darkTheme = responsiveFontSizes(
           backgroundColor: primary,
           color: white,
           margin: '2px',
-          '&:hover': {
-            color: black,
-            backgroundColor: primaryOnHover,
+        },
+        label: {
+          '& svg:not(:first-child)': {
+            marginLeft: 6,
           },
         },
         startIcon: {
@@ -728,7 +749,24 @@ export const darkTheme = responsiveFontSizes(
           width: 90,
         },
         textPrimary: {
+          backgroundColor: primary,
           color: white,
+
+          '&:hover': {
+            backgroundColor: primary,
+            opacity: 0.8,
+          },
+
+          '&:active': {
+            backgroundColor: premiaBlueDay,
+            color: primary,
+            border: 'none',
+            opacity: 1,
+
+            '& .MuiButton-label > svg path': {
+              fill: primary,
+            },
+          },
         },
         textSecondary: {
           background: premiaBlueNight,
@@ -743,12 +781,10 @@ export const darkTheme = responsiveFontSizes(
         contained: {
           backgroundColor: 'transparent',
           color: greySecondaryNight,
-          padding: '6px 8px',
           '& svg path': {},
         },
         outlined: {
           backgroundColor: 'transparent',
-          padding: '6px 8px',
         },
         containedPrimary: {
           background: `linear-gradient(121.21deg, ${callGradientA} 7.78%, ${callGradientB} 118.78%);`,
@@ -787,15 +823,22 @@ export const darkTheme = responsiveFontSizes(
           backgroundColor: premiaBlueNight,
           color: primary,
           border: 'none',
+
           '&:hover': {
             backgroundColor: premiaBlueNight,
             color: primary,
             border: 'none',
-            opacity: '0.8',
+            opacity: 0.8,
           },
+
           '&:active': {
-            backgroundColor: primary,
             color: white,
+            backgroundColor: primary,
+            opacity: 1,
+
+            '& .MuiButton-label > svg path': {
+              fill: white,
+            },
           },
         },
         outlinedSecondary: {
@@ -804,8 +847,10 @@ export const darkTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyNight}`,
           '&:hover': {
             color: textPrimaryNight,
-            backgroundColor: black,
             border: `1px solid ${primary}`,
+          },
+          '&:active': {
+            color: greySecondaryNight,
           },
         },
       },

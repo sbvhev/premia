@@ -51,6 +51,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <Sidebar />
           </Box>
         )}
+
         <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           {!hideAccountButtons && (
             <Box
@@ -98,18 +99,20 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           {mobile && !mobileSidebarHidden && (
             <Box width={1} position='relative' mt={12} mb={mobile ? 10 : 7}>
-              <Box p={1}>
-                <AccountButtons mobile />
-              </Box>
-              <Divider />
-              <Box p={1}>
-                <Sidebar mobile />
-              </Box>
-              <Divider />
-              <Box p={1.5}>
-                <ThemeSwitch />
-              </Box>
-              <Divider />
+              <Container>
+                <Box p={1}>
+                  <AccountButtons mobile />
+                </Box>
+                <Divider />
+                <Box p={1}>
+                  <Sidebar mobile />
+                </Box>
+                <Divider />
+                <Box p={1.5}>
+                  <ThemeSwitch />
+                </Box>
+                <Divider />
+              </Container>
             </Box>
           )}
 

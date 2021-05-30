@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -9,7 +8,11 @@ import {
   Avatar,
   Tooltip,
 } from '@material-ui/core';
-import { ExitToApp, SupervisorAccount, Lock } from '@material-ui/icons';
+import {
+  ExitToApp,
+  SupervisorAccount,
+  AccountBalanceWallet,
+} from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -20,10 +23,11 @@ import {
   ConfirmTermsModal,
   SwapModal,
   ChainModal,
+  TransactionsModal,
 } from 'components';
-import { ReactComponent as EthIcon } from 'assets/svg/HeaderEth.svg';
-import LogoIcon from 'assets/svg/LogoIcon.svg';
-import SwapIcon from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -40,7 +44,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
-    marginRight: '1.5rem',
+    marginRight: '6px',
   },
 
   divider: {
@@ -53,16 +57,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 180,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
-  },
-
-  connect: {
-    padding: '0 12px',
-    height: 45,
-    border: `1px solid ${palette.divider}`,
-    borderRadius: 12,
     cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
   },
 
   disconnect: {
@@ -122,8 +117,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 14,
 
     '&:hover': {
-      '& svg': {
-        background: 'rgba(82, 148, 255, 0.5)',
+      borderColor: palette.primary.main,
+
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+
+      '& p': {
+        color: palette.text.primary,
       },
     },
 
@@ -134,6 +135,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10,
+
+      '& path': {
+        fill: palette.text.primary,
+      },
     },
 
     [breakpoints.down('sm')]: {
@@ -155,17 +160,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [chainModalOpen, setChainModalOpen] = useState(false);
+  const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const classes = useStyles();
-
-  const handleShowSwapModal = () => {
-    setShowSwapModal(true);
-  };
-
-  const handleHideSwapModal = () => {
-    setShowSwapModal(false);
-  };
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end'>
@@ -205,17 +203,18 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
           >
-            Get
-            <img src={LogoIcon} alt='Logo Icon' />
+            <span>Get</span>
+            <LogoIcon />
           </Button>
           <Button
-            color='secondary'
+            color='primary'
+            variant='outlined'
             className={cx(classes.button, mobile && classes.half)}
             style={{ order: mobile ? 1 : 0 }}
-            onClick={handleShowSwapModal}
+            onClick={() => setShowSwapModal(true)}
           >
-            Swap
-            <img src={SwapIcon} alt='Swap Icon' />
+            <span>Swap</span>
+            <SwapIcon />
           </Button>
           <Box
             className={classes.chain}
@@ -224,12 +223,12 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             }}
           >
             <EthIcon />
-            <Typography color='secondary'>Ethereum</Typography>
+            <Typography color='textPrimary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Link
-              to='/'
+            <Box
               className={cx(classes.noDecoration, mobile && classes.fullWidth)}
+              style={{ cursor: 'pointer' }}
             >
               <Grid
                 container
@@ -238,13 +237,18 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 justify='space-between'
                 className={classes.account}
               >
-                <Grid item container alignItems='center' xs={9}>
+                <Grid
+                  item
+                  container
+                  alignItems='center'
+                  xs={9}
+                  onClick={() => setShowTransactions(true)}
+                >
                   <Avatar className={classes.avatar} />
                   <Box>
                     <Typography className={classes.address}>
                       {shortenAddress(account ?? '')}
                     </Typography>
-                    <Typography className={classes.tier}>Tier 1</Typography>
                   </Box>
                 </Grid>
 
@@ -262,21 +266,28 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   </Tooltip>
                 </Box>
               </Grid>
-            </Link>
+            </Box>
           </Box>
         </Grid>
       ) : (
-        <Box
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={cx(mobile && classes.fullWidth)}
           onClick={() => setConfirmTermsModalOpen(true)}
-          className={cx(classes.connect, mobile && classes.fullWidth)}
         >
-          <Lock className={classes.walletIcon} />
-          <Typography className={classes.address}>Connect Wallet</Typography>
-        </Box>
+          <AccountBalanceWallet className={classes.walletIcon} />
+          Connect wallet
+        </Button>
       )}
 
       <Grid item xs={1} />
-      <SwapModal open={showSwapModal} onClose={handleHideSwapModal} />
+      <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
+      <TransactionsModal
+        open={showTransactions}
+        onClose={() => setShowTransactions(false)}
+      />
     </Grid>
   );
 };
