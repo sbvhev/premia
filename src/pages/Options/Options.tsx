@@ -7,7 +7,7 @@ import {
   Button,
   Divider,
 } from '@material-ui/core';
-import { SearchTabs, BuyConfirmationModal } from 'components';
+import { SearchTabs, WithdrawDepositModal } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
@@ -82,7 +82,8 @@ const tabItems = [
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] = useState(false);
+  const [withdrawDepositModalOpen, setWithdrawDepositModalOpen] =
+    useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
@@ -92,10 +93,11 @@ const Options: React.FC = () => {
 
   return (
     <PageWithSidebar>
-      {buyConfirmationModalOpen && (
-        <BuyConfirmationModal
-          open={buyConfirmationModalOpen}
-          onClose={() => setBuyConfirmationModalOpen(false)}
+      {withdrawDepositModalOpen && (
+        <WithdrawDepositModal
+          open={withdrawDepositModalOpen}
+          call={false}
+          onClose={() => setWithdrawDepositModalOpen(false)}
         />
       )}
       {!mobile && (
@@ -187,7 +189,7 @@ const Options: React.FC = () => {
                   variant='contained'
                   size='large'
                   color={optionType === 'call' ? 'primary' : 'secondary'}
-                  onClick={() => setBuyConfirmationModalOpen(true)}
+                  onClick={() => setWithdrawDepositModalOpen(true)}
                 >
                   Buy Option
                 </Button>
