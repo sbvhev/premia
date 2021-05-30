@@ -17,8 +17,8 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
-import HelpIcon from '@material-ui/icons/Help';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
+import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
 import { LineChart } from 'components';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -32,10 +32,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   price: {
     fontSize: 18,
-  },
-  subText: {
-    marginLeft: 8,
-    fontSize: 14,
   },
   priceIcon: {
     color: palette.success.dark,
@@ -51,6 +47,7 @@ const useStyles = makeStyles(({ palette }) => ({
     '& h2': {
       fontSize: 18,
       fontWeight: 700,
+      margin: '-6px 0',
     },
   },
   graphContainer: {
@@ -65,11 +62,23 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   currentPricePercent: {
-    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    borderRadius: 4,
+    marginLeft: 4,
+    '& div': {
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      borderRadius: 4,
+    },
+    '& p': {
+      fontSize: 14,
+      fontWeight: 400,
+      margin: '0 2px 0 4px',
+    },
+    '& svg': {
+      marginBottom: -2,
+      marginRight: 4,
+    },
   },
 }));
 
@@ -155,52 +164,39 @@ const Options: React.FC = () => {
             className={classes.priceInfoBox}
           >
             <Box py={1} pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>Current Price</Typography>
-              <Grid container alignItems='center'>
-                <Typography
-                  color='textPrimary'
-                  component='h2'
-                  className={classes.price}
-                >
+              <Typography color='textSecondary'>Current price</Typography>
+              <Box display='flex' alignItems='center' mt={-0.375}>
+                <Typography color='textPrimary' component='h2'>
                   $1,222
                 </Typography>
                 <Box
                   position='relative'
                   display='flex'
                   alignItems='center'
-                  ml={1}
+                  className={classes.currentPricePercent}
                 >
                   <Box
                     width={1}
                     height={1}
                     style={{ opacity: darkMode ? 0.1 : 0.2 }}
-                    className={classes.currentPricePercent}
                   ></Box>
-                  <span className={classes.subText}>+13%</span>
-                  <ArrowDropUpIcon className={classes.priceIcon} />
+                  <Typography color='textPrimary'>+13%</Typography>
+                  <PriceTriangle className={classes.priceIcon} />
                 </Box>
-              </Grid>
+              </Box>
             </Box>
             <Box py={1} pl={xs ? 1 : 3}>
               <Grid container alignItems='center'>
                 <Typography color='textSecondary'>Breakeven</Typography>
                 <HelpIcon className={classes.helpIcon} />
               </Grid>
-              <Typography
-                color='textPrimary'
-                component='h2'
-                className={classes.price}
-              >
+              <Typography color='textPrimary' component='h2'>
                 $1,749.37
               </Typography>
             </Box>
             <Box py={1} pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Total cost</Typography>
-              <Typography
-                color='textPrimary'
-                component='h2'
-                className={classes.price}
-              >
+              <Typography color='textPrimary' component='h2'>
                 $1,749.37
               </Typography>
             </Box>
