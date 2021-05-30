@@ -9,6 +9,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import Calendar from 'react-calendar';
 import moment from 'moment';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import {
   useOptionType,
   useMaturityDate,
@@ -87,15 +89,29 @@ const useStyles = makeStyles(({ palette }) => ({
       border: 'none',
       width: 'auto',
       fontFamily: 'DM Sans',
+      '& .react-calendar__navigation__prev2-button, & .react-calendar__navigation__next2-button': {
+        display: 'none'
+      },
       '& .react-calendar__month-view__weekdays__weekday abbr': {
         textDecoration: 'none',
         fontSize: 14,
         fontWeight: 400,
         color: palette.text.secondary
       },
+      '& .react-calendar__month-view__days': {
+        padding: '0 6px'
+      },
+      '& .react-calendar__month-view__weekdays': {
+        borderBottom: `1px solid ${palette.divider}`,
+        padding: '5px 6px 3px',
+        '& abbr': {
+          lineHeight: 1
+        }
+      },
       '& .react-calendar__tile': {
         padding: 0,
         height: 30,
+        marginTop: 8,
         position: 'relative',
         '&:not(:disabled)': {
           color: palette.text.primary
@@ -127,7 +143,8 @@ const useStyles = makeStyles(({ palette }) => ({
         }
       },
       '& .react-calendar__month-view__days__day--neighboringMonth': {
-        opacity: 0,
+        color: `${palette.text.secondary} !important`,
+        opacity: 0.3,
         pointerEvents: 'none'
       },
       '& .react-calendar__month-view__days__day': {
@@ -136,6 +153,8 @@ const useStyles = makeStyles(({ palette }) => ({
       },
       '& .react-calendar__navigation': {
         borderBottom: `1px solid ${palette.divider}`,
+        marginBottom: 0,
+        padding: '0 6px'
       },
       '& .react-calendar__navigation button': {
         color: palette.text.primary,
@@ -146,8 +165,12 @@ const useStyles = makeStyles(({ palette }) => ({
           fontWeight: 500
         },
         '&.react-calendar__navigation__arrow': {
-          fontSize: 20,
-          color: palette.text.secondary
+          '& svg': {
+            width: 14,
+            '& path': {
+              fill: palette.text.secondary
+            }
+          }
         },
       }
     }
@@ -159,7 +182,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems:'center',
     height: 44,
     width: '100%',
-    padding: '0 23px',
+    padding: '0 22px 0 20px',
     borderTop: `1px solid ${palette.divider}`,
     marginTop: 14,
     '& p': {
@@ -254,6 +277,8 @@ const OptionFilter: React.FC = () => {
             <Box className={classes.calendarContainer}>
             <Calendar
               minDate={new Date()}
+              prevLabel={<ArrowBackIosIcon />}
+              nextLabel={<ArrowForwardIosIcon />}
               formatShortWeekday = {(locale, date) => moment(date).format('dd')}
               onChange={(date) => { setMaturityFocused(false); setMaturityDate(moment(date).toISOString()); }}
               value={new Date(maturityDate)}
