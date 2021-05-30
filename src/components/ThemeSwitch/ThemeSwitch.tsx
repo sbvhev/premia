@@ -5,6 +5,8 @@ import { Typography, Box } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+import { SwitchWithGlider } from 'components';
+
 import cx from 'classnames';
 import { useWeb3 } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
@@ -79,16 +81,8 @@ const ThemeSwitch: React.FC = () => {
   const deviceWidth = window.innerWidth;
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [gliderPosition, setGliderPosition] = React.useState(!darkMode ? (!mobile ? 21 : 11) : (!mobile ? 107 : (deviceWidth - 183)));
-
-  React.useEffect(() => {
-    if (mobile && darkMode) {
-      setGliderPosition(deviceWidth - 183);
-    }
-  }, [mobile, darkMode, deviceWidth]);
   
   const handleDayClick = () => {
-    setGliderPosition(!mobile ? 21 : 11);
     setTimeout(() => {
       setDarkMode(false);
       onboard?.config({
@@ -98,7 +92,6 @@ const ThemeSwitch: React.FC = () => {
   };
 
   const handleNightClick = () => {
-    setGliderPosition(!mobile ? 107 : (deviceWidth - 183));
     setTimeout(() => {
       setDarkMode(true);
       onboard?.config({
@@ -107,6 +100,42 @@ const ThemeSwitch: React.FC = () => {
     }, 0);
   };
 
+  const Button1 = () => (
+    <Box
+      display="flex"
+      alignItems='center'
+      justifyContent="center"
+      className={cx(classes.modeItem, {
+          [classes.inactiveMode]: !darkMode,
+        })}
+      width={!mobile ? '80px' : '172px'}
+      height={!mobile ? '30px' : '36px'}
+    >
+      <Box display="flex" alignItems="center" >
+        <DayIcon />
+        <Typography className={!darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Day</Typography>
+      </Box>
+    </Box>
+  );
+
+  const Button2 = () => (
+    <Box
+      display="flex"
+      width={!mobile ? '80px' : '172px'}
+      height={!mobile ? '30px' : '36px'}
+      alignItems='center'
+      justifyContent="center"
+      className={cx(classes.modeItem, {
+        [classes.inactiveMode]: darkMode,
+      })}
+    >
+      <Box display="flex" alignItems="center" >
+        <NightIcon />
+        <Typography className={darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Night</Typography>
+      </Box>
+    </Box>
+  );
+
   return (
     <Box
       display="flex"
@@ -114,47 +143,25 @@ const ThemeSwitch: React.FC = () => {
       justifyContent='space-between'
       style={{ backgroundColor: palette.background.paper}}
     >
-      <Box>
-        <Box
-          display="flex"
-          alignItems='center'
-          justifyContent="center"
-          className={cx(classes.modeItem, {
-              [classes.inactiveMode]: !darkMode,
-            })}
-          width={!mobile ? '80px' : '172px'}
-          height={!mobile ? '30px' : '36px'}
-          onClick={handleDayClick}
-        >
-          <Box display="flex" alignItems="center" >
-            <DayIcon />
-            <Typography className={!darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Day</Typography>
-          </Box>
-        </Box>
-      </Box>
-      <Box>
-        <Box
-          display="flex"
-          width={!mobile ? '80px' : '172px'}
-          height={!mobile ? '30px' : '36px'}
-          alignItems='center'
-          justifyContent="center"
-          className={cx(classes.modeItem, {
-            [classes.inactiveMode]: darkMode,
-          })}
-          onClick={handleNightClick}
-        >
-          <Box display="flex" alignItems="center" >
-            <NightIcon />
-            <Typography className={darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Night</Typography>
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        id="day/night-glider"
-        className={!mobile ? classes.glider : classes.gliderMobile}
-        left={gliderPosition}
-      />
+      {!mobile ? (
+        <SwitchWithGlider 
+          elements={[Button1, Button2]}
+          positions={[21, 107]}
+          clickFuncs={[handleDayClick, handleNightClick]}
+          start={!darkMode ? 21 : 107}
+          gliderDims={['80px', '30px']}
+        />
+      ) : (
+        <SwitchWithGlider 
+          elements={[Button1, Button2]}
+          positions={[11, (deviceWidth - 183)]}
+          clickFuncs={[handleDayClick, handleNightClick]}
+          start={!darkMode ? 11 : (deviceWidth - 183)}
+          gliderDims={['172px', '36px']}
+          mobile={true}
+          dark={darkMode}
+        />
+      )}
     </Box>
   );
 };

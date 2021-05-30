@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { BorderLinearProgress } from 'components';
+import { BorderLinearProgress, SwitchWithGlider } from 'components';
 import cx from 'classnames';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
@@ -95,7 +95,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   activeButton: {
-    background: palette.primary.dark,
+    background: 'transparent',
     color: palette.primary.main,
     '& svg path': {
       fill: palette.primary.main,
@@ -131,6 +131,61 @@ const Footer: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
+
+  const GasSwitch1 = () => (
+    <Box width='33%'>
+      <Button
+        className={cx(
+          classes.button,
+          gasType === 'standard' && classes.activeButton,
+        )}
+        startIcon={<GasStandardIcon />}
+        fullWidth
+      >
+        <Typography className={classes.gasPriceText} component='div'>
+          <b>Standard</b>
+          <div>90 Gwei</div>
+        </Typography>
+      </Button>
+    </Box>
+  );
+
+  const GasSwitch2 = () => (
+    <Box width='33%'>
+      <Button
+        className={cx(
+          classes.button,
+          gasType === 'fast' && classes.activeButton,
+        )}
+        startIcon={<GasFastIcon />}
+        fullWidth
+      >
+        <Typography className={classes.gasPriceText} component='div'>
+          <b>Fast</b>
+          <div>100 Gwei</div>
+        </Typography>
+      </Button>
+    </Box>
+  );
+
+  const GasSwitch3 = () => (
+    <Box width='33%'>
+      <Button
+        className={cx(
+          classes.button,
+          gasType === 'instant' && classes.activeButton,
+        )}
+        startIcon={<ProIcon />}
+        fullWidth
+      >
+        <Typography className={classes.gasPriceText} component='div'>
+          <b>Instant</b>
+          <div>120 Gwei</div>
+        </Typography>
+      </Button>
+    </Box>
+  );
+
 
   return (
     <Box
@@ -256,63 +311,23 @@ const Footer: React.FC = () => {
             display='flex'
             justifyContent='space-between'
           >
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'standard' && classes.activeButton,
-                )}
-                startIcon={<GasStandardIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('standard');
-                  setGasValue(25);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Standard</b>
-                  <div>90 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'fast' && classes.activeButton,
-                )}
-                startIcon={<GasFastIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('fast');
-                  setGasValue(50);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Fast</b>
-                  <div>100 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'instant' && classes.activeButton,
-                )}
-                startIcon={<ProIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('instant');
-                  setGasValue(100);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Instant</b>
-                  <div>120 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
+            <SwitchWithGlider 
+              elements={[GasSwitch1, GasSwitch2, GasSwitch3]}
+              positions={[268, 150, 30]}
+              clickFuncs={[() => {
+                setGasType('standard');
+                setGasValue(25);
+              }, () => {
+                setGasType('fast');
+                setGasValue(50);
+              }, () => {
+                setGasType('instant');
+                setGasValue(100);
+              }]}
+              start={268}
+              alignedRight={true}
+              gliderDims={['90px', '40px']}
+            />
           </Box>
         </Box>
       </Popover>

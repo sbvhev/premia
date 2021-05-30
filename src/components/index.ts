@@ -18,6 +18,7 @@ export { default as Loader } from './Loader';
 export { default as ModalContainer } from './ModalContainer';
 export { default as Sidebar, SidebarItem } from './Sidebar';
 export { default as SwapModal } from './SwapModal';
+export { default as SwitchWithGlider } from './SwitchWithGlider';
 export { default as ThemeSwitch } from './ThemeSwitch';
 export { default as TokenPriceChip } from './TokenPriceChip';
 export { default as TransactionsModal } from './TransactionsModal';
