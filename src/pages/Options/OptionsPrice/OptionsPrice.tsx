@@ -14,53 +14,57 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, Grid, Typography, RootRef } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
-import HelpIcon from '@material-ui/icons/Help';
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import Draggable from 'react-draggable';
 import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartCallTop: {
-    background: `linear-gradient(180deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`,
+    background: `linear-gradient(180deg, #2DE29E 0%, #0062FF 100%)`,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    opacity: 0.8,
     [breakpoints.down('md')]: {
-      background: `linear-gradient(90deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`,
+      background: `linear-gradient(90deg, #2DE29E 0%, #0062FF 100%)`,
       borderTopRightRadius: 0,
       borderBottomLeftRadius: 12,
     },
   },
   chartCallBottom: {
-    background: `linear-gradient(0deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`,
+    background: `linear-gradient(0deg, #2DE29E 0%, #0062FF 100%)`,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
+    opacity: 0.8,
     [breakpoints.down('md')]: {
-      background: `linear-gradient(270deg, ${palette.success.dark} 0%, ${palette.success.main} 100%)`,
+      background: `linear-gradient(270deg, #2DE29E 0%, #0062FF 100%)`,
       borderBottomLeftRadius: 0,
       borderTopRightRadius: 12,
     },
   },
   chartPutTop: {
-    background: `linear-gradient(180deg, ${palette.error.main} 0%, ${palette.error.dark} 100%)`,
+    background: `linear-gradient(180deg, #EB844A 0%, #BF47C3 100%)`,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    opacity: 0.8,
     [breakpoints.down('md')]: {
-      background: `linear-gradient(90deg, ${palette.error.main} 0%, ${palette.error.dark} 100%)`,
+      background: `linear-gradient(90deg, #EB844A 0%, #BF47C3 100%)`,
       borderTopRightRadius: 0,
       borderBottomLeftRadius: 12,
     },
   },
   chartPutBottom: {
-    background: `linear-gradient(0deg, ${palette.error.main} 0%, ${palette.error.dark} 100%)`,
+    background: `linear-gradient(0deg, #EB844A 0%, #BF47C3 100%)`,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
+    opacity: 0.8,
     [breakpoints.down('md')]: {
-      background: `linear-gradient(270deg, ${palette.error.main} 0%, ${palette.error.dark} 100%)`,
+      background: `linear-gradient(270deg, #EB844A 0%, #BF47C3 100%)`,
       borderBottomLeftRadius: 0,
       borderTopRightRadius: 12,
     },
   },
   chartItem: {
-    transition: 'all 1s',
+    transition: 'all 0.5s',
     '&:hover > div:first-child': {
       opacity: 1,
       marginLeft: 20,
@@ -78,17 +82,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   currentPrice: {
     position: 'absolute',
-    top: 8,
-    left: 16,
+    top: 31,
+    left: 36,
     [breakpoints.down('md')]: {
-      top: 'calc(50% - 5px)',
+      top: 'calc(50% - 8px)',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
     },
     '& p': {
       color: palette.text.hint,
-      margin: 0,
+      margin: '0 0 -4px 0',
       fontSize: 12,
     },
   },
@@ -98,7 +102,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: '50%',
     zIndex: 3,
     marginLeft: 0,
-    transition: 'all 1s',
+    transition: 'all 0.5s',
     opacity: 0,
     transform: 'translateY(-50%)',
     [breakpoints.down('md')]: {
@@ -123,7 +127,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      top: 2,
+      top: 8,
       right: 10,
       [breakpoints.down('md')]: {
         position: 'relative',
@@ -131,7 +135,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& svg': {
       width: 14,
-      marginLeft: 4,
+      margin: '-2px 0 -2px 4px',
     },
   },
   priceFont: {
@@ -139,15 +143,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: 1.2,
   },
   transitionItem: {
-    transition: 'all 1s',
+    transition: 'all 0.5s',
   },
   hovered: {
     opacity: 0.5,
   },
   draggableItem: {
     cursor: 'pointer',
-    transition: 'opacity 1s',
+    transition: 'opacity 0.5s',
   },
+  currentPriceLine: {
+    width: (props: any) => (props.mobile ? 1 : 31),
+    height: (props: any) => (props.mobile ? 31 : 1.47),
+    background: (props: any) => (props.darkMode ? palette.text.primary : 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)'),
+    boxShadow: (props: any) => (props.darkMode ? '0px 0px 16px #00FF97' : '0px 0px 25px rgba(59, 197, 193, 0.4)'),
+    marginRight: (props: any) => (props.mobile ? 0 : -16),
+    marginBottom: (props: any) => (props.mobile ? -16 : 0)
+  }
 }));
 
 const OptionsPrice: React.FC = () => {
@@ -170,13 +182,13 @@ const OptionsPrice: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const classes = useStyles();
   const theme = useTheme();
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
+  const classes = useStyles({ darkMode, mobile });
 
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
@@ -192,9 +204,9 @@ const OptionsPrice: React.FC = () => {
     >
       <Box
         position='relative'
-        mt={mobile ? 0 : 1}
+        mt={mobile ? 0 : 0.75}
         mb={mobile ? -4 : 0}
-        mr={mobile ? 0 : -0.75}
+        mr={mobile ? 0 : -3.25}
         zIndex={2}
         className={cx(
           classes.transitionItem,
@@ -214,21 +226,19 @@ const OptionsPrice: React.FC = () => {
           alt='Current Price'
         />
         <Box zIndex={2} className={classes.currentPrice}>
-          <p>Current Price</p>
+          <p>Current price</p>
           <p>
             <b>$1,749.37</b>
           </p>
         </Box>
       </Box>
       <Box
-        width={mobile ? 1.1 : 30}
-        height={mobile ? 30 : 1.5}
-        mb={mobile ? -2 : 0}
-        mr={mobile ? 0 : -2}
-        bgcolor={
-          darkMode ? theme.palette.common.white : theme.palette.secondary.main
-        }
         zIndex={1}
+        className={cx(
+          classes.currentPriceLine,
+          classes.transitionItem,
+          (hoveredTop || hoveredBottom) && classes.hovered,
+        )}
       />
       <Box
         display='flex'
@@ -237,6 +247,7 @@ const OptionsPrice: React.FC = () => {
         width={barWidth}
         height={barHeight}
         border={1}
+        bgcolor={theme.palette.background.paper}
         borderColor={theme.palette.divider}
         borderRadius={12}
       >
