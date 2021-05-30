@@ -24,6 +24,10 @@ const useStyles = makeStyles(({ palette }) => ({
     '& button': {
       height: 41,
       margin: 0,
+      '& span': {
+        fontSize: 14,
+        fontWeight: 700,
+      },
     },
   },
 

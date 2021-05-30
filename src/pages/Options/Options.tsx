@@ -80,6 +80,12 @@ const useStyles = makeStyles(({ palette }) => ({
       marginRight: 4,
     },
   },
+  depositButton: {
+    '& button span': {
+      fontSize: 16,
+      fontWeight: 700,
+    },
+  },
 }));
 
 const tabItems = [
@@ -200,7 +206,7 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} pl={xs ? 0 : 3}>
+            <Box py={1} pl={xs ? 0 : 3} className={classes.depositButton}>
               <Button
                 fullWidth
                 variant='contained'
@@ -208,7 +214,7 @@ const Options: React.FC = () => {
                 color={optionType === 'call' ? 'primary' : 'secondary'}
                 onClick={() => setBuyConfirmationModalOpen(true)}
               >
-                Buy Option
+                Deposit
               </Button>
             </Box>
           </Grid>
