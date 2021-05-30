@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import React from 'react';
+import { Button, Typography, Modal, Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
-import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 
 import { useIsDarkMode } from 'state/user/hooks';
 import { ModalContainer } from 'components';
@@ -214,13 +212,6 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const [checkIsOn, setCheckIsOn] = useState(false);
-
-  const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onClose();
-  };
 
   return (
     <Modal open={open} onClose={onClose}>
