@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& input': {
       fontSize: 14,
       paddingLeft: 10,
+      color: (props: any) => (props.dark ? '' : '#8D97A0'),
     },
 
     '& label': {
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& path': {
-      fill: '#646464',
+      fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
     },
   },
   tab: {

@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       position: 'relative',
       top: -1,
       marginLeft: 4,
-      width: 20,
+      width: 16,
       height: 20,
 
       '& path': {

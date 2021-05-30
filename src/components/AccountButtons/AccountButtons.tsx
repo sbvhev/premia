@@ -21,7 +21,7 @@ import {
   SwapModal,
   ChainModal,
 } from 'components';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/HeaderEth.svg';
 import LogoIcon from 'assets/svg/LogoIcon.svg';
 import SwapIcon from 'assets/svg/SwapIcon.svg';
 

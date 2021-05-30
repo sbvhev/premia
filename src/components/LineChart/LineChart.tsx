@@ -2,6 +2,7 @@ import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -20,6 +21,7 @@ const LineChart: React.FC<LineChartProps> = ({
   width = 500,
   height = 200,
 }) => {
+  const dark = useIsDarkMode();
   const theme = useTheme();
 
   const options = {
@@ -44,8 +46,8 @@ const LineChart: React.FC<LineChartProps> = ({
       gradient: {
         gradientToColors: [theme.palette.background.paper],
         shadeIntensity: 1,
-        opacityFrom: 1,
-        opacityTo: 0,
+        opacityFrom: 0.6,
+        opacityTo: 0.5,
         stops: [0, 90, 100],
       },
     },
@@ -86,20 +88,24 @@ const LineChart: React.FC<LineChartProps> = ({
     },
     tooltip: {
       enabled: true,
-      theme: 'dark',
+      theme: dark ? 'dark' : 'light',
       marker: {
         show: false,
       },
       fillSeriesColor: false,
       custom: (props: any) => {
         return (
-          '<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none;">' +
-          '<span style="padding: 0.5rem; border: 2px solid #646464;">' +
+          `<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none; border-radius: 12px; background: transparent;">` +
+          `<span style="padding: 0.5rem; border: 2px solid #646464; border-radius: 12px 12px 0 0; background: ${
+            dark ? 'black' : 'white'
+          };">` +
           moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format(
             'DD MMM, YYYY',
           ) +
           '</span>' +
-          '<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none;">' +
+          `<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none; border-radius: 0 0 12px 12px; background: ${
+            dark ? 'black' : 'white'
+          };">` +
           'Price: ' +
           props.series[props.seriesIndex][props.dataPointIndex] +
           '</span>' +

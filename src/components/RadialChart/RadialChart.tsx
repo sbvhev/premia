@@ -116,6 +116,18 @@ const RadialChart: React.FC<RadialChartProps> = ({
     stroke: {
       lineCap: 'round',
     } as ApexStroke,
+    states: {
+      hover: {
+        filter: {
+          type: 'none',
+        },
+      },
+      active: {
+        filter: {
+          type: 'none',
+        },
+      },
+    },
     labels: ['Percent'],
   };
 
