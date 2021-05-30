@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& h2': {
       top: 1,
-      position: 'relative'
+      position: 'relative',
     },
 
     '& svg': {

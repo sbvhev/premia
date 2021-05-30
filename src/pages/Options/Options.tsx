@@ -46,7 +46,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   priceInfoBox: {
     '& p': {
-      fontSize: 14
+      fontSize: 14,
     },
     '& h2': {
       fontSize: 18,
@@ -56,12 +56,12 @@ const useStyles = makeStyles(({ palette }) => ({
   graphContainer: {
     '& p': {
       fontSize: 14,
-      marginRight: 4      
+      marginRight: 4,
     },
     '& h2': {
       fontSize: 16,
       fontWeight: 700,
-      marginBottom: -4
+      marginBottom: -4,
     },
   },
   currentPricePercent: {
@@ -101,7 +101,8 @@ const tabItems = [
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] = useState(false);
+  const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
+    useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
@@ -204,16 +205,16 @@ const Options: React.FC = () => {
               </Typography>
             </Box>
             <Box py={1} pl={xs ? 0 : 3}>
-                <Button
-                  fullWidth
-                  variant='contained'
-                  size='large'
-                  color={optionType === 'call' ? 'primary' : 'secondary'}
-                  onClick={() => setBuyConfirmationModalOpen(true)}
-                >
-                  Buy Option
-                </Button>
-              </Box>
+              <Button
+                fullWidth
+                variant='contained'
+                size='large'
+                color={optionType === 'call' ? 'primary' : 'secondary'}
+                onClick={() => setBuyConfirmationModalOpen(true)}
+              >
+                Buy Option
+              </Button>
+            </Box>
           </Grid>
           {tablet && (
             <Grid item xs={12}>
@@ -225,10 +226,7 @@ const Options: React.FC = () => {
           )}
           <Grid item xs={12}>
             <Box pt={3} px={tablet ? 0 : 3} className={classes.graphContainer}>
-              <Typography
-                color='textPrimary'
-                component='h2'
-              >
+              <Typography color='textPrimary' component='h2'>
                 Pool price level
               </Typography>
               <Grid container alignItems='center'>

@@ -24,20 +24,20 @@ const useStyles = makeStyles(({ palette }) => ({
     '& button': {
       height: 41,
       margin: 0,
-    }
+    },
   },
 
   titleText: {
     fontSize: 14,
     fontWeight: 500,
     color: palette.text.primary,
-    marginLeft: 8
+    marginLeft: 8,
   },
 
   descText: {
     fontSize: 12,
     fontWeight: 500,
-    color: palette.text.secondary
+    color: palette.text.secondary,
   },
 
   optionSizeInputBox: {
@@ -77,10 +77,10 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: 12,
     '& p': {
       fontSize: 14,
-      color: palette.text.secondary
+      color: palette.text.secondary,
     },
     '& svg': {
-      width: 20
+      width: 20,
     },
   },
 
@@ -88,11 +88,11 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
     border: `1px solid ${palette.primary.main}`,
     '& p': {
-      color: palette.primary.main
+      color: palette.primary.main,
     },
     '& svg path': {
-      fill: palette.primary.main
-    }
+      fill: palette.primary.main,
+    },
   },
 
   calendarContainer: {
@@ -110,24 +110,25 @@ const useStyles = makeStyles(({ palette }) => ({
       border: 'none',
       width: 'auto',
       fontFamily: 'DM Sans',
-      '& .react-calendar__navigation__prev2-button, & .react-calendar__navigation__next2-button': {
-        display: 'none'
-      },
+      '& .react-calendar__navigation__prev2-button, & .react-calendar__navigation__next2-button':
+        {
+          display: 'none',
+        },
       '& .react-calendar__month-view__weekdays__weekday abbr': {
         textDecoration: 'none',
         fontSize: 14,
         fontWeight: 400,
-        color: palette.text.secondary
+        color: palette.text.secondary,
       },
       '& .react-calendar__month-view__days': {
-        padding: '0 6px'
+        padding: '0 6px',
       },
       '& .react-calendar__month-view__weekdays': {
         borderBottom: `1px solid ${palette.divider}`,
         padding: '5px 6px 3px',
         '& abbr': {
-          lineHeight: 1
-        }
+          lineHeight: 1,
+        },
       },
       '& .react-calendar__tile': {
         padding: 0,
@@ -135,7 +136,7 @@ const useStyles = makeStyles(({ palette }) => ({
         marginTop: 8,
         position: 'relative',
         '&:not(:disabled)': {
-          color: palette.text.primary
+          color: palette.text.primary,
         },
         '& abbr': {
           height: '100%',
@@ -152,30 +153,30 @@ const useStyles = makeStyles(({ palette }) => ({
         '&.react-calendar__tile--now': {
           color: palette.primary.main,
           '& abbr': {
-            background: palette.primary.dark
-          }
+            background: palette.primary.dark,
+          },
         },
         '&.react-calendar__tile--active': {
           color: palette.primary.main,
           '& abbr': {
             border: `1px solid ${palette.primary.main}`,
-            background: palette.primary.dark
-          }
-        }
+            background: palette.primary.dark,
+          },
+        },
       },
       '& .react-calendar__month-view__days__day--neighboringMonth': {
         color: `${palette.text.secondary} !important`,
         opacity: 0.3,
-        pointerEvents: 'none'
+        pointerEvents: 'none',
       },
       '& .react-calendar__month-view__days__day': {
         background: 'none',
-        color: palette.text.secondary
+        color: palette.text.secondary,
       },
       '& .react-calendar__navigation': {
         borderBottom: `1px solid ${palette.divider}`,
         marginBottom: 0,
-        padding: '0 6px'
+        padding: '0 6px',
       },
       '& .react-calendar__navigation button': {
         color: palette.text.primary,
@@ -183,24 +184,24 @@ const useStyles = makeStyles(({ palette }) => ({
         fontFamily: 'DM Sans',
         '&.react-calendar__navigation__label': {
           fontSize: 14,
-          fontWeight: 500
+          fontWeight: 500,
         },
         '&.react-calendar__navigation__arrow': {
           '& svg': {
             width: 14,
             '& path': {
-              fill: palette.text.secondary
-            }
-          }
+              fill: palette.text.secondary,
+            },
+          },
         },
-      }
-    }
+      },
+    },
   },
 
   maturityContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems:'center',
+    alignItems: 'center',
     height: 44,
     width: '100%',
     padding: '0 22px 0 20px',
@@ -213,9 +214,9 @@ const useStyles = makeStyles(({ palette }) => ({
     '& span': {
       color: palette.primary.main,
       fontSize: 14,
-      fontWeight: 500
-    }
-  }
+      fontWeight: 500,
+    },
+  },
 }));
 
 const OptionFilter: React.FC = () => {
@@ -286,31 +287,45 @@ const OptionFilter: React.FC = () => {
 
       <Box width={1} marginBottom={2}>
         <Typography className={classes.titleText}>Maturity</Typography>
-        <Box
-          position='relative'
-          width={1}
-          marginTop={1}
-        >
-          <Box className={cx(classes.dateInput, maturityFocused && classes.focusedDateInput)} onClick={() => setMaturityFocused(!maturityFocused)}>
-            <Typography>{ moment(new Date(maturityDate)).isValid() ? moment(new Date(maturityDate)).format('YYYY-MM-DD') : 'Select Date' }</Typography>
+        <Box position='relative' width={1} marginTop={1}>
+          <Box
+            className={cx(
+              classes.dateInput,
+              maturityFocused && classes.focusedDateInput,
+            )}
+            onClick={() => setMaturityFocused(!maturityFocused)}
+          >
+            <Typography>
+              {moment(new Date(maturityDate)).isValid()
+                ? moment(new Date(maturityDate)).format('YYYY-MM-DD')
+                : 'Select Date'}
+            </Typography>
             <CalendarIcon />
           </Box>
-          { maturityFocused && 
+          {maturityFocused && (
             <Box className={classes.calendarContainer}>
-            <Calendar
-              minDate={new Date()}
-              prevLabel={<ArrowBackIosIcon />}
-              nextLabel={<ArrowForwardIosIcon />}
-              formatShortWeekday = {(locale, date) => moment(date).format('dd')}
-              onChange={(date) => { setMaturityFocused(false); setMaturityDate(moment(date).toISOString()); }}
-              value={new Date(maturityDate)}
-            />
-            <Box className={classes.maturityContainer}>
-              <Typography>Days to maturity</Typography>
-              <Typography component='span'>{ moment(new Date(maturityDate)).diff(moment(new Date()), 'days') }</Typography>
+              <Calendar
+                minDate={new Date()}
+                prevLabel={<ArrowBackIosIcon />}
+                nextLabel={<ArrowForwardIosIcon />}
+                formatShortWeekday={(locale, date) => moment(date).format('dd')}
+                onChange={(date) => {
+                  setMaturityFocused(false);
+                  setMaturityDate(moment(date).toISOString());
+                }}
+                value={new Date(maturityDate)}
+              />
+              <Box className={classes.maturityContainer}>
+                <Typography>Days to maturity</Typography>
+                <Typography component='span'>
+                  {moment(new Date(maturityDate)).diff(
+                    moment(new Date()),
+                    'days',
+                  )}
+                </Typography>
+              </Box>
             </Box>
-            </Box>
-          }
+          )}
         </Box>
       </Box>
 
