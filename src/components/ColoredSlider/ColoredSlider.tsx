@@ -7,6 +7,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     color: theme.palette.primary.main,
     height: 8,
     width: 'calc(100% - 16px)',
+    padding: '13px 0',
   },
 
   mark: {
