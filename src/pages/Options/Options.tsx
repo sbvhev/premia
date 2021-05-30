@@ -43,7 +43,26 @@ const useStyles = makeStyles(({ palette }) => ({
   helpIcon: {
     color: palette.text.secondary,
     fontSize: 16,
-    marginLeft: 4,
+  },
+  priceInfoBox: {
+    '& p': {
+      fontSize: 14
+    },
+    '& h2': {
+      fontSize: 18,
+      fontWeight: 700,
+    },
+  },
+  graphContainer: {
+    '& p': {
+      fontSize: 14,
+      marginRight: 4      
+    },
+    '& h2': {
+      fontSize: 16,
+      fontWeight: 700,
+      marginBottom: -4
+    },
   },
   currentPricePercent: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
@@ -131,57 +150,60 @@ const Options: React.FC = () => {
             xs={12}
             sm={6}
             direction='column'
-            justify='space-between'
+            justify='space-around'
+            className={classes.priceInfoBox}
           >
-            <Box mx={2}>
-              <Box py={1} pl={xs ? 1 : 3}>
-                <Typography color='textSecondary'>Current Price</Typography>
-                <Grid container alignItems='center'>
-                  <Typography
-                    color='textPrimary'
-                    component='h2'
-                    className={classes.price}
-                  >
-                    $1,222
-                  </Typography>
+            <Box py={1} pl={xs ? 1 : 3}>
+              <Typography color='textSecondary'>Current Price</Typography>
+              <Grid container alignItems='center'>
+                <Typography
+                  color='textPrimary'
+                  component='h2'
+                  className={classes.price}
+                >
+                  $1,222
+                </Typography>
+                <Box
+                  position='relative'
+                  display='flex'
+                  alignItems='center'
+                  ml={1}
+                >
                   <Box
-                    position='relative'
-                    display='flex'
-                    alignItems='center'
-                    ml={1}
-                  >
-                    <Box
-                      width={1}
-                      height={1}
-                      style={{ opacity: darkMode ? 0.1 : 0.2 }}
-                      className={classes.currentPricePercent}
-                    ></Box>
-                    <span className={classes.subText}>+13%</span>
-                    <ArrowDropUpIcon className={classes.priceIcon} />
-                  </Box>
-                </Grid>
-              </Box>
-              <Box py={1} pl={xs ? 1 : 3}>
+                    width={1}
+                    height={1}
+                    style={{ opacity: darkMode ? 0.1 : 0.2 }}
+                    className={classes.currentPricePercent}
+                  ></Box>
+                  <span className={classes.subText}>+13%</span>
+                  <ArrowDropUpIcon className={classes.priceIcon} />
+                </Box>
+              </Grid>
+            </Box>
+            <Box py={1} pl={xs ? 1 : 3}>
+              <Grid container alignItems='center'>
                 <Typography color='textSecondary'>Breakeven</Typography>
-                <Typography
-                  color='textPrimary'
-                  component='h2'
-                  className={classes.price}
-                >
-                  $1,749.37
-                </Typography>
-              </Box>
-              <Box py={1} pl={xs ? 1 : 3}>
-                <Typography color='textSecondary'>Total cost</Typography>
-                <Typography
-                  color='textPrimary'
-                  component='h2'
-                  className={classes.price}
-                >
-                  $1,749.37
-                </Typography>
-              </Box>
-              <Box py={1} pl={xs ? 0 : 3}>
+                <HelpIcon className={classes.helpIcon} />
+              </Grid>
+              <Typography
+                color='textPrimary'
+                component='h2'
+                className={classes.price}
+              >
+                $1,749.37
+              </Typography>
+            </Box>
+            <Box py={1} pl={xs ? 1 : 3}>
+              <Typography color='textSecondary'>Total cost</Typography>
+              <Typography
+                color='textPrimary'
+                component='h2'
+                className={classes.price}
+              >
+                $1,749.37
+              </Typography>
+            </Box>
+            <Box py={1} pl={xs ? 0 : 3}>
                 <Button
                   fullWidth
                   variant='contained'
@@ -192,7 +214,6 @@ const Options: React.FC = () => {
                   Buy Option
                 </Button>
               </Box>
-            </Box>
           </Grid>
           {tablet && (
             <Grid item xs={12}>
@@ -203,11 +224,10 @@ const Options: React.FC = () => {
             </Grid>
           )}
           <Grid item xs={12}>
-            <Box pt={3} px={tablet ? 0 : 3}>
+            <Box pt={3} px={tablet ? 0 : 3} className={classes.graphContainer}>
               <Typography
                 color='textPrimary'
                 component='h2'
-                className={classes.price}
               >
                 Pool price level
               </Typography>

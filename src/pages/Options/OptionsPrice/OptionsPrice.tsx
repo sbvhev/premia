@@ -14,7 +14,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, Grid, Typography, RootRef } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
-import HelpIcon from '@material-ui/icons/HelpOutline';
+import HelpIcon from '@material-ui/icons/Help';
 import Draggable from 'react-draggable';
 import cx from 'classnames';
 
@@ -113,7 +113,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginLeft: 9,
     zIndex: 1,
     transition: 'all 0.5s',
-    color: palette.text.primary,
+    color: palette.text.secondary,
     [breakpoints.down('md')]: {
       marginLeft: 0,
       top: 8,
@@ -124,14 +124,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       alignItems: 'center',
       justifyContent: 'center',
       top: 2,
-      left: 20,
+      right: 10,
       [breakpoints.down('md')]: {
         position: 'relative',
       },
     },
     '& svg': {
       width: 14,
-      margin: '0 4px',
+      marginLeft: 4,
     },
   },
   priceFont: {

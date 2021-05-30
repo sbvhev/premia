@@ -19,6 +19,27 @@ import {
 } from 'state/options/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
+  optionButtons: {
+    padding: 3,
+    '& button': {
+      height: 41,
+      margin: 0,
+    }
+  },
+
+  titleText: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: palette.text.primary,
+    marginLeft: 8
+  },
+
+  descText: {
+    fontSize: 12,
+    fontWeight: 500,
+    color: palette.text.secondary
+  },
+
   optionSizeInputBox: {
     padding: 3,
     marginTop: 3,
@@ -216,6 +237,7 @@ const OptionFilter: React.FC = () => {
       <Box
         display='flex'
         border={1}
+        className={classes.optionButtons}
         borderColor={theme.palette.divider}
         borderRadius={12}
       >
@@ -243,9 +265,9 @@ const OptionFilter: React.FC = () => {
       </Box>
 
       <Box width={1} mt={2}>
-        <Typography color='textPrimary'>Strike Price</Typography>
+        <Typography className={classes.titleText}>Strike Price</Typography>
 
-        <Box width={1} mt={1}>
+        <Box width={1} mt={0.5}>
           <ColoredSlider
             min={50}
             max={1500}
@@ -263,7 +285,7 @@ const OptionFilter: React.FC = () => {
       </Box>
 
       <Box width={1} marginBottom={2}>
-        <Typography color='textPrimary'>Maturity</Typography>
+        <Typography className={classes.titleText}>Maturity</Typography>
         <Box
           position='relative'
           width={1}
@@ -299,14 +321,15 @@ const OptionFilter: React.FC = () => {
         width={1}
         mt={2}
       >
-        <Typography color='textPrimary'>Option Size</Typography>
-        <Typography color='textSecondary' component='span' variant='body2'>
+        <Typography className={classes.titleText}>Option Size</Typography>
+        <Typography className={classes.descText}>
           Max size available: 40012
         </Typography>
       </Box>
       <Box className={classes.optionSizeInputBox}>
         <UniIcon />
         <input
+          type='number'
           value={optionSize}
           onChange={(ev) => {
             setOptionSize(Number(ev.target.value));
