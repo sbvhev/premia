@@ -107,6 +107,10 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.background.paper,
     margin: 0,
     borderRadius: '12px',
+
+    '&:hover': {
+      backgroundColor: palette.background.paper,
+    },
   },
   swapButtonWrapperMobile: {
     position: 'absolute',
@@ -249,13 +253,9 @@ const useStyles = makeStyles(({ palette }) => ({
   maxButton: {
     position: 'relative',
     top: -43,
-    right: -170,
+    right: -168,
     zIndex: 3,
     width: '74px',
-    '&:hover': {
-      backgroundColor: palette.primary.main,
-      color: palette.background.paper,
-    },
   },
   maxButtonMobile: {
     position: 'relative',
