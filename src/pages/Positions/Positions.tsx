@@ -170,6 +170,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   fullWidth: {
     width: '100%',
+    maxWidth: 'unset'
   },
   yieldBox: {
     width: 38,
@@ -331,7 +332,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& .MuiBottomNavigation-root': {
       padding: 6,
       '&:nth-child(2)': {
-        minWidth: 300
+        minWidth: 300,
+        [breakpoints.down('xs')]: {
+          marginTop: 12
+        },
       },
       '& button': {
         padding: '6px 0',
@@ -352,7 +356,26 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 53,
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    '@media (max-width: 500px)': {
+      height: 'auto',
+      padding: '10px 0',
+      '& > div': {
+        width: '100%',
+      }
+    }
+  },
+  plInfoContainer: {
+    display: 'flex',
+    '@media (max-width: 500px)': {
+      marginLeft: 12,
+      marginTop: 8,
+      '& > div:last-child': {
+        marginRight: 0,
+        marginLeft: 10
+      }
+    }    
   },
   tableContainer: {
     '& thead tr th, & tbody tr td': {
@@ -549,15 +572,15 @@ const Positions: React.FC = () => {
       {!noPositions &&
         <Box mb={2.5}>
           <Grid container spacing={2}>
-            <Grid item sm={12} md={12} lg={8}>
-              <Container fixed>
-                <Grid container className={classes.infoHeading}>
-                  <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={12} md={12} lg={8}>
+              <Container fixed className={classes.fullWidth}>
+                <Box className={classes.infoHeading}>
+                  <Box>
                     <Typography className={classes.mainTitle}>
                       My P&L
                     </Typography>
-                  </Grid>
-                  <Grid item container xs={12} sm={8} justify={mobile ? 'flex-start' : 'flex-end'}>
+                  </Box>
+                  <Box className={classes.plInfoContainer}>
                     <Box display='flex' alignItems='center'>
                       <Box className={classes.yieldBox}>
                         <Box
@@ -611,8 +634,8 @@ const Positions: React.FC = () => {
                         </Typography>
                       </Box>
                     </Box>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
                 <Divider />
                 <LineChart
                   color = {theme.palette.success.dark}
@@ -632,7 +655,7 @@ const Positions: React.FC = () => {
               </Container>
             </Grid>
             <Grid item container sm={12} md={12} lg={4}>
-              <Container fixed>
+              <Container fixed className={classes.fullWidth}>
                 <Grid container direction='column' style={{ height: '100%' }}>
                   <Box className={classes.infoHeading}>
                     <Typography className={classes.mainTitle}>
