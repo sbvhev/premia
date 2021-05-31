@@ -440,7 +440,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '7px 6px',
       '&:first-child': {
         padding: '7px 0px 7px 23px',
-        [breakpoints.up('sm')]: {
+        [breakpoints.down('sm')]: {
           padding: '7px 6px 7px 13px'
         }
       },
@@ -454,7 +454,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '10px 6px',
       '&:first-child': {
         padding: '10px 0px 10px 15px',
-        [breakpoints.up('sm')]: {
+        [breakpoints.down('sm')]: {
           padding: '10px 6px'
         }
       },
