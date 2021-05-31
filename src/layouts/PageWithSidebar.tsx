@@ -16,6 +16,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
+    overflowX: 'hidden',
     flexDirection: 'column',
     marginLeft: 260,
   },
