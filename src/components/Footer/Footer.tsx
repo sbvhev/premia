@@ -82,7 +82,6 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    // background: 'green',
     color: palette.text.secondary,
     padding: '6px',
     '& svg': {

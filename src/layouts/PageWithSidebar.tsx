@@ -50,7 +50,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   };
 
   return (
-    <Box bgcolor='background.default' overflow='auto'>
+    <Box bgcolor='background.default'>
       <Grid container>
         {!mobile && (
           <Box position='fixed' left={0} width={210}>
@@ -58,50 +58,49 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           </Box>
         )}
 
-        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
-          {!hideAccountButtons && (
-            <Box
-              position='fixed'
-              width={mobile ? 1 : 'calc(100% - 210px)'}
-              zIndex={10}
-              bgcolor={!mobile ? palette.background.default : palette.background.paper}
-              p={mobile ? 1 : 3} px={mobile ? 1 : 3}
-              className={cx(mobile && classes.border)}
-              height={mobile ? "60px" : '96px'}
-            >
-              <Grid container justify='space-between' alignItems='center'>
+        <Box className={cx(classes.page, mobile && classes.pageMobile)} id="test1">
+          <Box
+            position='fixed'
+            width={mobile ? 1 : 'calc(100% - 210px)'}
+            zIndex={10}
+            bgcolor={!mobile ? palette.background.default : palette.background.paper}
+            p={mobile ? 1 : 3} px={mobile ? 1 : 3}
+            className={cx(mobile && classes.border)}
+            height={mobile ? "60px" : '96px'}
+            
+          >
+            <Grid container justify='space-between' alignItems='center'>
+              {mobile && (
+                <Box display="flex" alignItems="center" marginLeft="8px">
+                  <img
+                    src={darkMode ? MainLogo : MainLogoBlack}
+                    alt='main logo'
+                  />
+                </Box>
+              )}
+              <Grid style={{ height: '48px' }}>
                 {mobile && (
-                  <Box display="flex" alignItems="center" marginLeft="8px">
-                    <img
-                      src={darkMode ? MainLogo : MainLogoBlack}
-                      alt='main logo'
+                  <IconButton
+                  style={{ height: '48px' }}
+                    onClick={() =>
+                      setMobileSidebarHidden(!mobileSidebarHidden)
+                    }
+                  >
+                    <Hamburger
+                      color={theme.palette.text.secondary}
+                      toggled={!mobileSidebarHidden}
+                      toggle={setMobileSidebarHidden}
                     />
-                  </Box>
-                )}
-                <Grid style={{ height: '48px' }}>
-                  {mobile && (
-                    <IconButton
-                    style={{ height: '48px' }}
-                      onClick={() =>
-                        setMobileSidebarHidden(!mobileSidebarHidden)
-                      }
-                    >
-                      <Hamburger
-                        color={theme.palette.text.secondary}
-                        toggled={!mobileSidebarHidden}
-                        toggle={setMobileSidebarHidden}
-                      />
-                      </IconButton>
-                    )}
-                  </Grid>
-                  {!mobile && (
-                    <Grid item>
-                      <AccountButtons />
-                    </Grid>
+                    </IconButton>
                   )}
                 </Grid>
-            </Box>
-          )}
+                {!mobile && (
+                  <Grid item>
+                    <AccountButtons />
+                  </Grid>
+                )}
+              </Grid>
+          </Box>
 
           { mobile && !mobileSidebarHidden &&
             <Box
@@ -111,7 +110,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               mb={mobile ? 0 : 7}
               height="555px"
               maxHeight="calc(100vh - 160px)"
-              style={{ backgroundColor: palette.background.paper, overflowX: 'auto'}}
+              style={{ backgroundColor: palette.background.paper}}
             >
               <Box p={!mobile ? 1 : 0}>
                 <AccountButtons mobile />
@@ -132,50 +131,49 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           }
 
           {mobileSidebarHidden && (
-            <>
-            <Box
-              px={mobile ? 0 : 3}
-              width={1}
-              mx='auto'
-              mt={!mobile ? 14 : 10}
-              mb={mobile ? 10 : 7}
-              overflow="auto"
-            >
-              <Container>{children}</Container>
-            </Box>
-            {!mobile ? (
-            <Box
-              position="fixed"
-              width="calc(100% - 210px)"
-              bottom={0}
-              zIndex={14}
-              bgcolor={palette.background.default}
-            >
-              <Footer />
-            </Box>
-          ) : (
-            <Box
-                position="abolute"
+            <> 
+              <Box
+                px={mobile ? 0 : 3}
+                width={1}
+                mx='auto'
+                mt={!mobile ? 14 : 10}
+                mb={mobile ? 10 : 7}
+                // overflow='scroll'
+              >
+                <Container>{children}</Container>
+              </Box>
+              {!mobile ? (
+                <Box
+                  position="fixed"
+                  width="calc(100% - 210px)"
+                  bottom={0}
+                  zIndex={14}
+                  bgcolor={palette.background.default}
+                >
+                  <Footer />
+                </Box>
+                  ) : (
+                <Box
+                  position="fixed"
+                  width="100%"
+                  bottom={0}
+                  zIndex={14}
+                >
+                  <Footer />
+                </Box>
+                )}
+            </>)}
+
+            {mobile && !mobileSidebarHidden && (
+              <Box
+                position="fixed"
                 width="100%"
                 bottom={0}
-                zIndex={4}
+                zIndex={14}
               >
                 <Footer />
-              </Box>)}
-            </>
-          )}
-
-          {!mobileSidebarHidden && mobile && (
-            <Box
-              position="fixed"
-              width="100%"
-              zIndex={10}
-              bottom={0}
-              height="100px"
-            >
-              <Footer />
-            </Box>
-          )}
+              </Box>
+            )}
           
         </Box>
       </Grid>

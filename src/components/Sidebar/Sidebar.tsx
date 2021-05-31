@@ -151,12 +151,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, hide }) => {
       <Grid container direction='column' justify='space-between'>
         <Box>
           {!mobile && (
-            <Grid container justify='center' component={Link} to='/'>
+            <Grid container component={Link} to='/'>
               <Box pb={3}>
                 <img
                   src={darkMode ? MainLogo : MainLogoBlack}
                   alt='Logo'
-                  style={{}}
+                  style={{marginLeft: '15px'}}
                 />
               </Box>
             </Grid>

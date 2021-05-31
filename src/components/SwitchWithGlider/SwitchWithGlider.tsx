@@ -25,7 +25,7 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '10px',
     cursor: 'pointer',
     '&:hover': {
-      // border: `1px solid ${palette.divider}`,
+      border: `1px solid ${palette.divider}`,
     },
   },
 }));
