@@ -41,6 +41,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const theme = useTheme();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const classes = useStyles();
 
   return (
@@ -60,7 +61,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               zIndex={10}
               bgcolor='background.default'
               p={mobile ? 1 : 3}
-              px={mobile ? 2 : 3}
+              px={mobile ? 2 : tablet ? 0 : 3}
               className={cx(mobile && classes.border)}
             >
               <Container>
@@ -119,7 +120,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           {mobileSidebarHidden && (
             <Box
-              px={mobile ? 0 : 3}
+              px={tablet ? 0 : 3}
               width={1}
               mx='auto'
               mt={14}

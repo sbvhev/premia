@@ -413,15 +413,34 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         width: 187,
         '& button': {
           width: 85,
-          margin: '0 7px 0 0',
+          margin: 0,
+          '&:first-child': {
+            marginRight: 7
+          },
           '&.MuiButton-outlined': {
             color: palette.text.secondary
+          }
+        },
+        '@media (max-width: 1048px)': {
+          width: 150,
+          '& button': {
+            width: 64,
+            '&:first-child': {
+              marginRight: 4
+            },  
+            margin: '0 7px 0 0',
+            '&.MuiButton-outlined': {
+              color: palette.text.secondary
+            }
           }
         }
       }
     },
     '& thead tr th': {
-      padding: '7px 23px',
+      padding: '7px 6px',
+      '&:first-child': {
+        padding: '7px 0px 7px 12px',
+      },
       '&.buttonCell': {
         '& button': {
           color: palette.text.secondary,
@@ -429,7 +448,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       }
     },
     '& tbody tr td': {
-      padding: '10px 23px',
+      padding: '10px 6px',
       '&.buttonCell': {
         '& button': {
           color: palette.background.paper
@@ -439,9 +458,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   tokenIconCell: {
     display: 'flex',
-    alignItems: 'center',
-    '& svg': {
+    alignItems: 'flex-end',
+    lineHeight: 1.3,
+    '& > div': {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
       marginRight: 4,
+      [breakpoints.up('sm')]: {
+        width: 21
+      }
+    },
+    '& svg': {
       '& path': {
         fill: palette.secondary.main
       }
@@ -800,7 +828,7 @@ const Positions: React.FC = () => {
                             alignItems='center'
                           >
                             <Box className={classes.tokenIconCell}>
-                              {item.tokenIcon}
+                              <Box>{item.tokenIcon}</Box>
                               {item.symbol}
                             </Box>
                             <Box
@@ -875,7 +903,7 @@ const Positions: React.FC = () => {
                         <TableRow key={index}>
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
-                              {item.tokenIcon}
+                              <Box>{item.tokenIcon}</Box>
                               {item.symbol}
                             </Box>
                           </TableCell>
@@ -946,7 +974,7 @@ const Positions: React.FC = () => {
                           alignItems='center'
                         >
                           <Box className={classes.tokenIconCell}>
-                            {item.tokenIcon}
+                            <Box>{item.tokenIcon}</Box>
                             {item.symbol}
                           </Box>
                           <Box display='flex' alignItems='center'>
@@ -1036,7 +1064,7 @@ const Positions: React.FC = () => {
                         <TableRow key={index}>
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
-                              {item.tokenIcon}
+                              <Box>{item.tokenIcon}</Box>
                               {item.symbol}
                             </Box>
                           </TableCell>
