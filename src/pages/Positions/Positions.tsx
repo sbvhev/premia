@@ -18,11 +18,13 @@ import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
-import VaultIcon from 'assets/svg/VaultIcon.svg';
-import UniIcon from 'assets/svg/UniIcon.svg';
-import LinkIcon from 'assets/svg/LinkIcon.svg';
-import YFIIcon from 'assets/svg/YFIIcon.svg';
-import DaiIcon from 'assets/svg/Dai.svg';
+import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
+import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
+import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
+import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
+import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
+import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
+import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -51,7 +53,7 @@ const getYieldHeadCells = () => [
     label: (
       <>
         Capital
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.capital,
@@ -68,7 +70,7 @@ const getYieldHeadCells = () => [
     label: (
       <>
         Earned
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.earned,
@@ -113,7 +115,7 @@ const getOptionsHeadCells = () => [
     label: (
       <>
         Strike
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.strike,
@@ -124,7 +126,7 @@ const getOptionsHeadCells = () => [
     label: (
       <>
         Current Value
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.value,
@@ -148,7 +150,7 @@ const getOptionsHeadCells = () => [
 const SellAllButton: React.FC = () => {
   return (
     <Button variant='outlined' size='large'>
-      Sell All
+      Exercise all
     </Button>
   );
 };
@@ -344,7 +346,24 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
-  }
+  },
+  tableContainer: {
+    '& thead tr th, & tbody tr td': {
+      fontSize: 14,
+      padding: '6px 23px',
+      borderBottom: `1px solid ${palette.divider}`
+    },
+  },
+  tokenIconCell: {
+    display: 'flex',
+    alignItems: 'center',
+    '& svg': {
+      marginRight: 4,
+      '& path': {
+        fill: palette.secondary.main
+      }
+    }
+  },
 }));
 
 const Positions: React.FC = () => {
@@ -361,7 +380,7 @@ const Positions: React.FC = () => {
 
   const yieldData = [
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       capital: 15002,
       type: 'vault',
@@ -370,7 +389,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: LinkIcon,
+      tokenIcon: <LinkIcon />,
       symbol: 'Link',
       capital: 15002,
       option: 'call',
@@ -380,7 +399,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: YFIIcon,
+      tokenIcon: <YFIIcon />,
       symbol: 'YFI',
       capital: 15002,
       option: 'put',
@@ -390,7 +409,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       capital: 15002,
       type: 'vault',
@@ -402,7 +421,7 @@ const Positions: React.FC = () => {
 
   const optionsData = [
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'call',
@@ -411,7 +430,7 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'call',
@@ -420,7 +439,7 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'put',
@@ -515,7 +534,7 @@ const Positions: React.FC = () => {
                           className={classes.price}
                         >
                           124,098
-                          <img src={DaiIcon} alt='Dai Icon' />
+                          <DaiIcon />
                         </Typography>
                       </Box>
                     </Box>
@@ -649,7 +668,7 @@ const Positions: React.FC = () => {
       ) : (
         <>
           {positionFilter === 0 &&
-            <>
+            <Box className={classes.tableContainer}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
@@ -695,12 +714,8 @@ const Positions: React.FC = () => {
                             justifyContent='space-between'
                             alignItems='center'
                           >
-                            <Box>
-                              <img
-                                src={item.tokenIcon}
-                                alt={item.symbol}
-                                className={classes.tableCellIcon}
-                              />
+                            <Box className={classes.tokenIconCell}>
+                              {item.tokenIcon}
                               {item.symbol}
                             </Box>
                             <Box
@@ -728,14 +743,14 @@ const Positions: React.FC = () => {
                               <Typography color='textSecondary'>
                                 Current Value
                               </Typography>
-                              <img src={DaiIcon} alt='Dai Icon' />
+                              <DaiIcon />
                             </Box>
                             {formatNumber(item.value)}
                           </Box>
                           <Box className={classes.cardRow}>
                             <Box display='flex' alignItems='center'>
                               <Typography color='textSecondary'>Strike</Typography>
-                              <img src={DaiIcon} alt='Dai Icon' />
+                              <DaiIcon />
                             </Box>
                             {formatNumber(item.strike)}
                           </Box>
@@ -756,7 +771,7 @@ const Positions: React.FC = () => {
                               color='primary'
                               onClick={() => setPositionModalOpen(true)}
                             >
-                              Sell
+                              Exercise
                             </Button>
                           </Box>
                         </Container>
@@ -767,16 +782,16 @@ const Positions: React.FC = () => {
                     headCells={optionsHeadCells}
                     data={optionsData}
                     rowPerPage={5}
+                    sortUpIcon={<UpArrow />}
+                    sortDownIcon={<DownArrow />}
                     renderRow={(item: any, index) => {
                       return (
                         <TableRow key={index}>
                           <TableCell>
-                            <img
-                              src={item.tokenIcon}
-                              alt={item.symbol}
-                              className={classes.tableCellIcon}
-                            />
-                            {item.symbol}
+                            <Box className={classes.tokenIconCell}>
+                              {item.tokenIcon}
+                              {item.symbol}
+                            </Box>
                           </TableCell>
                           <TableCell>{formatNumber(item.size)}</TableCell>
                           <TableCell>
@@ -810,7 +825,7 @@ const Positions: React.FC = () => {
                               color='primary'
                               onClick={() => setPositionModalOpen(true)}
                             >
-                              Sell
+                              Exercise
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -819,10 +834,10 @@ const Positions: React.FC = () => {
                   />
                 )}
               </Box>
-            </>
+            </Box>
           }
           {positionFilter === 1 && 
-            <>
+            <Box className={classes.tableContainer}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
@@ -837,93 +852,89 @@ const Positions: React.FC = () => {
                   <>
                     {yieldData.map((item: any, index) => (
                       <Container fixed>
-                          <Box
-                            width={1}
-                            display='flex'
-                            p={1}
-                            justifyContent='space-between'
-                            alignItems='center'
-                          >
-                            <Box>
-                              <img
-                                src={item.tokenIcon}
-                                alt={item.symbol}
-                                className={classes.tableCellIcon}
-                              />
-                              {item.symbol}
-                            </Box>
-                            <Box display='flex' alignItems='center'>
-                              {item.name}
-                              <Box ml={2} display='flex' alignItems='center'>
-                                <Box
-                                  className={cx(
-                                    classes.typeBox,
-                                    item.type === 'vault'
-                                      ? classes.vault
-                                      : item.option === 'call'
-                                      ? classes.call
-                                      : classes.put,
-                                  )}
-                                >
-                                  <Box />
-                                  {item.type === 'vault' ? (
-                                    <img src={VaultIcon} alt='vault' />
-                                  ) : item.option === 'call' ? (
-                                    <ArrowUpwardIcon />
-                                  ) : (
-                                    <ArrowDownwardIcon />
-                                  )}
-                                  {item.type}
-                                </Box>
+                        <Box
+                          width={1}
+                          display='flex'
+                          p={1}
+                          justifyContent='space-between'
+                          alignItems='center'
+                        >
+                          <Box className={classes.tokenIconCell}>
+                            {item.tokenIcon}
+                            {item.symbol}
+                          </Box>
+                          <Box display='flex' alignItems='center'>
+                            {item.name}
+                            <Box ml={2} display='flex' alignItems='center'>
+                              <Box
+                                className={cx(
+                                  classes.typeBox,
+                                  item.type === 'vault'
+                                    ? classes.vault
+                                    : item.option === 'call'
+                                    ? classes.call
+                                    : classes.put,
+                                )}
+                              >
+                                <Box />
+                                {item.type === 'vault' ? (
+                                  <VaultIcon />
+                                ) : item.option === 'call' ? (
+                                  <ArrowUpwardIcon />
+                                ) : (
+                                  <ArrowDownwardIcon />
+                                )}
+                                {item.type}
                               </Box>
                             </Box>
                           </Box>
-                          <Divider />
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>Capital</Typography>
-                              <img src={DaiIcon} alt='Dai Icon' />
-                            </Box>
-                            {formatNumber(item.capital)}
+                        </Box>
+                        <Divider />
+                        <Box className={classes.cardRow}>
+                          <Box display='flex' alignItems='center'>
+                            <Typography color='textSecondary'>Capital</Typography>
+                            <DaiIcon />
                           </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>Earned</Typography>
-                              <img src={DaiIcon} alt='Dai Icon' />
-                            </Box>
-                            {item.earned}
+                          {formatNumber(item.capital)}
+                        </Box>
+                        <Box className={classes.cardRow}>
+                          <Box display='flex' alignItems='center'>
+                            <Typography color='textSecondary'>Earned</Typography>
+                            <DaiIcon />
                           </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Expected APY
-                              </Typography>
-                            </Box>
-                            {item.apy}
+                          {item.earned}
+                        </Box>
+                        <Box className={classes.cardRow}>
+                          <Box display='flex' alignItems='center'>
+                            <Typography color='textSecondary'>
+                              Expected APY
+                            </Typography>
                           </Box>
-                          <Box px={1} my={1.5}>
-                            <Grid container spacing={1}>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  color='primary'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Add
-                                </Button>
-                              </Grid>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  variant='outlined'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Remove
-                                </Button>
-                              </Grid>
+                          {item.apy}
+                        </Box>
+                        <Box px={1} my={1.5}>
+                          <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                              <Button
+                                fullWidth
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Add
+                              </Button>
                             </Grid>
-                          </Box>
-                        </Container>
+                            <Grid item xs={6}>
+                              <Button
+                                fullWidth
+                                variant='outlined'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Remove
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Container>
                     ))}
                   </>
                 ) : (
@@ -935,12 +946,10 @@ const Positions: React.FC = () => {
                       return (
                         <TableRow key={index}>
                           <TableCell>
-                            <img
-                              src={item.tokenIcon}
-                              alt={item.symbol}
-                              className={classes.tableCellIcon}
-                            />
-                            {item.symbol}
+                            <Box className={classes.tokenIconCell}>
+                              {item.tokenIcon}
+                              {item.symbol}
+                            </Box>
                           </TableCell>
                           <TableCell>{formatNumber(item.capital)}</TableCell>
                           <TableCell>
@@ -958,7 +967,7 @@ const Positions: React.FC = () => {
                               >
                                 <Box />
                                 {item.type === 'vault' ? (
-                                  <img src={VaultIcon} alt='vault' />
+                                  <VaultIcon />
                                 ) : item.option === 'call' ? (
                                   <ArrowUpwardIcon />
                                 ) : (
@@ -991,7 +1000,7 @@ const Positions: React.FC = () => {
                   />
                 )}
               </Box>
-            </>
+            </Box>
           }
         </>
       )}
