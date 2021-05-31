@@ -238,8 +238,8 @@ const Options: React.FC = () => {
               <LineChart
                 color={
                   optionType === 'call'
-                    ? theme.palette.success.dark
-                    : theme.palette.error.main
+                    ? '#14A887'
+                    : '#BF47C3'
                 }
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={[
