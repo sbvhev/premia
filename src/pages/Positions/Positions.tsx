@@ -310,10 +310,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     alignItems: 'center',
     padding: '26px 0',
-    '& img': {
-      marginTop: 3,
-      marginBottom: -3,
-    },
     '& a': {
       textDecoration: 'none',
     },
@@ -512,6 +508,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         fill: palette.background.paper
       }
     }
+  },
+  noPositionImage: {
+    width: 92,
+    height: 92,
+    display: 'flex',
+    alignItems: 'center',
   }
 }));
 
@@ -526,6 +528,8 @@ const Positions: React.FC = () => {
 
   const yieldHeadCells = getYieldHeadCells();
   const optionsHeadCells = getOptionsHeadCells();
+
+  const noPositions = false;
 
   const yieldData = [
     {
@@ -598,8 +602,6 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
   ];
-
-  const noPositions = false;
 
   return (
     <PageWithSidebar>
@@ -769,7 +771,9 @@ const Positions: React.FC = () => {
             <Container fixed className={classes.noPositionBox}>
               {positionFilter === 0 &&
                 <>
-                  <img src={NoPositionOptions} alt='No Options' />
+                  <Box className={classes.noPositionImage}>
+                    <img src={NoPositionOptions} alt='No Options' />
+                  </Box>
                   <Box ml={3}>
                     <Typography component='h2'>Your options</Typography>
                     <Link to='/options'>
@@ -785,7 +789,9 @@ const Positions: React.FC = () => {
               }
               {positionFilter === 1 &&
                 <>
-                  <img src={NoPositionYield} alt='No Yield' />
+                  <Box className={classes.noPositionImage}>
+                    <img src={NoPositionYield} alt='No Yield' />
+                  </Box>
                   <Box ml={3}>
                     <Typography component='h2'>Your yield</Typography>
                     <Link to='/vaults'>
