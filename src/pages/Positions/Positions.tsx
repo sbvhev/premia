@@ -161,16 +161,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 28,
     fontWeight: 700,
     lineHeight: 0.64,
-    margin: '0 13px'
+    margin: '0 13px',
   },
   mainTitle: {
     fontSize: 16,
     fontWeight: 700,
-    marginLeft: 16
+    marginLeft: 16,
   },
   fullWidth: {
     width: '100%',
-    maxWidth: 'unset'
+    maxWidth: 'unset',
   },
   yieldBox: {
     width: 38,
@@ -330,16 +330,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       '&:nth-child(2)': {
         minWidth: 300,
         [breakpoints.down('xs')]: {
-          marginTop: 12
+          marginTop: 12,
         },
       },
       '& button': {
         padding: '6px 0',
         '& svg': {
-          marginRight: 7
-        }
-      }
-    }
+          marginRight: 7,
+        },
+      },
+    },
   },
   expiredIcon: {
     background: 'linear-gradient(266.96deg, #EB7A4A 29.5%, #F643CF 117.72%)',
@@ -354,8 +354,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     right: 10,
     '& p': {
       fontSize: 8,
-      color: palette.common.black
-    }
+      color: palette.common.black,
+    },
   },
   findPositionButton: {
     minWidth: 169,
@@ -375,8 +375,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '10px 0',
       '& > div': {
         width: '100%',
-      }
-    }
+      },
+    },
   },
   plInfoContainer: {
     display: 'flex',
@@ -385,9 +385,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginTop: 8,
       '& > div:last-child': {
         marginRight: 0,
-        marginLeft: 10
-      }
-    }    
+        marginLeft: 10,
+      },
+    },
   },
   tableContainer: {
     '& thead tr th, & tbody tr td': {
@@ -402,8 +402,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           width: '100%',
           height: 40,
           fontSize: 14,
-          fontWeight: 700
-        }  
+          fontWeight: 700,
+        },
       },
       '&.yieldButtonCell': {
         padding: '6px 3px 7px 0',
@@ -412,11 +412,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           width: 85,
           margin: 0,
           '&:first-child': {
-            marginRight: 7
+            marginRight: 7,
           },
           '&.MuiButton-outlined': {
-            color: palette.text.secondary
-          }
+            color: palette.text.secondary,
+          },
         },
         '@media (max-width: 1048px)': {
           width: 140,
@@ -424,42 +424,42 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
             width: 64,
             margin: 0,
             '&:first-child': {
-              marginRight: 4
+              marginRight: 4,
             },
             '&.MuiButton-outlined': {
-              color: palette.text.secondary
-            }
-          }
-        }
-      }
+              color: palette.text.secondary,
+            },
+          },
+        },
+      },
     },
     '& thead tr th': {
       padding: '7px 6px',
       '&:first-child': {
         padding: '7px 0px 7px 23px',
         [breakpoints.down('sm')]: {
-          padding: '7px 6px 7px 13px'
-        }
+          padding: '7px 6px 7px 13px',
+        },
       },
       '&.buttonCell': {
         '& button': {
           color: palette.text.secondary,
-        }  
-      }
+        },
+      },
     },
     '& tbody tr td': {
       padding: '10px 6px',
       '&:first-child': {
         padding: '10px 0px 10px 15px',
         [breakpoints.down('sm')]: {
-          padding: '10px 6px'
-        }
+          padding: '10px 6px',
+        },
       },
       '&.buttonCell': {
         '& button': {
-          color: palette.background.paper
-        }
-      }
+          color: palette.background.paper,
+        },
+      },
     },
   },
   tokenIconCell: {
@@ -472,14 +472,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       alignItems: 'center',
       marginRight: 8,
       [breakpoints.up('sm')]: {
-        width: 21
-      }
+        width: 21,
+      },
     },
     '& svg': {
       '& path': {
-        fill: palette.secondary.main
-      }
-    }
+        fill: palette.secondary.main,
+      },
+    },
   },
   exercisedCell: {
     display: 'flex',
@@ -505,16 +505,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       color: '#D4E1F4',
       '& svg': {
         width: 12,
-        fill: palette.background.paper
-      }
-    }
+        fill: palette.background.paper,
+      },
+    },
   },
   noPositionImage: {
     width: 92,
     height: 92,
     display: 'flex',
     alignItems: 'center',
-  }
+  },
 }));
 
 const Positions: React.FC = () => {
@@ -611,11 +611,7 @@ const Positions: React.FC = () => {
           setPositionModalOpen(false);
         }}
       />
-      <Typography
-        component='h1'
-        color='textPrimary'
-        className={classes.title}
-      >
+      <Typography component='h1' color='textPrimary' className={classes.title}>
         My dashboard
       </Typography>
       <Grid container className={classes.positionFilterContainer}>
@@ -627,18 +623,10 @@ const Positions: React.FC = () => {
           }}
           showLabels={true}
         >
-          <BottomNavigationAction
-            label='Options'
-            icon={<OptionsIcon />}
-          />
-          <BottomNavigationAction
-            label='Yield'
-            icon={
-              <YieldIcon />
-            }
-          />
+          <BottomNavigationAction label='Options' icon={<OptionsIcon />} />
+          <BottomNavigationAction label='Yield' icon={<YieldIcon />} />
         </BottomNavigation>
-        {!noPositions &&
+        {!noPositions && (
           <BottomNavigation
             value={yieldFilter}
             className={cx(mobile && classes.fullWidth)}
@@ -650,10 +638,10 @@ const Positions: React.FC = () => {
             <BottomNavigationAction label='Today' />
             <BottomNavigationAction label='This week' />
             <BottomNavigationAction label='This month' />
-          </BottomNavigation>      
-        }
+          </BottomNavigation>
+        )}
       </Grid>
-      {!noPositions &&
+      {!noPositions && (
         <Box mb={2.5}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12} lg={8}>
@@ -722,8 +710,8 @@ const Positions: React.FC = () => {
                 </Box>
                 <Divider />
                 <LineChart
-                  color = '#14A887'
-                  showYAxis = { true }
+                  color='#14A887'
+                  showYAxis={true}
                   data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                   categories={[
                     '2021/5/24',
@@ -748,15 +736,21 @@ const Positions: React.FC = () => {
                     </Typography>
                   </Box>
                   <Divider />
-                  <Box display='flex' flex={1} height={1} justifyContent='center' alignItems='center'>
+                  <Box
+                    display='flex'
+                    flex={1}
+                    height={1}
+                    justifyContent='center'
+                    alignItems='center'
+                  >
                     <DonutChart data={[73, 27]} labels={['ETH', 'Uni']} />
                   </Box>
                 </Grid>
               </Container>
             </Grid>
-          </Grid>          
+          </Grid>
         </Box>
-      }
+      )}
       {noPositions ? (
         <Box className={classes.noPositionsContainer}>
           <Typography
@@ -769,7 +763,7 @@ const Positions: React.FC = () => {
           </Typography>
           <Box mt={mobile ? 3 : 5}>
             <Container fixed className={classes.noPositionBox}>
-              {positionFilter === 0 &&
+              {positionFilter === 0 && (
                 <>
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionOptions} alt='No Options' />
@@ -786,8 +780,8 @@ const Positions: React.FC = () => {
                     </Link>
                   </Box>
                 </>
-              }
-              {positionFilter === 1 &&
+              )}
+              {positionFilter === 1 && (
                 <>
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionYield} alt='No Yield' />
@@ -804,7 +798,7 @@ const Positions: React.FC = () => {
                     </Link>
                   </Box>
                 </>
-              }
+              )}
             </Container>
           </Box>
           <Grid
@@ -826,7 +820,7 @@ const Positions: React.FC = () => {
         </Box>
       ) : (
         <>
-          {positionFilter === 0 &&
+          {positionFilter === 0 && (
             <Box className={classes.tableContainer}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
@@ -854,7 +848,9 @@ const Positions: React.FC = () => {
                       icon={
                         <>
                           <WarningIcon />
-                          <Box className={classes.expiredIcon}><Typography>1</Typography></Box>
+                          <Box className={classes.expiredIcon}>
+                            <Typography>1</Typography>
+                          </Box>
                         </>
                       }
                     />
@@ -866,82 +862,85 @@ const Positions: React.FC = () => {
                   <>
                     {optionsData.map((item: any, index) => (
                       <Container fixed>
+                        <Box
+                          width={1}
+                          display='flex'
+                          p={1}
+                          justifyContent='space-between'
+                          alignItems='center'
+                        >
+                          <Box className={classes.tokenIconCell}>
+                            <Box>{item.tokenIcon}</Box>
+                            {item.symbol}
+                          </Box>
                           <Box
-                            width={1}
-                            display='flex'
-                            p={1}
-                            justifyContent='space-between'
-                            alignItems='center'
+                            className={cx(
+                              classes.typeBox,
+                              item.type === 'call' ? classes.call : classes.put,
+                            )}
                           >
-                            <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
-                            </Box>
-                            <Box
-                              className={cx(
-                                classes.typeBox,
-                                item.type === 'call' ? classes.call : classes.put,
-                              )}
-                            >
-                              <Box />
-                              {item.type === 'call' ? (
-                                <ArrowUpwardIcon />
-                              ) : (
-                                <ArrowDownwardIcon />
-                              )}
-                              {item.type}
-                            </Box>
+                            <Box />
+                            {item.type === 'call' ? (
+                              <ArrowUpwardIcon />
+                            ) : (
+                              <ArrowDownwardIcon />
+                            )}
+                            {item.type}
                           </Box>
-                          <Divider />
-                          <Box className={classes.cardRow}>
-                            <Typography color='textSecondary'>Size</Typography>
-                            {formatNumber(item.size)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Current Value
-                              </Typography>
-                              <DaiIcon />
-                            </Box>
-                            {formatNumber(item.value)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>Strike</Typography>
-                              <DaiIcon />
-                            </Box>
-                            {formatNumber(item.strike)}
-                          </Box>
-                          <Box className={classes.cardRow}>
+                        </Box>
+                        <Divider />
+                        <Box className={classes.cardRow}>
+                          <Typography color='textSecondary'>Size</Typography>
+                          {formatNumber(item.size)}
+                        </Box>
+                        <Box className={classes.cardRow}>
+                          <Box display='flex' alignItems='center'>
                             <Typography color='textSecondary'>
-                              Expiration
+                              Current Value
                             </Typography>
-                            <Box textAlign='right'>
-                              {Moment(item.expiration).format('DD MMM')}
-                              <Typography color='textSecondary'>
-                                2 days left
-                              </Typography>
+                            <DaiIcon />
+                          </Box>
+                          {formatNumber(item.value)}
+                        </Box>
+                        <Box className={classes.cardRow}>
+                          <Box display='flex' alignItems='center'>
+                            <Typography color='textSecondary'>
+                              Strike
+                            </Typography>
+                            <DaiIcon />
+                          </Box>
+                          {formatNumber(item.strike)}
+                        </Box>
+                        <Box className={classes.cardRow}>
+                          <Typography color='textSecondary'>
+                            Expiration
+                          </Typography>
+                          <Box textAlign='right'>
+                            {Moment(item.expiration).format('DD MMM')}
+                            <Typography color='textSecondary'>
+                              2 days left
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box px={1} my={1.5}>
+                          {item.exercised ? (
+                            <Box className={classes.exercisedCell}>
+                              <Box>
+                                <DoneIcon />
+                              </Box>
+                              <Typography>Exercised for 100</Typography>
                             </Box>
-                          </Box>
-                          <Box px={1} my={1.5}>
-                            {
-                              item.exercised ?
-                                <Box className={classes.exercisedCell}>
-                                  <Box><DoneIcon /></Box>
-                                  <Typography>Exercised for 100</Typography>
-                                </Box>
-                              :
-                              <Button
-                                fullWidth
-                                color='primary'
-                                onClick={() => setPositionModalOpen(true)}
-                              >
-                                Exercise
-                              </Button>
-                            }
-                          </Box>
-                        </Container>
+                          ) : (
+                            <Button
+                              fullWidth
+                              color='primary'
+                              onClick={() => setPositionModalOpen(true)}
+                            >
+                              Exercise
+                            </Button>
+                          )}
+                        </Box>
+                      </Container>
                     ))}
                   </>
                 ) : (
@@ -966,7 +965,9 @@ const Positions: React.FC = () => {
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'call' ? classes.call : classes.put,
+                                item.type === 'call'
+                                  ? classes.call
+                                  : classes.put,
                               )}
                             >
                               <Box />
@@ -989,20 +990,21 @@ const Positions: React.FC = () => {
                             </Box>
                           </TableCell>
                           <TableCell className='buttonCell'>
-                            {
-                          item.exercised ?
-                            <Box className={classes.exercisedCell}>
-                              <Box><DoneIcon /></Box>
-                              <Typography>Exercised for 100</Typography>
-                            </Box>
-                          :
-                        <Button
-                          color='primary'
-                          onClick={() => setPositionModalOpen(true)}
-                        >
-                          Exercise
-                        </Button>
-                            }
+                            {item.exercised ? (
+                              <Box className={classes.exercisedCell}>
+                                <Box>
+                                  <DoneIcon />
+                                </Box>
+                                <Typography>Exercised for 100</Typography>
+                              </Box>
+                            ) : (
+                              <Button
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Exercise
+                              </Button>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
@@ -1011,8 +1013,8 @@ const Positions: React.FC = () => {
                 )}
               </Box>
             </Box>
-          }
-          {positionFilter === 1 && 
+          )}
+          {positionFilter === 1 && (
             <Box className={classes.tableContainer}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
@@ -1068,14 +1070,18 @@ const Positions: React.FC = () => {
                         <Divider />
                         <Box className={classes.cardRow}>
                           <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>Capital</Typography>
+                            <Typography color='textSecondary'>
+                              Capital
+                            </Typography>
                             <DaiIcon />
                           </Box>
                           {formatNumber(item.capital)}
                         </Box>
                         <Box className={classes.cardRow}>
                           <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>Earned</Typography>
+                            <Typography color='textSecondary'>
+                              Earned
+                            </Typography>
                             <DaiIcon />
                           </Box>
                           {item.earned}
@@ -1180,7 +1186,7 @@ const Positions: React.FC = () => {
                 )}
               </Box>
             </Box>
-          }
+          )}
         </>
       )}
     </PageWithSidebar>

@@ -42,12 +42,12 @@ const DonutChart: React.FC<DonutChartProps> = ({
     },
     labels,
     legend: {
-      formatter: (val:any, opts:any) => {
-        return val + " - " + opts.w.globals.series[opts.seriesIndex]
-      }
+      formatter: (val: any, opts: any) => {
+        return val + ' - ' + opts.w.globals.series[opts.seriesIndex];
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
       width: 0,

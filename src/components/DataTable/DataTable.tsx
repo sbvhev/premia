@@ -11,7 +11,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Paper
+  Paper,
 } from '@material-ui/core';
 
 import { SortOrder, getComparator, stableSort } from './sort';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     sortIcon: {
       marginLeft: 4,
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     headCellLabel: {
       cursor: 'default',
@@ -58,20 +58,20 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: 3,
         width: 16,
         '& path': {
-          fill: theme.palette.text.secondary
-        }  
+          fill: theme.palette.text.secondary,
+        },
       },
     },
     sortRequestedHeadLabel: {
       color: theme.palette.primary.main,
       '& svg path': {
-        fill: theme.palette.primary.main
-      }
+        fill: theme.palette.primary.main,
+      },
     },
     sortRequestedIcon: {
       '& svg path': {
-        stroke: theme.palette.primary.main
-      }
+        stroke: theme.palette.primary.main,
+      },
     },
   }),
 );
@@ -82,7 +82,7 @@ export interface HeadCell<T> {
   sortDisabled?: boolean;
   align?: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined;
   element?: React.ReactNode;
-  buttonCell?: boolean,
+  buttonCell?: boolean;
   sortKey: (optionBalance: T) => string | number;
 }
 
@@ -119,7 +119,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
   onChange = () => {},
   size = 0,
   rowPerPage = 10,
-  showEmptyRows = true
+  showEmptyRows = true,
 }) => {
   const classes = useStyles({ isSinglelineHeader });
   const [order, setOrder] = useState<SortOrder>(defaultOrder);
@@ -169,26 +169,46 @@ const DataTable: React.FC<DataTableProps<any>> = ({
               <TableRow>
                 {headCells.map((headCell, index) => (
                   <TableCell
-                    className={ headCell.buttonCell ? 'buttonCell' : '' }
+                    className={headCell.buttonCell ? 'buttonCell' : ''}
                     key={`${headCell.id}_${index}`}
                     align={headCell.align}
                     padding='default'
                     sortDirection={orderBy.id === headCell.id ? order : false}
                   >
                     {headCell.element}
-                    {
-                      sortUpIcon && sortDownIcon ?
-                        <Grid container alignItems='center' className={classes.label}
+                    {sortUpIcon && sortDownIcon ? (
+                      <Grid
+                        container
+                        alignItems='center'
+                        className={classes.label}
                         onClick={(event: any) =>
                           handleRequestSort(event, headCell)
-                        }>
-                          <Box className={cx(classes.headCellLabel, orderBy.id === headCell.id && classes.sortRequestedHeadLabel)}>{headCell.label}</Box>
-                          {
-                            !headCell.sortDisabled &&
-                            <Box className={cx(classes.sortIcon, orderBy.id === headCell.id && classes.sortRequestedIcon)}>{order === 'asc' && orderBy.id === headCell.id ? sortUpIcon : sortDownIcon}</Box>
-                          }
-                        </Grid>
-                      :
+                        }
+                      >
+                        <Box
+                          className={cx(
+                            classes.headCellLabel,
+                            orderBy.id === headCell.id &&
+                              classes.sortRequestedHeadLabel,
+                          )}
+                        >
+                          {headCell.label}
+                        </Box>
+                        {!headCell.sortDisabled && (
+                          <Box
+                            className={cx(
+                              classes.sortIcon,
+                              orderBy.id === headCell.id &&
+                                classes.sortRequestedIcon,
+                            )}
+                          >
+                            {order === 'asc' && orderBy.id === headCell.id
+                              ? sortUpIcon
+                              : sortDownIcon}
+                          </Box>
+                        )}
+                      </Grid>
+                    ) : (
                       <TableSortLabel
                         className={classes.label}
                         active={orderBy.id === headCell.id}
@@ -206,7 +226,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                           </span>
                         ) : null}
                       </TableSortLabel>
-                    }
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
