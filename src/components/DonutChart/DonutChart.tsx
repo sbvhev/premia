@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@material-ui/core/styles';
+// import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
 
 export interface DonutChartProps {
@@ -17,7 +17,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   width = 300,
   height = 300,
 }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const options = {
     plotOptions: {

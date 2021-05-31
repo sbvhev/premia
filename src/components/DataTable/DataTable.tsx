@@ -82,6 +82,7 @@ export interface HeadCell<T> {
   sortDisabled?: boolean;
   align?: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined;
   element?: React.ReactNode;
+  buttonCell?: boolean,
   sortKey: (optionBalance: T) => string | number;
 }
 
@@ -100,6 +101,7 @@ export interface DataTableProps<T> {
   rowPerPage?: number;
   sortUpIcon?: React.ReactNode;
   sortDownIcon?: React.ReactNode;
+  showEmptyRows: boolean;
 }
 
 const DataTable: React.FC<DataTableProps<any>> = ({
@@ -117,6 +119,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
   onChange = () => {},
   size = 0,
   rowPerPage = 10,
+  showEmptyRows = true
 }) => {
   const classes = useStyles({ isSinglelineHeader });
   const [order, setOrder] = useState<SortOrder>(defaultOrder);
@@ -166,6 +169,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
               <TableRow>
                 {headCells.map((headCell, index) => (
                   <TableCell
+                    className={ headCell.buttonCell ? 'buttonCell' : '' }
                     key={`${headCell.id}_${index}`}
                     align={headCell.align}
                     padding='default'
@@ -231,7 +235,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                 </TableRow>
               )}
 
-              {!loading && emptyRows > 0 && (
+              {!loading && emptyRows > 0 && showEmptyRows && (
                 <TableRow
                   style={{
                     height: 53 * (data.length < 1 ? emptyRows - 1 : emptyRows),

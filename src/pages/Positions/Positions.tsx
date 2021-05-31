@@ -140,6 +140,7 @@ const getOptionsHeadCells = () => [
   {
     id: 'action',
     numeric: true,
+    buttonCell: true,
     label: '',
     element: <SellAllButton />,
     sortDisabled: true,
@@ -195,9 +196,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: 1,
     fontWeight: 700,
     display: 'flex',
-    '& img': {
+    alignItems: 'center',
+    '& svg': {
       marginLeft: 4,
       width: 16,
+      height: 16,
     },
   },
   subtitle: {
@@ -225,6 +228,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     textTransform: 'capitalize',
     position: 'relative',
+    width: 74,
+    height: 32,
     '& div': {
       width: '100%',
       height: '100%',
@@ -234,7 +239,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 0,
       left: 0,
     },
-    '& svg, & img': {
+    '& svg': {
+      width: 18,
       marginRight: 4,
     },
   },
@@ -266,8 +272,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'space-between',
     marginTop: 12,
     padding: '0 8px',
-    '& img': {
+    '& svg': {
       width: 16,
+      height: 16,
       marginLeft: 4,
     },
   },
@@ -350,8 +357,46 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   tableContainer: {
     '& thead tr th, & tbody tr td': {
       fontSize: 14,
-      padding: '6px 23px',
-      borderBottom: `1px solid ${palette.divider}`
+      borderBottom: `1px solid ${palette.divider}`,
+      '&.buttonCell': {
+        width: 100,
+        padding: '6px 10px 7px 0',
+        '& button': {
+          padding: 0,
+          margin: 0,
+          width: '100%',
+          height: 40,
+          fontSize: 14,
+          fontWeight: 700
+        }  
+      },
+      '&.yieldButtonCell': {
+        padding: '6px 3px 7px 0',
+        width: 187,
+        '& button': {
+          width: 85,
+          margin: '0 7px 0 0',
+          '&.MuiButton-outlined': {
+            color: palette.text.secondary
+          }
+        }
+      }
+    },
+    '& thead tr th': {
+      padding: '7px 23px',
+      '&.buttonCell': {
+        '& button': {
+          color: palette.text.secondary,
+        }  
+      }
+    },
+    '& tbody tr td': {
+      padding: '10px 23px',
+      '&.buttonCell': {
+        '& button': {
+          color: palette.background.paper
+        }
+      }
     },
   },
   tokenIconCell: {
@@ -504,13 +549,15 @@ const Positions: React.FC = () => {
       {!noPositions &&
         <Box mb={2.5}>
           <Grid container spacing={2}>
-            <Grid item sm={12} md={8}>
+            <Grid item sm={12} md={12} lg={8}>
               <Container fixed>
-                <Box className={classes.infoHeading}>
-                  <Typography className={classes.mainTitle}>
-                    My P&L
-                  </Typography>
-                  <Box display='flex'>
+                <Grid container className={classes.infoHeading}>
+                  <Grid item xs={12} sm={4}>
+                    <Typography className={classes.mainTitle}>
+                      My P&L
+                    </Typography>
+                  </Grid>
+                  <Grid item container xs={12} sm={8} justify={mobile ? 'flex-start' : 'flex-end'}>
                     <Box display='flex' alignItems='center'>
                       <Box className={classes.yieldBox}>
                         <Box
@@ -564,8 +611,8 @@ const Positions: React.FC = () => {
                         </Typography>
                       </Box>
                     </Box>
-                  </Box>
-                </Box>
+                  </Grid>
+                </Grid>
                 <Divider />
                 <LineChart
                   color = {theme.palette.success.dark}
@@ -584,7 +631,7 @@ const Positions: React.FC = () => {
                 />
               </Container>
             </Grid>
-            <Grid item container sm={12} md={4}>
+            <Grid item container sm={12} md={12} lg={4}>
               <Container fixed>
                 <Grid container direction='column' style={{ height: '100%' }}>
                   <Box className={classes.infoHeading}>
@@ -784,6 +831,7 @@ const Positions: React.FC = () => {
                     rowPerPage={5}
                     sortUpIcon={<UpArrow />}
                     sortDownIcon={<DownArrow />}
+                    showEmptyRows={false}
                     renderRow={(item: any, index) => {
                       return (
                         <TableRow key={index}>
@@ -820,7 +868,7 @@ const Positions: React.FC = () => {
                               </Typography>
                             </Box>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className='buttonCell'>
                             <Button
                               color='primary'
                               onClick={() => setPositionModalOpen(true)}
@@ -941,7 +989,10 @@ const Positions: React.FC = () => {
                   <DataTable
                     headCells={yieldHeadCells}
                     data={yieldData}
+                    sortUpIcon={<UpArrow />}
+                    sortDownIcon={<DownArrow />}
                     rowPerPage={5}
+                    showEmptyRows={false}
                     renderRow={(item: any, index) => {
                       return (
                         <TableRow key={index}>
@@ -980,7 +1031,7 @@ const Positions: React.FC = () => {
                           </TableCell>
                           <TableCell>{item.earned}</TableCell>
                           <TableCell>{item.apy}</TableCell>
-                          <TableCell>
+                          <TableCell className='yieldButtonCell'>
                             <Button
                               color='primary'
                               onClick={() => setPositionModalOpen(true)}
