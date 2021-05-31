@@ -27,7 +27,6 @@ import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import Moment from 'moment';
@@ -343,6 +342,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           marginRight: 7
         }
       }
+    }
+  },
+  expiredIcon: {
+    background: 'linear-gradient(266.96deg, #EB7A4A 29.5%, #F643CF 117.72%)',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 4,
+    right: 10,
+    '& p': {
+      fontSize: 8,
+      color: palette.common.black
     }
   },
   findPositionButton: {
@@ -765,7 +780,7 @@ const Positions: React.FC = () => {
                       icon={
                         <>
                           <WarningIcon />
-                          <ErrorIcon className={classes.errorIcon} />
+                          <Box className={classes.expiredIcon}><Typography>1</Typography></Box>
                         </>
                       }
                     />
