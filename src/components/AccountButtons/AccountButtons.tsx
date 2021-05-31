@@ -5,11 +5,9 @@ import {
   IconButton,
   Button,
   Typography,
-  Avatar,
   Tooltip,
 } from '@material-ui/core';
 import {
-  ExitToApp,
   SupervisorAccount,
   AccountBalanceWallet,
 } from '@material-ui/icons';
@@ -28,6 +26,8 @@ import {
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
+import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -37,10 +37,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   avatar: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
-    backgroundColor: palette.text.primary,
+    marginRight: 6,
+    '& path': {
+      fill: palette.text.secondary
+    }
   },
 
   walletIcon: {
@@ -64,12 +64,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     '& button': {
       padding: 0,
+      '& path': {
+        fill: palette.text.secondary
+      }
     },
   },
 
   address: {
-    color: palette.text.primary,
-    fontSize: 10,
+    color: palette.text.secondary,
+    fontSize: 14,
   },
 
   noDecoration: {
@@ -142,7 +145,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
-      width: '100%',
       marginLeft: 4,
       marginRight: 4,
       marginBottom: 8,
@@ -223,7 +225,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             }}
           >
             <EthIcon />
-            <Typography color='textPrimary'>Ethereum</Typography>
+            <Typography color='textSecondary'>Ethereum</Typography>
           </Box>
           <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
             <Box
@@ -244,12 +246,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   xs={9}
                   onClick={() => setShowTransactions(true)}
                 >
-                  <Avatar className={classes.avatar} />
-                  <Box>
-                    <Typography className={classes.address}>
-                      {shortenAddress(account ?? '')}
-                    </Typography>
-                  </Box>
+                  <PersonIcon className={classes.avatar} />
+                  <Typography className={classes.address}>
+                    {shortenAddress(account ?? '')}
+                  </Typography>
                 </Grid>
 
                 <Box
@@ -261,7 +261,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 >
                   <Tooltip title='Disconnect'>
                     <IconButton onClick={disconnect}>
-                      <ExitToApp color='action' />
+                      <LogoutIcon />
                     </IconButton>
                   </Tooltip>
                 </Box>
