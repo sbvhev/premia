@@ -26,10 +26,8 @@ import {
   TransactionsModal,
 } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
-// import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
-// import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import LogoIcon from 'assets/svg/LogoIcon.svg';
-import SwapIcon from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -231,7 +229,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 className={classes.button}
               >
                 Get
-                <img src={LogoIcon} alt='Logo Icon' />
+                <LogoIcon />
               </Button>
               <Button
                 color='secondary'
@@ -239,7 +237,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 onClick={() => setShowSwapModal(true)}
               >
                 Swap
-                <img src={SwapIcon} alt='Swap Icon' />
+                <SwapIcon />
               </Button>
               
                 <Box
@@ -367,7 +365,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   className={cx(classes.button, mobile && classes.half)}
                 >
                   Get
-                  <img src={LogoIcon} alt='Logo Icon' />
+                  <LogoIcon />
                 </Button>
                 <Button
                   color='secondary'
@@ -375,7 +373,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   onClick={() => setShowSwapModal(true)}
                 >
                   Swap
-                  <img src={SwapIcon} alt='Swap Icon' />
+                  <SwapIcon />
                 </Button>
               </Box>
             </Box>

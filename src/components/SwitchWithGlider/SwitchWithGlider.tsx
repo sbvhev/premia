@@ -9,6 +9,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
+    alignItems: 'center'
   },
   glider: {
     transition: 'all 0.4s ease-out',
@@ -17,9 +18,15 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
   },
   elementFront: {
+    boxSizing: 'border-box',
     position: 'absolute',
+    border: '1px solid transparent',
     backgroundColor: 'transparent', 
+    borderRadius: '10px',
     cursor: 'pointer',
+    '&:hover': {
+      // border: `1px solid ${palette.divider}`,
+    },
   },
 }));
 
@@ -63,6 +70,7 @@ React.useEffect(() => {
       clickFuncs[1]();
     },
     () => {
+      console.log('positions[2]', positions[2])
       setGliderPosition(positions[2]);
       clickFuncs[2]();
     },
