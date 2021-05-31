@@ -422,13 +422,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           }
         },
         '@media (max-width: 1048px)': {
-          width: 150,
+          width: 140,
           '& button': {
             width: 64,
+            margin: 0,
             '&:first-child': {
               marginRight: 4
-            },  
-            margin: '0 7px 0 0',
+            },
             '&.MuiButton-outlined': {
               color: palette.text.secondary
             }
