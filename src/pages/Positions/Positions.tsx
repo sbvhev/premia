@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import DoneIcon from '@material-ui/icons/Done';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
@@ -397,7 +398,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 14,
       borderBottom: `1px solid ${palette.divider}`,
       '&.buttonCell': {
-        width: 100,
+        width: 110,
         padding: '6px 10px 7px 0',
         '& button': {
           padding: 0,
@@ -484,6 +485,34 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       }
     }
   },
+  exercisedCell: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    '& p': {
+      fontSize: 14,
+      lineHeight: 1.2,
+      width: 'calc(100% - 25px)',
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      WebkitBackgroundClip: 'text',
+      textFillColor: 'transparent',
+    },
+    '& > div': {
+      width: 18,
+      height: 18,
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
+      borderRadius: 12,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#D4E1F4',
+      '& svg': {
+        width: 12,
+        fill: palette.background.paper
+      }
+    }
+  }
 }));
 
 const Positions: React.FC = () => {
@@ -565,6 +594,7 @@ const Positions: React.FC = () => {
       type: 'put',
       strike: 100,
       value: 100,
+      exercised: true,
       expiration: Moment.now(),
     },
   ];
@@ -690,7 +720,8 @@ const Positions: React.FC = () => {
                 </Box>
                 <Divider />
                 <LineChart
-                  color = {theme.palette.success.dark}
+                  color = '#14A887'
+                  showYAxis = { true }
                   data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                   categories={[
                     '2021/5/24',
@@ -888,13 +919,21 @@ const Positions: React.FC = () => {
                             </Box>
                           </Box>
                           <Box px={1} my={1.5}>
-                            <Button
-                              fullWidth
-                              color='primary'
-                              onClick={() => setPositionModalOpen(true)}
-                            >
-                              Exercise
-                            </Button>
+                            {
+                              item.exercised ?
+                                <Box className={classes.exercisedCell}>
+                                  <Box><DoneIcon /></Box>
+                                  <Typography>Exercised for 100</Typography>
+                                </Box>
+                              :
+                              <Button
+                                fullWidth
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Exercise
+                              </Button>
+                            }
                           </Box>
                         </Container>
                     ))}
@@ -944,12 +983,20 @@ const Positions: React.FC = () => {
                             </Box>
                           </TableCell>
                           <TableCell className='buttonCell'>
-                            <Button
-                              color='primary'
-                              onClick={() => setPositionModalOpen(true)}
-                            >
-                              Exercise
-                            </Button>
+                            {
+                          item.exercised ?
+                            <Box className={classes.exercisedCell}>
+                              <Box><DoneIcon /></Box>
+                              <Typography>Exercised for 100</Typography>
+                            </Box>
+                          :
+                        <Button
+                          color='primary'
+                          onClick={() => setPositionModalOpen(true)}
+                        >
+                          Exercise
+                        </Button>
+                            }
                           </TableCell>
                         </TableRow>
                       );
