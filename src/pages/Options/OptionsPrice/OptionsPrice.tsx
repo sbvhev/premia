@@ -155,11 +155,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   currentPriceLine: {
     width: (props: any) => (props.mobile ? 1 : 31),
     height: (props: any) => (props.mobile ? 31 : 1.47),
-    background: (props: any) => (props.darkMode ? palette.text.primary : 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)'),
-    boxShadow: (props: any) => (props.darkMode ? '0px 0px 16px #00FF97' : '0px 0px 25px rgba(59, 197, 193, 0.4)'),
+    background: (props: any) =>
+      props.darkMode
+        ? palette.text.primary
+        : 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+    boxShadow: (props: any) =>
+      props.darkMode
+        ? '0px 0px 16px #00FF97'
+        : '0px 0px 25px rgba(59, 197, 193, 0.4)',
     marginRight: (props: any) => (props.mobile ? 0 : -16),
-    marginBottom: (props: any) => (props.mobile ? -16 : 0)
-  }
+    marginBottom: (props: any) => (props.mobile ? -16 : 0),
+  },
 }));
 
 const OptionsPrice: React.FC = () => {
