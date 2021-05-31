@@ -12,7 +12,7 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100vw - 260px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
@@ -57,7 +57,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           {!hideAccountButtons && (
             <Box
               position='fixed'
-              width={mobile ? 1 : 'calc(100% - 260px)'}
+              width={mobile ? 1 : 'calc(100vw - 260px)'}
               zIndex={10}
               bgcolor='background.default'
               p={mobile ? 1 : 3}
@@ -121,7 +121,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           {mobileSidebarHidden && (
             <Box
               px={tablet ? 0 : 3}
-              width={1}
+              width={mobile ? 1 : 'calc(100vw - 260px)'}
               mx='auto'
               mt={14}
               mb={mobile ? 10 : 7}
@@ -132,7 +132,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           <Box
             position='fixed'
-            width={mobile ? 1 : 'calc(100% - 260px)'}
+            width={mobile ? 1 : 'calc(100vw - 260px)'}
             bottom={0}
             zIndex={10}
             bgcolor='background.default'
