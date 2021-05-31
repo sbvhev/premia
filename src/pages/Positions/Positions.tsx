@@ -439,7 +439,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& thead tr th': {
       padding: '7px 6px',
       '&:first-child': {
-        padding: '7px 0px 7px 12px',
+        padding: '7px 0px 7px 23px',
+        [breakpoints.up('sm')]: {
+          padding: '7px 6px 7px 13px'
+        }
       },
       '&.buttonCell': {
         '& button': {
@@ -449,6 +452,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& tbody tr td': {
       padding: '10px 6px',
+      '&:first-child': {
+        padding: '10px 0px 10px 15px',
+        [breakpoints.up('sm')]: {
+          padding: '10px 6px'
+        }
+      },
       '&.buttonCell': {
         '& button': {
           color: palette.background.paper
@@ -464,7 +473,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       justifyContent: 'flex-end',
       alignItems: 'center',
-      marginRight: 4,
+      marginRight: 8,
       [breakpoints.up('sm')]: {
         width: 21
       }
