@@ -81,36 +81,38 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '72px'}
           >
-            <Grid container justify='space-between' alignItems='center'>
-              {mobile && (
-                <Box display='flex' alignItems='center' marginLeft='8px'>
-                  <img
-                    src={darkMode ? MainLogo : MainLogoBlack}
-                    alt='main logo'
-                  />
-                </Box>
-              )}
-              <Grid style={{ height: '48px' }}>
+            <Container>
+              <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
-                  <IconButton
-                    style={{ height: '48px', padding: 0 }}
-                    onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-                  >
-                    <Hamburger
-                      size={20}
-                      color={theme.palette.text.secondary}
-                      toggled={!mobileSidebarHidden}
-                      toggle={setMobileSidebarHidden}
+                  <Box display='flex' alignItems='center' marginLeft='8px'>
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
                     />
-                  </IconButton>
+                  </Box>
+                )}
+                <Grid style={{ height: '48px' }}>
+                  {mobile && (
+                    <IconButton
+                      style={{ height: '48px', padding: 0 }}
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                    >
+                      <Hamburger
+                        size={20}
+                        color={theme.palette.text.secondary}
+                        toggled={!mobileSidebarHidden}
+                        toggle={setMobileSidebarHidden}
+                      />
+                    </IconButton>
+                  )}
+                </Grid>
+                {!mobile && (
+                  <Grid item>
+                    <AccountButtons />
+                  </Grid>
                 )}
               </Grid>
-              {!mobile && (
-                <Grid item>
-                  <AccountButtons />
-                </Grid>
-              )}
-            </Grid>
+            </Container>
           </Box>
 
           {mobile && !mobileSidebarHidden && (
@@ -150,7 +152,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 10 : 6}
+                mb={mobile ? 12.5 : 6}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>

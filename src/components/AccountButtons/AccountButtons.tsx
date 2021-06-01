@@ -209,7 +209,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       direction='row'
       alignItems='center'
       justify='flex-end'
-      style={!mobile ? { paddingRight: '24px' } : {}}
     >
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
