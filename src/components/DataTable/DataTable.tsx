@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 
 import { SortOrder, getComparator, stableSort } from './sort';
-
+import cx from 'classnames';
 import { Loader } from 'components';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,6 +43,36 @@ const useStyles = makeStyles((theme: Theme) =>
         return props.isSinglelineHeader ? 'nowrap' : 'initial';
       },
     },
+    sortIcon: {
+      marginLeft: 4,
+      display: 'flex',
+      alignItems: 'center',
+    },
+    headCellLabel: {
+      cursor: 'default',
+      color: theme.palette.text.secondary,
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: 14,
+      '& svg': {
+        marginLeft: 3,
+        width: 16,
+        '& path': {
+          fill: theme.palette.text.secondary,
+        },
+      },
+    },
+    sortRequestedHeadLabel: {
+      color: theme.palette.primary.main,
+      '& svg path': {
+        fill: theme.palette.primary.main,
+      },
+    },
+    sortRequestedIcon: {
+      '& svg path': {
+        stroke: theme.palette.primary.main,
+      },
+    },
   }),
 );
 export interface HeadCell<T> {
@@ -52,6 +82,7 @@ export interface HeadCell<T> {
   sortDisabled?: boolean;
   align?: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined;
   element?: React.ReactNode;
+  buttonCell?: boolean;
   sortKey: (optionBalance: T) => string | number;
 }
 
@@ -68,6 +99,9 @@ export interface DataTableProps<T> {
   onChange?: Function;
   size?: number;
   rowPerPage?: number;
+  sortUpIcon?: React.ReactNode;
+  sortDownIcon?: React.ReactNode;
+  showEmptyRows: boolean;
 }
 
 const DataTable: React.FC<DataTableProps<any>> = ({
@@ -75,6 +109,8 @@ const DataTable: React.FC<DataTableProps<any>> = ({
   data,
   renderRow,
   toolbar,
+  sortUpIcon,
+  sortDownIcon,
   caption,
   defaultOrderBy = headCells[0],
   defaultOrder = 'asc',
@@ -83,6 +119,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
   onChange = () => {},
   size = 0,
   rowPerPage = 10,
+  showEmptyRows = true,
 }) => {
   const classes = useStyles({ isSinglelineHeader });
   const [order, setOrder] = useState<SortOrder>(defaultOrder);
@@ -132,29 +169,64 @@ const DataTable: React.FC<DataTableProps<any>> = ({
               <TableRow>
                 {headCells.map((headCell, index) => (
                   <TableCell
+                    className={headCell.buttonCell ? 'buttonCell' : ''}
                     key={`${headCell.id}_${index}`}
                     align={headCell.align}
                     padding='default'
                     sortDirection={orderBy.id === headCell.id ? order : false}
                   >
                     {headCell.element}
-                    <TableSortLabel
-                      className={classes.label}
-                      active={orderBy.id === headCell.id}
-                      direction={orderBy.id === headCell.id ? order : 'asc'}
-                      onClick={(event: any) =>
-                        handleRequestSort(event, headCell)
-                      }
-                    >
-                      {headCell.label}
-                      {orderBy.id === headCell.id ? (
-                        <span className={classes.visuallyHidden}>
-                          {order === 'desc'
-                            ? 'sorted descending'
-                            : 'sorted ascending'}
-                        </span>
-                      ) : null}
-                    </TableSortLabel>
+                    {sortUpIcon && sortDownIcon ? (
+                      <Grid
+                        container
+                        alignItems='center'
+                        className={classes.label}
+                        onClick={(event: any) =>
+                          handleRequestSort(event, headCell)
+                        }
+                      >
+                        <Box
+                          className={cx(
+                            classes.headCellLabel,
+                            orderBy.id === headCell.id &&
+                              classes.sortRequestedHeadLabel,
+                          )}
+                        >
+                          {headCell.label}
+                        </Box>
+                        {!headCell.sortDisabled && (
+                          <Box
+                            className={cx(
+                              classes.sortIcon,
+                              orderBy.id === headCell.id &&
+                                classes.sortRequestedIcon,
+                            )}
+                          >
+                            {order === 'asc' && orderBy.id === headCell.id
+                              ? sortUpIcon
+                              : sortDownIcon}
+                          </Box>
+                        )}
+                      </Grid>
+                    ) : (
+                      <TableSortLabel
+                        className={classes.label}
+                        active={orderBy.id === headCell.id}
+                        direction={orderBy.id === headCell.id ? order : 'asc'}
+                        onClick={(event: any) =>
+                          handleRequestSort(event, headCell)
+                        }
+                      >
+                        {headCell.label}
+                        {orderBy.id === headCell.id ? (
+                          <span className={classes.visuallyHidden}>
+                            {order === 'desc'
+                              ? 'sorted descending'
+                              : 'sorted ascending'}
+                          </span>
+                        ) : null}
+                      </TableSortLabel>
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
@@ -183,7 +255,7 @@ const DataTable: React.FC<DataTableProps<any>> = ({
                 </TableRow>
               )}
 
-              {!loading && emptyRows > 0 && (
+              {!loading && emptyRows > 0 && showEmptyRows && (
                 <TableRow
                   style={{
                     height: 53 * (data.length < 1 ? emptyRows - 1 : emptyRows),

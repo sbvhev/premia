@@ -12,6 +12,7 @@ export interface LineChartProps {
   width?: number | string;
   height?: number | string;
   palette?: Object;
+  showYAxis?: boolean;
 }
 const LineChart: React.FC<LineChartProps> = ({
   color,
@@ -19,6 +20,7 @@ const LineChart: React.FC<LineChartProps> = ({
   data = [],
   width = 500,
   height = 200,
+  showYAxis = false,
 }) => {
   const theme = useTheme();
 
@@ -61,7 +63,7 @@ const LineChart: React.FC<LineChartProps> = ({
       },
     },
     yaxis: {
-      show: false,
+      show: showYAxis,
       showForNullSeries: false,
       axisBorder: {
         show: false,

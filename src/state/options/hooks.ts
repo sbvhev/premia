@@ -32,7 +32,7 @@ export function useMaturityDate() {
   );
 
   const setMaturityDate = useCallback(
-    (maturityDate: string | null) => {
+    (maturityDate: string) => {
       dispatch(updateMaturityDate(maturityDate));
     },
     [dispatch],

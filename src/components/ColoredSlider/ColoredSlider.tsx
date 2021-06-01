@@ -6,6 +6,8 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   root: {
     color: theme.palette.primary.main,
     height: 8,
+    width: 'calc(100% - 16px)',
+    padding: '13px 0',
   },
 
   mark: {
@@ -18,7 +20,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     border: '4px solid white',
     marginTop: -4,
-    marginLeft: -12,
+    marginLeft: 0,
     boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.15)',
 
     '&:focus, &:hover, &$active': {
@@ -28,7 +30,7 @@ const ColoredSlider = withStyles((theme: Theme) => ({
 
   valueLabel: {
     left: 'calc(-50% - 8px)',
-    top: -20,
+    top: -18,
     fontSize: 12,
     '& > span': {
       color: 'transparent',
@@ -41,19 +43,22 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   track: {
     height: 8,
     borderRadius: 4,
+    paddingRight: 8,
   },
 
   rail: {
     height: 8,
     borderRadius: 4,
+    width: 'calc(100% + 16px)',
   },
 
   markLabel: {
     fontSize: 12,
-    top: 32,
+    top: 27,
     color: theme.palette.text.secondary,
     transform: 'none',
     '&[data-index="1"]': {
+      left: 'calc(100% + 16px) !important',
       transform: 'translateX(-100%)',
     },
   },
