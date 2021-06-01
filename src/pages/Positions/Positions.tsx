@@ -32,7 +32,6 @@ import { formatNumber } from 'utils/formatNumber';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import CallMadeIcon from '@material-ui/icons/CallMade';
-import { PageWithSidebar } from 'layouts';
 import { DataTable } from 'components';
 import PositionModal from 'components/PositionModal';
 
@@ -403,7 +402,7 @@ const Positions: React.FC = () => {
   const noPositions = false;
 
   return (
-    <PageWithSidebar>
+    <>
       <PositionModal
         open={positionModalOpen}
         onClose={() => {
@@ -897,7 +896,7 @@ const Positions: React.FC = () => {
           </Box>
         </>
       )}
-    </PageWithSidebar>
+    </>
   );
 };
 
