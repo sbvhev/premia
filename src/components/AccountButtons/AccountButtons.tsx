@@ -74,7 +74,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   accountMobile: {
     padding: '0 12px',
     height: 45,
-    width: 'calc(67vw - 10px)',
+    width: 'calc(67vw - 30px)',
     maxWidth: 'calc(100vw - 135px)',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
