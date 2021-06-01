@@ -398,16 +398,27 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
   },
+  tableHeading: {
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   tableContainer: {
     '& .MuiTableContainer-root': {
       overflow: 'unset',
+    },
+    '& thead': {
+      height: 53,
+    },
+    '& tbody tr': {
+      height: 57,
     },
     '& thead tr th, & tbody tr td': {
       fontSize: 14,
       borderBottom: `1px solid ${palette.divider}`,
       '&.buttonCell': {
         width: 110,
-        padding: '6px 10px 7px 0',
+        padding: '6px 10px 6px 0',
         '& button': {
           padding: 0,
           margin: 0,
@@ -418,7 +429,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         },
       },
       '&.yieldButtonCell': {
-        padding: '6px 3px 7px 0',
+        padding: '6px 3px 6px 0',
         width: 187,
         '& button': {
           width: 85,
@@ -460,11 +471,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
     '& tbody tr td': {
-      padding: '10px 6px',
+      padding: '6px',
       '&:first-child': {
-        padding: '10px 0px 10px 15px',
+        padding: '6px 0px 6px 15px',
         [breakpoints.down('sm')]: {
-          padding: '10px 6px',
+          padding: '6px',
         },
       },
       '&.buttonCell': {
@@ -862,7 +873,7 @@ const Positions: React.FC = () => {
         <>
           {positionFilter === 0 && (
             <Box className={classes.tableContainer}>
-              <Grid container alignItems='center' justify='space-between'>
+              <Grid container className={classes.tableHeading}>
                 <Typography
                   component='h1'
                   color='textPrimary'
@@ -1055,7 +1066,7 @@ const Positions: React.FC = () => {
           )}
           {positionFilter === 1 && (
             <Box className={classes.tableContainer}>
-              <Grid container alignItems='center' justify='space-between'>
+              <Grid container className={classes.tableHeading}>
                 <Typography
                   component='h1'
                   color='textPrimary'
