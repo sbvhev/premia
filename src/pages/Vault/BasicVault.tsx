@@ -13,7 +13,8 @@ import {
   useMediaQuery,
   IconButton,
 } from '@material-ui/core';
-import { ExpandMore, Check, Help } from '@material-ui/icons';
+import { ExpandMore, Check } from '@material-ui/icons';
+import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
@@ -34,6 +35,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginRight: 32,
     width: 340,
     border: `1px solid ${palette.divider}`,
+    boxShadow: (props: any) =>
+      props.dark ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
 
@@ -87,7 +90,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: '100%',
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
-    padding: '13px 50px 13px 40px',
+    padding: '13px 50px 13px 36px',
     color: palette.text.primary,
     zIndex: 2,
     fontFamily: 'DM Sans',
@@ -99,15 +102,21 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: -46,
+    top: -36,
     left: 14,
     width: 20,
+    height: 22,
     zIndex: 1,
+
+    '& path': {
+      fill: (props: any) => (props.dark ? '' : palette.secondary.main),
+    },
   },
   maxButton: {
     position: 'absolute',
     top: 4,
-    right: 2,
+    right: 4,
+    height: 34,
     zIndex: 3,
   },
   elementHeader: {
@@ -127,7 +136,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   rightCard: {
-    paddingTop: 32,
+    paddingTop: 28,
     width: 'calc(100% - 460px)',
 
     [breakpoints.down('md')]: {
@@ -173,11 +182,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         zIndex: 1,
         margin: -2,
         borderRadius: 'inherit',
-        background: `linear-gradient(to right, #5294FF, #1EFF78)`,
+        background: `linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)`,
       },
 
       '& $background': {
         zIndex: 0,
+      },
+
+      '& $riskTitle': {
+        color: 'white',
+
+        '& path': {
+          fill: 'white',
+        },
+      },
+
+      '& $subTitle': {
+        color: 'white',
       },
 
       '& $select': {
@@ -248,13 +269,45 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   background: {
     background: (props: any) => (props.dark ? '#080f19' : '#e2eaf6'),
-    borderRadius: 12,
+    borderRadius: 11,
     zIndex: 3,
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
+  },
+  riskTitle: {
+    color: '#646464',
+    fontSize: 14,
+    lineHeight: '18px',
+
+    '& svg': {
+      width: 14,
+      height: 14,
+      position: 'relative',
+      top: -2,
+
+      '& path': {
+        fill: '#646464',
+      },
+    },
+  },
+  subTitle: {
+    fontWeight: 'bold',
+    marginTop: -4,
+    fontSize: 16,
+    lineHeight: '18px',
+  },
+  expandMore: {
+    marginRight: 8,
+    position: 'absolute',
+    right: 0,
+    cursor: 'pointer',
+
+    '& path': {
+      fill: palette.secondary.main,
+    },
   },
 }));
 
@@ -314,43 +367,30 @@ const BasicVault: React.FC = () => {
               <FormControl variant='outlined' fullWidth>
                 <Select
                   IconComponent={() => {
-                    return <ExpandMore />;
+                    return <ExpandMore className={classes.expandMore} />;
                   }}
                   value={coin}
                   onChange={handleChange}
-                  inputProps={{
-                    name: 'age',
-                  }}
                 >
-                  <MenuItem className={classes.menuItem} value='wBTC'>
+                  <MenuItem className={classes.menuItem} value='WBTC'>
                     <WBTCIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Uni
-                    </Typography>
+                    <Typography component='span'>WBTC</Typography>
                   </MenuItem>
-                  <MenuItem className={classes.menuItem} value='Uni'>
+                  <MenuItem className={classes.menuItem} value='UNI'>
                     <UniswapIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Uni
-                    </Typography>
+                    <Typography component='span'>UNI</Typography>
                   </MenuItem>
-                  <MenuItem className={classes.menuItem} value='Link'>
+                  <MenuItem className={classes.menuItem} value='LINK'>
                     <LinkIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Link
-                    </Typography>
+                    <Typography component='span'>LINK</Typography>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} value='YFI'>
                     <YFIIcon />
-                    <Typography component='span' color='textSecondary'>
-                      YFI
-                    </Typography>
+                    <Typography component='span'>YFI</Typography>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} value='ETH'>
                     <ETHIcon />
-                    <Typography component='span' color='textSecondary'>
-                      Eth
-                    </Typography>
+                    <Typography component='span'>ETH</Typography>
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -437,8 +477,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     Low risk
@@ -481,7 +521,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     10% Expected APY
                   </Typography>
                   <Box className={classes.select}>
@@ -510,8 +554,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     Medium risk
@@ -554,7 +598,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     20% Expected APY
                   </Typography>
                   <Box className={classes.select}>
@@ -583,8 +631,8 @@ const BasicVault: React.FC = () => {
                   style={{ paddingLeft: mobile ? 20 : 0 }}
                 >
                   <Typography
+                    className={classes.riskTitle}
                     component='h2'
-                    color='textSecondary'
                     variant='body2'
                   >
                     High risk
@@ -627,7 +675,11 @@ const BasicVault: React.FC = () => {
                       </Typography>
                     </TooltipPan>
                   </Typography>
-                  <Typography component='h2' color='textPrimary'>
+                  <Typography
+                    className={classes.subTitle}
+                    component='h2'
+                    color='textPrimary'
+                  >
                     60% Expected APY
                   </Typography>
                   <Box className={classes.select}>
