@@ -22,7 +22,6 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { LineChart } from 'components';
 import { useOptionType } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
-import { PageWithSidebar } from 'layouts';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -82,7 +81,8 @@ const tabItems = [
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] = useState(false);
+  const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
+    useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
@@ -91,7 +91,7 @@ const Options: React.FC = () => {
   const darkMode = useIsDarkMode();
 
   return (
-    <PageWithSidebar>
+    <>
       {buyConfirmationModalOpen && (
         <BuyConfirmationModal
           open={buyConfirmationModalOpen}
@@ -242,7 +242,7 @@ const Options: React.FC = () => {
           {!tablet && <OptionsPrice />}
         </Grid>
       </Grid>
-    </PageWithSidebar>
+    </>
   );
 };
 

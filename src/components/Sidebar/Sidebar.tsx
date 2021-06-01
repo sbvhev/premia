@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -90,23 +91,56 @@ const useStyles = makeStyles((theme: Theme) => ({
   light: {
     background: theme.palette.background.paper,
   },
+
+  glider: {
+    transition: 'top 0.4s ease-out',
+    position: 'absolute',
+    height: '47px',
+    width: '180px',
+    border: 'none',
+    zIndex: 10,
+    borderRadius: '12px',
+    backgroundColor: theme.palette.primary.dark,
+  },
 }));
 
 export interface SidebarProps {
   mobile?: boolean;
+  onHide?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
+interface GliderHerights {
+  [key: string]: number;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation<{ previous: string }>();
+  const { pathname } = location;
+  const gliderHeights: GliderHerights = {
+    '/': 98,
+    '/vaults': 155,
+    '/options': 212,
+    '/stake': 269,
+  };
+  const state = location.state ? location.state.previous : false;
+  const startHeight = state ? gliderHeights[state] : gliderHeights[pathname];
+  const [gliderPosition, setGliderPosition] = React.useState(startHeight);
+
+  useEffect(() => {
+    setGliderPosition(gliderHeights[pathname]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [pathname, history]);
 
   return (
     <Box
       clone
       width={1}
-      px={{ sm: 0, md: 3 }}
-      pt={{ sm: 3, md: 5 }}
-      pb={{ sm: 1 }}
+      px={{ sm: 0, md: '15px' }}
+      pt={{ sm: 3, md: '30px' }}
+      pb={{ sm: 1, md: '15px' }}
       position='relative'
       height={mobile ? 'auto' : '100vh'}
       className={cx({
@@ -117,24 +151,32 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile }) => {
       <Grid container direction='column' justify='space-between'>
         <Box>
           {!mobile && (
-            <Grid container justify='center' component={Link} to='/'>
+            <Grid container component={Link} to='/'>
               <Box pb={3}>
                 <img
                   src={darkMode ? MainLogo : MainLogoBlack}
                   alt='Logo'
-                  style={{}}
+                  style={{ marginLeft: '15px' }}
                 />
               </Box>
             </Grid>
           )}
-
-          {navigation.map(({ title, link, Icon }, i) => (
-            <SidebarItem key={i} title={title} link={link} Icon={Icon} />
-          ))}
+          <Box>
+            {navigation.map(({ title, link, Icon }, i) => (
+              <SidebarItem
+                key={i}
+                title={title}
+                link={link}
+                Icon={Icon}
+                onHide={onHide}
+              />
+            ))}
+            {!mobile && <Box top={gliderPosition} className={classes.glider} />}
+          </Box>
         </Box>
 
-        <Box mb={mobile ? 0 : 2}>
-          <Box mt={mobile ? 0 : 4} mb={mobile ? 0 : 2}>
+        <Box>
+          <Box mb={mobile ? 0 : 2}>
             {insights.map(({ href, title, link, Icon }, i) => (
               <SidebarItem
                 key={i}

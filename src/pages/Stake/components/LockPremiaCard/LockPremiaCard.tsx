@@ -173,20 +173,12 @@ const useStyles = makeStyles(({ palette }) => ({
     top: -43,
     right: -260,
     zIndex: 3,
-    '&:hover': {
-      backgroundColor: palette.primary.main,
-      color: palette.background.paper,
-    },
   },
   maxButtonMobile: {
     position: 'relative',
     top: -43,
     right: -227,
     zIndex: 3,
-    '&:hover': {
-      backgroundColor: palette.primary.main,
-      color: palette.background.paper,
-    },
   },
   elementHeader: {
     fontWeight: 500,

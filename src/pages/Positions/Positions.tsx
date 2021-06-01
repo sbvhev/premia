@@ -36,7 +36,6 @@ import Moment from 'moment';
 import cx from 'classnames';
 import { formatNumber } from 'utils/formatNumber';
 import CallMadeIcon from '@material-ui/icons/CallMade';
-import { PageWithSidebar } from 'layouts';
 import { DataTable, LineChart, DonutChart } from 'components';
 import PositionModal from 'components/PositionModal';
 
@@ -618,7 +617,7 @@ const Positions: React.FC = () => {
   // const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   return (
-    <PageWithSidebar>
+    <>
       <PositionModal
         open={positionModalOpen}
         onClose={() => {
@@ -1211,7 +1210,7 @@ const Positions: React.FC = () => {
           )}
         </>
       )}
-    </PageWithSidebar>
+    </>
   );
 };
 
