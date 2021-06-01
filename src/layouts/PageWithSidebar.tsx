@@ -125,7 +125,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 <AccountButtons mobile />
               </Box>
               <Divider />
-              <Box p={1}>
+              <Box p={1} pl={1.25}>
                 <Sidebar mobile onHide={hideMobileMenu} />
               </Box>
               <Divider />

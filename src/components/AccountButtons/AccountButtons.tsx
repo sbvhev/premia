@@ -74,7 +74,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   accountMobile: {
     padding: '0 12px',
     height: 45,
-    width: 'calc(60vw - 10px)',
+    width: 'calc(67vw - 10px)',
+    maxWidth: 'calc(100vw - 135px)',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
 
@@ -120,14 +121,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   button: {
     margin: '0 10px 0 0',
     height: 45,
-    '& img': {
-      marginLeft: 10,
+    '& svg': {
+      marginLeft: 8,
     },
   },
 
   half: {
-    marginRight: 4,
-    width: 'calc(50% - 8px)',
+    width: 'calc(50% - 4px)',
+    margin: 0
   },
 
   fullWidth: {
@@ -181,7 +182,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       minWidth: '125px',
       width: '33vw',
       marginRight: 0,
-      marginBottom: 8,
+      marginBottom: 10,
     },
   },
 }));
@@ -321,7 +322,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               <Box
                 display='flex'
                 justifyContent='space-between'
-                paddingX={'12px'}
+                paddingX={'10px'}
               >
                 <Box clone mb={mobile ? 1 : 0}>
                   <Box display='flex'>
