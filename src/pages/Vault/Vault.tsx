@@ -276,12 +276,18 @@ const ProVault: React.FC = () => {
   );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const phoneDevice = useMediaQuery(theme.breakpoints.down('xs'));
+  const thinDesktop = useMediaQuery(theme.breakpoints.down('sm'));
+  const ultraThinWindow = useMediaQuery(theme.breakpoints.down('xs'));
+  const phoneDevice = (/Mobi|Android/i.test(navigator.userAgent));
   const extraLargeDesktop = window.innerWidth > 1526;
   const deviceWidth = window.innerWidth;
+  const desktopScrollBarAdjustment = ultraThinWindow ? - 8 : 0;
   const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
+  const largeMobileDeviceAdjustment = (thinDesktop && !ultraThinWindow) ? 8 : 0;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  console.log('thinDesktop', thinDesktop);
+  console.log('ultraThinWindow', ultraThinWindow);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -409,7 +415,7 @@ const ProVault: React.FC = () => {
                   }
             }
           >
-            {!phoneDevice && !mobile ? (
+            {!phoneDevice && !thinDesktop ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
                 positions={[55 + extraMargin, 154 + extraMargin]}
@@ -418,10 +424,10 @@ const ProVault: React.FC = () => {
                 gliderWidth={94}
                 gliderHeight={42}
               />
-            ) : !phoneDevice && mobile ? (
+            ) : !phoneDevice && thinDesktop ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[30, 130]}
+                positions={[30 + desktopScrollBarAdjustment, 130  + desktopScrollBarAdjustment]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={30}
                 gliderWidth={94}
@@ -430,15 +436,15 @@ const ProVault: React.FC = () => {
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21, deviceWidth - 182]}
+                positions={[21 + largeMobileDeviceAdjustment, deviceWidth - 182 - largeMobileDeviceAdjustment]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={21}
+                start={21 + largeMobileDeviceAdjustment}
                 gliderWidth={160}
                 gliderHeight={32}
               />
             )}
           </Box>
-          {!mobile && vaultIndex === 1 && (
+          {!thinDesktop && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
               <SearchTabs
                 items={tabItems}
@@ -449,7 +455,7 @@ const ProVault: React.FC = () => {
               />
             </Box>
           )}
-          {mobile && vaultIndex === 1 && (
+          {thinDesktop && vaultIndex === 1 && (
             <>
               <Box className={classes.col}>
                 <Box
@@ -538,8 +544,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!mobile ? 'row' : 'column'}
-                    alignItems={!mobile ? 'flex-start' : 'center'}
+                    direction={!thinDesktop ? 'row' : 'column'}
+                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
                   >
                     <RadialChart
                       color='#5294FF'
@@ -750,8 +756,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!mobile ? 'row' : 'column'}
-                    alignItems={!mobile ? 'flex-start' : 'center'}
+                    direction={!thinDesktop ? 'row' : 'column'}
+                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
                   >
                     <RadialChart
                       color='#EB4A97'
