@@ -14,25 +14,29 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import DoneIcon from '@material-ui/icons/Done';
+import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
+import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
-import VaultIcon from 'assets/svg/VaultIcon.svg';
-import UniIcon from 'assets/svg/UniIcon.svg';
-import LinkIcon from 'assets/svg/LinkIcon.svg';
-import YFIIcon from 'assets/svg/YFIIcon.svg';
-import DaiIcon from 'assets/svg/Dai.svg';
+import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
+import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
+import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
+import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
+import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
+import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
+import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
+import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
+import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import Moment from 'moment';
 import cx from 'classnames';
 import { formatNumber } from 'utils/formatNumber';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import CallMadeIcon from '@material-ui/icons/CallMade';
-import { DataTable } from 'components';
+import { DataTable, LineChart, DonutChart } from 'components';
 import PositionModal from 'components/PositionModal';
 
 const getYieldHeadCells = () => [
@@ -48,7 +52,7 @@ const getYieldHeadCells = () => [
     label: (
       <>
         Capital
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.capital,
@@ -65,7 +69,7 @@ const getYieldHeadCells = () => [
     label: (
       <>
         Earned
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.earned,
@@ -110,7 +114,7 @@ const getOptionsHeadCells = () => [
     label: (
       <>
         Strike
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.strike,
@@ -121,7 +125,7 @@ const getOptionsHeadCells = () => [
     label: (
       <>
         Current Value
-        <img src={DaiIcon} alt='Dai Icon' />
+        <DaiIcon />
       </>
     ),
     sortKey: (yieldItem: any) => yieldItem?.value,
@@ -135,6 +139,7 @@ const getOptionsHeadCells = () => [
   {
     id: 'action',
     numeric: true,
+    buttonCell: true,
     label: '',
     element: <SellAllButton />,
     sortDisabled: true,
@@ -145,7 +150,7 @@ const getOptionsHeadCells = () => [
 const SellAllButton: React.FC = () => {
   return (
     <Button variant='outlined' size='large'>
-      Sell All
+      Exercise all
     </Button>
   );
 };
@@ -154,9 +159,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
     fontSize: 28,
     fontWeight: 700,
+    lineHeight: 0.64,
+    margin: '0 13px',
+  },
+  mainTitle: {
+    fontSize: 16,
+    fontWeight: 700,
+    marginLeft: 16,
   },
   fullWidth: {
     width: '100%',
+    maxWidth: 'unset',
   },
   yieldBox: {
     width: 38,
@@ -183,15 +196,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: 1,
     fontWeight: 700,
     display: 'flex',
-    '& img': {
+    alignItems: 'center',
+    '& svg': {
       marginLeft: 4,
       width: 16,
+      height: 16,
     },
   },
   subtitle: {
     fontSize: 14,
-    lineHeight: 1,
-    marginBottom: 4,
+    lineHeight: 1.71,
   },
   errorIcon: {
     position: 'absolute',
@@ -208,12 +222,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     filter: 'grayScale(1)',
   },
   typeBox: {
-    padding: 8,
+    padding: '0 11px',
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     textTransform: 'capitalize',
     position: 'relative',
+    width: 74,
+    height: 32,
     '& div': {
       width: '100%',
       height: '100%',
@@ -223,8 +238,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 0,
       left: 0,
     },
-    '& svg, & img': {
-      marginRight: 4,
+    '& svg': {
+      width: 12,
+      marginRight: 8,
     },
   },
   vault: {
@@ -234,13 +250,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   call: {
-    color: palette.success.dark,
+    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
     '& div': {
       background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
     },
   },
   put: {
-    color: palette.error.main,
+    background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
     '& div': {
       background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
     },
@@ -254,10 +274,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: 12,
-    padding: '0 8px',
-    '& img': {
+    padding: '0 10px',
+    color: palette.text.primary,
+    '& p': {
+      fontSize: 14,
+    },
+    '& svg': {
       width: 16,
+      height: 16,
       marginLeft: 4,
+      '& path': {
+        fill: palette.text.secondary
+      }
     },
   },
   noPositionsContainer: {
@@ -291,10 +319,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     alignItems: 'center',
     padding: '26px 0',
-    '& img': {
-      marginTop: 3,
-      marginBottom: -3,
-    },
     '& a': {
       textDecoration: 'none',
     },
@@ -307,6 +331,41 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       background: palette.primary.light,
     },
   },
+  positionFilterContainer: {
+    justifyContent: 'space-between',
+    margin: '20px 0',
+    '& .MuiBottomNavigation-root': {
+      padding: 6,
+      '&:nth-child(2)': {
+        minWidth: 300,
+        [breakpoints.down('xs')]: {
+          marginTop: 12,
+        },
+      },
+      '& button': {
+        padding: '6px 0',
+        '& svg': {
+          marginRight: 7,
+        },
+      },
+    },
+  },
+  expiredIcon: {
+    background: 'linear-gradient(266.96deg, #EB7A4A 29.5%, #F643CF 117.72%)',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 4,
+    right: 10,
+    '& p': {
+      fontSize: 8,
+      color: palette.common.black,
+    },
+  },
   findPositionButton: {
     minWidth: 169,
     background: palette.common.black,
@@ -314,13 +373,181 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       opacity: 0.5,
     },
   },
+  infoHeading: {
+    height: 53,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    '@media (max-width: 500px)': {
+      height: 'auto',
+      padding: '10px 0',
+      '& > div': {
+        width: '100%',
+      },
+    },
+  },
+  plInfoContainer: {
+    display: 'flex',
+    '@media (max-width: 500px)': {
+      marginLeft: 12,
+      marginTop: 8,
+      '& > div:last-child': {
+        marginRight: 0,
+        marginLeft: 10,
+      },
+    },
+  },
+  tableContainer: {
+    '& .MuiTableContainer-root': {
+      overflow: 'unset',
+    },
+    '& thead tr th, & tbody tr td': {
+      fontSize: 14,
+      borderBottom: `1px solid ${palette.divider}`,
+      '&.buttonCell': {
+        width: 110,
+        padding: '6px 10px 7px 0',
+        '& button': {
+          padding: 0,
+          margin: 0,
+          width: '100%',
+          height: 40,
+          fontSize: 14,
+          fontWeight: 700,
+        },
+      },
+      '&.yieldButtonCell': {
+        padding: '6px 3px 7px 0',
+        width: 187,
+        '& button': {
+          width: 85,
+          margin: 0,
+          '&:first-child': {
+            marginRight: 7,
+          },
+          '&.MuiButton-outlined': {
+            color: palette.text.secondary,
+          },
+        },
+        '@media (max-width: 1048px)': {
+          width: 140,
+          '& button': {
+            width: 64,
+            margin: 0,
+            '&:first-child': {
+              marginRight: 4,
+            },
+            '&.MuiButton-outlined': {
+              color: palette.text.secondary,
+            },
+          },
+        },
+      },
+    },
+    '& thead tr th': {
+      padding: '7px 6px',
+      '&:first-child': {
+        padding: '7px 0px 7px 23px',
+        [breakpoints.down('sm')]: {
+          padding: '7px 6px 7px 13px',
+        },
+      },
+      '&.buttonCell': {
+        '& button': {
+          color: palette.text.secondary,
+        },
+      },
+    },
+    '& tbody tr td': {
+      padding: '10px 6px',
+      '&:first-child': {
+        padding: '10px 0px 10px 15px',
+        [breakpoints.down('sm')]: {
+          padding: '10px 6px',
+        },
+      },
+      '&.buttonCell': {
+        '& button': {
+          color: palette.background.paper,
+        },
+      },
+    },
+  },
+  tokenIconCell: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    lineHeight: 1.3,
+    '& > div': {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      marginRight: 8,
+      [breakpoints.up('sm')]: {
+        width: 21,
+      },
+    },
+    '& svg': {
+      '& path': {
+        fill: palette.secondary.main,
+      },
+    },
+  },
+  exercisedCell: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    '& p': {
+      fontSize: 14,
+      lineHeight: 1.2,
+      width: 'calc(100% - 25px)',
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      WebkitBackgroundClip: 'text',
+      textFillColor: 'transparent',
+    },
+    '& > div': {
+      width: 18,
+      height: 18,
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
+      borderRadius: 12,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#D4E1F4',
+      '& svg': {
+        width: 12,
+        fill: palette.background.paper,
+      },
+    },
+  },
+  noPositionImage: {
+    width: 92,
+    height: 92,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  plPercents: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  yieldButtonCell: {
+    marginTop: 12,
+    marginBottom: 10,
+    padding: '0 10px',
+    '& .MuiButton-outlined': {
+      border: `1px solid ${palette.divider}`,
+      color: palette.text.secondary,
+    }
+  }
 }));
 
 const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const tablet = useMediaQuery(theme.breakpoints.down('md'));
+  const [positionFilter, setPositionFilter] = useState(0);
   const [yieldFilter, setYieldFilter] = useState(0);
   const [optionFilter, setOptionFilter] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
@@ -328,9 +555,11 @@ const Positions: React.FC = () => {
   const yieldHeadCells = getYieldHeadCells();
   const optionsHeadCells = getOptionsHeadCells();
 
+  const noPositions = false;
+
   const yieldData = [
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       capital: 15002,
       type: 'vault',
@@ -339,7 +568,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: LinkIcon,
+      tokenIcon: <LinkIcon />,
       symbol: 'Link',
       capital: 15002,
       option: 'call',
@@ -349,7 +578,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: YFIIcon,
+      tokenIcon: <YFIIcon />,
       symbol: 'YFI',
       capital: 15002,
       option: 'put',
@@ -359,7 +588,7 @@ const Positions: React.FC = () => {
       apy: 24,
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       capital: 15002,
       type: 'vault',
@@ -371,7 +600,7 @@ const Positions: React.FC = () => {
 
   const optionsData = [
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'call',
@@ -380,7 +609,7 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'call',
@@ -389,17 +618,18 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
     {
-      tokenIcon: UniIcon,
+      tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
       type: 'put',
       strike: 100,
       value: 100,
+      exercised: true,
       expiration: Moment.now(),
     },
   ];
 
-  const noPositions = false;
+  // const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   return (
     <>
@@ -409,6 +639,158 @@ const Positions: React.FC = () => {
           setPositionModalOpen(false);
         }}
       />
+      <Typography component='h1' color='textPrimary' className={classes.title}>
+        My dashboard
+      </Typography>
+      <Grid container className={classes.positionFilterContainer}>
+        <BottomNavigation
+          value={positionFilter}
+          className={cx(mobile && classes.fullWidth)}
+          onChange={(event, newValue) => {
+            setPositionFilter(newValue);
+          }}
+          showLabels={true}
+        >
+          <BottomNavigationAction label='Options' icon={<OptionsIcon />} />
+          <BottomNavigationAction label='Yield' icon={<YieldIcon />} />
+        </BottomNavigation>
+        {!noPositions && (
+          <BottomNavigation
+            value={yieldFilter}
+            className={cx(mobile && classes.fullWidth)}
+            onChange={(event, newValue) => {
+              setYieldFilter(newValue);
+            }}
+            showLabels={true}
+          >
+            <BottomNavigationAction label='Today' />
+            <BottomNavigationAction label='This week' />
+            <BottomNavigationAction label='This month' />
+          </BottomNavigation>
+        )}
+      </Grid>
+      {!noPositions && (
+        <Box mb={2.5}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12} lg={8}>
+              <Container fixed className={classes.fullWidth}>
+                <Box className={classes.infoHeading}>
+                  <Box>
+                    <Typography className={classes.mainTitle}>
+                      My P&L
+                    </Typography>
+                  </Box>
+                  <Box className={classes.plInfoContainer}>
+                    <Box display='flex' alignItems='center'>
+                      <Box className={classes.yieldBox}>
+                        <Box
+                          width={1}
+                          height={1}
+                          borderRadius={12}
+                          className={classes.capital}
+                        />
+                        <img src={CapitalIcon} alt='Capital Active' />
+                      </Box>
+                      <Box ml={1}>
+                        <Typography
+                          color='textSecondary'
+                          className={classes.subtitle}
+                        >
+                          Capital in options
+                        </Typography>
+                        <Typography
+                          color='textPrimary'
+                          component='h2'
+                          className={classes.price}
+                        >
+                          124,098
+                          <DaiIcon />
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box mx={2.5} display='flex' alignItems='center'>
+                      <Box className={classes.yieldBox}>
+                        <Box
+                          width={1}
+                          height={1}
+                          borderRadius={12}
+                          className={classes.return}
+                        />
+                        <img src={ReturnIcon} alt='Current Return' />
+                      </Box>
+                      <Box ml={1}>
+                        <Typography
+                          color='textSecondary'
+                          className={classes.subtitle}
+                        >
+                          Average return
+                        </Typography>
+                        <Typography
+                          color='textPrimary'
+                          component='h2'
+                          className={classes.price}
+                        >
+                          12%
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+                <Divider />
+                <Grid container>
+                  {/* <Box className={classes.plPercents}>
+                    {plPercents.map(val => (
+                      <Typography>{ val }{ val !== 0 && '%' }</Typography>
+                    ))}
+                  </Box> */}
+                  <Box flex={1}>
+                    <LineChart
+                      color='#14A887'
+                      data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                      categories={[
+                        '2021/5/24',
+                        '2021/5/25',
+                        '2021/5/26',
+                        '2021/5/27',
+                        '2021/5/28',
+                        '2021/5/29',
+                        '2021/5/30',
+                      ]}
+                      width='100%'
+                      height={200}
+                    />
+                  </Box>
+                </Grid>
+              </Container>
+            </Grid>
+            <Grid item container sm={12} md={12} lg={4}>
+              <Container fixed className={classes.fullWidth}>
+                <Grid container direction='column' style={{ height: '100%' }}>
+                  <Box className={classes.infoHeading}>
+                    <Typography className={classes.mainTitle}>
+                      Asset allocation
+                    </Typography>
+                  </Box>
+                  <Divider />
+                  <Box
+                    display='flex'
+                    flex={1}
+                    height={1}
+                    justifyContent='center'
+                    alignItems='center'
+                  >
+                    <DonutChart
+                      data={[73, 27]}
+                      labels={['ETH', 'Uni']}
+                      colors={['#14A887', '#BF47C3']}
+                    />
+                  </Box>
+                </Grid>
+              </Container>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
       {noPositions ? (
         <Box className={classes.noPositionsContainer}>
           <Typography
@@ -420,26 +802,12 @@ const Positions: React.FC = () => {
             You have no active positions
           </Typography>
           <Box mt={mobile ? 3 : 5}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Container fixed className={classes.noPositionBox}>
-                  <img src={NoPositionYield} alt='No Yield' />
-                  <Box ml={3}>
-                    <Typography component='h2'>Your yield</Typography>
-                    <Link to='/vaults'>
-                      <Button
-                        className={classes.noPositionButton}
-                        color='primary'
-                      >
-                        Earn yield
-                      </Button>
-                    </Link>
+            <Container fixed className={classes.noPositionBox}>
+              {positionFilter === 0 && (
+                <>
+                  <Box className={classes.noPositionImage}>
+                    <img src={NoPositionOptions} alt='No Options' />
                   </Box>
-                </Container>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Container fixed className={classes.noPositionBox}>
-                  <img src={NoPositionOptions} alt='No Options' />
                   <Box ml={3}>
                     <Typography component='h2'>Your options</Typography>
                     <Link to='/options'>
@@ -451,9 +819,27 @@ const Positions: React.FC = () => {
                       </Button>
                     </Link>
                   </Box>
-                </Container>
-              </Grid>
-            </Grid>
+                </>
+              )}
+              {positionFilter === 1 && (
+                <>
+                  <Box className={classes.noPositionImage}>
+                    <img src={NoPositionYield} alt='No Yield' />
+                  </Box>
+                  <Box ml={3}>
+                    <Typography component='h2'>Your yield</Typography>
+                    <Link to='/vaults'>
+                      <Button
+                        className={classes.noPositionButton}
+                        color='primary'
+                      >
+                        Earn yield
+                      </Button>
+                    </Link>
+                  </Box>
+                </>
+              )}
+            </Container>
           </Box>
           <Grid
             container
@@ -474,426 +860,375 @@ const Positions: React.FC = () => {
         </Box>
       ) : (
         <>
-          <Grid container alignItems='center' justify='space-between'>
-            <Typography
-              component='h1'
-              color='textPrimary'
-              className={classes.title}
-            >
-              My yield positions
-            </Typography>
-            <Box mt={tablet ? 2 : 0} width={tablet ? 1 : 700}>
-              <Grid container spacing={1}>
-                <Grid item xs={6} sm={3}>
-                  <Container fixed>
-                    <Box width={1} p={1} display='flex' alignItems='center'>
-                      <Box className={classes.yieldBox}>
-                        <Box
-                          width={1}
-                          height={1}
-                          borderRadius={12}
-                          className={classes.capital}
-                        />
-                        <img src={CapitalIcon} alt='Capital Active' />
-                      </Box>
-                      <Box ml={1}>
-                        <Typography
-                          color='textSecondary'
-                          className={classes.subtitle}
-                        >
-                          Capital active
-                        </Typography>
-                        <Typography
-                          color='textPrimary'
-                          component='h2'
-                          className={classes.price}
-                        >
-                          124,098
-                          <img src={DaiIcon} alt='Dai Icon' />
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Container>
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                  <Container fixed>
-                    <Box width={1} p={1} display='flex' alignItems='center'>
-                      <Box className={classes.yieldBox}>
-                        <Box
-                          width={1}
-                          height={1}
-                          borderRadius={12}
-                          className={classes.return}
-                        />
-                        <img src={ReturnIcon} alt='Current Return' />
-                      </Box>
-                      <Box ml={1}>
-                        <Typography
-                          color='textSecondary'
-                          className={classes.subtitle}
-                        >
-                          Current return
-                        </Typography>
-                        <Typography
-                          color='textPrimary'
-                          component='h2'
-                          className={classes.price}
-                        >
-                          12%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Container>
-                </Grid>
-                <Grid item xs={12} sm={6}>
+          {positionFilter === 0 && (
+            <Box className={classes.tableContainer}>
+              <Grid container alignItems='center' justify='space-between'>
+                <Typography
+                  component='h1'
+                  color='textPrimary'
+                  className={classes.mainTitle}
+                >
+                  My option positions
+                </Typography>
+                <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
                   <BottomNavigation
-                    value={yieldFilter}
-                    className={classes.fullWidth}
+                    value={optionFilter}
+                    className={cx(mobile && classes.fullWidth)}
                     onChange={(event, newValue) => {
-                      setYieldFilter(newValue);
+                      setOptionFilter(newValue);
                     }}
                     showLabels={true}
                   >
-                    <BottomNavigationAction label='Today' />
-                    <BottomNavigationAction label='This week' />
-                    <BottomNavigationAction label='This month' />
+                    <BottomNavigationAction
+                      label='Current'
+                      icon={<WatchLaterIcon />}
+                    />
+                    <BottomNavigationAction
+                      label='Expired'
+                      icon={
+                        <>
+                          <WarningIcon />
+                          <Box className={classes.expiredIcon}>
+                            <Typography>1</Typography>
+                          </Box>
+                        </>
+                      }
+                    />
                   </BottomNavigation>
-                </Grid>
+                </Box>
               </Grid>
-            </Box>
-          </Grid>
-          <Box my={3}>
-            {mobile ? (
-              <>
-                {yieldData.map((item: any, index) => (
-                  <Box mb={2}>
-                    <Container fixed>
-                      <Box
-                        width={1}
-                        display='flex'
-                        p={1}
-                        justifyContent='space-between'
-                        alignItems='center'
-                      >
-                        <Box>
-                          <img
-                            src={item.tokenIcon}
-                            alt={item.symbol}
-                            className={classes.tableCellIcon}
-                          />
-                          {item.symbol}
-                        </Box>
-                        <Box display='flex' alignItems='center'>
-                          {item.name}
-                          <Box ml={2} display='flex' alignItems='center'>
+              <Box mt={mobile ? 1.5: 2.5}>
+                {mobile ? (
+                  <>
+                    {optionsData.map((item: any) => (
+                      <Box mb={2}>
+                        <Container fixed>
+                          <Box
+                            width={1}
+                            display='flex'
+                            p={1.25}
+                            pl={1}
+                            justifyContent='space-between'
+                            alignItems='center'
+                          >
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
+                            </Box>
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'vault'
-                                  ? classes.vault
-                                  : item.option === 'call'
+                                item.type === 'call' ? classes.call : classes.put,
+                              )}
+                            >
+                              <Box />
+                              {item.type === 'call' ? <CallIcon /> : <PutIcon />}
+                              {item.type}
+                            </Box>
+                          </Box>
+                          <Divider />
+                          <Box className={classes.cardRow}>
+                            <Typography color='textSecondary'>Size</Typography>
+                            {formatNumber(item.size)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Current Value
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.value)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Strike
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.strike)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Typography color='textSecondary'>
+                              Expiration
+                            </Typography>
+                            <Box textAlign='right'>
+                              {Moment(item.expiration).format('DD MMM')}
+                              <Typography color='textSecondary'>
+                                2 days left
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Box px={1} my={1.5}>
+                            {item.exercised ? (
+                              <Box className={classes.exercisedCell}>
+                                <Box>
+                                  <DoneIcon />
+                                </Box>
+                                <Typography>Exercised for 100</Typography>
+                              </Box>
+                            ) : (
+                              <Button
+                                fullWidth
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Exercise
+                              </Button>
+                            )}
+                          </Box>
+                        </Container>
+                      </Box>
+                    ))}
+                  </>
+                ) : (
+                  <DataTable
+                    headCells={optionsHeadCells}
+                    data={optionsData}
+                    rowPerPage={5}
+                    sortUpIcon={<UpArrow />}
+                    sortDownIcon={<DownArrow />}
+                    showEmptyRows={false}
+                    renderRow={(item: any, index) => {
+                      return (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
+                            </Box>
+                          </TableCell>
+                          <TableCell>{formatNumber(item.size)}</TableCell>
+                          <TableCell>
+                            <Box
+                              className={cx(
+                                classes.typeBox,
+                                item.type === 'call'
                                   ? classes.call
                                   : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === 'vault' ? (
-                                <img src={VaultIcon} alt='vault' />
-                              ) : item.option === 'call' ? (
-                                <ArrowUpwardIcon />
+                              {item.type === 'call' ? (
+                                <CallIcon />
                               ) : (
-                                <ArrowDownwardIcon />
+                                <PutIcon />
                               )}
                               {item.type}
                             </Box>
+                          </TableCell>
+                          <TableCell>{item.strike}</TableCell>
+                          <TableCell>{item.value}</TableCell>
+                          <TableCell>
+                            <Box className={classes.expirationCell}>
+                              {Moment(item.expiration).format('DD MMM')}{' '}
+                              <Typography color='textSecondary'>
+                                2 days left
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell className='buttonCell'>
+                            {item.exercised ? (
+                              <Box className={classes.exercisedCell}>
+                                <Box>
+                                  <DoneIcon />
+                                </Box>
+                                <Typography>Exercised for 100</Typography>
+                              </Box>
+                            ) : (
+                              <Button
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Exercise
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }}
+                  />
+                )}
+              </Box>
+            </Box>
+          )}
+          {positionFilter === 1 && (
+            <Box className={classes.tableContainer}>
+              <Grid container alignItems='center' justify='space-between'>
+                <Typography
+                  component='h1'
+                  color='textPrimary'
+                  className={classes.mainTitle}
+                >
+                  My yield positions
+                </Typography>
+              </Grid>
+              <Box mt={mobile ? 1.5 : 2.5}>
+                {mobile ? (
+                  <>
+                    {yieldData.map((item: any, index) => (
+                      <Box mb={2}>
+                        <Container fixed>
+                          <Box
+                            width={1}
+                            display='flex'
+                            p={1.25}
+                            pl={1}
+                            justifyContent='space-between'
+                            alignItems='center'
+                          >
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
+                            </Box>
+                            <Box display='flex' alignItems='center'>
+                              {item.name}
+                              <Box ml={2} display='flex' alignItems='center'>
+                                <Box
+                                  className={cx(
+                                    classes.typeBox,
+                                    item.type === 'vault'
+                                      ? classes.vault
+                                      : item.option === 'call'
+                                      ? classes.call
+                                      : classes.put,
+                                  )}
+                                >
+                                  <Box />
+                                  {item.type === 'vault' ? (
+                                    <VaultIcon />
+                                  ) : item.option === 'call' ? (
+                                    <CallIcon />
+                                  ) : (
+                                    <PutIcon />
+                                  )}
+                                  {item.type}
+                                </Box>
+                              </Box>
+                            </Box>
                           </Box>
-                        </Box>
+                          <Divider />
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Capital
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.capital)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Earned
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {item.earned}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Expected APY
+                              </Typography>
+                            </Box>
+                            {item.apy}
+                          </Box>
+                          <Box className={classes.yieldButtonCell}>
+                            <Grid container spacing={1}>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  color='primary'
+                                  onClick={() => setPositionModalOpen(true)}
+                                >
+                                  Add
+                                </Button>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  variant='outlined'
+                                  onClick={() => setPositionModalOpen(true)}
+                                >
+                                  Remove
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Container>
                       </Box>
-                      <Divider />
-                      <Box className={classes.cardRow}>
-                        <Box display='flex' alignItems='center'>
-                          <Typography color='textSecondary'>Capital</Typography>
-                          <img src={DaiIcon} alt='Dai Icon' />
-                        </Box>
-                        {formatNumber(item.capital)}
-                      </Box>
-                      <Box className={classes.cardRow}>
-                        <Box display='flex' alignItems='center'>
-                          <Typography color='textSecondary'>Earned</Typography>
-                          <img src={DaiIcon} alt='Dai Icon' />
-                        </Box>
-                        {item.earned}
-                      </Box>
-                      <Box className={classes.cardRow}>
-                        <Box display='flex' alignItems='center'>
-                          <Typography color='textSecondary'>
-                            Expected APY
-                          </Typography>
-                        </Box>
-                        {item.apy}
-                      </Box>
-                      <Box px={1} my={1.5}>
-                        <Grid container spacing={1}>
-                          <Grid item xs={6}>
+                    ))}
+                  </>
+                ) : (
+                  <DataTable
+                    headCells={yieldHeadCells}
+                    data={yieldData}
+                    sortUpIcon={<UpArrow />}
+                    sortDownIcon={<DownArrow />}
+                    rowPerPage={5}
+                    showEmptyRows={false}
+                    renderRow={(item: any, index) => {
+                      return (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
+                            </Box>
+                          </TableCell>
+                          <TableCell>{formatNumber(item.capital)}</TableCell>
+                          <TableCell>
+                            <Box display='flex' alignItems='center'>
+                              <Box
+                                mr={1}
+                                className={cx(
+                                  classes.typeBox,
+                                  item.type === 'vault'
+                                    ? classes.vault
+                                    : item.option === 'call'
+                                    ? classes.call
+                                    : classes.put,
+                                )}
+                              >
+                                <Box />
+                                {item.type === 'vault' ? (
+                                  <VaultIcon />
+                                ) : item.option === 'call' ? (
+                                  <CallIcon />
+                                ) : (
+                                  <PutIcon />
+                                )}
+                                {item.type}
+                              </Box>
+                              {item.name}
+                            </Box>
+                          </TableCell>
+                          <TableCell>{item.earned}</TableCell>
+                          <TableCell>{item.apy}</TableCell>
+                          <TableCell className='yieldButtonCell'>
                             <Button
-                              fullWidth
                               color='primary'
                               onClick={() => setPositionModalOpen(true)}
                             >
                               Add
                             </Button>
-                          </Grid>
-                          <Grid item xs={6}>
                             <Button
-                              fullWidth
                               variant='outlined'
                               onClick={() => setPositionModalOpen(true)}
                             >
                               Remove
                             </Button>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    </Container>
-                  </Box>
-                ))}
-              </>
-            ) : (
-              <DataTable
-                headCells={yieldHeadCells}
-                data={yieldData}
-                rowPerPage={5}
-                renderRow={(item: any, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <img
-                          src={item.tokenIcon}
-                          alt={item.symbol}
-                          className={classes.tableCellIcon}
-                        />
-                        {item.symbol}
-                      </TableCell>
-                      <TableCell>{formatNumber(item.capital)}</TableCell>
-                      <TableCell>
-                        <Box display='flex' alignItems='center'>
-                          <Box
-                            mr={1}
-                            className={cx(
-                              classes.typeBox,
-                              item.type === 'vault'
-                                ? classes.vault
-                                : item.option === 'call'
-                                ? classes.call
-                                : classes.put,
-                            )}
-                          >
-                            <Box />
-                            {item.type === 'vault' ? (
-                              <img src={VaultIcon} alt='vault' />
-                            ) : item.option === 'call' ? (
-                              <ArrowUpwardIcon />
-                            ) : (
-                              <ArrowDownwardIcon />
-                            )}
-                            {item.type}
-                          </Box>
-                          {item.name}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{item.earned}</TableCell>
-                      <TableCell>{item.apy}</TableCell>
-                      <TableCell>
-                        <Button
-                          color='primary'
-                          onClick={() => setPositionModalOpen(true)}
-                        >
-                          Add
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={() => setPositionModalOpen(true)}
-                        >
-                          Remove
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }}
-              />
-            )}
-          </Box>
-          <Grid container alignItems='center' justify='space-between'>
-            <Typography
-              component='h1'
-              color='textPrimary'
-              className={classes.title}
-            >
-              My option positions
-            </Typography>
-            <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
-              <BottomNavigation
-                value={optionFilter}
-                className={cx(mobile && classes.fullWidth)}
-                onChange={(event, newValue) => {
-                  setOptionFilter(newValue);
-                }}
-                showLabels={true}
-              >
-                <BottomNavigationAction
-                  label='Current'
-                  icon={<WatchLaterIcon />}
-                />
-                <BottomNavigationAction
-                  label='Expired'
-                  icon={
-                    <>
-                      <WarningIcon />
-                      <ErrorIcon className={classes.errorIcon} />
-                    </>
-                  }
-                />
-              </BottomNavigation>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }}
+                  />
+                )}
+              </Box>
             </Box>
-          </Grid>
-          <Box mt={3}>
-            {mobile ? (
-              <>
-                {optionsData.map((item: any, index) => (
-                  <Box mb={2}>
-                    <Container fixed>
-                      <Box
-                        width={1}
-                        display='flex'
-                        p={1}
-                        justifyContent='space-between'
-                        alignItems='center'
-                      >
-                        <Box>
-                          <img
-                            src={item.tokenIcon}
-                            alt={item.symbol}
-                            className={classes.tableCellIcon}
-                          />
-                          {item.symbol}
-                        </Box>
-                        <Box
-                          className={cx(
-                            classes.typeBox,
-                            item.type === 'call' ? classes.call : classes.put,
-                          )}
-                        >
-                          <Box />
-                          {item.type === 'call' ? (
-                            <ArrowUpwardIcon />
-                          ) : (
-                            <ArrowDownwardIcon />
-                          )}
-                          {item.type}
-                        </Box>
-                      </Box>
-                      <Divider />
-                      <Box className={classes.cardRow}>
-                        <Typography color='textSecondary'>Size</Typography>
-                        {formatNumber(item.size)}
-                      </Box>
-                      <Box className={classes.cardRow}>
-                        <Box display='flex' alignItems='center'>
-                          <Typography color='textSecondary'>
-                            Current Value
-                          </Typography>
-                          <img src={DaiIcon} alt='Dai Icon' />
-                        </Box>
-                        {formatNumber(item.value)}
-                      </Box>
-                      <Box className={classes.cardRow}>
-                        <Box display='flex' alignItems='center'>
-                          <Typography color='textSecondary'>Strike</Typography>
-                          <img src={DaiIcon} alt='Dai Icon' />
-                        </Box>
-                        {formatNumber(item.strike)}
-                      </Box>
-                      <Box className={classes.cardRow}>
-                        <Typography color='textSecondary'>
-                          Expiration
-                        </Typography>
-                        <Box textAlign='right'>
-                          {Moment(item.expiration).format('DD MMM')}
-                          <Typography color='textSecondary'>
-                            2 days left
-                          </Typography>
-                        </Box>
-                      </Box>
-                      <Box px={1} my={1.5}>
-                        <Button
-                          fullWidth
-                          color='primary'
-                          onClick={() => setPositionModalOpen(true)}
-                        >
-                          Sell
-                        </Button>
-                      </Box>
-                    </Container>
-                  </Box>
-                ))}
-              </>
-            ) : (
-              <DataTable
-                headCells={optionsHeadCells}
-                data={optionsData}
-                rowPerPage={5}
-                renderRow={(item: any, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <img
-                          src={item.tokenIcon}
-                          alt={item.symbol}
-                          className={classes.tableCellIcon}
-                        />
-                        {item.symbol}
-                      </TableCell>
-                      <TableCell>{formatNumber(item.size)}</TableCell>
-                      <TableCell>
-                        <Box
-                          className={cx(
-                            classes.typeBox,
-                            item.type === 'call' ? classes.call : classes.put,
-                          )}
-                        >
-                          <Box />
-                          {item.type === 'call' ? (
-                            <ArrowUpwardIcon />
-                          ) : (
-                            <ArrowDownwardIcon />
-                          )}
-                          {item.type}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{item.strike}</TableCell>
-                      <TableCell>{item.value}</TableCell>
-                      <TableCell>
-                        <Box className={classes.expirationCell}>
-                          {Moment(item.expiration).format('DD MMM')}{' '}
-                          <Typography color='textSecondary'>
-                            2 days left
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color='primary'
-                          onClick={() => setPositionModalOpen(true)}
-                        >
-                          Sell
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }}
-              />
-            )}
-          </Box>
+          )}
         </>
       )}
     </>
