@@ -222,9 +222,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     filter: 'grayScale(1)',
   },
   typeBox: {
-    padding: 8,
+    padding: '0 11px',
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     textTransform: 'capitalize',
     position: 'relative',
@@ -240,8 +239,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       left: 0,
     },
     '& svg': {
-      width: 18,
-      marginRight: 4,
+      width: 12,
+      marginRight: 8,
     },
   },
   vault: {

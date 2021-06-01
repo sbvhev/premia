@@ -1,11 +1,18 @@
-<svg width="62" height="64" viewBox="0 0 62 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d)">
-<path d="M6.56043 0.223774L11.7697 5.27968C11.9184 5.42401 12 5.61636 12 5.82147C12 6.0268 11.9183 6.21904 11.7697 6.36337L11.2966 6.8224C11.1481 6.96661 10.9499 7.04607 10.7384 7.04607C10.5271 7.04607 10.3221 6.96661 10.1736 6.8224L7.12802 3.87286V13.2437C7.12802 13.6662 6.78723 14 6.35181 14H5.68301C5.2476 14 4.87245 13.6662 4.87245 13.2437V3.8394L1.80983 6.8223C1.66113 6.9665 1.46822 7.04595 1.25678 7.04595C1.04558 7.04595 0.849855 6.9665 0.701275 6.8223L0.229732 6.36326C0.0810335 6.21893 0 6.02669 0 5.82135C0 5.61625 0.0820885 5.42389 0.230787 5.27956L5.43992 0.22366C5.58909 0.0789942 5.78821 -0.000566608 5.99988 3.03787e-06C6.21226 -0.000452255 6.4115 0.0789942 6.56043 0.223774Z" fill="url(#paint1_linear)"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 12 14" style="enable-background:new 0 0 12 14;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);}
+</style>
+<g>
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="10.1448" y1="1026.9022" x2="-0.2898" y2="1017.4535" gradientTransform="matrix(1 0 0 -1 0 1030)">
+		<stop  offset="0" style="stop-color:#EB4A97"/>
+		<stop  offset="1" style="stop-color:#8C43F6"/>
+	</linearGradient>
+	<path class="st0" d="M6.6,13.8l5.2-5.1C11.9,8.6,12,8.4,12,8.2c0-0.2-0.1-0.4-0.2-0.5l-0.5-0.5C11.1,7,10.9,7,10.7,7
+		c-0.2,0-0.4,0.1-0.6,0.2l-3,2.9V0.8C7.1,0.3,6.8,0,6.4,0H5.7C5.2,0,4.9,0.3,4.9,0.8v9.4l-3.1-3C1.7,7,1.5,7,1.3,7
+		C1,7,0.8,7,0.7,7.2L0.2,7.6C0.1,7.8,0,8,0,8.2c0,0.2,0.1,0.4,0.2,0.5l5.2,5.1C5.6,13.9,5.8,14,6,14C6.2,14,6.4,13.9,6.6,13.8z"/>
 </g>
-<defs>
-<linearGradient id="paint1_linear" x1="33.6842" y1="26.4848" x2="23.2496" y2="35.9335" gradientUnits="userSpaceOnUse">
-<stop stop-color="#EB4A97"/>
-<stop offset="1" stop-color="#8C43F6"/>
-</linearGradient>
-</defs>
 </svg>
