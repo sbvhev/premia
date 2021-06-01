@@ -12,10 +12,11 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 210px)',
+    width: 'calc(100vw - 210px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
+    overflowX: 'hidden',
     flexDirection: 'column',
     marginLeft: 210,
   },
@@ -70,50 +71,53 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
         >
           <Box
             position='fixed'
-            width={mobile ? 1 : 'calc(100% - 210px)'}
+            width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
             bgcolor={
               !mobile ? palette.background.default : palette.background.paper
             }
-            p={mobile ? 1 : 3}
+            pt={mobile ? 1 : 3}
             px={mobile ? 1 : 3}
             className={cx(mobile && classes.border)}
-            height={mobile ? '60px' : '96px'}
+            height={mobile ? '60px' : '72px'}
           >
-            <Grid container justify='space-between' alignItems='center'>
-              {mobile && (
-                <Box display='flex' alignItems='center' marginLeft='8px'>
-                  <img
-                    src={darkMode ? MainLogo : MainLogoBlack}
-                    alt='main logo'
-                  />
-                </Box>
-              )}
-              <Grid style={{ height: '48px' }}>
+            <Container>
+              <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
-                  <IconButton
-                    style={{ height: '48px' }}
-                    onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-                  >
-                    <Hamburger
-                      color={theme.palette.text.secondary}
-                      toggled={!mobileSidebarHidden}
-                      toggle={setMobileSidebarHidden}
+                  <Box display='flex' alignItems='center' marginLeft='8px'>
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
                     />
-                  </IconButton>
+                  </Box>
+                )}
+                <Grid style={{ height: '48px' }}>
+                  {mobile && (
+                    <IconButton
+                      style={{ height: '48px', padding: 0 }}
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                    >
+                      <Hamburger
+                        size={20}
+                        color={theme.palette.text.secondary}
+                        toggled={!mobileSidebarHidden}
+                        toggle={setMobileSidebarHidden}
+                      />
+                    </IconButton>
+                  )}
+                </Grid>
+                {!mobile && (
+                  <Grid item>
+                    <AccountButtons />
+                  </Grid>
                 )}
               </Grid>
-              {!mobile && (
-                <Grid item>
-                  <AccountButtons />
-                </Grid>
-              )}
-            </Grid>
+            </Container>
           </Box>
 
           {mobile && !mobileSidebarHidden && (
             <Box
-              width={1}
+              width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'
               mb={mobile ? 0 : 7}
@@ -125,7 +129,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 <AccountButtons mobile />
               </Box>
               <Divider />
-              <Box p={1}>
+              <Box p={1} pl={1.25}>
                 <Sidebar mobile onHide={hideMobileMenu} />
               </Box>
               <Divider />
@@ -145,10 +149,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <>
               <Box
                 px={mobile ? 0 : 3}
-                width={1}
+                width={mobile ? 1 : 'calc(100vw - 210px)'}
                 mx='auto'
-                mt={!mobile ? 14 : 10}
-                mb={mobile ? 10 : 7}
+                mt={!mobile ? 11 : 10}
+                mb={mobile ? 12.5 : 6}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>
@@ -156,7 +160,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               {!mobile ? (
                 <Box
                   position='fixed'
-                  width='calc(100% - 210px)'
+                  width='calc(100vw - 210px)'
                   bottom={0}
                   zIndex={14}
                   bgcolor={palette.background.default}

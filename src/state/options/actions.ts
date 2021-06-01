@@ -4,7 +4,7 @@ export const updateOptionType = createAction<string>(
   'options/updateOptionType',
 );
 
-export const updateMaturityDate = createAction<string | null>(
+export const updateMaturityDate = createAction<string>(
   'options/updateMaturityDate',
 );
 

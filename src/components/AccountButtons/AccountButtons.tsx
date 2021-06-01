@@ -5,14 +5,9 @@ import {
   IconButton,
   Button,
   Typography,
-  Avatar,
   Tooltip,
 } from '@material-ui/core';
-import {
-  ExitToApp,
-  SupervisorAccount,
-  AccountBalanceWallet,
-} from '@material-ui/icons';
+import { SupervisorAccount, AccountBalanceWallet } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -28,6 +23,9 @@ import {
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
+import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
+import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -37,10 +35,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   avatar: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
-    backgroundColor: palette.text.primary,
+    marginRight: 6,
+    '& path': {
+      fill: palette.text.secondary,
+    },
   },
 
   walletIcon: {
@@ -58,14 +56,35 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+
+    '&> div:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '&> svg path': {
+        fill: palette.text.primary,
+      },
+
+      '& p': {
+        color: palette.text.primary,
+      },
+    },
   },
 
   accountMobile: {
     padding: '0 12px',
     height: 45,
-    width: 'calc(60vw - 10px)',
+    width: 'calc(67vw - 30px)',
+    maxWidth: 'calc(100vw - 135px)',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
   },
 
   connect: {
@@ -80,14 +99,47 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   disconnect: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+
+    '&:hover:not(:active)': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+    },
+
     '& button': {
       padding: 0,
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      ':active': {
+        borderColor: palette.primary.main,
+
+        '& svg path': {
+          fill: palette.text.secondary,
+        },
+
+        '& p': {
+          color: palette.text.secondary,
+        },
+      },
     },
   },
 
   address: {
-    color: palette.text.primary,
-    fontSize: 10,
+    color: palette.text.secondary,
+    fontSize: 14,
   },
 
   addressMobile: {
@@ -99,22 +151,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     textDecoration: 'none',
   },
 
-  tier: {
-    color: palette.text.secondary,
-    fontSize: 10,
-  },
-
   button: {
     margin: '0 10px 0 0',
     height: 45,
-    '& img': {
-      marginLeft: 10,
+    '& svg': {
+      marginLeft: 8,
     },
   },
 
   half: {
-    marginRight: 4,
-    width: 'calc(50% - 8px)',
+    width: 'calc(50% - 4px)',
+    margin: 0,
   },
 
   fullWidth: {
@@ -139,18 +186,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     cursor: 'pointer',
     fontSize: 14,
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.primary.main,
-      },
-
-      '& p': {
-        color: palette.text.primary,
-      },
-    },
-
     '& svg': {
       width: 33,
       height: 33,
@@ -160,7 +195,31 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       borderRadius: 10,
 
       '& path': {
+        fill: palette.text.secondary,
+      },
+    },
+
+    '&:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
         fill: palette.text.primary,
+      },
+
+      '& p': {
+        color: palette.text.primary,
+      },
+    },
+
+    ':active': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      '& p': {
+        color: palette.text.secondary,
       },
     },
 
@@ -168,7 +227,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       minWidth: '125px',
       width: '33vw',
       marginRight: 0,
-      marginBottom: 8,
+      marginBottom: 10,
     },
   },
 }));
@@ -190,13 +249,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      direction='row'
-      alignItems='center'
-      justify='flex-end'
-      style={!mobile ? { paddingRight: '24px' } : {}}
-    >
+    <Grid container direction='row' alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -269,7 +322,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       xs={9}
                       onClick={() => setShowTransactions(true)}
                     >
-                      <Avatar className={classes.avatar} />
+                      <PersonIcon className={classes.avatar} />
                       <Box>
                         <Typography
                           className={
@@ -278,7 +331,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                         >
                           {shortenAddress(account ?? '')}
                         </Typography>
-                        <Typography className={classes.tier}>Tier 1</Typography>
                       </Box>
                     </Grid>
 
@@ -290,9 +342,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       className={classes.disconnect}
                     >
                       <Tooltip title='Disconnect'>
-                        <IconButton onClick={disconnect}>
-                          <ExitToApp color='action' />
-                        </IconButton>
+                        <LogoutIcon color='action' onClick={disconnect} />
                       </Tooltip>
                     </Box>
                   </Grid>
@@ -300,16 +350,11 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               </Box>
             </>
           ) : (
-            <Box
-              display='flex'
-              flexDirection='column'
-              width='100%'
-              paddingY={1}
-            >
+            <Box display='flex' flexDirection='column' width='100%' pt={1.25}>
               <Box
                 display='flex'
                 justifyContent='space-between'
-                paddingX={'12px'}
+                paddingX={'10px'}
               >
                 <Box clone mb={mobile ? 1 : 0}>
                   <Box display='flex'>
@@ -328,20 +373,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                         paddingTop='2px'
                       >
                         <Box style={{ margin: '2px 6px 0 0' }}>
-                          <svg
-                            width='11'
-                            height='13'
-                            viewBox='0 0 11 13'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              fill-rule='evenodd'
-                              clip-rule='evenodd'
-                              d='M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z'
-                              fill={palette.secondary.main}
-                            />
-                          </svg>
+                          <PersonIconMobile />
                         </Box>
                         <Box>
                           <Typography className={classes.addressMobile}>
@@ -359,7 +391,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       >
                         <Tooltip title='Disconnect'>
                           <IconButton onClick={disconnect}>
-                            <ExitToApp color='action' />
+                            <LogoutIcon color='action' />
                           </IconButton>
                         </Tooltip>
                       </Box>
@@ -381,7 +413,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 display='flex'
                 justifyContent='space-between'
                 borderTop={`1px solid ${palette.divider}`}
-                style={{ padding: '12px 10px 3px 10px' }}
+                p={1.25}
               >
                 <Button
                   color='primary'

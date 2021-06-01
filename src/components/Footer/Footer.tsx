@@ -4,6 +4,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { BorderLinearProgress, SwitchWithGlider } from 'components';
 import cx from 'classnames';
+import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -32,7 +33,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   footerRightItem: {
-    padding: '0px 18px',
+    padding: '0px 22px',
     display: 'flex',
     alignItems: 'center',
     color: palette.text.secondary,
@@ -41,12 +42,17 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     '& svg': {
       marginRight: 8,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? null : '#8D97A0'),
+      },
     },
   },
 
   gasProgress: {
     width: 35,
     marginLeft: 4,
+    background: 'rgba(141, 151, 160, 0.4)',
   },
 
   footerDivider: {
@@ -116,7 +122,8 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const Footer: React.FC = () => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const theme = useTheme();
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -242,7 +249,9 @@ const Footer: React.FC = () => {
         >
           <Box className={classes.footerRightItem}>
             <LockIcon />
-            <Typography component='span'>TVL: 1000004$</Typography>
+            <Typography component='span' style={{ fontSize: 14 }}>
+              TVL: 1000004$
+            </Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
           <Box

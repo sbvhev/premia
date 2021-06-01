@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       fill: theme.palette.primary.main,
     },
     '& span': {
+      fontWeight: 'bold',
       color: theme.palette.primary.main,
     },
   },
