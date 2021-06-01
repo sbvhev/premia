@@ -7,7 +7,7 @@ import {
   Button,
   Divider,
 } from '@material-ui/core';
-import { SearchTabs, WithdrawDepositModal } from 'components';
+import { SearchTabs, BuyConfirmationModal } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
@@ -187,7 +187,7 @@ const Options: React.FC = () => {
                   variant='contained'
                   size='large'
                   color={optionType === 'call' ? 'primary' : 'secondary'}
-                  onClick={() => setWithdrawDepositModalOpen(true)}
+                  onClick={() => setBuyConfirmationModalOpen(true)}
                 >
                   Buy Option
                 </Button>

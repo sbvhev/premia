@@ -28,6 +28,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     display: 'flex',
     backgroundColor: 'transparent',
+    position: 'relative',
   },
   mainCard: {
     width: '364px',
@@ -64,11 +65,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     color: palette.text.primary,
   },
   smallInfoText: {
-    fontWeight: 400,
-    fontSize: '14px',
-    lineHeight: '18px',
+    fontWeight: 500,
+    fontSize: 12,
+    lineHeight: '24px',
     textAlign: 'left',
     color: palette.text.secondary,
+
+    '& b': {
+      color: palette.primary.main,
+      marginLeft: 4,
+    },
   },
   anchor: {
     fontWeight: 400,
@@ -197,16 +203,24 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: '14px',
     lineHeight: '24px',
   },
+  maxButton: {
+    position: 'absolute',
+    top: 4,
+    right: 3,
+    zIndex: 3,
+  },
 }));
 
 export interface WithdrawDepositModalProps {
   open: boolean;
   call?: boolean;
+  type: 'withdraw' | 'deposit';
   onClose: () => void;
 }
 
 const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   call = true,
+  type = 'deposit',
   open,
   onClose,
 }) => {
@@ -225,7 +239,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                 color='textPrimary'
                 className={classes.title}
               >
-                {call ? 'Uni Call pool deposit' : 'Uni Put pool deposit'}
+                {call ? `Uni Call pool ${type}` : `Uni Put pool ${type}`}
               </Typography>
             </Box>
             <Box className={classes.topSection}>
@@ -239,8 +253,18 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                     color='textPrimary'
                     className={classes.elementHeader}
                   >
-                    Uni Amount
+                    {type === 'withdraw' ? 'Amount' : 'Uni Amount'}
                   </Typography>
+                  {type === 'withdraw' && (
+                    <Typography
+                      component='p'
+                      color='textSecondary'
+                      className={classes.smallInfoText}
+                    >
+                      Max size available:
+                      <b>40012</b>
+                    </Typography>
+                  )}
                 </Box>
 
                 <Box
@@ -254,6 +278,16 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                     className={classes.borderedInput}
                   />
                   <UniswapIcon className={classes.inputIcon} />
+                  {type === 'withdraw' && (
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      className={classes.maxButton}
+                    >
+                      MAX
+                    </Button>
+                  )}
                 </Box>
               </Box>
 
