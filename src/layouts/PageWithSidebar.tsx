@@ -12,7 +12,7 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100vw - 260px)',
+    width: 'calc(100vw - 210px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
@@ -72,13 +72,13 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
         >
           <Box
             position='fixed'
-            width={mobile ? 1 : 'calc(100vw - 260px)'}
+            width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
             bgcolor={
               !mobile ? palette.background.default : palette.background.paper
             }
             p={mobile ? 1 : 3}
-            px={mobile ? 1 : 3}
+            px={mobile ? 1 : tablet ? 0 : 3}
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '96px'}
           >
@@ -115,7 +115,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           {mobile && !mobileSidebarHidden && (
             <Box
-              width={mobile ? 1 : 'calc(100vw - 260px)'}
+              width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'
               mb={mobile ? 0 : 7}
@@ -146,8 +146,8 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           {mobileSidebarHidden && (
             <>
               <Box
-                px={mobile ? 0 : 3}
-                width={1}
+                px={tablet ? 0 : 3}
+                width={mobile ? 1 : 'calc(100vw - 210px'}
                 mx='auto'
                 mt={!mobile ? 14 : 10}
                 mb={mobile ? 10 : 7}
@@ -158,7 +158,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               {!mobile ? (
                 <Box
                   position='fixed'
-                  width='calc(100% - 210px)'
+                  width='calc(100vw - 210px)'
                   bottom={0}
                   zIndex={14}
                   bgcolor={palette.background.default}
@@ -166,7 +166,13 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   <Footer />
                 </Box>
               ) : (
-                <Box position='fixed' width='100%' bottom={0} zIndex={14}>
+                <Box
+                  position='fixed'
+                  width='100%'
+                  bgcolor={palette.background.default}
+                  bottom={0}
+                  zIndex={14}
+                >
                   <Footer />
                 </Box>
               )}

@@ -26,8 +26,8 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
-import { ReactComponent as CallIcon} from 'assets/svg/CallIcon.svg';
-import { ReactComponent as PutIcon} from 'assets/svg/PutIcon.svg';
+import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
+import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -394,7 +394,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   tableContainer: {
     '& .MuiTableContainer-root': {
-      overflow: 'unset'
+      overflow: 'unset',
     },
     '& thead tr th, & tbody tr td': {
       fontSize: 14,
@@ -524,8 +524,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   plPercents: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 }));
 
 const Positions: React.FC = () => {
@@ -764,7 +764,11 @@ const Positions: React.FC = () => {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    <DonutChart data={[73, 27]} labels={['ETH', 'Uni']} colors={['#14A887', '#BF47C3']} />
+                    <DonutChart
+                      data={[73, 27]}
+                      labels={['ETH', 'Uni']}
+                      colors={['#14A887', '#BF47C3']}
+                    />
                   </Box>
                 </Grid>
               </Container>
@@ -901,11 +905,7 @@ const Positions: React.FC = () => {
                             )}
                           >
                             <Box />
-                            {item.type === 'call' ? (
-                              <CallIcon />
-                            ) : (
-                              <PutIcon />
-                            )}
+                            {item.type === 'call' ? <CallIcon /> : <PutIcon />}
                             {item.type}
                           </Box>
                         </Box>

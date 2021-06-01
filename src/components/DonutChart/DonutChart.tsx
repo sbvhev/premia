@@ -16,7 +16,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   labels = [],
   width = 300,
   height = 300,
-  colors = []
+  colors = [],
 }) => {
   const options = {
     plotOptions: {
