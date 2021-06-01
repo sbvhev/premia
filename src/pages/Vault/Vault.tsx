@@ -276,10 +276,17 @@ const ProVault: React.FC = () => {
   );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
-  const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const phoneDevice = useMediaQuery(theme.breakpoints.down('xs'));
+  const extraLargeDesktop = window.innerWidth > 1526;
   const deviceWidth = window.innerWidth;
+  const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  console.log('extraLargeDesktop', extraLargeDesktop);
+  console.log('deviceWidth', deviceWidth);
+  console.log('extra', (deviceWidth - 1526) / 2);
+
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -407,12 +414,21 @@ const ProVault: React.FC = () => {
                   }
             }
           >
-            {!phoneDevice ? (
+            {!phoneDevice && !mobile ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[55, 154]}
+                positions={[55 + extraMargin, 154 + extraMargin]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={55}
+                gliderWidth={94}
+                gliderHeight={42}
+              />
+            ) : !phoneDevice && mobile ? (
+              <SwitchWithGlider
+                elements={[BasicVaultButton, ProVaultButton]}
+                positions={[30, 130]}
+                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
+                start={30}
                 gliderWidth={94}
                 gliderHeight={42}
               />
