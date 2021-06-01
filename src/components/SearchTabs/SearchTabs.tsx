@@ -8,7 +8,7 @@ import {
   TextField,
   Box,
 } from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 
@@ -31,6 +31,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiOutlinedInput-root': {
       paddingRight: 0,
       height: 42,
+      borderColor: (props: any) =>
+        props.dark ? 'transparent' : theme.palette.divider,
+
+      '& input': {
+        '&:focus::placeholder': {
+          color: 'transparent',
+        },
+      },
     },
 
     '& .MuiIconButton-root': {
@@ -38,6 +46,12 @@ const useStyles = makeStyles((theme: Theme) => ({
       '&:hover': {
         background: 'transparent',
       },
+    },
+
+    '& input': {
+      fontSize: 14,
+      paddingLeft: 10,
+      color: (props: any) => (props.dark ? '' : '#8D97A0'),
     },
 
     '& label': {
@@ -49,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& path': {
-      fill: '#646464',
+      fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
     },
   },
   tab: {
@@ -76,6 +90,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+  },
+  fireIcon: {
+    position: 'absolute',
+    right: '-2px !important',
+    top: '-8px !important',
+    width: '25px !important',
+    height: '26px !important',
+
     [theme.breakpoints.down('xs')]: {
       flexWrap: 'wrap',
     },
@@ -98,7 +120,7 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
               icon={
                 <>
                   <Icon />
-                  {val.highlight && <FireIcon />}
+                  {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
               label={val.label}

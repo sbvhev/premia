@@ -98,8 +98,8 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 22,
-    right: 'calc(50% - 106px)',
+    top: 16,
+    right: 'calc(50% - 160px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

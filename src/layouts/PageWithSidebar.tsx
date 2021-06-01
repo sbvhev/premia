@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -12,14 +12,16 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100vw - 210px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
+    overflowX: 'hidden',
     flexDirection: 'column',
-    marginLeft: 260,
+    marginLeft: 210,
   },
   pageMobile: {
+    backgroundColor: palette.background.paper,
     width: '100vw',
     marginLeft: 0,
   },
@@ -39,105 +41,145 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 }) => {
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
   const theme = useTheme();
+  const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
 
+  const hideMobileMenu = () => {
+    setMobileSidebarHidden(true);
+  };
+
+  useEffect(() => {
+    if (!mobile && !mobileSidebarHidden) {
+      setMobileSidebarHidden(true);
+    }
+  }, [mobile, mobileSidebarHidden]);
+
   return (
-    <Box bgcolor='background.default' overflow='auto'>
+    <Box bgcolor='background.default'>
       <Grid container>
         {!mobile && (
-          <Box position='fixed' left={0} width={260}>
+          <Box position='fixed' left={0} width={210}>
             <Sidebar />
           </Box>
         )}
 
-        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
-          {!hideAccountButtons && (
-            <Box
-              position='fixed'
-              width={mobile ? 1 : 'calc(100% - 260px)'}
-              zIndex={10}
-              bgcolor='background.default'
-              p={mobile ? 1 : 3}
-              px={mobile ? 2 : 3}
-              className={cx(mobile && classes.border)}
-            >
-              <Container>
-                <Grid container justify='space-between' alignItems='center'>
+        <Box
+          className={cx(classes.page, mobile && classes.pageMobile)}
+          id='test1'
+        >
+          <Box
+            position='fixed'
+            width={mobile ? 1 : 'calc(100vw - 210px)'}
+            zIndex={10}
+            bgcolor={
+              !mobile ? palette.background.default : palette.background.paper
+            }
+            pt={mobile ? 1 : 3}
+            px={mobile ? 1 : 3}
+            className={cx(mobile && classes.border)}
+            height={mobile ? '60px' : '72px'}
+          >
+            <Container>
+              <Grid container justify='space-between' alignItems='center'>
+                {mobile && (
+                  <Box display='flex' alignItems='center' marginLeft='8px'>
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
+                    />
+                  </Box>
+                )}
+                <Grid style={{ height: '48px' }}>
                   {mobile && (
-                    <Grid item>
-                      <img
-                        src={darkMode ? MainLogo : MainLogoBlack}
-                        alt='main logo'
+                    <IconButton
+                      style={{ height: '48px', padding: 0 }}
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                    >
+                      <Hamburger
+                        size={20}
+                        color={theme.palette.text.secondary}
+                        toggled={!mobileSidebarHidden}
+                        toggle={setMobileSidebarHidden}
                       />
-                    </Grid>
-                  )}
-                  <Grid item>
-                    {mobile && (
-                      <IconButton
-                        onClick={() =>
-                          setMobileSidebarHidden(!mobileSidebarHidden)
-                        }
-                      >
-                        <Hamburger
-                          color={theme.palette.text.secondary}
-                          toggled={!mobileSidebarHidden}
-                          toggle={setMobileSidebarHidden}
-                        />
-                      </IconButton>
-                    )}
-                  </Grid>
-                  {!mobile && (
-                    <Grid item>
-                      <AccountButtons />
-                    </Grid>
+                    </IconButton>
                   )}
                 </Grid>
-              </Container>
-            </Box>
-          )}
+                {!mobile && (
+                  <Grid item>
+                    <AccountButtons />
+                  </Grid>
+                )}
+              </Grid>
+            </Container>
+          </Box>
 
           {mobile && !mobileSidebarHidden && (
-            <Box width={1} position='relative' mt={12} mb={mobile ? 10 : 7}>
-              <Container>
-                <Box p={1}>
-                  <AccountButtons mobile />
-                </Box>
-                <Divider />
-                <Box p={1}>
-                  <Sidebar mobile />
-                </Box>
-                <Divider />
-                <Box p={1.5}>
-                  <ThemeSwitch />
-                </Box>
-                <Divider />
-              </Container>
+            <Box
+              width={mobile ? 1 : 'calc(100vw - 210px)'}
+              position='relative'
+              mt='60px'
+              mb={mobile ? 0 : 7}
+              height='555px'
+              maxHeight='calc(100vh - 160px)'
+              style={{ backgroundColor: palette.background.paper }}
+            >
+              <Box p={!mobile ? 1 : 0}>
+                <AccountButtons mobile />
+              </Box>
+              <Divider />
+              <Box p={1} pl={1.25}>
+                <Sidebar mobile onHide={hideMobileMenu} />
+              </Box>
+              <Divider />
+              <Box p={1.5}>
+                <ThemeSwitch />
+              </Box>
+              <Box
+                borderBottom={`1px solid ${palette.divider}`}
+                boxShadow={
+                  darkMode ? '' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
+                }
+              />
             </Box>
           )}
 
           {mobileSidebarHidden && (
-            <Box
-              px={mobile ? 0 : 3}
-              width={1}
-              mx='auto'
-              mt={14}
-              mb={mobile ? 10 : 7}
-            >
-              <Container>{children}</Container>
-            </Box>
+            <>
+              <Box
+                px={mobile ? 0 : 3}
+                width={mobile ? 1 : 'calc(100vw - 210px)'}
+                mx='auto'
+                mt={!mobile ? 11 : 10}
+                mb={mobile ? 12.5 : 6}
+                // overflow='scroll'
+              >
+                <Container>{children}</Container>
+              </Box>
+              {!mobile ? (
+                <Box
+                  position='fixed'
+                  width='calc(100vw - 210px)'
+                  bottom={0}
+                  zIndex={14}
+                  bgcolor={palette.background.default}
+                >
+                  <Footer />
+                </Box>
+              ) : (
+                <Box position='fixed' width='100%' bottom={0} zIndex={14}>
+                  <Footer />
+                </Box>
+              )}
+            </>
           )}
 
-          <Box
-            position='fixed'
-            width={mobile ? 1 : 'calc(100% - 260px)'}
-            bottom={0}
-            zIndex={10}
-            bgcolor='background.default'
-          >
-            <Footer />
-          </Box>
+          {mobile && !mobileSidebarHidden && (
+            <Box position='fixed' width='100%' bottom={0} zIndex={14}>
+              <Footer />
+            </Box>
+          )}
         </Box>
       </Grid>
     </Box>

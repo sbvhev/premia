@@ -5,14 +5,9 @@ import {
   IconButton,
   Button,
   Typography,
-  Avatar,
   Tooltip,
 } from '@material-ui/core';
-import {
-  ExitToApp,
-  SupervisorAccount,
-  AccountBalanceWallet,
-} from '@material-ui/icons';
+import { SupervisorAccount, AccountBalanceWallet } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -28,19 +23,22 @@ import {
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
+import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
+import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100% - 210px)',
     minHeight: '100vh',
   },
 
   avatar: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
-    backgroundColor: palette.text.primary,
+    marginRight: 6,
+    '& path': {
+      fill: palette.text.secondary,
+    },
   },
 
   walletIcon: {
@@ -58,40 +56,112 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+
+    '&> div:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '&> svg path': {
+        fill: palette.text.primary,
+      },
+
+      '& p': {
+        color: palette.text.primary,
+      },
+    },
+  },
+
+  accountMobile: {
+    padding: '0 12px',
+    height: 45,
+    width: 'calc(67vw - 30px)',
+    maxWidth: 'calc(100vw - 135px)',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+  },
+
+  connect: {
+    padding: '0 12px',
+    height: 45,
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
   },
 
   disconnect: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+
+    '&:hover:not(:active)': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+    },
+
     '& button': {
       padding: 0,
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      ':active': {
+        borderColor: palette.primary.main,
+
+        '& svg path': {
+          fill: palette.text.secondary,
+        },
+
+        '& p': {
+          color: palette.text.secondary,
+        },
+      },
     },
   },
 
   address: {
-    color: palette.text.primary,
-    fontSize: 10,
+    color: palette.text.secondary,
+    fontSize: 14,
+  },
+
+  addressMobile: {
+    color: palette.secondary.main,
+    fontSize: 14,
   },
 
   noDecoration: {
     textDecoration: 'none',
   },
 
-  tier: {
-    color: palette.text.secondary,
-    fontSize: 10,
-  },
-
   button: {
     margin: '0 10px 0 0',
     height: 45,
-    '& img': {
-      marginLeft: 10,
+    '& svg': {
+      marginLeft: 8,
     },
   },
 
   half: {
-    marginRight: 4,
-    width: 'calc(50% - 8px)',
+    width: 'calc(50% - 4px)',
+    margin: 0,
   },
 
   fullWidth: {
@@ -116,18 +186,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     cursor: 'pointer',
     fontSize: 14,
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.primary.main,
-      },
-
-      '& p': {
-        color: palette.text.primary,
-      },
-    },
-
     '& svg': {
       width: 33,
       height: 33,
@@ -137,15 +195,39 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       borderRadius: 10,
 
       '& path': {
+        fill: palette.text.secondary,
+      },
+    },
+
+    '&:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
         fill: palette.text.primary,
+      },
+
+      '& p': {
+        color: palette.text.primary,
+      },
+    },
+
+    ':active': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      '& p': {
+        color: palette.text.secondary,
       },
     },
 
     [breakpoints.down('sm')]: {
-      width: '100%',
-      marginLeft: 4,
-      marginRight: 4,
-      marginBottom: 8,
+      minWidth: '125px',
+      width: '33vw',
+      marginRight: 0,
+      marginBottom: 10,
     },
   },
 }));
@@ -163,6 +245,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
+  const { palette } = theme;
   const classes = useStyles();
 
   return (
@@ -197,78 +280,160 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Grid item container xs={12}>
-          <Button
-            color='primary'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-          >
-            <span>Get</span>
-            <LogoIcon />
-          </Button>
-          <Button
-            color='primary'
-            variant='outlined'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-            onClick={() => setShowSwapModal(true)}
-          >
-            <span>Swap</span>
-            <SwapIcon />
-          </Button>
-          <Box
-            className={classes.chain}
-            onClick={() => {
-              setChainModalOpen(true);
-            }}
-          >
-            <EthIcon />
-            <Typography color='textPrimary'>Ethereum</Typography>
-          </Box>
-          <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Box
-              className={cx(classes.noDecoration, mobile && classes.fullWidth)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Grid
-                container
-                direction='row'
-                alignItems='center'
-                justify='space-between'
-                className={classes.account}
+        <Box display='flex' width='100%'>
+          {!mobile ? (
+            <>
+              <Button color='primary' className={classes.button}>
+                <span>Get</span>
+                <LogoIcon />
+              </Button>
+              <Button
+                color='primary'
+                variant='outlined'
+                className={classes.button}
+                onClick={() => setShowSwapModal(true)}
               >
-                <Grid
-                  item
-                  container
-                  alignItems='center'
-                  xs={9}
-                  onClick={() => setShowTransactions(true)}
-                >
-                  <Avatar className={classes.avatar} />
-                  <Box>
-                    <Typography className={classes.address}>
-                      {shortenAddress(account ?? '')}
-                    </Typography>
-                  </Box>
-                </Grid>
+                <span>Swap</span>
+                <SwapIcon />
+              </Button>
 
-                <Box
-                  height={1}
-                  borderLeft={1}
-                  pl={1.5}
-                  borderColor={theme.palette.divider}
-                  className={classes.disconnect}
-                >
-                  <Tooltip title='Disconnect'>
-                    <IconButton onClick={disconnect}>
-                      <ExitToApp color='action' />
-                    </IconButton>
-                  </Tooltip>
+              <Box
+                className={classes.chain}
+                onClick={() => {
+                  setChainModalOpen(true);
+                }}
+              >
+                <EthIcon />
+                <Typography color='secondary'>Ethereum</Typography>
+              </Box>
+              <Box clone mb={mobile ? 1 : 0}>
+                <Box display='flex' id='test'>
+                  <Grid
+                    container
+                    direction='row'
+                    alignItems='center'
+                    justify='space-between'
+                    className={classes.account}
+                  >
+                    <Grid
+                      item
+                      container
+                      alignItems='center'
+                      xs={9}
+                      onClick={() => setShowTransactions(true)}
+                    >
+                      <PersonIcon className={classes.avatar} />
+                      <Box>
+                        <Typography
+                          className={
+                            !mobile ? classes.address : classes.addressMobile
+                          }
+                        >
+                          {shortenAddress(account ?? '')}
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Box
+                      height={1}
+                      borderLeft={1}
+                      pl={1.5}
+                      borderColor={theme.palette.divider}
+                      className={classes.disconnect}
+                    >
+                      <Tooltip title='Disconnect'>
+                        <LogoutIcon color='action' onClick={disconnect} />
+                      </Tooltip>
+                    </Box>
+                  </Grid>
                 </Box>
-              </Grid>
+              </Box>
+            </>
+          ) : (
+            <Box display='flex' flexDirection='column' width='100%' pt={1.25}>
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                paddingX={'10px'}
+              >
+                <Box clone mb={mobile ? 1 : 0}>
+                  <Box display='flex'>
+                    <Grid
+                      container
+                      direction='row'
+                      alignItems='center'
+                      justify='space-between'
+                      className={classes.accountMobile}
+                    >
+                      <Box
+                        display='flex'
+                        alignItems='center'
+                        justifyContent='center'
+                        onClick={() => setShowTransactions(true)}
+                        paddingTop='2px'
+                      >
+                        <Box style={{ margin: '2px 6px 0 0' }}>
+                          <PersonIconMobile />
+                        </Box>
+                        <Box>
+                          <Typography className={classes.addressMobile}>
+                            {shortenAddress(account ?? '')}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box
+                        height={1}
+                        borderLeft={1}
+                        pl={1.5}
+                        borderColor={theme.palette.divider}
+                        className={classes.disconnect}
+                      >
+                        <Tooltip title='Disconnect'>
+                          <IconButton onClick={disconnect}>
+                            <LogoutIcon color='action' />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Grid>
+                  </Box>
+                </Box>
+                <Box
+                  className={classes.chain}
+                  onClick={() => {
+                    setChainModalOpen(true);
+                  }}
+                >
+                  <EthIcon />
+                  <Typography color='secondary'>Ethereum</Typography>
+                </Box>
+              </Box>
+
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                borderTop={`1px solid ${palette.divider}`}
+                p={1.25}
+              >
+                <Button
+                  color='primary'
+                  className={cx(classes.button, mobile && classes.half)}
+                >
+                  Get
+                  <LogoIcon />
+                </Button>
+                <Button
+                  color='secondary'
+                  className={cx(classes.button, mobile && classes.half)}
+                  onClick={() => setShowSwapModal(true)}
+                >
+                  Swap
+                  <SwapIcon />
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </Grid>
+          )}
+        </Box>
       ) : (
         <Button
           variant='contained'

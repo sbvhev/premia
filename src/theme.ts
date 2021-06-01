@@ -319,21 +319,27 @@ export const lightTheme = responsiveFontSizes(
           background: 'white',
           borderRadius: 12,
           height: 45,
-          paddingLeft: 8,
 
           '& .MuiSelect-root': {
-            paddingLeft: 0,
+            paddingLeft: 12,
             alignItems: 'center',
             display: 'flex',
+            zIndex: 100,
 
             '& svg': {
-              width: 16,
-              height: 16,
-              marginRight: 8,
+              width: 20,
+              marginRight: 2,
+              position: 'relative',
+              height: 20,
+              top: -2,
 
               '& path': {
                 fill: primary,
               },
+            },
+
+            '& span': {
+              fontSize: 14,
             },
 
             '&:focus': {
@@ -366,12 +372,19 @@ export const lightTheme = responsiveFontSizes(
           padding: 0,
           '&.Mui-selected': {
             color: primary,
+
+            '& svg:first-child': {
+              '& path': {
+                fill: primary,
+              },
+            },
           },
         },
         wrapper: {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          position: 'relative',
 
           '& svg': {
             marginBottom: '0px !important',
@@ -392,8 +405,7 @@ export const lightTheme = responsiveFontSizes(
           background: 'white',
           border: 'none',
           borderRadius: 12,
-          minWidth: 270,
-          padding: 8,
+          minWidth: 210,
           width: 'fit-content',
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
         },
@@ -404,9 +416,12 @@ export const lightTheme = responsiveFontSizes(
           lineHeight: '18px',
           fontWeight: 'normal',
           minWidth: 'auto',
+          borderRadius: 12,
+          padding: '6px 20px 8px 9px',
+          margin: 6,
 
           '& path': {
-            fill: greySecondaryNight,
+            fill: greySecondaryDay,
           },
 
           '& svg': {
@@ -649,21 +664,27 @@ export const darkTheme = responsiveFontSizes(
           background: 'black',
           borderRadius: 12,
           height: 45,
-          paddingLeft: 8,
 
           '& .MuiSelect-root': {
-            paddingLeft: 0,
             alignItems: 'center',
             display: 'flex',
+            paddingLeft: 12,
+            zIndex: 100,
 
             '& svg': {
-              width: 16,
-              height: 16,
-              marginRight: 8,
+              width: 20,
+              marginRight: 2,
+              position: 'relative',
+              height: 20,
+              top: -2,
 
               '& path': {
                 fill: primary,
               },
+            },
+
+            '& span': {
+              fontSize: 14,
             },
 
             '&:focus': {
@@ -751,14 +772,20 @@ export const darkTheme = responsiveFontSizes(
           minHeight: 55,
           paddingTop: 0,
           padding: 0,
+
           '&.Mui-selected': {
             color: primary,
+
+            '& path': {
+              fill: primary,
+            },
           },
         },
         wrapper: {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          position: 'relative',
 
           '& svg': {
             marginRight: 6,
@@ -928,7 +955,7 @@ export const darkTheme = responsiveFontSizes(
           transform: 'translateY(-11px) !important',
           boxShadow: 'none',
           '&::before': {
-            content: '""',
+            // content: '""',
             position: 'absolute',
             marginRight: '-0.71em',
             bottom: 0,
@@ -948,9 +975,8 @@ export const darkTheme = responsiveFontSizes(
           background: black,
           border: `1px solid ${dividerGreyNight}`,
           borderRadius: 12,
-          padding: 8,
           width: 'fit-content',
-          minWidth: 270,
+          minWidth: 210,
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
         },
       },
@@ -960,6 +986,9 @@ export const darkTheme = responsiveFontSizes(
           lineHeight: '18px',
           fontWeight: 'normal',
           minWidth: 'auto',
+          borderRadius: 12,
+          padding: '6px 12px 8px 9px',
+          margin: 6,
 
           '& path': {
             fill: greySecondaryNight,

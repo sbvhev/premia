@@ -1,6 +1,9 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import { makeStyles } from '@material-ui/core/styles';
 import cn from 'classnames';
 
@@ -8,11 +11,13 @@ const useStyles = makeStyles(({ palette }) => ({
   item: {
     border: '1px solid transparent',
     backgroundColor: ({ active }: any) =>
-      active ? palette.primary.dark : 'transparent',
+      active ? 'rgba(82, 148, 255, 0.1)' : 'transparent',
     borderRadius: 12,
-    padding: '12px 16px',
-    margin: '2px 0',
+    padding: '8px 16px',
+    margin: '0',
+    marginBottom: '3px',
     cursor: 'pointer',
+    fontSize: 14,
 
     '&:hover': {
       border: ({ disabled }: any) =>
@@ -34,7 +39,10 @@ const useStyles = makeStyles(({ palette }) => ({
 
   icon: {
     minWidth: 32,
-    filter: ({ active }: any) => (active ? 'none' : 'grayscale(1)'),
+    '& svg path': {
+      fill: ({ active }: any) =>
+        active ? palette.primary.main : palette.secondary.main,
+    },
   },
 
   title: {
@@ -54,42 +62,46 @@ export interface SidebarItemProps {
   link: string;
   Icon: any;
   href?: boolean;
-  disabled?: boolean;
+  onHide?: () => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   title,
   link,
   Icon,
-  href = false,
-  disabled = false,
+  href,
+  onHide,
 }) => {
   const location = useLocation();
   const active = location.pathname === link;
-  const classes = useStyles({ active, disabled });
+  const classes = useStyles({ active });
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const history = useHistory();
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!href) {
+      history.push(link, { previous: location.pathname });
+
+      if (onHide) {
+        onHide();
+      }
+    } else {
+      window.open(link, '_blank');
+    }
+  };
 
   return (
     <ListItem
-      disabled={disabled}
       className={cn(classes.item, { active })}
-      {...(href
-        ? {
-            href: link,
-            component: 'a',
-            target: '_blank',
-            referrer: 'noreferrer',
-          }
-        : {
-            to: disabled ? location.pathname : link,
-            component: NavLink,
-            activeClassName: 'active',
-          })}
+      style={mobile ? {} : { backgroundColor: 'transparent' }}
+      onClick={handleClick}
     >
       <ListItemIcon
         className={classes.icon}
         style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
       >
-        <img src={Icon} alt='Sidebar Icon' />
+        {Icon}
       </ListItemIcon>
 
       <ListItemText

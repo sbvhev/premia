@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Grid,
-  Typography,
-  Divider,
-  Popover,
-  Button,
-} from '@material-ui/core';
+import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { BorderLinearProgress } from 'components';
+import { BorderLinearProgress, SwitchWithGlider } from 'components';
 import cx from 'classnames';
+import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -39,7 +33,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   footerRightItem: {
-    padding: '0px 18px',
+    padding: '0px 22px',
     display: 'flex',
     alignItems: 'center',
     color: palette.text.secondary,
@@ -48,12 +42,17 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     '& svg': {
       marginRight: 8,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? null : '#8D97A0'),
+      },
     },
   },
 
   gasProgress: {
     width: 35,
     marginLeft: 4,
+    background: 'rgba(141, 151, 160, 0.4)',
   },
 
   footerDivider: {
@@ -69,7 +68,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
   text: {
     fontSize: 14,
-    lineHeight: 1.18,
+    lineHeight: '16px',
     color: palette.text.secondary,
   },
 
@@ -80,22 +79,21 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   button: {
-    background: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     color: palette.text.secondary,
+    padding: '6px',
+    '& svg': {
+      margin: '0 8px 0 2px',
+    },
     '& svg path': {
       fill: palette.text.secondary,
-    },
-    '&:hover': {
-      background: palette.primary.dark,
-      color: palette.primary.main,
-      '& svg path': {
-        fill: palette.primary.main,
-      },
     },
   },
 
   activeButton: {
-    background: palette.primary.dark,
+    background: 'transparent',
     color: palette.primary.main,
     '& svg path': {
       fill: palette.primary.main,
@@ -124,19 +122,76 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const Footer: React.FC = () => {
-  const classes = useStyles();
+  const dark = useIsDarkMode();
+  const classes = useStyles({ dark });
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
 
+  const StandardGasSwitch = () => (
+    <Box
+      width='110px'
+      height='42px'
+      className={cx(
+        classes.button,
+        gasType === 'standard' && classes.activeButton,
+      )}
+    >
+      <GasStandardIcon />
+      <Box width='100%'>
+        <Typography className={classes.gasPriceText}>
+          <b>Standard</b>
+          <div>90 Gwei</div>
+        </Typography>
+      </Box>
+    </Box>
+  );
+
+  const FastGasSwitch = () => (
+    <Box
+      width='110px'
+      height='42px'
+      className={cx(classes.button, gasType === 'fast' && classes.activeButton)}
+    >
+      <GasFastIcon />
+      <Box width='100%'>
+        <Typography className={classes.gasPriceText}>
+          <b>Fast</b>
+          <div>100 Gwei</div>
+        </Typography>
+      </Box>
+    </Box>
+  );
+
+  const InstantGasSwitch = () => (
+    <Box
+      width='110px'
+      height='42px'
+      className={cx(
+        classes.button,
+        gasType === 'instant' && classes.activeButton,
+      )}
+    >
+      <ProIcon />
+      <Box width='100%'>
+        <Typography className={classes.gasPriceText}>
+          <b>Instant</b>
+          <div>120 Gwei</div>
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   return (
     <Box
-      height={mobile ? 70 : 45}
+      height={mobile ? 99 : 42}
       width={1}
       borderTop={1}
       borderColor={theme.palette.divider}
+      style={mobile ? { backgroundColor: palette.background.paper } : {}}
     >
       <Grid
         container
@@ -144,11 +199,11 @@ const Footer: React.FC = () => {
         alignItems='center'
         className={classes.footer}
       >
-        <Grid
-          item
-          sm={4}
-          container
-          justify={mobile ? 'center' : 'flex-start'}
+        <Box
+          display='flex'
+          width={mobile ? '100%' : 'auto'}
+          height={mobile ? '48px' : '41px'}
+          justifyContent={mobile ? 'center' : 'flex-start'}
           alignItems='center'
           style={{ order: mobile ? 1 : 0 }}
         >
@@ -184,17 +239,19 @@ const Footer: React.FC = () => {
           >
             <GithubIcon />
           </a>
-        </Grid>
-        <Grid
-          item
-          sm={6}
-          container
-          justify={mobile ? 'space-between' : 'flex-end'}
+        </Box>
+        <Box
+          display='flex'
+          justifyContent={mobile ? 'space-between' : 'flex-end'}
+          height={mobile ? '50px' : '40px'}
           style={{ order: mobile ? 0 : 1 }}
+          width={mobile ? '100%' : 'auto'}
         >
           <Box className={classes.footerRightItem}>
             <LockIcon />
-            <Typography component='span'>TVL: 1000004$</Typography>
+            <Typography component='span' style={{ fontSize: 14 }}>
+              TVL: 1000004$
+            </Typography>
           </Box>
           <Divider orientation='vertical' flexItem />
           <Box
@@ -217,7 +274,7 @@ const Footer: React.FC = () => {
               className={classes.gasProgress}
             />
           </Box>
-        </Grid>
+        </Box>
         {mobile && <Divider className={classes.footerDivider} />}
       </Grid>
       <Popover
@@ -235,8 +292,9 @@ const Footer: React.FC = () => {
           vertical: 'bottom',
           horizontal: 'center',
         }}
+        style={!mobile ? { width: '368px' } : { width: '368px', left: 10 }}
       >
-        <Box p={1.6}>
+        <Box p={1.5}>
           <Box p={1}>
             <Typography className={classes.subheading}>
               Select gas price
@@ -248,69 +306,59 @@ const Footer: React.FC = () => {
           <Box
             borderRadius={12}
             border={1}
-            p={0.5}
-            pr={0.8}
+            width={!mobile ? '356px' : '344px'}
+            p='7px'
             borderColor={theme.palette.divider}
             display='flex'
             justifyContent='space-between'
           >
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'standard' && classes.activeButton,
-                )}
-                startIcon={<GasStandardIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('standard');
-                  setGasValue(25);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Standard</b>
-                  <div>90 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'fast' && classes.activeButton,
-                )}
-                startIcon={<GasFastIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('fast');
-                  setGasValue(50);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Fast</b>
-                  <div>100 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
-            <Box width='33%'>
-              <Button
-                className={cx(
-                  classes.button,
-                  gasType === 'instant' && classes.activeButton,
-                )}
-                startIcon={<ProIcon />}
-                fullWidth
-                onClick={() => {
-                  setGasType('instant');
-                  setGasValue(100);
-                }}
-              >
-                <Typography className={classes.gasPriceText} component='div'>
-                  <b>Instant</b>
-                  <div>120 Gwei</div>
-                </Typography>
-              </Button>
-            </Box>
+            {!mobile ? (
+              <SwitchWithGlider
+                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+                positions={[236, 122, 6]}
+                clickFuncs={[
+                  () => {
+                    setGasType('standard');
+                    setGasValue(25);
+                  },
+                  () => {
+                    setGasType('fast');
+                    setGasValue(50);
+                  },
+                  () => {
+                    setGasType('instant');
+                    setGasValue(100);
+                  },
+                ]}
+                start={236}
+                alignedRight={true}
+                gliderWidth={110}
+                gliderHeight={42}
+              />
+            ) : (
+              <SwitchWithGlider
+                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+                positions={[236, 128, 18]}
+                clickFuncs={[
+                  () => {
+                    setGasType('standard');
+                    setGasValue(25);
+                  },
+                  () => {
+                    setGasType('fast');
+                    setGasValue(50);
+                  },
+                  () => {
+                    setGasType('instant');
+                    setGasValue(100);
+                  },
+                ]}
+                start={236}
+                alignedRight={true}
+                gliderWidth={110}
+                gliderHeight={42}
+              />
+            )}
           </Box>
         </Box>
       </Popover>
