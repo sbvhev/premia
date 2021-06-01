@@ -75,10 +75,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             bgcolor={
               !mobile ? palette.background.default : palette.background.paper
             }
-            p={mobile ? 1 : 3}
+            pt={mobile ? 1 : 3}
             px={mobile ? 1 : 3}
             className={cx(mobile && classes.border)}
-            height={mobile ? '60px' : '96px'}
+            height={mobile ? '60px' : '72px'}
           >
             <Grid container justify='space-between' alignItems='center'>
               {mobile && (
@@ -148,8 +148,8 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 px={mobile ? 0 : 3}
                 width={1}
                 mx='auto'
-                mt={!mobile ? 14 : 10}
-                mb={mobile ? 10 : 7}
+                mt={!mobile ? 11 : 10}
+                mb={mobile ? 10 : 6}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>
