@@ -92,10 +92,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Grid style={{ height: '48px' }}>
                 {mobile && (
                   <IconButton
-                    style={{ height: '48px' }}
+                    style={{ height: '48px', padding: 0 }}
                     onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
                   >
                     <Hamburger
+                      size={20}
                       color={theme.palette.text.secondary}
                       toggled={!mobileSidebarHidden}
                       toggle={setMobileSidebarHidden}

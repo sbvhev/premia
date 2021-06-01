@@ -317,7 +317,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               display='flex'
               flexDirection='column'
               width='100%'
-              paddingY={1}
+              pt={1.25}
             >
               <Box
                 display='flex'
@@ -381,7 +381,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 display='flex'
                 justifyContent='space-between'
                 borderTop={`1px solid ${palette.divider}`}
-                style={{ padding: '12px 10px 3px 10px' }}
+                p={1.25}
               >
                 <Button
                   color='primary'
