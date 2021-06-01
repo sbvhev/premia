@@ -13,7 +13,14 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart, SearchTabs, TooltipPan, SwitchWithGlider } from 'components';
+import {
+  LineChart,
+  RadialChart,
+  SearchTabs,
+  TooltipPan,
+  WithdrawDepositModal,
+  SwitchWithGlider
+} from 'components';
 import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
@@ -240,6 +247,11 @@ const ProVault: React.FC = () => {
   const classes = useStyles({ dark });
   const theme = useTheme();
   const { palette } = theme;
+
+  const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
+  const [depositCallOpen, setDepositCallOpen] = useState(false);
+  const [withdrawPutOpen, setWithdrawPutOpen] = useState(false);
+  const [depositPutOpen, setDepositPutOpen] = useState(false);
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
@@ -311,6 +323,38 @@ const ProVault: React.FC = () => {
 
   return (
     <Grid container direction='column'>
+      {withdrawCallOpen && (
+        <WithdrawDepositModal
+          open={withdrawCallOpen}
+          call={true}
+          type='withdraw'
+          onClose={() => setWithdrawCallOpen(false)}
+        />
+      )}
+      {depositCallOpen && (
+        <WithdrawDepositModal
+          open={depositCallOpen}
+          call={true}
+          type='deposit'
+          onClose={() => setDepositCallOpen(false)}
+        />
+      )}
+      {withdrawPutOpen && (
+        <WithdrawDepositModal
+          open={withdrawPutOpen}
+          call={false}
+          type='withdraw'
+          onClose={() => setWithdrawPutOpen(false)}
+        />
+      )}
+      {depositPutOpen && (
+        <WithdrawDepositModal
+          open={depositPutOpen}
+          call={false}
+          type='deposit'
+          onClose={() => setDepositPutOpen(false)}
+        />
+      )}
       <Box width={1}>
         <Typography
           component='h1'
@@ -569,6 +613,7 @@ const ProVault: React.FC = () => {
                             size='large'
                             color='primary'
                             variant='contained'
+                            onClick={() => setWithdrawCallOpen(true)}
                             fullWidth
                           >
                             Add
@@ -579,6 +624,7 @@ const ProVault: React.FC = () => {
                             size='large'
                             color='secondary'
                             variant='outlined'
+                            onClick={() => setDepositCallOpen(true)}
                             fullWidth
                           >
                             Remove
@@ -779,6 +825,7 @@ const ProVault: React.FC = () => {
                             size='large'
                             color='secondary'
                             variant='contained'
+                            onClick={() => setWithdrawPutOpen(true)}
                             fullWidth
                           >
                             Add
@@ -789,6 +836,7 @@ const ProVault: React.FC = () => {
                             size='large'
                             color='secondary'
                             variant='outlined'
+                            onClick={() => setDepositPutOpen(true)}
                             fullWidth
                           >
                             Remove

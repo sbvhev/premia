@@ -12,10 +12,11 @@ import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 const useStyles = makeStyles(({ palette }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 210px)',
+    width: 'calc(100vw - 210px)',
     position: 'relative',
     minHeight: '100vh',
     display: 'flex',
+    overflowX: 'hidden',
     flexDirection: 'column',
     marginLeft: 210,
   },
@@ -70,7 +71,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
         >
           <Box
             position='fixed'
-            width={mobile ? 1 : 'calc(100% - 210px)'}
+            width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
             bgcolor={
               !mobile ? palette.background.default : palette.background.paper
@@ -113,7 +114,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           {mobile && !mobileSidebarHidden && (
             <Box
-              width={1}
+              width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'
               mb={mobile ? 0 : 7}
@@ -145,10 +146,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <>
               <Box
                 px={mobile ? 0 : 3}
-                width={1}
+                width={mobile ? 1 : 'calc(100vw - 210px)'}
                 mx='auto'
                 mt={!mobile ? 14 : 10}
-                mb={mobile ? 10 : 7}
+                mb={mobile ? 13 : 7}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>
@@ -156,7 +157,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               {!mobile ? (
                 <Box
                   position='fixed'
-                  width='calc(100% - 210px)'
+                  width='calc(100vw - 210px)'
                   bottom={0}
                   zIndex={14}
                   bgcolor={palette.background.default}
