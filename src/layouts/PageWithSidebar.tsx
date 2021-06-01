@@ -81,35 +81,41 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '96px'}
           >
-            <Grid container justify='space-between' alignItems='center'>
-              {mobile && (
-                <Box display='flex' alignItems='center' marginLeft='8px'>
-                  <img
-                    src={darkMode ? MainLogo : MainLogoBlack}
-                    alt='main logo'
-                  />
-                </Box>
-              )}
-              <Grid style={{ height: '48px' }}>
+            <Container>
+              <Grid container justify='space-between' alignItems='center'>
                 {mobile && (
-                  <IconButton
-                    style={{ height: '48px' }}
-                    onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-                  >
-                    <Hamburger
-                      color={theme.palette.text.secondary}
-                      toggled={!mobileSidebarHidden}
-                      toggle={setMobileSidebarHidden}
+                  <Box display='flex' alignItems='center' marginLeft='8px'>
+                    <img
+                      src={darkMode ? MainLogo : MainLogoBlack}
+                      alt='main logo'
                     />
-                  </IconButton>
+                  </Box>
+                )}
+
+                <Grid style={{ height: '48px' }}>
+                  {mobile && (
+                    <IconButton
+                      style={{ height: '48px' }}
+                      onClick={() =>
+                        setMobileSidebarHidden(!mobileSidebarHidden)
+                      }
+                    >
+                      <Hamburger
+                        color={theme.palette.text.secondary}
+                        toggled={!mobileSidebarHidden}
+                        toggle={setMobileSidebarHidden}
+                      />
+                    </IconButton>
+                  )}
+                </Grid>
+
+                {!mobile && (
+                  <Grid item>
+                    <AccountButtons />
+                  </Grid>
                 )}
               </Grid>
-              {!mobile && (
-                <Grid item>
-                  <AccountButtons />
-                </Grid>
-              )}
-            </Grid>
+            </Container>
           </Box>
 
           {mobile && !mobileSidebarHidden && (
