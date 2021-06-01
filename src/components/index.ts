@@ -10,6 +10,7 @@ export { default as WithdrawDepositModal } from './WithdrawDepositModal';
 export { default as SwitchTab } from './SwitchTab';
 export { default as TooltipPan } from './TooltipPan';
 export { default as SearchTabs } from './SearchTabs';
+export { default as DonutChart } from './DonutChart';
 export { default as LineChart } from './LineChart';
 export { default as RadialChart } from './RadialChart';
 export { default as CurrencyLogo } from './CurrencyLogo';
