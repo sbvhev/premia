@@ -507,7 +507,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                       elements={[LowSlippageButton, MidSlippageButton, HighSlippageButton]}
                       positions={[30, 114, 198]}
                       clickFuncs={[hadleClickLowSlippage, hadleClickMidSlippage, hadleClickHighSlippage]}
-                      start={117}
+                      start={114}
                       gliderWidth={78}
                       gliderHeight={32}
                     />
