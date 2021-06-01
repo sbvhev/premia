@@ -8,6 +8,7 @@ export interface DonutChartProps {
   dark?: boolean;
   data?: Array<number>;
   labels?: Array<string>;
+  colors?: Array<string>;
   width?: number;
   height?: number;
 }
@@ -16,6 +17,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   labels = [],
   width = 300,
   height = 300,
+  colors = []
 }) => {
   // const theme = useTheme();
 
@@ -54,7 +56,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
     },
     fill: {
       type: 'gradient',
-      colors: ['#1EFF78', '#EB4A97'],
+      colors: colors,
       gradient: {
         shade: 'dark',
         type: 'horizontal',

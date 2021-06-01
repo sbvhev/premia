@@ -26,6 +26,8 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
+import { ReactComponent as CallIcon} from 'assets/svg/CallIcon.svg';
+import { ReactComponent as PutIcon} from 'assets/svg/PutIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -33,8 +35,6 @@ import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import Moment from 'moment';
 import cx from 'classnames';
 import { formatNumber } from 'utils/formatNumber';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { PageWithSidebar } from 'layouts';
 import { DataTable, LineChart, DonutChart } from 'components';
@@ -252,13 +252,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   call: {
-    color: palette.success.dark,
+    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
     '& div': {
       background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
     },
   },
   put: {
-    color: palette.error.main,
+    background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
     '& div': {
       background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
     },
@@ -390,6 +394,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   tableContainer: {
+    '& .MuiTableContainer-root': {
+      overflow: 'unset'
+    },
     '& thead tr th, & tbody tr td': {
       fontSize: 14,
       borderBottom: `1px solid ${palette.divider}`,
@@ -608,7 +615,7 @@ const Positions: React.FC = () => {
     },
   ];
 
-  const plPercents = [40, 30, 20, 10, 0, -10, -20];
+  // const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   return (
     <PageWithSidebar>
@@ -717,26 +724,28 @@ const Positions: React.FC = () => {
                 </Box>
                 <Divider />
                 <Grid container>
-                  <Box className={classes.plPercents}>
+                  {/* <Box className={classes.plPercents}>
                     {plPercents.map(val => (
                       <Typography>{ val }{ val !== 0 && '%' }</Typography>
                     ))}
+                  </Box> */}
+                  <Box flex={1}>
+                    <LineChart
+                      color='#14A887'
+                      data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                      categories={[
+                        '2021/5/24',
+                        '2021/5/25',
+                        '2021/5/26',
+                        '2021/5/27',
+                        '2021/5/28',
+                        '2021/5/29',
+                        '2021/5/30',
+                      ]}
+                      width='100%'
+                      height={200}
+                    />
                   </Box>
-                  <LineChart
-                    color='#14A887'
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
-                    width='100%'
-                    height={200}
-                  />
                 </Grid>
               </Container>
             </Grid>
@@ -756,7 +765,7 @@ const Positions: React.FC = () => {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    <DonutChart data={[73, 27]} labels={['ETH', 'Uni']} />
+                    <DonutChart data={[73, 27]} labels={['ETH', 'Uni']} colors={['#14A887', '#BF47C3']} />
                   </Box>
                 </Grid>
               </Container>
@@ -894,9 +903,9 @@ const Positions: React.FC = () => {
                           >
                             <Box />
                             {item.type === 'call' ? (
-                              <ArrowUpwardIcon />
+                              <CallIcon />
                             ) : (
-                              <ArrowDownwardIcon />
+                              <PutIcon />
                             )}
                             {item.type}
                           </Box>
@@ -985,9 +994,9 @@ const Positions: React.FC = () => {
                             >
                               <Box />
                               {item.type === 'call' ? (
-                                <ArrowUpwardIcon />
+                                <CallIcon />
                               ) : (
-                                <ArrowDownwardIcon />
+                                <PutIcon />
                               )}
                               {item.type}
                             </Box>
@@ -1071,9 +1080,9 @@ const Positions: React.FC = () => {
                                 {item.type === 'vault' ? (
                                   <VaultIcon />
                                 ) : item.option === 'call' ? (
-                                  <ArrowUpwardIcon />
+                                  <CallIcon />
                                 ) : (
-                                  <ArrowDownwardIcon />
+                                  <PutIcon />
                                 )}
                                 {item.type}
                               </Box>
@@ -1167,9 +1176,9 @@ const Positions: React.FC = () => {
                                 {item.type === 'vault' ? (
                                   <VaultIcon />
                                 ) : item.option === 'call' ? (
-                                  <ArrowUpwardIcon />
+                                  <CallIcon />
                                 ) : (
-                                  <ArrowDownwardIcon />
+                                  <PutIcon />
                                 )}
                                 {item.type}
                               </Box>
