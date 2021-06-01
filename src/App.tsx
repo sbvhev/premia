@@ -8,8 +8,7 @@ import {
   CssBaseline,
 } from '@material-ui/core';
 
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
+import 'react-calendar/dist/Calendar.css';
 
 import {
   useModalOpen,
@@ -28,6 +27,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
+import { PageWithSidebar } from 'layouts';
 import { Options, Stake, Vault, Positions } from './pages';
 import {
   TransactionLoadingModal,
@@ -171,27 +171,29 @@ const Providers: React.FC = ({ children }) => {
 const App: React.FC = () => {
   return (
     <Providers>
-      <Switch>
-        <Route exact path='/'>
-          <Positions />
-        </Route>
+      <PageWithSidebar>
+        <Switch>
+          <Route exact path='/'>
+            <Positions />
+          </Route>
 
-        <Route exact path='/options'>
-          <Options />
-        </Route>
+          <Route exact path='/options'>
+            <Options />
+          </Route>
 
-        <Route exact path='/stake'>
-          <Stake />
-        </Route>
+          <Route exact path='/stake'>
+            <Stake />
+          </Route>
 
-        <Route exact path='/vaults'>
-          <Vault />
-        </Route>
+          <Route exact path='/vaults'>
+            <Vault />
+          </Route>
 
-        <Route path='*'>
-          <Positions />
-        </Route>
-      </Switch>
+          <Route path='*'>
+            <Positions />
+          </Route>
+        </Switch>
+      </PageWithSidebar>
     </Providers>
   );
 };

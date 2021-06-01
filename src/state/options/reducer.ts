@@ -9,14 +9,14 @@ import {
 
 export interface OptionsState {
   optionType: string;
-  maturityDate: string | null;
+  maturityDate: string;
   strikePrice: number | number[];
   optionSize: number;
 }
 
 export const initialState: OptionsState = {
   optionType: 'call',
-  maturityDate: null,
+  maturityDate: '',
   strikePrice: 50,
   optionSize: 0,
 };

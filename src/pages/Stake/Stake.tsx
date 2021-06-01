@@ -3,8 +3,6 @@ import { Box, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { PageWithSidebar } from 'layouts';
-
 import { StakePremiaCard, LockPremiaCard } from './components';
 
 import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
@@ -116,124 +114,118 @@ const Stake: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <PageWithSidebar>
+    <Box
+      display='flex'
+      flexDirection='column'
+      style={{ marginTop: '8px', width: '100%', height: '100%' }}
+    >
       <Box
         display='flex'
-        flexDirection='column'
-        style={{ marginTop: '8px', width: '100%', height: '100%' }}
+        width={1}
+        flexDirection={!mobile ? 'row' : 'column'}
+        justifyContent='space-between'
+        marginBottom='16px'
+        alignItems={mobile ? 'center' : 'flex-start'}
       >
         <Box
-          display='flex'
-          width={1}
-          flexDirection={!mobile ? 'row' : 'column'}
-          justifyContent='space-between'
-          marginBottom='16px'
-          alignItems={mobile ? 'center' : 'flex-start'}
-        >
-          <Box
-            className={classes.col}
-            style={
-              !mobile
-                ? { marginLeft: '12px' }
-                : { justifyContent: 'space-between', padding: '0 6px' }
-            }
-          >
-            <Typography
-              component='h1'
-              color='textPrimary'
-              className={!mobile ? classes.title : classes.titleMobile}
-            >
-              Choose how to stake your Premia
-            </Typography>
-            <Typography
-              component='p'
-              color='textSecondary'
-              className={!mobile ? classes.text : classes.textMobile}
-            >
-              Refine your interaction rewards, stake your Premia for fee
-              sharing, or lock for reduced fees
-            </Typography>
-          </Box>
-          <Box
-            className={
-              !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
-            }
-          >
-            <Box
-              className={classes.borderedBox}
-              width={!mobile ? '190px' : '50%'}
-              style={{ marginRight: '6px' }}
-            >
-              <Box className={classes.premiaBox1}>
-                <img
-                  src={PremiaBlue}
-                  alt='Premia'
-                  style={{ marginTop: '3px' }}
-                />
-              </Box>
-              <Box className={classes.col} style={{ margin: '4px 0' }}>
-                <Typography
-                  component='p'
-                  color='textSecondary'
-                  className={classes.text}
-                >
-                  Premia
-                </Typography>
-                <Typography
-                  component='h2'
-                  color='textPrimary'
-                  className={classes.bigNumber}
-                >
-                  {`124,098`}
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              className={classes.borderedBox}
-              justifyContent='flex-start'
-              width={!mobile ? '190px' : '50%'}
-            >
-              <Box className={classes.premiaBox2}></Box>
-              <img
-                src={PremiaRed}
-                alt='xPremia'
-                className={classes.redPremiaIcon}
-              />
-              <Box className={classes.colRelative} style={{ margin: '4px 0' }}>
-                <Typography
-                  component='p'
-                  color='textSecondary'
-                  className={classes.text}
-                >
-                  xPremia
-                </Typography>
-                <Typography
-                  component='h2'
-                  color='textPrimary'
-                  className={classes.bigNumber}
-                >
-                  {`128,912`}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          display='flex'
-          flexDirection={!mobile ? 'row' : 'column'}
-          width={1}
-          height={'auto'}
+          className={classes.col}
           style={
             !mobile
-              ? { justifyContent: 'center', margin: '20px 0' }
-              : { alignItems: 'center' }
+              ? { marginLeft: '12px' }
+              : { justifyContent: 'space-between' }
           }
         >
-          <StakePremiaCard />
-          <LockPremiaCard />
+          <Typography
+            component='h1'
+            color='textPrimary'
+            className={!mobile ? classes.title : classes.titleMobile}
+          >
+            Choose how to stake your Premia
+          </Typography>
+          <Typography
+            component='p'
+            color='textSecondary'
+            className={!mobile ? classes.text : classes.textMobile}
+          >
+            Refine your interaction rewards, stake your Premia for fee sharing,
+            or lock for reduced fees
+          </Typography>
+        </Box>
+        <Box
+          className={
+            !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
+          }
+        >
+          <Box
+            className={classes.borderedBox}
+            width={!mobile ? '190px' : '50%'}
+            style={{ marginRight: '6px' }}
+          >
+            <Box className={classes.premiaBox1}>
+              <img src={PremiaBlue} alt='Premia' style={{ marginTop: '3px' }} />
+            </Box>
+            <Box className={classes.col} style={{ margin: '4px 0' }}>
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.text}
+              >
+                Premia
+              </Typography>
+              <Typography
+                component='h2'
+                color='textPrimary'
+                className={classes.bigNumber}
+              >
+                {`124,098`}
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            className={classes.borderedBox}
+            justifyContent='flex-start'
+            width={!mobile ? '190px' : '50%'}
+          >
+            <Box className={classes.premiaBox2}></Box>
+            <img
+              src={PremiaRed}
+              alt='xPremia'
+              className={classes.redPremiaIcon}
+            />
+            <Box className={classes.colRelative} style={{ margin: '4px 0' }}>
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.text}
+              >
+                xPremia
+              </Typography>
+              <Typography
+                component='h2'
+                color='textPrimary'
+                className={classes.bigNumber}
+              >
+                {`128,912`}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
-    </PageWithSidebar>
+      <Box
+        display='flex'
+        flexDirection={!mobile ? 'row' : 'column'}
+        width={1}
+        height={'auto'}
+        style={
+          !mobile
+            ? { justifyContent: 'center', margin: '20px 0' }
+            : { alignItems: 'center' }
+        }
+      >
+        <StakePremiaCard />
+        <LockPremiaCard />
+      </Box>
+    </Box>
   );
 };
 
