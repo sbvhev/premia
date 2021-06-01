@@ -551,6 +551,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       border: `1px solid ${palette.divider}`,
       color: palette.text.secondary,
     }
+  },
+  donutChartContent: {
+    '& p': {
+      fontSize: 14,
+      color: palette.text.secondary
+    }
   }
 }));
 
@@ -792,9 +798,13 @@ const Positions: React.FC = () => {
                   >
                     <DonutChart
                       data={[73, 27]}
-                      labels={['ETH', 'Uni']}
+                      labels={positionFilter === 0 ? ['ETH', 'Uni'] : ['Option 1', 'Option 2']}
                       colors={['#14A887', '#BF47C3']}
-                    />
+                    >
+                      <Box className={classes.donutChartContent}>
+                        <Typography>{ positionFilter === 0 ? 'My assets' : 'My options' }</Typography>
+                      </Box>
+                    </DonutChart>
                   </Box>
                 </Grid>
               </Container>

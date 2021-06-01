@@ -1,5 +1,53 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { Box } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
+  chartBox: {
+    '& .apexcharts-graphical': {
+      transform: 'translate(0, 0) !important'
+    },
+    '& .apexcharts-legend': {
+      padding: 0,
+      top: '50% !important',
+      transform: 'translateY(-50%)',
+      bottom: 'unset !important',
+      '& .apexcharts-legend-marker': {
+        borderRadius: '3px !important',
+        marginRight: 8,
+      },
+      '& .apexcharts-legend-series': {
+        width: '100%',
+        margin: '4px 0 !important',
+        display: 'flex',
+        alignItems: 'center',
+        '& .apexcharts-legend-text': {
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          '& span:first-child': {
+            marginRight: 12
+          }
+        }
+      }
+    }
+  },
+  chartInside: {
+    width: 130,
+    height: 130,
+    borderRadius: 70,
+    filter: 'drop-shadow(0px 2px 5px rgba(0, 0, 0, 0.0406947))',
+    border: `1px solid ${palette.divider}`,
+    position: 'absolute',
+    top: '50%',
+    left: 25,
+    transform: 'translateY(-50%)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+}));
 
 export interface DonutChartProps {
   color?: string;
@@ -10,21 +58,26 @@ export interface DonutChartProps {
   colors?: Array<string>;
   width?: number;
   height?: number;
+  children?: any;
 }
 const DonutChart: React.FC<DonutChartProps> = ({
   data = [],
   labels = [],
-  width = 300,
+  width = 350,
   height = 300,
   colors = [],
+  children
 }) => {
+  const classes = useStyles();
+  const theme = useTheme();
   const options = {
     plotOptions: {
       pie: {
+        size: 200,
         startAngle: 0,
         endAngle: 360,
         donut: {
-          size: '90%',
+          size: '85%',
         },
         track: {
           background: 'rgba(31, 162, 109, 0.11773)',
@@ -41,15 +94,21 @@ const DonutChart: React.FC<DonutChartProps> = ({
     },
     labels,
     legend: {
+      fontSize: '14px',
+      fontFamily: 'DM Sans',
+      labels: {
+        colors: [theme.palette.text.primary]
+      },
       formatter: (val: any, opts: any) => {
-        return val + ' - ' + opts.w.globals.series[opts.seriesIndex];
+        return `<span>${val}</span><span style="color:${theme.palette.text.secondary}">${opts.w.globals.series[opts.seriesIndex] + '%'}</span>`;
       },
     },
     dataLabels: {
       enabled: false,
     },
     stroke: {
-      width: 0,
+      width: 3,
+      colors: [theme.palette.background.paper]
     },
     fill: {
       type: 'gradient',
@@ -68,13 +127,18 @@ const DonutChart: React.FC<DonutChartProps> = ({
   };
 
   return (
-    <Chart
-      options={options}
-      series={data}
-      type='donut'
-      width={width}
-      height={height}
-    />
+    <Box className={classes.chartBox}>
+      <Chart
+        options={options}
+        series={data}
+        type='donut'
+        width={width}
+        height={height}
+      />
+      <Box className={classes.chartInside}>
+        { children }
+      </Box>
+    </Box>
   );
 };
 
