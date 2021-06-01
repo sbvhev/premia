@@ -1,5 +1,4 @@
 import React from 'react';
-// import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
 
 export interface DonutChartProps {
@@ -19,8 +18,6 @@ const DonutChart: React.FC<DonutChartProps> = ({
   height = 300,
   colors = []
 }) => {
-  // const theme = useTheme();
-
   const options = {
     plotOptions: {
       pie: {
