@@ -22,7 +22,8 @@ import {
   TooltipPan,
   WithdrawDepositModal,
 } from 'components';
-import { Help, ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@material-ui/icons';
+import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   mainContent: {},
   subtitle: {
     display: 'flex',
+    marginTop: -6,
     alignItems: 'center',
 
     '& svg': {
@@ -84,6 +86,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& svg': {
       marginRight: 8,
+      top: -1,
+      position: 'relative',
     },
   },
   topSector: {
@@ -106,9 +110,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& svg': {
       position: 'relative',
-      top: -2,
-      width: 20,
+      top: -1,
+      marginLeft: 4,
+      width: 16,
       height: 20,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+      },
     },
 
     '& > div > h2': {
@@ -127,7 +136,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   box: {
-    width: 'calc(100% - 286px)',
+    width: 'calc(100% - 226px)',
     position: 'relative',
   },
   menuItem: {
@@ -158,6 +167,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: 14,
     lineHeight: '18px',
     marginTop: 6,
+  },
+  expandMore: {
+    marginRight: 8,
+    position: 'absolute',
+    right: 0,
+    cursor: 'pointer',
+
+    '& path': {
+      fill: theme.palette.secondary.main,
+    },
   },
 }));
 
