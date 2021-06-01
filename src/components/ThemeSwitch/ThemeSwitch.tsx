@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: 8,
     },
     '& svg path': {
-      fill: theme.palette.text.secondary
+      fill: theme.palette.text.secondary,
     },
     '&:hover': {
       backgroundColor: theme.palette.background.paper,
@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: '10px',
     transition: 'left 0.4s ease-out',
   },
-
 }));
 
 const ThemeSwitch: React.FC = () => {
@@ -81,12 +80,12 @@ const ThemeSwitch: React.FC = () => {
   const deviceWidth = window.innerWidth;
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   const handleDayClick = () => {
     setTimeout(() => {
       setDarkMode(false);
       onboard?.config({
-        darkMode: false
+        darkMode: false,
       });
     }, 0);
   };
@@ -95,71 +94,81 @@ const ThemeSwitch: React.FC = () => {
     setTimeout(() => {
       setDarkMode(true);
       onboard?.config({
-        darkMode: true
+        darkMode: true,
       });
     }, 0);
   };
 
-  const Button1 = () => (
+  const DayButton = () => (
     <Box
-      display="flex"
+      display='flex'
       alignItems='center'
-      justifyContent="center"
+      justifyContent='center'
       className={cx(classes.modeItem, {
-          [classes.inactiveMode]: !darkMode,
-        })}
+        [classes.inactiveMode]: !darkMode,
+      })}
       width={!mobile ? '80px' : '172px'}
       height={!mobile ? '30px' : '36px'}
     >
-      <Box display="flex" alignItems="center" >
+      <Box display='flex' alignItems='center'>
         <DayIcon />
-        <Typography className={!darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Day</Typography>
+        <Typography
+          className={!darkMode ? classes.textSelected : classes.textIdle}
+          color='textSecondary'
+        >
+          Day
+        </Typography>
       </Box>
     </Box>
   );
 
-  const Button2 = () => (
+  const NightButton = () => (
     <Box
-      display="flex"
+      display='flex'
       width={!mobile ? '80px' : '172px'}
       height={!mobile ? '30px' : '36px'}
       alignItems='center'
-      justifyContent="center"
+      justifyContent='center'
       className={cx(classes.modeItem, {
         [classes.inactiveMode]: darkMode,
       })}
     >
-      <Box display="flex" alignItems="center" >
+      <Box display='flex' alignItems='center'>
         <NightIcon />
-        <Typography className={darkMode ? classes.textSelected : classes.textIdle} color='textSecondary'>Night</Typography>
+        <Typography
+          className={darkMode ? classes.textSelected : classes.textIdle}
+          color='textSecondary'
+        >
+          Night
+        </Typography>
       </Box>
     </Box>
   );
 
   return (
     <Box
-      display="flex"
+      display='flex'
       padding={!mobile ? '0 6px' : '0'}
       justifyContent='space-between'
-      style={{ backgroundColor: palette.background.paper}}
+      style={{ backgroundColor: palette.background.paper }}
     >
       {!mobile ? (
-        <SwitchWithGlider 
-          elements={[Button1, Button2]}
+        <SwitchWithGlider
+          elements={[DayButton, NightButton]}
           positions={[21, 107]}
           clickFuncs={[handleDayClick, handleNightClick]}
           start={!darkMode ? 21 : 107}
-          gliderDims={['80px', '30px']}
+          gliderWidth={80}
+          gliderHeight={30}
         />
       ) : (
-        <SwitchWithGlider 
-          elements={[Button1, Button2]}
-          positions={[11, (deviceWidth - 183)]}
+        <SwitchWithGlider
+          elements={[DayButton, NightButton]}
+          positions={[11, deviceWidth - 183]}
           clickFuncs={[handleDayClick, handleNightClick]}
-          start={!darkMode ? 11 : (deviceWidth - 183)}
-          gliderDims={['172px', '36px']}
-          mobile={true}
-          dark={darkMode}
+          start={!darkMode ? 11 : deviceWidth - 183}
+          gliderWidth={172}
+          gliderHeight={36}
         />
       )}
     </Box>

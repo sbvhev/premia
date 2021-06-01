@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -49,6 +49,12 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
     setMobileSidebarHidden(true);
   };
 
+  useEffect(() => {
+    if (!mobile && !mobileSidebarHidden) {
+      setMobileSidebarHidden(true);
+    }
+  }, [mobile, mobileSidebarHidden]);
+
   return (
     <Box bgcolor='background.default'>
       <Grid container>
@@ -58,20 +64,25 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           </Box>
         )}
 
-        <Box className={cx(classes.page, mobile && classes.pageMobile)} id="test1">
+        <Box
+          className={cx(classes.page, mobile && classes.pageMobile)}
+          id='test1'
+        >
           <Box
             position='fixed'
             width={mobile ? 1 : 'calc(100% - 210px)'}
             zIndex={10}
-            bgcolor={!mobile ? palette.background.default : palette.background.paper}
-            p={mobile ? 1 : 3} px={mobile ? 1 : 3}
+            bgcolor={
+              !mobile ? palette.background.default : palette.background.paper
+            }
+            p={mobile ? 1 : 3}
+            px={mobile ? 1 : 3}
             className={cx(mobile && classes.border)}
-            height={mobile ? "60px" : '96px'}
-            
+            height={mobile ? '60px' : '96px'}
           >
             <Grid container justify='space-between' alignItems='center'>
               {mobile && (
-                <Box display="flex" alignItems="center" marginLeft="8px">
+                <Box display='flex' alignItems='center' marginLeft='8px'>
                   <img
                     src={darkMode ? MainLogo : MainLogoBlack}
                     alt='main logo'
@@ -81,43 +92,41 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Grid style={{ height: '48px' }}>
                 {mobile && (
                   <IconButton
-                  style={{ height: '48px' }}
-                    onClick={() =>
-                      setMobileSidebarHidden(!mobileSidebarHidden)
-                    }
+                    style={{ height: '48px' }}
+                    onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
                   >
                     <Hamburger
                       color={theme.palette.text.secondary}
                       toggled={!mobileSidebarHidden}
                       toggle={setMobileSidebarHidden}
                     />
-                    </IconButton>
-                  )}
-                </Grid>
-                {!mobile && (
-                  <Grid item>
-                    <AccountButtons />
-                  </Grid>
+                  </IconButton>
                 )}
               </Grid>
+              {!mobile && (
+                <Grid item>
+                  <AccountButtons />
+                </Grid>
+              )}
+            </Grid>
           </Box>
 
-          { mobile && !mobileSidebarHidden &&
+          {mobile && !mobileSidebarHidden && (
             <Box
               width={1}
               position='relative'
-              mt="60px"
+              mt='60px'
               mb={mobile ? 0 : 7}
-              height="555px"
-              maxHeight="calc(100vh - 160px)"
-              style={{ backgroundColor: palette.background.paper}}
+              height='555px'
+              maxHeight='calc(100vh - 160px)'
+              style={{ backgroundColor: palette.background.paper }}
             >
               <Box p={!mobile ? 1 : 0}>
                 <AccountButtons mobile />
               </Box>
               <Divider />
               <Box p={1}>
-                <Sidebar mobile hide={hideMobileMenu} />
+                <Sidebar mobile onHide={hideMobileMenu} />
               </Box>
               <Divider />
               <Box p={1.5}>
@@ -125,13 +134,15 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               </Box>
               <Box
                 borderBottom={`1px solid ${palette.divider}`}
-                boxShadow={darkMode ? '' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'}
+                boxShadow={
+                  darkMode ? '' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
+                }
               />
             </Box>
-          }
+          )}
 
           {mobileSidebarHidden && (
-            <> 
+            <>
               <Box
                 px={mobile ? 0 : 3}
                 width={1}
@@ -144,37 +155,27 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               </Box>
               {!mobile ? (
                 <Box
-                  position="fixed"
-                  width="calc(100% - 210px)"
+                  position='fixed'
+                  width='calc(100% - 210px)'
                   bottom={0}
                   zIndex={14}
                   bgcolor={palette.background.default}
                 >
                   <Footer />
                 </Box>
-                  ) : (
-                <Box
-                  position="fixed"
-                  width="100%"
-                  bottom={0}
-                  zIndex={14}
-                >
+              ) : (
+                <Box position='fixed' width='100%' bottom={0} zIndex={14}>
                   <Footer />
                 </Box>
-                )}
-            </>)}
+              )}
+            </>
+          )}
 
-            {mobile && !mobileSidebarHidden && (
-              <Box
-                position="fixed"
-                width="100%"
-                bottom={0}
-                zIndex={14}
-              >
-                <Footer />
-              </Box>
-            )}
-          
+          {mobile && !mobileSidebarHidden && (
+            <Box position='fixed' width='100%' bottom={0} zIndex={14}>
+              <Footer />
+            </Box>
+          )}
         </Box>
       </Grid>
     </Box>

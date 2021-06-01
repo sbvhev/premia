@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -107,14 +106,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface SidebarProps {
   mobile?: boolean;
-  hide?: () => void;
+  onHide?: () => void;
 }
 
 interface GliderHerights {
   [key: string]: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ mobile, hide }) => {
+const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
   const history = useHistory();
@@ -132,6 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, hide }) => {
 
   useEffect(() => {
     setGliderPosition(gliderHeights[pathname]);
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [pathname, history]);
 
   return (
@@ -156,14 +156,20 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, hide }) => {
                 <img
                   src={darkMode ? MainLogo : MainLogoBlack}
                   alt='Logo'
-                  style={{marginLeft: '15px'}}
+                  style={{ marginLeft: '15px' }}
                 />
               </Box>
             </Grid>
           )}
           <Box>
             {navigation.map(({ title, link, Icon }, i) => (
-              <SidebarItem key={i} title={title} link={link} Icon={Icon} hide={hide}/>
+              <SidebarItem
+                key={i}
+                title={title}
+                link={link}
+                Icon={Icon}
+                onHide={onHide}
+              />
             ))}
             {!mobile && <Box top={gliderPosition} className={classes.glider} />}
           </Box>

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
+import { useDarkModeManager } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -9,7 +12,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   glider: {
     transition: 'all 0.4s ease-out',
@@ -18,14 +21,18 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
   },
   elementFront: {
+    transition: 'border 0.4s ease-in-out',
     boxSizing: 'border-box',
     position: 'absolute',
     border: '1px solid transparent',
-    backgroundColor: 'transparent', 
+    backgroundColor: 'transparent',
     borderRadius: '10px',
     cursor: 'pointer',
     '&:hover': {
       border: `1px solid ${palette.divider}`,
+    },
+    '&:active': {
+      borderRadius: '10px',
     },
   },
 }));
@@ -40,19 +47,27 @@ export interface SwitchWithGliderProps {
   positions: Array<Number>;
   clickFuncs: Array<() => void>;
   start: Number;
-  gliderDims: Array<String>;
-  mobile?: boolean;
-  dark?: boolean;
-  alignedRight?: boolean
+  gliderHeight: Number;
+  gliderWidth: Number;
+  alignedRight?: boolean;
 }
 
 const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
-  elements, positions, clickFuncs, start, gliderDims, mobile, dark, alignedRight
+  elements,
+  positions,
+  clickFuncs,
+  start,
+  gliderHeight,
+  gliderWidth,
+  alignedRight,
 }) => {
   const classes = useStyles();
   const [gliderPosition, setGliderPosition] = React.useState<any>(start);
+  const theme = useTheme();
+  const [dark] = useDarkModeManager();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-React.useEffect(() => {
+  React.useEffect(() => {
     if (mobile && dark) {
       setGliderPosition(window.innerWidth - 183);
     }
@@ -65,12 +80,12 @@ React.useEffect(() => {
       clickFuncs[0]();
     },
     () => {
-      console.log('positions[1]', positions[1])
+      console.log('positions[1]', positions[1]);
       setGliderPosition(positions[1]);
       clickFuncs[1]();
     },
     () => {
-      console.log('positions[2]', positions[2])
+      console.log('positions[2]', positions[2]);
       setGliderPosition(positions[2]);
       clickFuncs[2]();
     },
@@ -80,33 +95,31 @@ React.useEffect(() => {
     <Box>
       <Box
         className={classes.elementFront}
-        width={gliderDims[0]}
-        height={gliderDims[1]}
+        width={gliderWidth}
+        height={gliderHeight}
         onClick={mappedClickFuncs[index]}
       />
-        <Box>
-          {item}
-        </Box>
+      <Box>{item}</Box>
     </Box>
-  ))
+  ));
 
   return (
     <Box className={classes.container}>
       {mappedElements}
       {!alignedRight ? (
-      <Box
-        className={classes.glider}
-        left={gliderPosition}
-        width={gliderDims[0]}
-        height={gliderDims[1]}
-      /> 
+        <Box
+          className={classes.glider}
+          left={gliderPosition}
+          width={gliderWidth}
+          height={gliderHeight}
+        />
       ) : (
         <Box
           className={classes.glider}
           right={gliderPosition}
-          width={gliderDims[0]}
-          height={gliderDims[1]}
-        /> 
+          width={gliderWidth}
+          height={gliderHeight}
+        />
       )}
     </Box>
   );

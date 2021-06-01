@@ -190,7 +190,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
-    <Grid container direction='row' alignItems='center' justify='flex-end' style={!mobile ? { paddingRight: '24px' } : {}}>
+    <Grid
+      container
+      direction='row'
+      alignItems='center'
+      justify='flex-end'
+      style={!mobile ? { paddingRight: '24px' } : {}}
+    >
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -221,39 +227,34 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Box display="flex" width="100%">
+        <Box display='flex' width='100%'>
           {!mobile ? (
             <>
-              <Button
-                color='primary'
-                className={classes.button}
-              >
-                Get
+              <Button color='primary' className={classes.button}>
+                <span>Get</span>
                 <LogoIcon />
               </Button>
               <Button
-                color='secondary'
+                color='primary'
+                variant='outlined'
                 className={classes.button}
                 onClick={() => setShowSwapModal(true)}
               >
-                Swap
+                <span>Swap</span>
                 <SwapIcon />
               </Button>
-              
-                <Box
-                  className={classes.chain}
-                  onClick={() => {
-                    setChainModalOpen(true);
-                  }}
-                >
-                  <EthIcon />
-                  <Typography color='secondary'>Ethereum</Typography>
-                </Box>
+
+              <Box
+                className={classes.chain}
+                onClick={() => {
+                  setChainModalOpen(true);
+                }}
+              >
+                <EthIcon />
+                <Typography color='secondary'>Ethereum</Typography>
+              </Box>
               <Box clone mb={mobile ? 1 : 0}>
-                <Box
-                  display="flex"
-                  id="test"
-                >
+                <Box display='flex' id='test'>
                   <Grid
                     container
                     direction='row'
@@ -270,7 +271,11 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     >
                       <Avatar className={classes.avatar} />
                       <Box>
-                        <Typography className={!mobile ? classes.address : classes.addressMobile}>
+                        <Typography
+                          className={
+                            !mobile ? classes.address : classes.addressMobile
+                          }
+                        >
                           {shortenAddress(account ?? '')}
                         </Typography>
                         <Typography className={classes.tier}>Tier 1</Typography>
@@ -295,12 +300,19 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               </Box>
             </>
           ) : (
-            <Box display="flex" flexDirection="column" width="100%" paddingY={1}>
-              <Box display="flex" justifyContent="space-between" paddingX={'12px'}>
+            <Box
+              display='flex'
+              flexDirection='column'
+              width='100%'
+              paddingY={1}
+            >
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                paddingX={'12px'}
+              >
                 <Box clone mb={mobile ? 1 : 0}>
-                  <Box
-                    display="flex"
-                  >
+                  <Box display='flex'>
                     <Grid
                       container
                       direction='row'
@@ -309,15 +321,26 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       className={classes.accountMobile}
                     >
                       <Box
-                        display="flex"  
-                        alignItems="center"
-                        justifyContent="center"
+                        display='flex'
+                        alignItems='center'
+                        justifyContent='center'
                         onClick={() => setShowTransactions(true)}
-                        paddingTop="2px"
+                        paddingTop='2px'
                       >
-                        <Box style={{ margin: '2px 6px 0 0'}}>
-                          <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z" fill={palette.secondary.main} />
+                        <Box style={{ margin: '2px 6px 0 0' }}>
+                          <svg
+                            width='11'
+                            height='13'
+                            viewBox='0 0 11 13'
+                            fill='none'
+                            xmlns='http://www.w3.org/2000/svg'
+                          >
+                            <path
+                              fill-rule='evenodd'
+                              clip-rule='evenodd'
+                              d='M5.82578 5.70825C4.26888 5.70825 3.00234 4.4417 3.00234 2.88485C3.00234 1.32801 4.26888 0.06146 5.82578 0.06146C7.38267 0.06146 8.64922 1.32801 8.64922 2.88485C8.64922 4.4417 7.38267 5.70825 5.82578 5.70825ZM11 12.2331C11 12.6058 10.6978 12.908 10.3251 12.908H1.32622C0.953488 12.908 0.651306 12.6058 0.651306 12.2331C0.651306 9.37996 2.97252 7.05875 5.82565 7.05875C8.67879 7.05875 11 9.37996 11 12.2331Z'
+                              fill={palette.secondary.main}
+                            />
                           </svg>
                         </Box>
                         <Box>
@@ -355,8 +378,8 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               </Box>
 
               <Box
-                display="flex"
-                justifyContent="space-between"
+                display='flex'
+                justifyContent='space-between'
                 borderTop={`1px solid ${palette.divider}`}
                 style={{ padding: '12px 10px 3px 10px' }}
               >

@@ -57,7 +57,7 @@ export interface SidebarItemProps {
   link: string;
   Icon: any;
   href?: boolean;
-  hide?: () => void;
+  onHide?: () => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -65,7 +65,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   link,
   Icon,
   href,
-  hide,
+  onHide,
 }) => {
   const location = useLocation();
   const active = location.pathname === link;
@@ -76,19 +76,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!href) {
-      history.push(link, { previous: location.pathname});
-      if (hide) {
-        hide();
+      history.push(link, { previous: location.pathname });
+
+      if (onHide) {
+        onHide();
       }
     } else {
-      window.open(link, '_blank' );
+      window.open(link, '_blank');
     }
   };
 
   return (
     <ListItem
       className={cn(classes.item, { active })}
-      style={mobile ? {} : { backgroundColor: 'transparent'}}
+      style={mobile ? {} : { backgroundColor: 'transparent' }}
       onClick={handleClick}
     >
       <ListItemIcon

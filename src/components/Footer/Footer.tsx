@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Grid,
-  Typography,
-  Divider,
-  Popover,
-} from '@material-ui/core';
+import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { BorderLinearProgress, SwitchWithGlider } from 'components';
@@ -130,18 +124,17 @@ const Footer: React.FC = () => {
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
 
-  const GasSwitch1 = () => (
+  const StandardGasSwitch = () => (
     <Box
       width='110px'
-      height="42px"
+      height='42px'
       className={cx(
         classes.button,
         gasType === 'standard' && classes.activeButton,
       )}
-      
-      >
+    >
       <GasStandardIcon />
-      <Box width="100%">
+      <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Standard</b>
           <div>90 Gwei</div>
@@ -150,17 +143,14 @@ const Footer: React.FC = () => {
     </Box>
   );
 
-  const GasSwitch2 = () => (
+  const FastGasSwitch = () => (
     <Box
       width='110px'
-      height="42px"
-      className={cx(
-        classes.button,
-        gasType === 'fast' && classes.activeButton,
-      )}
+      height='42px'
+      className={cx(classes.button, gasType === 'fast' && classes.activeButton)}
     >
       <GasFastIcon />
-      <Box width="100%">
+      <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Fast</b>
           <div>100 Gwei</div>
@@ -169,17 +159,17 @@ const Footer: React.FC = () => {
     </Box>
   );
 
-  const GasSwitch3 = () => (
+  const InstantGasSwitch = () => (
     <Box
       width='110px'
-      height="42px"
+      height='42px'
       className={cx(
         classes.button,
         gasType === 'instant' && classes.activeButton,
       )}
     >
       <ProIcon />
-      <Box width="100%">
+      <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Instant</b>
           <div>120 Gwei</div>
@@ -187,7 +177,6 @@ const Footer: React.FC = () => {
       </Box>
     </Box>
   );
-
 
   return (
     <Box
@@ -204,8 +193,8 @@ const Footer: React.FC = () => {
         className={classes.footer}
       >
         <Box
-          display="flex"
-          width={mobile? '100%' : 'auto'}
+          display='flex'
+          width={mobile ? '100%' : 'auto'}
           height={mobile ? '48px' : '41px'}
           justifyContent={mobile ? 'center' : 'flex-start'}
           alignItems='center'
@@ -245,11 +234,11 @@ const Footer: React.FC = () => {
           </a>
         </Box>
         <Box
-          display="flex"
+          display='flex'
           justifyContent={mobile ? 'space-between' : 'flex-end'}
           height={mobile ? '50px' : '40px'}
           style={{ order: mobile ? 0 : 1 }}
-          width={mobile? '100%' : 'auto'}
+          width={mobile ? '100%' : 'auto'}
         >
           <Box className={classes.footerRightItem}>
             <LockIcon />
@@ -294,7 +283,7 @@ const Footer: React.FC = () => {
           vertical: 'bottom',
           horizontal: 'center',
         }}
-        style={!mobile ? {width: '368px'} : {width: '368px', left: 10}}
+        style={!mobile ? { width: '368px' } : { width: '368px', left: 10 }}
       >
         <Box p={1.5}>
           <Box p={1}>
@@ -308,47 +297,57 @@ const Footer: React.FC = () => {
           <Box
             borderRadius={12}
             border={1}
-            width={!mobile ? '344px' : '344px'}
-            p="7px"
+            width={!mobile ? '356px' : '344px'}
+            p='7px'
             borderColor={theme.palette.divider}
             display='flex'
             justifyContent='space-between'
           >
             {!mobile ? (
-              <SwitchWithGlider 
-                elements={[GasSwitch1, GasSwitch2, GasSwitch3]}
-                positions={[236, 128, 18]}
-                clickFuncs={[() => {
-                  setGasType('standard');
-                  setGasValue(25);
-                }, () => {
-                  setGasType('fast');
-                  setGasValue(50);
-                }, () => {
-                  setGasType('instant');
-                  setGasValue(100);
-                }]}
+              <SwitchWithGlider
+                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+                positions={[236, 122, 6]}
+                clickFuncs={[
+                  () => {
+                    setGasType('standard');
+                    setGasValue(25);
+                  },
+                  () => {
+                    setGasType('fast');
+                    setGasValue(50);
+                  },
+                  () => {
+                    setGasType('instant');
+                    setGasValue(100);
+                  },
+                ]}
                 start={236}
                 alignedRight={true}
-                gliderDims={['110px', '42px']}
+                gliderWidth={110}
+                gliderHeight={42}
               />
             ) : (
-              <SwitchWithGlider 
-                elements={[GasSwitch1, GasSwitch2, GasSwitch3]}
+              <SwitchWithGlider
+                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
                 positions={[236, 128, 18]}
-                clickFuncs={[() => {
-                  setGasType('standard');
-                  setGasValue(25);
-                }, () => {
-                  setGasType('fast');
-                  setGasValue(50);
-                }, () => {
-                  setGasType('instant');
-                  setGasValue(100);
-                }]}
+                clickFuncs={[
+                  () => {
+                    setGasType('standard');
+                    setGasValue(25);
+                  },
+                  () => {
+                    setGasType('fast');
+                    setGasValue(50);
+                  },
+                  () => {
+                    setGasType('instant');
+                    setGasValue(100);
+                  },
+                ]}
                 start={236}
                 alignedRight={true}
-                gliderDims={['110px', '42px']}
+                gliderWidth={110}
+                gliderHeight={42}
               />
             )}
           </Box>
