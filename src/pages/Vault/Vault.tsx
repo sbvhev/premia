@@ -19,9 +19,10 @@ import {
   SearchTabs,
   TooltipPan,
   WithdrawDepositModal,
-  SwitchWithGlider
+  SwitchWithGlider,
 } from 'components';
-import { Help, ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@material-ui/icons';
+import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   mainContent: {},
   subtitle: {
     display: 'flex',
+    marginTop: -6,
     alignItems: 'center',
 
     '& svg': {
@@ -83,6 +85,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& svg': {
       marginRight: 8,
+      top: -1,
+      position: 'relative',
     },
   },
   topSector: {
@@ -105,9 +109,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& svg': {
       position: 'relative',
-      top: -2,
-      width: 20,
+      top: -1,
+      marginLeft: 4,
+      width: 16,
       height: 20,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+      },
     },
 
     '& > div > h2': {
@@ -126,7 +135,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   box: {
-    width: 'calc(100% - 286px)',
+    width: 'calc(100% - 226px)',
     position: 'relative',
   },
   menuItem: {
@@ -213,6 +222,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
     color: theme.palette.secondary.main,
   },
+  expandMore: {
+    marginRight: 8,
+    position: 'absolute',
+    right: 0,
+    cursor: 'pointer',
+
+    '& path': {
+      fill: theme.palette.secondary.main,
+    },
+  },
 }));
 
 const tabItems = [
@@ -279,29 +298,37 @@ const ProVault: React.FC = () => {
 
   const BasicVaultButton = () => (
     <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
       width={!phoneDevice ? '94px' : '160px'}
       height={!phoneDevice ? '42px' : '32px'}
-      className={vaultIndex === 1 ? classes.modeItem  : classes.inactiveMode}
+      className={vaultIndex === 1 ? classes.modeItem : classes.inactiveMode}
     >
       <BasicIcon />
-      <Typography className={vaultIndex === 0 ? classes.textSelected : classes.textIdle}>Basic</Typography>
+      <Typography
+        className={vaultIndex === 0 ? classes.textSelected : classes.textIdle}
+      >
+        Basic
+      </Typography>
     </Box>
   );
 
   const ProVaultButton = () => (
     <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
       width={!phoneDevice ? '94px' : '160px'}
       height={!phoneDevice ? '42px' : '32px'}
-      className={vaultIndex === 0 ? classes.modeItem  : classes.inactiveMode}
+      className={vaultIndex === 0 ? classes.modeItem : classes.inactiveMode}
     >
       <ProIcon />
-      <Typography className={vaultIndex === 1 ? classes.textSelected : classes.textIdle}>Pro</Typography>
+      <Typography
+        className={vaultIndex === 1 ? classes.textSelected : classes.textIdle}
+      >
+        Pro
+      </Typography>
     </Box>
   );
 
@@ -366,14 +393,22 @@ const ProVault: React.FC = () => {
         </Typography>
         <Grid container direction='row' className={classes.topTab}>
           <Box
-            className={!phoneDevice ? classes.vaultSwitchContainer : classes.vaultSwitchContainerMobile}
-            style={dark ? 
-              { borderColor: palette.divider,  }
-              : 
-              { borderColor: 'transparent', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)'}}
+            className={
+              !phoneDevice
+                ? classes.vaultSwitchContainer
+                : classes.vaultSwitchContainerMobile
+            }
+            style={
+              dark
+                ? { borderColor: palette.divider }
+                : {
+                    borderColor: 'transparent',
+                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                  }
+            }
           >
             {!phoneDevice ? (
-              <SwitchWithGlider 
+              <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
                 positions={[55, 154]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
@@ -384,7 +419,7 @@ const ProVault: React.FC = () => {
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21, (deviceWidth - 182)]}
+                positions={[21, deviceWidth - 182]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={21}
                 gliderWidth={160}

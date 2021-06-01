@@ -190,13 +190,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      direction='row'
-      alignItems='center'
-      justify='flex-end'
-      style={!mobile ? { paddingRight: '24px' } : {}}
-    >
+    <Grid container direction='row' alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}

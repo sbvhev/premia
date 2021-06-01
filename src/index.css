@@ -146,3 +146,13 @@ ul.bn-notify-custom.bn-notify-notifications {
 .bn-onboard-custom.bn-onboard-modal-content li button {
   background: rgba(82, 148, 255, 0.1);
 }
+
+.apexcharts-xaxistooltip {
+  display: none !important;
+}
+
+.apexcharts-tooltip {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
