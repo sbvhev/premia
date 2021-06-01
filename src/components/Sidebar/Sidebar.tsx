@@ -121,10 +121,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const gliderHeights: GliderHerights = {
-    '/': 90,
-    '/vaults': 139,
-    '/options': 188,
-    '/stake': 237,
+    '/': 93,
+    '/vaults': 143,
+    '/options': 193,
+    '/stake': 243,
   };
   const state = location.state ? location.state.previous : false;
   const startHeight = state ? gliderHeights[state] : gliderHeights[pathname];

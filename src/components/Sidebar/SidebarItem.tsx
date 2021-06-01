@@ -15,6 +15,7 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: 12,
     padding: '8px 16px',
     margin: '0',
+    marginBottom: '3px',
     cursor: 'pointer',
     fontSize: 14,
 
@@ -39,8 +40,9 @@ const useStyles = makeStyles(({ palette }) => ({
   icon: {
     minWidth: 32,
     '& svg path': {
-      fill: ({ active }: any) => (active ? palette.primary.main : palette.secondary.main),
-    }
+      fill: ({ active }: any) =>
+        active ? palette.primary.main : palette.secondary.main,
+    },
   },
 
   title: {

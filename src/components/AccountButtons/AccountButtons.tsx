@@ -7,10 +7,7 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core';
-import {
-  SupervisorAccount,
-  AccountBalanceWallet,
-} from '@material-ui/icons';
+import { SupervisorAccount, AccountBalanceWallet } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -40,8 +37,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   avatar: {
     marginRight: 6,
     '& path': {
-      fill: palette.text.secondary
-    }
+      fill: palette.text.secondary,
+    },
   },
 
   walletIcon: {
@@ -62,13 +59,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '&:hover': {
       borderColor: palette.primary.main,
-      '& svg path': {
+    },
+
+    '&> div:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '&> svg path': {
         fill: palette.text.primary,
       },
+
       '& p': {
         color: palette.text.primary,
       },
-    }
+    },
   },
 
   accountMobile: {
@@ -81,7 +84,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '&:hover': {
       borderColor: palette.primary.main,
-    }
+    },
   },
 
   connect: {
@@ -96,11 +99,41 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   disconnect: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    },
+
+    '&:hover:not(:active)': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+    },
+
     '& button': {
       padding: 0,
-      '& path': {
-        fill: palette.text.secondary
-      }
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      ':active': {
+        borderColor: palette.primary.main,
+
+        '& svg path': {
+          fill: palette.text.secondary,
+        },
+
+        '& p': {
+          color: palette.text.secondary,
+        },
+      },
     },
   },
 
@@ -128,7 +161,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   half: {
     width: 'calc(50% - 4px)',
-    margin: 0
+    margin: 0,
   },
 
   fullWidth: {
@@ -153,18 +186,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     cursor: 'pointer',
     fontSize: 14,
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.primary.main,
-      },
-
-      '& p': {
-        color: palette.text.primary,
-      },
-    },
-
     '& svg': {
       width: 33,
       height: 33,
@@ -174,7 +195,31 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       borderRadius: 10,
 
       '& path': {
+        fill: palette.text.secondary,
+      },
+    },
+
+    '&:hover:not(:active)': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
         fill: palette.text.primary,
+      },
+
+      '& p': {
+        color: palette.text.primary,
+      },
+    },
+
+    ':active': {
+      borderColor: palette.primary.main,
+
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+
+      '& p': {
+        color: palette.text.secondary,
       },
     },
 
@@ -204,12 +249,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      direction='row'
-      alignItems='center'
-      justify='flex-end'
-    >
+    <Grid container direction='row' alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -302,9 +342,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       className={classes.disconnect}
                     >
                       <Tooltip title='Disconnect'>
-                        <IconButton onClick={disconnect}>
-                          <LogoutIcon color='action' />
-                        </IconButton>
+                        <LogoutIcon color='action' onClick={disconnect} />
                       </Tooltip>
                     </Box>
                   </Grid>
@@ -312,12 +350,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               </Box>
             </>
           ) : (
-            <Box
-              display='flex'
-              flexDirection='column'
-              width='100%'
-              pt={1.25}
-            >
+            <Box display='flex' flexDirection='column' width='100%' pt={1.25}>
               <Box
                 display='flex'
                 justifyContent='space-between'
