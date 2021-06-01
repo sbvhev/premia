@@ -137,7 +137,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   rightCard: {
     paddingTop: 28,
-    width: 'calc(100% - 460px)',
+    width: 'calc(100% - 375px)',
 
     [breakpoints.down('md')]: {
       width: '100%',

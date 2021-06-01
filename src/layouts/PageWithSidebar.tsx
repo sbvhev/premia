@@ -76,10 +76,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             bgcolor={
               !mobile ? palette.background.default : palette.background.paper
             }
-            p={mobile ? 1 : 3}
+            pt={mobile ? 1 : 3}
             px={mobile ? 1 : 3}
             className={cx(mobile && classes.border)}
-            height={mobile ? '60px' : '96px'}
+            height={mobile ? '60px' : '72px'}
           >
             <Container>
               <Grid container justify='space-between' alignItems='center'>
@@ -91,16 +91,14 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                     />
                   </Box>
                 )}
-
                 <Grid style={{ height: '48px' }}>
                   {mobile && (
                     <IconButton
-                      style={{ height: '48px' }}
-                      onClick={() =>
-                        setMobileSidebarHidden(!mobileSidebarHidden)
-                      }
+                      style={{ height: '48px', padding: 0 }}
+                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
                     >
                       <Hamburger
+                        size={20}
                         color={theme.palette.text.secondary}
                         toggled={!mobileSidebarHidden}
                         toggle={setMobileSidebarHidden}
@@ -108,7 +106,6 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                     </IconButton>
                   )}
                 </Grid>
-
                 {!mobile && (
                   <Grid item>
                     <AccountButtons />
@@ -132,7 +129,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 <AccountButtons mobile />
               </Box>
               <Divider />
-              <Box p={1}>
+              <Box p={1} pl={1.25}>
                 <Sidebar mobile onHide={hideMobileMenu} />
               </Box>
               <Divider />
@@ -154,8 +151,8 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 px={mobile ? 0 : 3}
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 mx='auto'
-                mt={!mobile ? 14 : 10}
-                mb={mobile ? 13 : 7}
+                mt={!mobile ? 11 : 10}
+                mb={mobile ? 12.5 : 6}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>

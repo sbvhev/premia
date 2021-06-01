@@ -10,34 +10,34 @@ import { useDarkModeManager } from 'state/user/hooks';
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/MainLogo.svg';
 import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
-import DocumentationIcon from 'assets/svg/DocumentationIcon.svg';
-import CareerIcon from 'assets/svg/CareerIcon.svg';
-import PositionsIcon from 'assets/svg/PositionsIcon.svg';
-import VaultsIcon from 'assets/svg/VaultIcon.svg';
-import OptionsIcon from 'assets/svg/OptionsIcon.svg';
-import StakeIcon from 'assets/svg/StakeIcon.svg';
+import { ReactComponent as DocumentationIcon } from 'assets/svg/DocumentationIcon.svg';
+import { ReactComponent as CareerIcon } from 'assets/svg/CareerIcon.svg';
+import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
+import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
+import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
+import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import ThemeSwitch from 'components/ThemeSwitch';
 
 const navigation = [
   {
     title: 'My positions',
     link: '/',
-    Icon: PositionsIcon,
+    Icon: <PositionsIcon />,
   },
   {
     title: 'Vaults',
     link: '/vaults',
-    Icon: VaultsIcon,
+    Icon: <VaultsIcon />,
   },
   {
     title: 'Options',
     link: '/options',
-    Icon: OptionsIcon,
+    Icon: <OptionsIcon />,
   },
   {
     title: 'Stake',
     link: '/stake',
-    Icon: StakeIcon,
+    Icon: <StakeIcon />,
   },
 ];
 
@@ -45,13 +45,13 @@ const insights = [
   {
     title: 'Documentation',
     link: 'https://premia.medium.com',
-    Icon: DocumentationIcon,
+    Icon: <DocumentationIcon />,
     href: true,
   },
   {
     title: 'Careers',
     link: 'https://solidity.finance/audits/Premia/',
-    Icon: CareerIcon,
+    Icon: <CareerIcon />,
     href: true,
   },
 ];
@@ -121,10 +121,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const gliderHeights: GliderHerights = {
-    '/': 98,
-    '/vaults': 155,
-    '/options': 212,
-    '/stake': 269,
+    '/': 93,
+    '/vaults': 143,
+    '/options': 193,
+    '/stake': 243,
   };
   const state = location.state ? location.state.previous : false;
   const startHeight = state ? gliderHeights[state] : gliderHeights[pathname];
