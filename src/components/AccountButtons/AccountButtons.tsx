@@ -28,11 +28,12 @@ import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
+import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
     backgroundColor: palette.background.default,
-    width: 'calc(100% - 260px)',
+    width: 'calc(100% - 210px)',
     minHeight: '100vh',
   },
 
@@ -58,6 +59,38 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& p': {
+        color: palette.text.primary,
+      },
+    }
+  },
+
+  accountMobile: {
+    padding: '0 12px',
+    height: 45,
+    width: 'calc(60vw - 10px)',
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+
+    '&:hover': {
+      borderColor: palette.primary.main,
+    }
+  },
+
+  connect: {
+    padding: '0 12px',
+    height: 45,
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
   },
 
   disconnect: {
@@ -75,13 +108,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 14,
   },
 
-  noDecoration: {
-    textDecoration: 'none',
+  addressMobile: {
+    color: palette.secondary.main,
+    fontSize: 14,
   },
 
-  tier: {
-    color: palette.text.secondary,
-    fontSize: 10,
+  noDecoration: {
+    textDecoration: 'none',
   },
 
   button: {
@@ -145,8 +178,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
-      marginLeft: 4,
-      marginRight: 4,
+      minWidth: '125px',
+      width: '33vw',
+      marginRight: 0,
       marginBottom: 8,
     },
   },
@@ -165,10 +199,17 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
+  const { palette } = theme;
   const classes = useStyles();
 
   return (
-    <Grid container direction='row' alignItems='center' justify='flex-end'>
+    <Grid
+      container
+      direction='row'
+      alignItems='center'
+      justify='flex-end'
+      style={!mobile ? { paddingRight: '24px' } : {}}
+    >
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -199,76 +240,167 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Grid item container xs={12}>
-          <Button
-            color='primary'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-          >
-            <span>Get</span>
-            <LogoIcon />
-          </Button>
-          <Button
-            color='primary'
-            variant='outlined'
-            className={cx(classes.button, mobile && classes.half)}
-            style={{ order: mobile ? 1 : 0 }}
-            onClick={() => setShowSwapModal(true)}
-          >
-            <span>Swap</span>
-            <SwapIcon />
-          </Button>
-          <Box
-            className={classes.chain}
-            onClick={() => {
-              setChainModalOpen(true);
-            }}
-          >
-            <EthIcon />
-            <Typography color='textSecondary'>Ethereum</Typography>
-          </Box>
-          <Box clone mb={mobile ? 1 : 0} style={{ order: mobile ? 0 : 1 }}>
-            <Box
-              className={cx(classes.noDecoration, mobile && classes.fullWidth)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Grid
-                container
-                direction='row'
-                alignItems='center'
-                justify='space-between'
-                className={classes.account}
+        <Box display='flex' width='100%'>
+          {!mobile ? (
+            <>
+              <Button color='primary' className={classes.button}>
+                <span>Get</span>
+                <LogoIcon />
+              </Button>
+              <Button
+                color='primary'
+                variant='outlined'
+                className={classes.button}
+                onClick={() => setShowSwapModal(true)}
               >
-                <Grid
-                  item
-                  container
-                  alignItems='center'
-                  xs={9}
-                  onClick={() => setShowTransactions(true)}
-                >
-                  <PersonIcon className={classes.avatar} />
-                  <Typography className={classes.address}>
-                    {shortenAddress(account ?? '')}
-                  </Typography>
-                </Grid>
+                <span>Swap</span>
+                <SwapIcon />
+              </Button>
 
-                <Box
-                  height={1}
-                  borderLeft={1}
-                  pl={1.5}
-                  borderColor={theme.palette.divider}
-                  className={classes.disconnect}
-                >
-                  <Tooltip title='Disconnect'>
-                    <IconButton onClick={disconnect}>
-                      <LogoutIcon />
-                    </IconButton>
-                  </Tooltip>
+              <Box
+                className={classes.chain}
+                onClick={() => {
+                  setChainModalOpen(true);
+                }}
+              >
+                <EthIcon />
+                <Typography color='secondary'>Ethereum</Typography>
+              </Box>
+              <Box clone mb={mobile ? 1 : 0}>
+                <Box display='flex' id='test'>
+                  <Grid
+                    container
+                    direction='row'
+                    alignItems='center'
+                    justify='space-between'
+                    className={classes.account}
+                  >
+                    <Grid
+                      item
+                      container
+                      alignItems='center'
+                      xs={9}
+                      onClick={() => setShowTransactions(true)}
+                    >
+                      <PersonIcon className={classes.avatar} />
+                      <Box>
+                        <Typography
+                          className={
+                            !mobile ? classes.address : classes.addressMobile
+                          }
+                        >
+                          {shortenAddress(account ?? '')}
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Box
+                      height={1}
+                      borderLeft={1}
+                      pl={1.5}
+                      borderColor={theme.palette.divider}
+                      className={classes.disconnect}
+                    >
+                      <Tooltip title='Disconnect'>
+                        <IconButton onClick={disconnect}>
+                          <LogoutIcon color='action' />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
                 </Box>
-              </Grid>
+              </Box>
+            </>
+          ) : (
+            <Box
+              display='flex'
+              flexDirection='column'
+              width='100%'
+              paddingY={1}
+            >
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                paddingX={'12px'}
+              >
+                <Box clone mb={mobile ? 1 : 0}>
+                  <Box display='flex'>
+                    <Grid
+                      container
+                      direction='row'
+                      alignItems='center'
+                      justify='space-between'
+                      className={classes.accountMobile}
+                    >
+                      <Box
+                        display='flex'
+                        alignItems='center'
+                        justifyContent='center'
+                        onClick={() => setShowTransactions(true)}
+                        paddingTop='2px'
+                      >
+                        <Box style={{ margin: '2px 6px 0 0' }}>
+                          <PersonIconMobile />
+                        </Box>
+                        <Box>
+                          <Typography className={classes.addressMobile}>
+                            {shortenAddress(account ?? '')}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box
+                        height={1}
+                        borderLeft={1}
+                        pl={1.5}
+                        borderColor={theme.palette.divider}
+                        className={classes.disconnect}
+                      >
+                        <Tooltip title='Disconnect'>
+                          <IconButton onClick={disconnect}>
+                            <LogoutIcon color='action' />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Grid>
+                  </Box>
+                </Box>
+                <Box
+                  className={classes.chain}
+                  onClick={() => {
+                    setChainModalOpen(true);
+                  }}
+                >
+                  <EthIcon />
+                  <Typography color='secondary'>Ethereum</Typography>
+                </Box>
+              </Box>
+
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                borderTop={`1px solid ${palette.divider}`}
+                style={{ padding: '12px 10px 3px 10px' }}
+              >
+                <Button
+                  color='primary'
+                  className={cx(classes.button, mobile && classes.half)}
+                >
+                  Get
+                  <LogoIcon />
+                </Button>
+                <Button
+                  color='secondary'
+                  className={cx(classes.button, mobile && classes.half)}
+                  onClick={() => setShowSwapModal(true)}
+                >
+                  Swap
+                  <SwapIcon />
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </Grid>
+          )}
+        </Box>
       ) : (
         <Button
           variant='contained'
