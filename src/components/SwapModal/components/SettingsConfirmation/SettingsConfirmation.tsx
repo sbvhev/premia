@@ -144,6 +144,7 @@ const SettingsConfirmation: React.FC<SwapModalProps> = ({ open, onClose, agree, 
                 variant="contained"
                 size="large"
                 style={{ width: '150px' }}
+                onClick={agree}
               >
                 Agree
               </Button>

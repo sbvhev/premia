@@ -364,6 +364,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
   const [showExchanges, setShowExchanges] = React.useState(false);
+  const [showHighSlippageWarning, setShowHighSlippageWarning] = React.useState(true);
   const [checkedState, setCheckedState] = React.useState<enabledExchanges>({
     Uniswap: false,
     UniswapV2: true,
@@ -436,15 +437,27 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
 
   const hadleClickLowSlippage = () => {
     setSlippage('0.1');
-  }
+  };
 
   const hadleClickMidSlippage = () => {
     setSlippage('0.5');
-  }
+  };
 
   const hadleClickHighSlippage = () => {
     setSlippage('1');
-  }
+  };
+
+  React.useEffect(() => {
+    const hasAcceptedRisk = localStorage.getItem('Accepted_high_slippage_risk');
+    if (hasAcceptedRisk) {
+      setShowHighSlippageWarning(false);
+    }
+  }, [])
+
+  const handleSetExtraHighSlippage = () => {
+    localStorage.setItem('Accepted_high_slippage_risk', 'true');
+    setShowHighSlippageWarning(false);
+  };
 
   const handleChangeCustomSlippage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -588,9 +601,9 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
         <BackIcon />
       </Box>
       <SettingsConfirmation
-        open={parseFloat(customSlippage) > 1}
+        open={parseFloat(customSlippage) > 1 && showHighSlippageWarning}
         onClose={() => setCustomSlippage('1')}
-        agree={() => {}}
+        agree={handleSetExtraHighSlippage}
         disagree={() => setCustomSlippage('1')}
       />
     </Box>
