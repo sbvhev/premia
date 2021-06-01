@@ -44,7 +44,6 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const classes = useStyles();
 
   const hideMobileMenu = () => {
@@ -78,7 +77,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               !mobile ? palette.background.default : palette.background.paper
             }
             p={mobile ? 1 : 3}
-            px={mobile ? 1 : tablet ? 0 : 3}
+            px={mobile ? 1 : 3}
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '96px'}
           >
@@ -146,11 +145,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           {mobileSidebarHidden && (
             <>
               <Box
-                px={tablet ? 0 : 3}
-                width={mobile ? 1 : 'calc(100vw - 210px'}
+                px={mobile ? 0 : 3}
+                width={mobile ? 1 : 'calc(100vw - 210px)'}
                 mx='auto'
                 mt={!mobile ? 14 : 10}
-                mb={mobile ? 10 : 7}
+                mb={mobile ? 13 : 7}
                 // overflow='scroll'
               >
                 <Container>{children}</Container>
@@ -166,13 +165,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   <Footer />
                 </Box>
               ) : (
-                <Box
-                  position='fixed'
-                  width='100%'
-                  bgcolor={palette.background.default}
-                  bottom={0}
-                  zIndex={14}
-                >
+                <Box position='fixed' width='100%' bottom={0} zIndex={14}>
                   <Footer />
                 </Box>
               )}

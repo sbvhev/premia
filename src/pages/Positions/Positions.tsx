@@ -274,11 +274,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: 12,
-    padding: '0 8px',
+    padding: '0 10px',
+    color: palette.text.primary,
+    '& p': {
+      fontSize: 14,
+    },
     '& svg': {
       width: 16,
       height: 16,
       marginLeft: 4,
+      '& path': {
+        fill: palette.text.secondary
+      }
     },
   },
   noPositionsContainer: {
@@ -525,6 +532,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  yieldButtonCell: {
+    marginTop: 12,
+    marginBottom: 10,
+    padding: '0 10px',
+    '& .MuiButton-outlined': {
+      border: `1px solid ${palette.divider}`,
+      color: palette.text.secondary,
+    }
+  }
 }));
 
 const Positions: React.FC = () => {
@@ -881,86 +897,89 @@ const Positions: React.FC = () => {
                   </BottomNavigation>
                 </Box>
               </Grid>
-              <Box mt={2.5}>
+              <Box mt={mobile ? 1.5: 2.5}>
                 {mobile ? (
                   <>
-                    {optionsData.map((item: any, index) => (
-                      <Container fixed>
-                        <Box
-                          width={1}
-                          display='flex'
-                          p={1}
-                          justifyContent='space-between'
-                          alignItems='center'
-                        >
-                          <Box className={classes.tokenIconCell}>
-                            <Box>{item.tokenIcon}</Box>
-                            {item.symbol}
-                          </Box>
+                    {optionsData.map((item: any) => (
+                      <Box mb={2}>
+                        <Container fixed>
                           <Box
-                            className={cx(
-                              classes.typeBox,
-                              item.type === 'call' ? classes.call : classes.put,
-                            )}
+                            width={1}
+                            display='flex'
+                            p={1.25}
+                            pl={1}
+                            justifyContent='space-between'
+                            alignItems='center'
                           >
-                            <Box />
-                            {item.type === 'call' ? <CallIcon /> : <PutIcon />}
-                            {item.type}
-                          </Box>
-                        </Box>
-                        <Divider />
-                        <Box className={classes.cardRow}>
-                          <Typography color='textSecondary'>Size</Typography>
-                          {formatNumber(item.size)}
-                        </Box>
-                        <Box className={classes.cardRow}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>
-                              Current Value
-                            </Typography>
-                            <DaiIcon />
-                          </Box>
-                          {formatNumber(item.value)}
-                        </Box>
-                        <Box className={classes.cardRow}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>
-                              Strike
-                            </Typography>
-                            <DaiIcon />
-                          </Box>
-                          {formatNumber(item.strike)}
-                        </Box>
-                        <Box className={classes.cardRow}>
-                          <Typography color='textSecondary'>
-                            Expiration
-                          </Typography>
-                          <Box textAlign='right'>
-                            {Moment(item.expiration).format('DD MMM')}
-                            <Typography color='textSecondary'>
-                              2 days left
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Box px={1} my={1.5}>
-                          {item.exercised ? (
-                            <Box className={classes.exercisedCell}>
-                              <Box>
-                                <DoneIcon />
-                              </Box>
-                              <Typography>Exercised for 100</Typography>
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
                             </Box>
-                          ) : (
-                            <Button
-                              fullWidth
-                              color='primary'
-                              onClick={() => setPositionModalOpen(true)}
+                            <Box
+                              className={cx(
+                                classes.typeBox,
+                                item.type === 'call' ? classes.call : classes.put,
+                              )}
                             >
-                              Exercise
-                            </Button>
-                          )}
-                        </Box>
-                      </Container>
+                              <Box />
+                              {item.type === 'call' ? <CallIcon /> : <PutIcon />}
+                              {item.type}
+                            </Box>
+                          </Box>
+                          <Divider />
+                          <Box className={classes.cardRow}>
+                            <Typography color='textSecondary'>Size</Typography>
+                            {formatNumber(item.size)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Current Value
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.value)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Strike
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.strike)}
+                          </Box>
+                          <Box className={classes.cardRow}>
+                            <Typography color='textSecondary'>
+                              Expiration
+                            </Typography>
+                            <Box textAlign='right'>
+                              {Moment(item.expiration).format('DD MMM')}
+                              <Typography color='textSecondary'>
+                                2 days left
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Box px={1} my={1.5}>
+                            {item.exercised ? (
+                              <Box className={classes.exercisedCell}>
+                                <Box>
+                                  <DoneIcon />
+                                </Box>
+                                <Typography>Exercised for 100</Typography>
+                              </Box>
+                            ) : (
+                              <Button
+                                fullWidth
+                                color='primary'
+                                onClick={() => setPositionModalOpen(true)}
+                              >
+                                Exercise
+                              </Button>
+                            )}
+                          </Box>
+                        </Container>
+                      </Box>
                     ))}
                   </>
                 ) : (
@@ -1045,98 +1064,101 @@ const Positions: React.FC = () => {
                   My yield positions
                 </Typography>
               </Grid>
-              <Box mt={2.5}>
+              <Box mt={mobile ? 1.5 : 2.5}>
                 {mobile ? (
                   <>
                     {yieldData.map((item: any, index) => (
-                      <Container fixed>
-                        <Box
-                          width={1}
-                          display='flex'
-                          p={1}
-                          justifyContent='space-between'
-                          alignItems='center'
-                        >
-                          <Box className={classes.tokenIconCell}>
-                            <Box>{item.tokenIcon}</Box>
-                            {item.symbol}
-                          </Box>
-                          <Box display='flex' alignItems='center'>
-                            {item.name}
-                            <Box ml={2} display='flex' alignItems='center'>
-                              <Box
-                                className={cx(
-                                  classes.typeBox,
-                                  item.type === 'vault'
-                                    ? classes.vault
-                                    : item.option === 'call'
-                                    ? classes.call
-                                    : classes.put,
-                                )}
-                              >
-                                <Box />
-                                {item.type === 'vault' ? (
-                                  <VaultIcon />
-                                ) : item.option === 'call' ? (
-                                  <CallIcon />
-                                ) : (
-                                  <PutIcon />
-                                )}
-                                {item.type}
+                      <Box mb={2}>
+                        <Container fixed>
+                          <Box
+                            width={1}
+                            display='flex'
+                            p={1.25}
+                            pl={1}
+                            justifyContent='space-between'
+                            alignItems='center'
+                          >
+                            <Box className={classes.tokenIconCell}>
+                              <Box>{item.tokenIcon}</Box>
+                              {item.symbol}
+                            </Box>
+                            <Box display='flex' alignItems='center'>
+                              {item.name}
+                              <Box ml={2} display='flex' alignItems='center'>
+                                <Box
+                                  className={cx(
+                                    classes.typeBox,
+                                    item.type === 'vault'
+                                      ? classes.vault
+                                      : item.option === 'call'
+                                      ? classes.call
+                                      : classes.put,
+                                  )}
+                                >
+                                  <Box />
+                                  {item.type === 'vault' ? (
+                                    <VaultIcon />
+                                  ) : item.option === 'call' ? (
+                                    <CallIcon />
+                                  ) : (
+                                    <PutIcon />
+                                  )}
+                                  {item.type}
+                                </Box>
                               </Box>
                             </Box>
                           </Box>
-                        </Box>
-                        <Divider />
-                        <Box className={classes.cardRow}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>
-                              Capital
-                            </Typography>
-                            <DaiIcon />
+                          <Divider />
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Capital
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {formatNumber(item.capital)}
                           </Box>
-                          {formatNumber(item.capital)}
-                        </Box>
-                        <Box className={classes.cardRow}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>
-                              Earned
-                            </Typography>
-                            <DaiIcon />
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Earned
+                              </Typography>
+                              <DaiIcon />
+                            </Box>
+                            {item.earned}
                           </Box>
-                          {item.earned}
-                        </Box>
-                        <Box className={classes.cardRow}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography color='textSecondary'>
-                              Expected APY
-                            </Typography>
+                          <Box className={classes.cardRow}>
+                            <Box display='flex' alignItems='center'>
+                              <Typography color='textSecondary'>
+                                Expected APY
+                              </Typography>
+                            </Box>
+                            {item.apy}
                           </Box>
-                          {item.apy}
-                        </Box>
-                        <Box px={1} my={1.5}>
-                          <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                              <Button
-                                fullWidth
-                                color='primary'
-                                onClick={() => setPositionModalOpen(true)}
-                              >
-                                Add
-                              </Button>
+                          <Box className={classes.yieldButtonCell}>
+                            <Grid container spacing={1}>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  color='primary'
+                                  onClick={() => setPositionModalOpen(true)}
+                                >
+                                  Add
+                                </Button>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  variant='outlined'
+                                  onClick={() => setPositionModalOpen(true)}
+                                >
+                                  Remove
+                                </Button>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                              <Button
-                                fullWidth
-                                variant='outlined'
-                                onClick={() => setPositionModalOpen(true)}
-                              >
-                                Remove
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        </Box>
-                      </Container>
+                          </Box>
+                        </Container>
+                      </Box>
                     ))}
                   </>
                 ) : (
