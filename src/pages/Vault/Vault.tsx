@@ -283,11 +283,6 @@ const ProVault: React.FC = () => {
   const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  console.log('extraLargeDesktop', extraLargeDesktop);
-  console.log('deviceWidth', deviceWidth);
-  console.log('extra', (deviceWidth - 1526) / 2);
-
-
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -419,7 +414,7 @@ const ProVault: React.FC = () => {
                 elements={[BasicVaultButton, ProVaultButton]}
                 positions={[55 + extraMargin, 154 + extraMargin]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={55}
+                start={55 + extraMargin}
                 gliderWidth={94}
                 gliderHeight={42}
               />
