@@ -515,6 +515,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  plPercents: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  }
 }));
 
 const Positions: React.FC = () => {
@@ -602,6 +607,8 @@ const Positions: React.FC = () => {
       expiration: Moment.now(),
     },
   ];
+
+  const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   return (
     <PageWithSidebar>
@@ -709,22 +716,28 @@ const Positions: React.FC = () => {
                   </Box>
                 </Box>
                 <Divider />
-                <LineChart
-                  color='#14A887'
-                  showYAxis={true}
-                  data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                  categories={[
-                    '2021/5/24',
-                    '2021/5/25',
-                    '2021/5/26',
-                    '2021/5/27',
-                    '2021/5/28',
-                    '2021/5/29',
-                    '2021/5/30',
-                  ]}
-                  width='100%'
-                  height={200}
-                />
+                <Grid container>
+                  <Box className={classes.plPercents}>
+                    {plPercents.map(val => (
+                      <Typography>{ val }{ val !== 0 && '%' }</Typography>
+                    ))}
+                  </Box>
+                  <LineChart
+                    color='#14A887'
+                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                    categories={[
+                      '2021/5/24',
+                      '2021/5/25',
+                      '2021/5/26',
+                      '2021/5/27',
+                      '2021/5/28',
+                      '2021/5/29',
+                      '2021/5/30',
+                    ]}
+                    width='100%'
+                    height={200}
+                  />
+                </Grid>
               </Container>
             </Grid>
             <Grid item container sm={12} md={12} lg={4}>
