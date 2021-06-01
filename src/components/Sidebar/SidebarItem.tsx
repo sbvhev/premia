@@ -1,6 +1,9 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import { makeStyles } from '@material-ui/core/styles';
 import cn from 'classnames';
 
@@ -54,36 +57,40 @@ export interface SidebarItemProps {
   link: string;
   Icon: any;
   href?: boolean;
-  disabled?: boolean;
+  onHide?: () => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   title,
   link,
   Icon,
-  href = false,
-  disabled = false,
+  href,
+  onHide,
 }) => {
   const location = useLocation();
   const active = location.pathname === link;
-  const classes = useStyles({ active, disabled });
+  const classes = useStyles({ active });
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const history = useHistory();
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!href) {
+      history.push(link, { previous: location.pathname });
+
+      if (onHide) {
+        onHide();
+      }
+    } else {
+      window.open(link, '_blank');
+    }
+  };
 
   return (
     <ListItem
-      disabled={disabled}
       className={cn(classes.item, { active })}
-      {...(href
-        ? {
-            href: link,
-            component: 'a',
-            target: '_blank',
-            referrer: 'noreferrer',
-          }
-        : {
-            to: disabled ? location.pathname : link,
-            component: NavLink,
-            activeClassName: 'active',
-          })}
+      style={mobile ? {} : { backgroundColor: 'transparent' }}
+      onClick={handleClick}
     >
       <ListItemIcon
         className={classes.icon}
