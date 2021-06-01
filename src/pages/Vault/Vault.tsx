@@ -4,8 +4,6 @@ import {
   Box,
   Grid,
   Typography,
-  BottomNavigation,
-  BottomNavigationAction,
   Paper,
   Button,
   IconButton,
@@ -15,7 +13,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { LineChart, RadialChart, SearchTabs, TooltipPan } from 'components';
+import { LineChart, RadialChart, SearchTabs, TooltipPan, SwitchWithGlider } from 'components';
 import { Help, ExpandMore } from '@material-ui/icons';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
@@ -153,6 +151,61 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '18px',
     marginTop: 6,
   },
+  vaultSwitchContainer: {
+    border: `1px solid`,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '12px',
+    width: '206px',
+    height: '55px',
+    padding: '6px',
+    marginRight: '15px',
+  },
+  vaultSwitchContainerMobile: {
+    border: `1px solid`,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '12px',
+    width: '100%',
+    height: '42px',
+    padding: '5px',
+  },
+  modeItem: {
+    border: `1px solid ${theme.palette.background.paper}`,
+    borderRadius: 10,
+    cursor: 'pointer',
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: theme.palette.text.secondary,
+    },
+    '&:hover': {
+      backgroundColor: theme.palette.background.paper,
+      border: `1px solid ${theme.palette.divider}`,
+    },
+  },
+  inactiveMode: {
+    border: `1px solid transparent`,
+    backgroundColor: 'transparent',
+    '& svg': {
+      marginRight: 9,
+    },
+    '& svg path': {
+      fill: theme.palette.primary.main,
+    },
+    '& span': {
+      color: theme.palette.primary.main,
+    },
+  },
+  textSelected: {
+    fontWeight: 700,
+    fontSize: '14px',
+    color: theme.palette.primary.main,
+  },
+  textIdle: {
+    fontWeight: 400,
+    fontSize: '14px',
+    color: theme.palette.secondary.main,
+  },
 }));
 
 const tabItems = [
@@ -186,12 +239,15 @@ const ProVault: React.FC = () => {
   const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
-  const [value, setValue] = useState(
+  const { palette } = theme;
+  const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const phoneDevice = useMediaQuery(theme.breakpoints.down('xs'));
+  const deviceWidth = window.innerWidth;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
@@ -209,6 +265,50 @@ const ProVault: React.FC = () => {
     setCoin(coin);
   };
 
+  const BasicVaultButton = () => (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      width={!phoneDevice ? '94px' : '160px'}
+      height={!phoneDevice ? '42px' : '32px'}
+      className={vaultIndex === 1 ? classes.modeItem  : classes.inactiveMode}
+    >
+      <BasicIcon />
+      <Typography className={vaultIndex === 0 ? classes.textSelected : classes.textIdle}>Basic</Typography>
+    </Box>
+  );
+
+  const ProVaultButton = () => (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      width={!phoneDevice ? '94px' : '160px'}
+      height={!phoneDevice ? '42px' : '32px'}
+      className={vaultIndex === 0 ? classes.modeItem  : classes.inactiveMode}
+    >
+      <ProIcon />
+      <Typography className={vaultIndex === 1 ? classes.textSelected : classes.textIdle}>Pro</Typography>
+    </Box>
+  );
+
+  const handleBasicVaultSwitch = () => {
+    setVaultIndex(0);
+    history.push({
+      pathname: '/vaults',
+      search: '?tab="basic"',
+    });
+  };
+
+  const handleProVaultSwitch = () => {
+    setVaultIndex(1);
+    history.push({
+      pathname: '/vaults',
+      search: '?tab="pro"',
+    });
+  };
+
   return (
     <Grid container direction='column'>
       <Box width={1}>
@@ -221,25 +321,34 @@ const ProVault: React.FC = () => {
           Vaults
         </Typography>
         <Grid container direction='row' className={classes.topTab}>
-          <BottomNavigation
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-              history.push({
-                pathname: '/vaults',
-                search: `?tab=${newValue === 0 ? 'basic' : 'pro'}`,
-              });
-            }}
-            showLabels={true}
-            style={{
-              marginRight: mobile ? '0' : '16px',
-              width: mobile ? '100%' : '',
-            }}
+          <Box
+            className={!phoneDevice ? classes.vaultSwitchContainer : classes.vaultSwitchContainerMobile}
+            style={dark ? 
+              { borderColor: palette.divider,  }
+              : 
+              { borderColor: 'transparent', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)'}}
           >
-            <BottomNavigationAction label='Basic' icon={<BasicIcon />} />
-            <BottomNavigationAction label='Pro' icon={<ProIcon />} />
-          </BottomNavigation>
-          {!mobile && value === 1 && (
+            {!phoneDevice ? (
+              <SwitchWithGlider 
+                elements={[BasicVaultButton, ProVaultButton]}
+                positions={[55, 154]}
+                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
+                start={55}
+                gliderWidth={94}
+                gliderHeight={42}
+              />
+            ) : (
+              <SwitchWithGlider
+                elements={[BasicVaultButton, ProVaultButton]}
+                positions={[21, (deviceWidth - 182)]}
+                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
+                start={21}
+                gliderWidth={160}
+                gliderHeight={32}
+              />
+            )}
+          </Box>
+          {!mobile && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
               <SearchTabs
                 items={tabItems}
@@ -250,7 +359,7 @@ const ProVault: React.FC = () => {
               />
             </Box>
           )}
-          {mobile && value === 1 && (
+          {mobile && vaultIndex === 1 && (
             <>
               <Box className={classes.col}>
                 <Box
@@ -317,8 +426,8 @@ const ProVault: React.FC = () => {
             </>
           )}
         </Grid>
-        {value === 0 && <BasicVault />}
-        {value === 1 && (
+        {vaultIndex === 0 && <BasicVault />}
+        {vaultIndex === 1 && (
           <Grid container direction='row' spacing={3}>
             <Grid item xs={12} sm={12} md={6}>
               <Paper>
