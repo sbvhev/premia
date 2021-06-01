@@ -250,6 +250,7 @@ const OptionFilter: React.FC = () => {
           <Button
             variant='contained'
             color={optionType === 'call' ? 'primary' : undefined}
+            style={{ marginRight: '3px' }}
             onClick={() => setOptionType('call')}
           >
             <ArrowUpwardIcon />
@@ -261,6 +262,7 @@ const OptionFilter: React.FC = () => {
           <Button
             variant='contained'
             color={optionType === 'put' ? 'secondary' : undefined}
+            style={{ marginLeft: '3px' }}
             onClick={() => setOptionType('put')}
           >
             <ArrowDownwardIcon />
