@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
 import cn from 'classnames';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  useTheme,
+} from '@material-ui/core/styles';
 import { ArrowDropUp as ArrowDropUpIcon } from '@material-ui/icons';
 import { ColoredSlider } from 'components';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -14,13 +25,21 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     selector: {
       padding: 22,
-      borderBottom: '1px solid #212121',
+      borderBottom: `1px solid ${theme.palette.divider}`,
+
+      [theme.breakpoints.down('md')]: {
+        padding: '22px 10px',
+      },
     },
     title: {
       fontSize: 18,
       lineHeight: '18px',
       fontWeight: 700,
       marginBottom: 18,
+
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'center',
+      },
     },
     priceIcon: {
       color: theme.palette.success.dark,
@@ -32,6 +51,27 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > div': {
         aspectRatio: '16/ 9',
         width: 'calc(33.33% - 10px)',
+
+        [theme.breakpoints.down('md')]: {
+          width: '100%',
+          height: 85,
+          marginBottom: 10,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'start',
+
+          '& svg': {
+            width: 84,
+            height: 84,
+            marginTop: 0,
+          },
+        },
+      },
+
+      [theme.breakpoints.down('md')]: {
+        justifyContent: 'start',
+        flexDirection: 'column',
       },
     },
     asset: {
@@ -102,6 +142,11 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '18px 25px',
       display: 'flex',
       flexDirection: 'row',
+
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+        padding: '18px 10px',
+      },
     },
     currentPricePercent: {
       background: `linear-gradient(121.21deg, ${theme.palette.success.main} 7.78%, ${theme.palette.success.dark} 118.78%)`,
@@ -132,18 +177,34 @@ const useStyles = makeStyles((theme: Theme) =>
     dunno: {
       width: 170,
       height: 45,
+
+      [theme.breakpoints.down('md')]: {
+        width: '100%',
+        height: 45,
+      },
     },
     rightPanel: {
-      borderLeft: '1px solid #212121',
+      borderLeft: `1px solid ${theme.palette.divider}`,
       paddingLeft: 26,
       display: 'flex',
       alignItems: 'center',
+
+      [theme.breakpoints.down('md')]: {
+        paddingLeft: 0,
+        borderLeft: 'none',
+      },
     },
     currentPrice: {
       fontSize: 14,
       lineHeight: '24px',
       textAlign: 'right',
       color: theme.palette.text.secondary,
+
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'center',
+        lineHeight: '12px',
+        marginTop: theme.spacing(1),
+      },
     },
   }),
 );
@@ -152,6 +213,8 @@ const StepTwo: React.FC<StepProps> = ({ activeStep }) => {
   const classes = useStyles();
   const [asset, setAsset] = useState('');
   const darkMode = useIsDarkMode();
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const [strikePrice, setStrikePrice] = useState<number | number[]>(50);
 
   return (
@@ -201,8 +264,13 @@ const StepTwo: React.FC<StepProps> = ({ activeStep }) => {
       </Box>
       {!!asset && (
         <Box className={classes.priceSelector}>
-          <Box width={1} mt={1} pr={3}>
-            <Grid container direction='row' justify='space-between'>
+          <Box width={1} mt={1} pr={mobile ? 0 : 3}>
+            <Grid
+              container
+              direction='row'
+              justify={mobile ? 'center' : 'space-between'}
+              style={{ textAlign: mobile ? 'center' : 'inherit' }}
+            >
               <Box>
                 <Typography color='textPrimary' className={classes.priceTitle}>
                   Where do you think the price will go?

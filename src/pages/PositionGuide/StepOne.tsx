@@ -15,12 +15,20 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     selector: {
       padding: 22,
+
+      [theme.breakpoints.down('md')]: {
+        padding: '22px 10px',
+      },
     },
     title: {
       fontSize: 18,
       lineHeight: '18px',
       fontWeight: 700,
       marginBottom: 20,
+
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'center',
+      },
     },
     assets: {
       display: 'flex',
@@ -43,15 +51,37 @@ const useStyles = makeStyles((theme: Theme) =>
         borderRadius: 12,
         background: 'rgba(82, 148, 255, 0.1)',
 
+        [theme.breakpoints.down('md')]: {
+          padding: '20px 28px',
+          display: 'flex',
+          flexDirection: 'row',
+          textAlign: 'start',
+          justifyContent: 'start',
+          width: '100%',
+          height: 85,
+          marginBottom: 10,
+        },
+
         '& svg': {
           width: 52,
           height: 52,
           marginBottom: 16,
 
+          [theme.breakpoints.down('md')]: {
+            width: 42,
+            height: 42,
+            marginBottom: 0,
+            marginRight: 20,
+          },
+
           '& path': {
             fill: (props: any) => (props.dark ? '#DCDCDC' : '#8D97A0'),
           },
         },
+      },
+
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
       },
 
       '& $selected': {

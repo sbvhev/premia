@@ -8,9 +8,15 @@ import {
   Button,
   Paper,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core';
 import cn from 'classnames';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  useTheme,
+} from '@material-ui/core/styles';
 import { Check as CheckIcon } from '@material-ui/icons';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
@@ -45,6 +51,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     stepContent: {
       display: 'flex',
+
+      [theme.breakpoints.down('md')]: {
+        width: '100%',
+        top: 60,
+        paddingBottom: 100,
+      },
     },
     stepIcon: {
       color: theme.palette.text.secondary,
@@ -106,8 +118,10 @@ function getStepContent(step: number) {
 
 const PositionStepper: React.FC = () => {
   const classes = useStyles();
+  const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -123,7 +137,10 @@ const PositionStepper: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Stepper activeStep={activeStep} orientation='vertical'>
+      <Stepper
+        activeStep={activeStep}
+        orientation={mobile ? 'horizontal' : 'vertical'}
+      >
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel

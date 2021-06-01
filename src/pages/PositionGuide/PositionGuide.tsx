@@ -9,8 +9,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.primary,
     fontSize: 28,
     lineHeight: '18px',
-    marginBottom: '56px',
+    marginBottom: 56,
     fontWeight: 'bold',
+
+    [theme.breakpoints.down('md')]: {
+      marginBottom: 32,
+    },
+  },
+  hyperlink: {
+    color: theme.palette.text.secondary,
+    textDecoration: 'underline',
+    fontSize: 14,
+    lineHeight: '24px',
+    fontWeight: 500,
+    cursor: 'pointer',
   },
 }));
 
@@ -19,6 +31,9 @@ const ProVault: React.FC = () => {
   return (
     <PageWithSidebar>
       <Grid container direction='column'>
+        <Typography className={classes.hyperlink}>
+          Back to My positions
+        </Typography>
         <Typography className={classes.title}>Position Guide</Typography>
         <PositionStepper />
       </Grid>

@@ -13,16 +13,31 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '18px 25px',
       display: 'flex',
       flexDirection: 'row',
+
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+        padding: '18px 10px',
+      },
     },
     dunno: {
       width: 170,
       height: 45,
+
+      [theme.breakpoints.down('md')]: {
+        width: '100%',
+        height: 45,
+      },
     },
     rightPanel: {
       borderLeft: `1px solid ${theme.palette.divider}`,
       paddingLeft: 26,
       display: 'flex',
       alignItems: 'center',
+
+      [theme.breakpoints.down('md')]: {
+        paddingLeft: 0,
+        borderLeft: 'none',
+      },
     },
     priceSubTitle: {
       fontSize: 14,
@@ -35,6 +50,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold',
       fontSize: 18,
       lineHeight: '18px',
+
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'center',
+      },
     },
   }),
 );
@@ -46,7 +65,7 @@ const StepThree: React.FC<StepProps> = ({ activeStep }) => {
   return (
     <Box className={classes.priceSelector}>
       <Box width={1} mt={0} pr={3}>
-        <Grid container direction='row' justify='space-between'>
+        <Grid container direction='row'>
           <Box>
             <Typography color='textPrimary' className={classes.priceTitle}>
               When will it happen?
