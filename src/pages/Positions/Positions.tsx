@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -562,11 +562,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   plPercents: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
     margin: '9px 12px 18px 16px',
     '& p': {
       fontSize: 11,
-      lineHeight: 2.18,
+      height: 24,
+      marginTop: 2,
+      display: 'flex',
+      alignItems: 'center',
       color: palette.text.secondary
     }
   },
@@ -579,11 +581,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       color: palette.text.secondary,
     }
   },
-  donutChartContent: {
-    '& p': {
-      fontSize: 14,
-      color: palette.text.secondary
-    }
+  boundLine: {
+    width: '100%',
+    height: 1,
+    background: palette.divider,
+    position: 'absolute',
+    left: 0,
   }
 }));
 
@@ -674,6 +677,8 @@ const Positions: React.FC = () => {
   ];
 
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
+
+  const boundIndex = plPercents.findIndex(val => val === 0);
 
   const optionAssets = [
     {
@@ -803,13 +808,12 @@ const Positions: React.FC = () => {
                   </Box>
                 </Box>
                 <Divider />
-                <Grid container>
+                <Box display='flex' position='relative'>
                   <Box className={classes.plPercents}>
-                    {plPercents.map(val => (
-                      <>
-                        <Typography>{ val }{ val !== 0 && '%' }</Typography>
-                      </>
+                    {plPercents.map((val, ind) => (
+                      <Typography key={ind}>{ val }{ val !== 0 && '%' }</Typography>
                     ))}
+                    <Box className={classes.boundLine} top={boundIndex * 26 + 23} />
                   </Box>
                   <Box flex={1} mb={-1.5}>
                     <LineChart
@@ -825,10 +829,10 @@ const Positions: React.FC = () => {
                         '2021/5/30',
                       ]}
                       width='100%'
-                      height={220}
+                      height={200}
                     />
                   </Box>
-                </Grid>
+                </Box>
               </Container>
             </Grid>
             <Grid item container sm={12} md={12} lg={4}>
