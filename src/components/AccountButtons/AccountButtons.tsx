@@ -52,13 +52,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   account: {
     padding: '0 12px',
     height: 45,
-    width: 180,
+    width: 186,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
 
     '&:hover': {
       borderColor: palette.primary.main,
+
+
+      '&> $disconnect': {
+        borderColor: palette.primary.main,
+      },
     },
 
     '&> div:hover:not(:active)': {
@@ -318,7 +323,9 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     <Grid
                       item
                       container
+                      justify='center'
                       alignItems='center'
+                      direction='row'
                       xs={9}
                       onClick={() => setShowTransactions(true)}
                     >
