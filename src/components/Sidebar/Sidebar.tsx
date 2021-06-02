@@ -127,11 +127,11 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 243,
   };
   const state = location.state ? location.state.previous : false;
-  const startHeight = state ? gliderHeights[state] : gliderHeights[pathname];
+  const startHeight = state ? gliderHeights[state] : (gliderHeights[pathname] || 93);
   const [gliderPosition, setGliderPosition] = React.useState(startHeight);
 
   useEffect(() => {
-    setGliderPosition(gliderHeights[pathname]);
+    setGliderPosition(gliderHeights[pathname] || 93);
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [pathname, history]);
 
