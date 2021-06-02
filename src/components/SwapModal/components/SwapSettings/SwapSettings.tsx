@@ -4,9 +4,8 @@ import {
   Box,
   Tooltip,
 } from '@material-ui/core';
-import { makeStyles, withStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { ReactComponent as BackIcon } from 'assets/svg/GoBackArrow.svg';
 import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
@@ -25,7 +24,7 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: 'transparent',
   },
   wrapperMobile: {
-    width: '100%',
+    width: '350px',
     justifyContent: 'center',
     display: 'flex',
     backgroundColor: 'transparent',
@@ -37,7 +36,7 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
   },
   mainCardMobile: {
-    width: '100%',
+    width: '350px',
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
     border: `1px solid ${palette.divider}`,
@@ -358,8 +357,8 @@ interface enabledExchanges {
 
 const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const halfDeviceWidth = window.innerWidth / 2;
   const [slippage, setSlippage] = React.useState<string>('0.5');
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
@@ -518,9 +517,9 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                   ) : (
                     <SwitchWithGlider 
                       elements={[LowSlippageButton, MidSlippageButton, HighSlippageButton]}
-                      positions={[30, 114, 198]}
+                      positions={[halfDeviceWidth - 150, halfDeviceWidth - 66, halfDeviceWidth + 17]}
                       clickFuncs={[hadleClickLowSlippage, hadleClickMidSlippage, hadleClickHighSlippage]}
-                      start={114}
+                      start={halfDeviceWidth - 66}
                       gliderWidth={78}
                       gliderHeight={32}
                     />
@@ -541,7 +540,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                   <PercentageIcon
                     style={!mobile ? 
                       { position: 'absolute', marginTop: '16px', right: 46}
-                      : {position: 'absolute', marginTop: '16px', right: 96}
+                      : {position: 'relative', marginTop: '16px', right: 40}
                     }
                   />
                 </Box>

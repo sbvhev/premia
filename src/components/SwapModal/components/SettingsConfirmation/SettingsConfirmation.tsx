@@ -5,8 +5,7 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
@@ -122,9 +121,7 @@ export interface SwapModalProps {
 
 const SettingsConfirmation: React.FC<SwapModalProps> = ({ open, onClose, agree, disagree }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  // const { palette } = theme;
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
 
   return (
     <Modal open={open} onClose={onClose}>

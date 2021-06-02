@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import cx from 'classnames';
 
 import { ModalContainer } from 'components';
@@ -464,7 +463,7 @@ export interface SwapModalProps {
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
