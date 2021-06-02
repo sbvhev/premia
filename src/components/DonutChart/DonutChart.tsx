@@ -30,22 +30,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 }));
 
 export interface DonutChartProps {
-  color?: string;
-  secondaryColor?: string;
-  dark?: boolean;
+  type?: string;
   data?: Array<any>;
-  labels?: Array<string>;
   colors?: Array<string>;
+  endColors?: Array<string>;
+  rotations?: Array<number>;
   width?: number;
   height?: number;
-  children?: any;
 }
 const DonutChart: React.FC<DonutChartProps> = ({
   data = [],
-  labels = [],
   width = 360,
   height = 300,
+  type = 'gradient',
   colors = [],
+  endColors = [],
+  rotations = [],
   children
 }) => {
   const classes = useStyles();
@@ -58,8 +58,8 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
     chart.data = data;
     chart.contentWidth = 500;
-    chart.radius = am4core.percent(70);
-    chart.innerRadius = am4core.percent(60);
+    chart.radius = am4core.percent(100);
+    chart.innerRadius = am4core.percent(85);
     chart.startAngle = 270;
     chart.endAngle = 630;  
 
@@ -67,23 +67,15 @@ const DonutChart: React.FC<DonutChartProps> = ({
     series.dataFields.value = "value";
     series.dataFields.category = "category";
 
-    let gradient = new am4core.LinearGradient();
-    gradient.addColor(am4core.color("#5294FF"));
-    gradient.addColor(am4core.color("#1EFF78"));
-    // gradient.cx = am4core.percent(7.78);
-    // gradient.cy = am4core.percent(118.78);
-    gradient.rotation = 121.21;
-
-    let gradient1 = new am4core.LinearGradient();
-    gradient1.addColor(am4core.color("#EB4A97"));
-    gradient1.addColor(am4core.color("#8C43F6"));
-    // gradient1.cx = am4core.percent(18.89);
-    // gradient1.cy = am4core.percent(95.84);
-    gradient1.rotation = 316.57;
-
-    let gradients = [gradient, gradient1];
+    let gradients = colors.map((val, index) => {
+      let gradient = new am4core.LinearGradient();
+      gradient.addColor(am4core.color(val));
+      gradient.addColor(am4core.color(endColors[index]));
+      gradient.rotation = rotations[index];  
+      return gradient;
+    });
     series.slices.template.adapter.add("fill", (fill, target) => {
-      return target.dataItem ? gradients[target.dataItem.index] : fill;
+      return target.dataItem ? type === 'gradient' ? gradients[target.dataItem.index] : am4core.color(colors[target.dataItem.index]) : fill;
     });
 
     series.slices.template.cornerRadius = 10;
@@ -110,7 +102,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
     return () => {
       chart.dispose();
     }; 
-  }, [data, theme.palette.background.paper, theme.palette.text.primary, theme.palette.text.secondary]);
+  }, [colors, data, endColors, rotations, theme.palette.background.paper, theme.palette.text.primary, theme.palette.text.secondary, type]);
 
   return (
     <Box id="chartdiv" className={classes.chartBox} style={{ width: "100%" }}></Box>

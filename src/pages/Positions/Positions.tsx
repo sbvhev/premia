@@ -30,7 +30,7 @@ import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
 import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import WarningIcon from '@material-ui/icons/Warning';
+import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import Moment from 'moment';
 import cx from 'classnames';
@@ -183,7 +183,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-    },
+    }
   },
   capital: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
@@ -205,7 +205,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   subtitle: {
     fontSize: 14,
-    lineHeight: 1.71,
+    lineHeight: 1.2,
   },
   errorIcon: {
     position: 'absolute',
@@ -266,8 +266,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   expirationCell: {
+    lineHeight: 1,
     '& p': {
       fontSize: 14,
+      lineHeight: 1,
+      marginTop: 2,
     },
   },
   cardRow: {
@@ -361,7 +364,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     position: 'absolute',
     top: 4,
-    right: 0,
+    right: 2,
     '& p': {
       fontSize: 8,
       color: palette.common.black,
@@ -398,11 +401,27 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         marginLeft: 10,
       },
     },
+    '& svg': {
+      '& path': {
+        fill: palette.text.secondary
+      }
+    }
   },
   tableHeading: {
     height: 56,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    [breakpoints.down('xs')]: {
+      height: 'auto'
+    },
+    '& .MuiBottomNavigation-root': {
+      minWidth: 227,
+      padding: '7px 7px 6px',
+      '& button': {
+        margin: 0,
+        padding: '6px 8px'
+      }
+    }
   },
   tableContainer: {
     '& .MuiTableContainer-root': {
@@ -459,6 +478,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& thead tr th': {
       padding: '7px 6px',
+      cursor: 'pointer',
       '&:first-child': {
         padding: '7px 0px 7px 23px',
         [breakpoints.down('sm')]: {
@@ -726,7 +746,7 @@ const Positions: React.FC = () => {
                         <Box
                           width={1}
                           height={1}
-                          borderRadius={12}
+                          borderRadius={7}
                           className={classes.capital}
                         />
                         <img src={CapitalIcon} alt='Capital Active' />
@@ -753,7 +773,7 @@ const Positions: React.FC = () => {
                         <Box
                           width={1}
                           height={1}
-                          borderRadius={12}
+                          borderRadius={7}
                           className={classes.return}
                         />
                         <img src={ReturnIcon} alt='Current Return' />
@@ -823,6 +843,8 @@ const Positions: React.FC = () => {
                     <DonutChart
                       data={positionFilter === 0 ? optionAssets : yieldAssets}
                       colors={['#5294FF', '#EB4A97']}
+                      endColors={['#1EFF78', '#8C43F6']}
+                      rotations={[121.21, 316.57]}
                     >
                       <Box className={classes.donutChartContent}>
                         <Typography>{ positionFilter === 0 ? 'My assets' : 'My options' }</Typography>
