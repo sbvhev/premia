@@ -6,10 +6,13 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartBox: {
     '& .apexcharts-graphical': {
-      transform: 'translate(0, 0) !important'
+      transform: 'translate(16px, 0) !important',
+      marginRight: '-50px !important',
     },
     '& .apexcharts-legend': {
+      width: 130,
       padding: 0,
+      right: '30px !important',
       top: '50% !important',
       transform: 'translateY(-50%)',
       bottom: 'unset !important',
@@ -34,14 +37,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     }
   },
   chartInside: {
-    width: 130,
-    height: 130,
+    width: 140,
+    height: 140,
     borderRadius: 70,
     filter: 'drop-shadow(0px 2px 5px rgba(0, 0, 0, 0.0406947))',
     border: `1px solid ${palette.divider}`,
     position: 'absolute',
     top: '50%',
-    left: 25,
+    left: 38,
     transform: 'translateY(-50%)',
     display: 'flex',
     justifyContent: 'center',
@@ -63,7 +66,7 @@ export interface DonutChartProps {
 const DonutChart: React.FC<DonutChartProps> = ({
   data = [],
   labels = [],
-  width = 350,
+  width = 360,
   height = 300,
   colors = [],
   children
@@ -77,7 +80,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         startAngle: 0,
         endAngle: 360,
         donut: {
-          size: '85%',
+          size: '90%',
         },
         track: {
           background: 'rgba(31, 162, 109, 0.11773)',

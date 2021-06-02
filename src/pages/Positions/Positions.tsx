@@ -344,6 +344,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '& button': {
         padding: '6px 0',
+        margin: 0,
         '& svg': {
           marginRight: 7,
         },
@@ -360,7 +361,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     position: 'absolute',
     top: 4,
-    right: 10,
+    right: 0,
     '& p': {
       fontSize: 8,
       color: palette.common.black,
@@ -792,6 +793,7 @@ const Positions: React.FC = () => {
                   <Box
                     display='flex'
                     flex={1}
+                    width={1}
                     height={1}
                     justifyContent='center'
                     alignItems='center'
