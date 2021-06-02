@@ -845,11 +845,8 @@ const Positions: React.FC = () => {
                       colors={['#5294FF', '#EB4A97']}
                       endColors={['#1EFF78', '#8C43F6']}
                       rotations={[121.21, 316.57]}
-                    >
-                      <Box className={classes.donutChartContent}>
-                        <Typography>{ positionFilter === 0 ? 'My assets' : 'My options' }</Typography>
-                      </Box>
-                    </DonutChart>
+                      content={positionFilter === 0 ? 'My assets' : 'My options'}
+                    />
                   </Box>
                 </Grid>
               </Container>

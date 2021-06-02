@@ -12,20 +12,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3)': {
       display: 'none'
     }
-  },
-  chartInside: {
-    width: 130,
-    height: 130,
-    borderRadius: 70,
-    filter: 'drop-shadow(0px 2px 5px rgba(0, 0, 0, 0.0406947))',
-    border: `1px solid ${palette.divider}`,
-    position: 'absolute',
-    top: '50%',
-    left: 43,
-    transform: 'translateY(-50%)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
   }
 }));
 
@@ -37,16 +23,17 @@ export interface DonutChartProps {
   rotations?: Array<number>;
   width?: number;
   height?: number;
+  content?: string;
 }
 const DonutChart: React.FC<DonutChartProps> = ({
   data = [],
   width = 360,
-  height = 300,
+  height = 200,
   type = 'gradient',
   colors = [],
   endColors = [],
   rotations = [],
-  children
+  content = ''
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -57,9 +44,8 @@ const DonutChart: React.FC<DonutChartProps> = ({
     chart.hiddenState.properties.opacity = 0;
 
     chart.data = data;
-    chart.contentWidth = 500;
-    chart.radius = am4core.percent(100);
-    chart.innerRadius = am4core.percent(85);
+    chart.radius = am4core.percent(90);
+    chart.innerRadius = am4core.percent(80);
     chart.startAngle = 270;
     chart.endAngle = 630;  
 
@@ -92,20 +78,32 @@ const DonutChart: React.FC<DonutChartProps> = ({
     chart.legend.position = "right";
     chart.legend.maxWidth = 150
     chart.legend.labels.template.fill = am4core.color(theme.palette.text.primary);
+    chart.legend.labels.template.fontSize = 14;
+    chart.legend.labels.template.fontFamily = 'DM Sans';
     chart.legend.valueLabels.template.fill = am4core.color(theme.palette.text.secondary); 
+    chart.legend.valueLabels.template.fontSize = 14;
+    chart.legend.valueLabels.template.fontFamily = 'DM Sans';
     chart.legend.valueLabels.template.align = "right";
     chart.legend.valueLabels.template.textAlign = "end"; 
     chart.legend.markers.template.width = 12;
     chart.legend.markers.template.height = 12;
+
+    let label = series.createChild(am4core.Label);
+    label.text = content;
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "middle";
+    label.fontSize = 14;
+    label.fontFamily = 'DM Sans';
+    label.fill = am4core.color(theme.palette.text.secondary);
     
     chart1.current = chart;
     return () => {
       chart.dispose();
     }; 
-  }, [colors, data, endColors, rotations, theme.palette.background.paper, theme.palette.text.primary, theme.palette.text.secondary, type]);
+  }, [colors, content, data, endColors, rotations, theme.palette.background.paper, theme.palette.text.primary, theme.palette.text.secondary, type]);
 
   return (
-    <Box id="chartdiv" className={classes.chartBox} style={{ width: "100%" }}></Box>
+    <Box id="chartdiv" className={classes.chartBox} height={height} width={width} />
   );
 };
 
