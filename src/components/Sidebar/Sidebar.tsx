@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
         [classes.light]: !darkMode,
       })}
     >
-      <Grid container direction='column' justify='space-between'>
+      <Box display="flex" flexDirection='column' justifyContent='space-between' style={{overflowY: 'auto'}}>
         <Box>
           {!mobile && (
             <Grid container component={Link} to='/'>
@@ -190,7 +190,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
           </Box>
           {!mobile && <ThemeSwitch />}
         </Box>
-      </Grid>
+      </Box>
     </Box>
   );
 };

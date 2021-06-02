@@ -331,8 +331,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   positionFilterContainer: {
+    boxSizing: 'border-box',
     justifyContent: 'space-between',
-    margin: '34px 0 20px 6px',
+    margin: '34px 0 20px',
     '& .MuiBottomNavigation-root': {
       padding: 6,
       '&:nth-child(2)': {
@@ -646,7 +647,11 @@ const Positions: React.FC = () => {
       >
         My dashboard
       </Typography>
-      <Grid container className={classes.positionFilterContainer}>
+      <Grid
+        container
+        className={classes.positionFilterContainer}
+        style={!mobile ? { paddingLeft: '6px' } : {}}
+      >
         <BottomNavigation
           value={positionFilter}
           className={cx(mobile && classes.fullWidth)}

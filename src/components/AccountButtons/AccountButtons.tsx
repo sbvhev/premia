@@ -29,7 +29,7 @@ import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
-    backgroundColor: palette.background.default,
+    backgroundColor: 'transparent',
     width: 'calc(100% - 210px)',
     minHeight: '100vh',
   },
@@ -285,7 +285,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Box display='flex' width='100%'>
+        <Box display='flex' width='100%' style={{ backgroundColor: 'transparent'}}>
           {!mobile ? (
             <>
               <Button color='primary' className={classes.button}>
@@ -442,16 +442,18 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           )}
         </Box>
       ) : (
-        <Button
-          variant='contained'
-          color='primary'
-          size='large'
-          className={cx(mobile && classes.fullWidth)}
-          onClick={() => setConfirmTermsModalOpen(true)}
-        >
-          <AccountBalanceWallet className={classes.walletIcon} />
-          Connect wallet
-        </Button>
+        <Box width="100%" p={1}>
+          <Button
+            variant='contained'
+            color='primary'
+            size='large'
+            className={cx(mobile && classes.fullWidth)}
+            onClick={() => setConfirmTermsModalOpen(true)}
+          >
+            <AccountBalanceWallet className={classes.walletIcon} />
+            Connect wallet
+          </Button>
+        </Box>
       )}
 
       <Grid item xs={1} />
