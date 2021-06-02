@@ -281,13 +281,9 @@ const ProVault: React.FC = () => {
   const phoneDevice = (/Mobi|Android/i.test(navigator.userAgent));
   const extraLargeDesktop = window.innerWidth > 1526;
   const deviceWidth = window.innerWidth;
-  const desktopScrollBarAdjustment = ultraThinWindow ? - 8 : 0;
   const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
-  const largeMobileDeviceAdjustment = (thinDesktop && !ultraThinWindow) ? 8 : 0;
+  const largeMobileDeviceAdjustment = (!ultraThinWindow && thinDesktop) ? 8 : 0;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  console.log('thinDesktop', thinDesktop);
-  console.log('ultraThinWindow', ultraThinWindow);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -309,8 +305,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={!phoneDevice ? '94px' : '160px'}
-      height={!phoneDevice ? '42px' : '32px'}
+      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
+      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
       className={vaultIndex === 1 ? classes.modeItem : classes.inactiveMode}
     >
       <BasicIcon />
@@ -327,8 +323,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={!phoneDevice ? '94px' : '160px'}
-      height={!phoneDevice ? '42px' : '32px'}
+      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
+      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
       className={vaultIndex === 0 ? classes.modeItem : classes.inactiveMode}
     >
       <ProIcon />
@@ -402,9 +398,9 @@ const ProVault: React.FC = () => {
         <Grid container direction='row' className={classes.topTab}>
           <Box
             className={
-              !phoneDevice
-                ? classes.vaultSwitchContainer
-                : classes.vaultSwitchContainerMobile
+              phoneDevice || thinDesktop
+                ? classes.vaultSwitchContainerMobile
+                : classes.vaultSwitchContainer
             }
             style={
               dark
@@ -424,19 +420,19 @@ const ProVault: React.FC = () => {
                 gliderWidth={94}
                 gliderHeight={42}
               />
-            ) : !phoneDevice && thinDesktop ? (
+            ) : phoneDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[30 + desktopScrollBarAdjustment, 130  + desktopScrollBarAdjustment]}
+                positions={[21, deviceWidth - 182 + largeMobileDeviceAdjustment]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={30}
-                gliderWidth={94}
-                gliderHeight={42}
+                start={21}
+                gliderWidth={160}
+                gliderHeight={32}
               />
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21 + largeMobileDeviceAdjustment, deviceWidth - 182 - largeMobileDeviceAdjustment]}
+                positions={[21 + largeMobileDeviceAdjustment, deviceWidth - 193 - largeMobileDeviceAdjustment]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={21 + largeMobileDeviceAdjustment}
                 gliderWidth={160}
