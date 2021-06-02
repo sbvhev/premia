@@ -329,7 +329,7 @@ const Footer: React.FC = () => {
                   setGasValue(100);
                 },
               ]}
-              start={236}
+              start={224}
               alignedRight={true}
               gliderWidth={110}
               gliderHeight={42}
