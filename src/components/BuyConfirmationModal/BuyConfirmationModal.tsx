@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
@@ -173,8 +172,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const [checkIsOn, setCheckIsOn] = useState(false);
 
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {

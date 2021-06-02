@@ -1,7 +1,6 @@
 import React from 'react';
 import { Typography, Modal, Box } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useTxStateMsg } from 'state/transactions/hooks';
 
@@ -181,7 +180,7 @@ const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const { txStateMsg } = useTxStateMsg();
   const { palette } = theme;
 
