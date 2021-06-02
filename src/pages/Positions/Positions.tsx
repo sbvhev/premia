@@ -649,6 +649,28 @@ const Positions: React.FC = () => {
 
   // const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
+  const optionAssets = [
+    {
+      category: 'ETH',
+      value: 73
+    },
+    {
+      category: 'Uni',
+      value: 27
+    }
+  ];
+
+  const yieldAssets = [
+    {
+      category: 'Option 1',
+      value: 73
+    },
+    {
+      category: 'Option 2',
+      value: 27
+    }
+  ]
+
   return (
     <>
       <PositionModal
@@ -799,9 +821,8 @@ const Positions: React.FC = () => {
                     alignItems='center'
                   >
                     <DonutChart
-                      data={[73, 27]}
-                      labels={positionFilter === 0 ? ['ETH', 'Uni'] : ['Option 1', 'Option 2']}
-                      colors={['#14A887', '#BF47C3']}
+                      data={positionFilter === 0 ? optionAssets : yieldAssets}
+                      colors={['#5294FF', '#EB4A97']}
                     >
                       <Box className={classes.donutChartContent}>
                         <Typography>{ positionFilter === 0 ? 'My assets' : 'My options' }</Typography>
