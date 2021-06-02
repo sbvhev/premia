@@ -563,6 +563,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    margin: '9px 12px 18px 16px',
+    '& p': {
+      fontSize: 11,
+      lineHeight: 2.18,
+      color: palette.text.secondary
+    }
   },
   yieldButtonCell: {
     marginTop: 12,
@@ -667,7 +673,7 @@ const Positions: React.FC = () => {
     },
   ];
 
-  // const plPercents = [40, 30, 20, 10, 0, -10, -20];
+  const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   const optionAssets = [
     {
@@ -798,12 +804,14 @@ const Positions: React.FC = () => {
                 </Box>
                 <Divider />
                 <Grid container>
-                  {/* <Box className={classes.plPercents}>
+                  <Box className={classes.plPercents}>
                     {plPercents.map(val => (
-                      <Typography>{ val }{ val !== 0 && '%' }</Typography>
+                      <>
+                        <Typography>{ val }{ val !== 0 && '%' }</Typography>
+                      </>
                     ))}
-                  </Box> */}
-                  <Box flex={1}>
+                  </Box>
+                  <Box flex={1} mb={-1.5}>
                     <LineChart
                       color='#14A887'
                       data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
@@ -817,7 +825,7 @@ const Positions: React.FC = () => {
                         '2021/5/30',
                       ]}
                       width='100%'
-                      height={200}
+                      height={220}
                     />
                   </Box>
                 </Grid>
