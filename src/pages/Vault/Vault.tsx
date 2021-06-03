@@ -522,7 +522,7 @@ const ProVault: React.FC = () => {
         {vaultIndex === 0 && <BasicVault />}
         {vaultIndex === 1 && (
           <Grid container direction='row' spacing={3}>
-            <Grid item xs={12} sm={12} md={6} style={!phoneDevice ? {marginLeft: '6px'} : {}}>
+            <Grid item xs={12} sm={12} md={6}>
               <Paper>
                 <Box component='div' className={classes.topSector}>
                   <Box component='div' className={classes.header}>
