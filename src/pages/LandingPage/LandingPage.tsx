@@ -53,11 +53,18 @@ const useStyles = makeStyles(({ palette }) => ({
       },
 
       '& path': {
-        fill: 'white',
+        fill: 'rgba(255, 255, 255, 0.8)',
       },
     },
   },
-  openApp: {},
+  openApp: {
+    padding: '0 30px',
+    fontSize: 14,
+    lineHeight: '18px',
+    color: 'black',
+    width: 'auto',
+    height: 40,
+  },
   appBar: {
     background: 'black',
     boxShadow: '2px 5px 4px rgba(0, 0, 0, 0.25)',
@@ -77,23 +84,22 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '100%',
   },
   topSectionRight: {
-    width: '53%',
+    width: '50%',
     backgroundImage: `url("${HeroImage}")`,
     backgroundSize: '100% auto',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
   },
   topSectionLeft: {
-    width: '47%',
+    width: '50%',
     padding: '160px 0',
   },
   gradientTitle: {
-    fontSize: 72,
+    fontSize: 55,
     lineHeight: '64px',
-    maxWidth: 600,
     fontWeight: 700,
     background:
-      '-webkit-linear-gradient(-55deg, #FFFFFF 0%, #5294FF 79%, #EB4A97 110%)',
+      '-webkit-linear-gradient(-55deg, #FFFFFF 0%, #5294FF 67%, #EB4A97 88%)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
     marginBottom: 21,
@@ -105,7 +111,7 @@ const useStyles = makeStyles(({ palette }) => ({
     marginBottom: 2,
     width: 'fit-content',
     background:
-      '-webkit-linear-gradient(-45deg, #FFFFFF 0%, #5294FF 66%, #EB4A97 100%)',
+      '-webkit-linear-gradient(-45deg, #FFFFFF 0%, #5294FF 66%, #EB4A97 113%)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
   },
@@ -210,6 +216,15 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   outlinedButton: {
     marginBottom: 60,
+    borderRadius: 12,
+    border: '1.5px solid #5294FF',
+    padding: '10px 30px',
+    width: 200,
+    height: 45,
+    fontSize: 16,
+    lineHeight: '18px',
+    fontWeight: 700,
+    background: 'transparent',
   },
   divider: {
     borderLeft: '1px solid rgba(255, 255, 255, 0.15)',
@@ -238,12 +253,21 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     padding: 30,
 
+    '& p': {
+      fontWeight: 500,
+      fontSize: 18,
+      lineHeight: '54px',
+    },
+
     '& > div': {
       display: 'flex',
       alignItems: 'center',
 
       '& svg': {
         marginRight: 19,
+        width: 30,
+        height: 20,
+
         '& path': {
           fill: 'white',
         },
@@ -432,6 +456,11 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     border: 'none',
+
+    '& $subTitle': {
+      fontSize: 12,
+      fontWeight: 400,
+    },
   },
   footerLine: {
     display: 'flex',
@@ -508,7 +537,7 @@ const LandingPage: React.FC = () => {
         <Box className={classes.topSection}>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
-              Decentralized on-chain options
+              Permissionless options and metavaults
             </Typography>
             <Typography className={classes.subTitle}>
               Premia enables market-sensitive pricing, next generation capital
