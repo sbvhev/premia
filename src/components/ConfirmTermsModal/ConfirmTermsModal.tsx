@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useWeb3 } from 'state/application/hooks';
 
@@ -96,8 +95,8 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 22,
-    right: 'calc(50% - 106px)',
+    top: 28,
+    right: 'calc(50% - 166px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -144,7 +143,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const { palette } = theme;
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
 

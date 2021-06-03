@@ -1,7 +1,6 @@
 import React from 'react';
 import { Typography, Modal, Box, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 
 import { shortenAddress } from 'utils';
@@ -265,7 +264,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const { account } = useWeb3();
   const disconnect = useDisconnect();
   const { palette } = theme;

@@ -1,8 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import { Paper } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 export interface ModalContainerProps {
   children: any;
@@ -42,8 +41,7 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
 
 const ModalContainer = React.forwardRef<ModalContainerProps, any>(
   ({ children, size = 'sm', className }, ref) => {
-    const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const mobile = (/Mobi|Android/i.test(navigator.userAgent));;
     const classes = useStyles({ children, size });
 
     return (

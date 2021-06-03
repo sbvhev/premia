@@ -2,7 +2,6 @@ import React from 'react';
 import { Typography, Modal, Box, Button, Paper } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
 import { ModalContainer } from 'components';
@@ -378,7 +377,7 @@ export interface PositionModalProps {
 const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const txStateMsg = 'Tell your friends about Premia and earn fees';
   const { palette } = theme;
 
