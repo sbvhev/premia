@@ -136,6 +136,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& svg': {
       width: 14,
       margin: '-2px 0 -2px 4px',
+      '& path': {
+        fill: palette.text.secondary,
+      }
     },
   },
   priceFont: {
