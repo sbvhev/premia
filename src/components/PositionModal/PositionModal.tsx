@@ -1,8 +1,7 @@
 import React from 'react';
-import { Typography, Modal, Box, Button, Paper } from '@material-ui/core';
+import { Typography, Modal, Box, Paper } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
 import { ModalContainer } from 'components';
@@ -164,14 +163,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 26,
+    right: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '6px',
+    padding: '12px 0',
     cursor: 'pointer',
-    width: '20px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark,
@@ -378,7 +379,7 @@ export interface PositionModalProps {
 const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const txStateMsg = 'Tell your friends about Premia and earn fees';
   const { palette } = theme;
 
@@ -509,9 +510,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                 </Box>
               </Box>
             </Box>
-            <Button className={classes.exitContainer} onClick={onClose}>
+            <Box className={classes.exitContainer} onClick={onClose}>
               <img src={XOut} alt='Exit' />
-            </Button>
+            </Box>
           </Box>
         </Box>
       </ModalContainer>

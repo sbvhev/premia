@@ -24,6 +24,7 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.background.paper,
     width: '100vw',
     marginLeft: 0,
+    height: '100vh',
   },
   border: {
     borderBottom: `1px solid ${palette.divider}`,
@@ -67,52 +68,59 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
         <Box
           className={cx(classes.page, mobile && classes.pageMobile)}
-          id='test1'
         >
           <Box
             position='fixed'
             width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
             bgcolor={
-              !mobile ? palette.background.default : palette.background.paper
+              !mobile ? 'transparent' : palette.background.paper
             }
             pt={mobile ? 1 : 3}
-            px={mobile ? 1 : 3}
+            px={mobile ? 0 : 3}
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '72px'}
           >
-            <Container>
-              <Grid container justify='space-between' alignItems='center'>
+            <Box width="100%" display="flex" justifyContent="center">
+              <Box
+                display="flex"
+                width="100%"
+                maxWidth="1280px"
+                justifyContent={!mobile ? 'flex-end' : 'space-between'}
+                alignItems='center'
+                pr={!mobile ? 3 : 0}
+              >
                 {mobile && (
-                  <Box display='flex' alignItems='center' marginLeft='8px'>
-                    <img
-                      src={darkMode ? MainLogo : MainLogoBlack}
-                      alt='main logo'
-                    />
+                  <Box display='flex' alignItems='center' justifyContent="space-between" width="100%">
+                    <Box marginLeft="22px" marginTop="2px">
+                      <img
+                        src={darkMode ? MainLogo : MainLogoBlack}
+                        alt='main logo'
+                        style={{ height: '28px'}}
+                      />
+                    </Box>
+                    <Grid style={{ height: '48px', marginRight: '6px'}}>
+                      <IconButton
+                        style={{ height: '48px', padding: 0 }}
+                        onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                      >
+                        <Hamburger
+                          size={20}
+                          color={theme.palette.text.secondary}
+                          toggled={!mobileSidebarHidden}
+                          toggle={setMobileSidebarHidden}
+                        />
+                      </IconButton>
+                    </Grid>
                   </Box>
                 )}
-                <Grid style={{ height: '48px' }}>
-                  {mobile && (
-                    <IconButton
-                      style={{ height: '48px', padding: 0 }}
-                      onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
-                    >
-                      <Hamburger
-                        size={20}
-                        color={theme.palette.text.secondary}
-                        toggled={!mobileSidebarHidden}
-                        toggle={setMobileSidebarHidden}
-                      />
-                    </IconButton>
-                  )}
-                </Grid>
                 {!mobile && (
-                  <Grid item>
+                  <Box display="flex" justifySelf="flex-end" id="test" style={{ backgroundColor: 'transparent'}}>
                     <AccountButtons />
-                  </Grid>
+                  </Box>
                 )}
-              </Grid>
-            </Container>
+              </Box>
+            </Box>
           </Box>
 
           {mobile && !mobileSidebarHidden && (
@@ -150,14 +158,18 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               <Box
                 px={mobile ? 0 : 3}
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
-                mx='auto'
+                // mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 12.5 : 6}
-                // overflow='scroll'
+                mb={mobile ? 0 : 6}
               >
                 <Container>{children}</Container>
+                {mobile && (
+                  <Box width='100%' zIndex={14}>
+                    <Footer />
+                  </Box>
+                )}
               </Box>
-              {!mobile ? (
+              {!mobile && (
                 <Box
                   position='fixed'
                   width='calc(100vw - 210px)'
@@ -165,10 +177,6 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   zIndex={14}
                   bgcolor={palette.background.default}
                 >
-                  <Footer />
-                </Box>
-              ) : (
-                <Box position='fixed' width='100%' bottom={0} zIndex={14}>
                   <Footer />
                 </Box>
               )}

@@ -306,59 +306,34 @@ const Footer: React.FC = () => {
           <Box
             borderRadius={12}
             border={1}
-            width={!mobile ? '356px' : '344px'}
             p='7px'
             borderColor={theme.palette.divider}
+            position='relative'
             display='flex'
             justifyContent='space-between'
           >
-            {!mobile ? (
-              <SwitchWithGlider
-                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
-                positions={[236, 122, 6]}
-                clickFuncs={[
-                  () => {
-                    setGasType('standard');
-                    setGasValue(25);
-                  },
-                  () => {
-                    setGasType('fast');
-                    setGasValue(50);
-                  },
-                  () => {
-                    setGasType('instant');
-                    setGasValue(100);
-                  },
-                ]}
-                start={236}
-                alignedRight={true}
-                gliderWidth={110}
-                gliderHeight={42}
-              />
-            ) : (
-              <SwitchWithGlider
-                elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
-                positions={[236, 128, 18]}
-                clickFuncs={[
-                  () => {
-                    setGasType('standard');
-                    setGasValue(25);
-                  },
-                  () => {
-                    setGasType('fast');
-                    setGasValue(50);
-                  },
-                  () => {
-                    setGasType('instant');
-                    setGasValue(100);
-                  },
-                ]}
-                start={236}
-                alignedRight={true}
-                gliderWidth={110}
-                gliderHeight={42}
-              />
-            )}
+            <SwitchWithGlider
+              elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+              positions={[224, 114, 4]}
+              clickFuncs={[
+                () => {
+                  setGasType('standard');
+                  setGasValue(25);
+                },
+                () => {
+                  setGasType('fast');
+                  setGasValue(50);
+                },
+                () => {
+                  setGasType('instant');
+                  setGasValue(100);
+                },
+              ]}
+              start={224}
+              alignedRight={true}
+              gliderWidth={110}
+              gliderHeight={42}
+            />
           </Box>
         </Box>
       </Popover>

@@ -1,9 +1,6 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import { useDarkModeManager } from 'state/user/hooks';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -63,29 +60,21 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
 }) => {
   const classes = useStyles();
   const [gliderPosition, setGliderPosition] = React.useState<any>(start);
-  const theme = useTheme();
-  const [dark] = useDarkModeManager();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   React.useEffect(() => {
-    if (mobile && dark) {
-      setGliderPosition(window.innerWidth - 183);
-    }
-  }, [mobile, dark]);
+      setGliderPosition(start);
+  }, [start]);
 
   const mappedClickFuncs = [
     () => {
-      console.log('positions[0]', positions[0]);
       setGliderPosition(positions[0]);
       clickFuncs[0]();
     },
     () => {
-      console.log('positions[1]', positions[1]);
       setGliderPosition(positions[1]);
       clickFuncs[1]();
     },
     () => {
-      console.log('positions[2]', positions[2]);
       setGliderPosition(positions[2]);
       clickFuncs[2]();
     },
@@ -102,7 +91,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
       <Box>{item}</Box>
     </Box>
   ));
-
+  
   return (
     <Box className={classes.container}>
       {mappedElements}

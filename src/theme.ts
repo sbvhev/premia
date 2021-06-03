@@ -463,6 +463,89 @@ export const lightTheme = responsiveFontSizes(
           },
         },
       },
+      MuiStepper: {
+        root: {
+          padding: 0,
+          position: 'relative',
+          background: 'transparent',
+        },
+        vertical: {},
+        alternativeLabel: {
+          display: 'flex',
+        },
+      },
+      MuiStepButton: {},
+      MuiStepConnector: {
+        vertical: {
+          padding: 0,
+          marginLeft: 15,
+
+          '&.Mui-disabled': {
+            '& span': {
+              borderColor: dividerGreyDay,
+            },
+          },
+        },
+        lineVertical: {
+          minHeight: 20,
+          borderLeftWidth: 2,
+        },
+        active: {
+          borderColor: 'white',
+
+          '&:before': {
+            height: '50%',
+            content: "''",
+          },
+        },
+        line: {
+          borderColor: '#5294FF',
+        },
+      },
+      MuiStepContent: {
+        root: {
+          position: 'absolute',
+          width: 'calc(100% - 205px)',
+          right: 0,
+          top: 0,
+          marginTop: 0,
+          marginLeft: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          borderLeft: 'none',
+
+          '& > div': {
+            borderRadius: 12,
+            border: '1px solid #E9E9E9',
+            width: '100%',
+            background: 'white',
+          },
+        },
+      },
+      MuiStepIcon: {
+        root: {},
+      },
+      MuiStepLabel: {
+        label: {
+          fontWeight: 500,
+          fontSize: 14,
+          lineHeight: '24px',
+
+          '&$completed': {
+            color: '#646464',
+          },
+          '&$root': {
+            color: '#646464',
+          },
+        },
+        active: {
+          background:
+            '-webkit-linear-gradient(121.21deg, #1EFF78 -11.78%, #5294FF 118.78%)',
+          '-webkit-background-clip': 'text',
+          '-webkit-text-fill-color': 'transparent',
+          width: 'fit-content',
+        },
+      },
     },
   }),
 );
@@ -808,7 +891,7 @@ export const darkTheme = responsiveFontSizes(
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
           fontWeight: 500,
-          boxShadow: '0px 0px 25px rgba(246, 67, 207, 0.4)',
+          boxShadow: '0px 0px 5px rgba(246, 67, 207, 0.4)',
           '&:hover': {
             background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
@@ -937,6 +1020,88 @@ export const darkTheme = responsiveFontSizes(
           '&$selected': {
             fontWeight: 'bold',
           },
+        },
+      },
+      MuiStepper: {
+        root: {
+          padding: 0,
+          position: 'relative',
+          background: 'transparent',
+        },
+        vertical: {},
+        alternativeLabel: {
+          display: 'flex',
+        },
+      },
+      MuiStepButton: {},
+      MuiStepConnector: {
+        vertical: {
+          padding: 0,
+          marginLeft: 15,
+
+          '&.Mui-disabled': {
+            '& span': {
+              borderColor: '#212121',
+            },
+          },
+        },
+        lineVertical: {
+          minHeight: 20,
+          borderLeftWidth: 2,
+        },
+        active: {
+          borderColor: 'white',
+
+          '&:before': {
+            height: '50%',
+            content: "''",
+          },
+        },
+        line: {
+          borderColor: '#5294FF',
+        },
+      },
+      MuiStepContent: {
+        root: {
+          position: 'absolute',
+          width: 'calc(100% - 205px)',
+          right: 0,
+          top: 0,
+          marginTop: 0,
+          marginLeft: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          borderLeft: 'none',
+
+          '& > div': {
+            borderRadius: 12,
+            border: '1px solid #212121',
+            width: '100%',
+          },
+        },
+      },
+      MuiStepIcon: {
+        root: {},
+      },
+      MuiStepLabel: {
+        label: {
+          fontWeight: 500,
+          fontSize: 14,
+          lineHeight: '24px',
+
+          '&$completed': {
+            color: '#646464',
+          },
+          '&$root': {
+            color: '#646464',
+          },
+        },
+        active: {
+          background:
+            '-webkit-linear-gradient(121.21deg, #1EFF78 -11.78%, #5294FF 118.78%)',
+          '-webkit-background-clip': 'text',
+          '-webkit-text-fill-color': 'transparent',
+          width: 'fit-content',
         },
       },
     },

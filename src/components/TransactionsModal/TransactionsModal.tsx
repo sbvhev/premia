@@ -1,7 +1,6 @@
 import React from 'react';
 import { Typography, Modal, Box, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 
 import { shortenAddress } from 'utils';
@@ -140,7 +139,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   addressAnchor: {
     height: '18px',
-    textDecorationColor: palette.primary.main,
+    textDecoration: 'none',
     display: 'flex',
     alignItems: 'center',
   },
@@ -149,7 +148,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     lineHeight: '24px',
     color: `${palette.text.secondary} !important`,
-    textDecorationColor: palette.text.secondary,
+    textDecoration: 'none',
   },
   clear: {
     padding: '6px',
@@ -265,7 +264,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const { account } = useWeb3();
   const disconnect = useDisconnect();
   const { palette } = theme;
@@ -302,7 +301,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
         rel='noreferrer'
       >
         <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Typography>{shortenTx(item.hash)}</Typography>
+          <Typography style={{ fontSize: '14px'}}>{shortenTx(item.hash)}</Typography>
           <Box
             marginLeft='4px'
             display='flex'

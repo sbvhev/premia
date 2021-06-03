@@ -1,7 +1,6 @@
 import React from 'react';
 import { Typography, Modal, Box } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useCurrentTx, useTxStateMsg } from 'state/transactions/hooks';
 
@@ -181,7 +180,7 @@ const TransactionSuccessModal: React.FC<TransactionSuccessModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const { txLink } = useCurrentTx();
   const { txStateMsg } = useTxStateMsg();
   const { palette } = theme;
