@@ -693,9 +693,11 @@ export const darkTheme = responsiveFontSizes(
           '&.Mui-selected': {
             color: primary,
 
-            '& path': {
-              fill: primary,
-            },
+            '& svg:first-child': {
+              '& path': {
+                fill: primary,
+              },
+            }
           },
         },
         wrapper: {

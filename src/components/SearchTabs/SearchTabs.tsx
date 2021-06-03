@@ -68,8 +68,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tab: {
     position: 'relative',
+    opacity: 1,
+    color: theme.palette.text.secondary,
     '& svg:first-child path': {
-      fill: theme.palette.secondary.main,
+      fill: theme.palette.text.secondary,
     },
     '&.Mui-selected svg:first-child path': {
       fill: theme.palette.primary.main,
@@ -95,8 +97,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     right: '-2px !important',
     top: '-8px !important',
-    width: '25px !important',
-    height: '26px !important',
 
     [theme.breakpoints.down('xs')]: {
       flexWrap: 'wrap',
