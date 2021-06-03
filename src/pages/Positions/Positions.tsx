@@ -160,7 +160,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 28,
     fontWeight: 700,
     lineHeight: 0.64,
-    margin: '0 13px',
   },
   mainTitle: {
     fontSize: 16,
@@ -332,8 +331,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   positionFilterContainer: {
+    boxSizing: 'border-box',
     justifyContent: 'space-between',
-    margin: '20px 0',
+    margin: '34px 0 20px',
     '& .MuiBottomNavigation-root': {
       padding: 6,
       '&:nth-child(2)': {
@@ -639,10 +639,19 @@ const Positions: React.FC = () => {
           setPositionModalOpen(false);
         }}
       />
-      <Typography component='h1' color='textPrimary' className={classes.title}>
+      <Typography
+        component='h1'
+        color='textPrimary'
+        className={classes.title}
+        style={!mobile ? { margin: '45px 0 0 20px' } : {}}
+      >
         My dashboard
       </Typography>
-      <Grid container className={classes.positionFilterContainer}>
+      <Grid
+        container
+        className={classes.positionFilterContainer}
+        style={!mobile ? { paddingLeft: '6px' } : {}}
+      >
         <BottomNavigation
           value={positionFilter}
           className={cx(mobile && classes.fullWidth)}
@@ -670,7 +679,7 @@ const Positions: React.FC = () => {
         )}
       </Grid>
       {!noPositions && (
-        <Box mb={2.5}>
+        <Box mb={2.5} ml={!mobile ? '6px' : ''}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <Container fixed className={classes.fullWidth}>
@@ -801,7 +810,7 @@ const Positions: React.FC = () => {
           >
             You have no active positions
           </Typography>
-          <Box mt={mobile ? 3 : 5}>
+          <Box mt={mobile ? 3 : 5} ml={!mobile ? '6px' : ''}>
             <Container fixed className={classes.noPositionBox}>
               {positionFilter === 0 && (
                 <>
@@ -861,7 +870,7 @@ const Positions: React.FC = () => {
       ) : (
         <>
           {positionFilter === 0 && (
-            <Box className={classes.tableContainer}>
+            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
@@ -1054,7 +1063,7 @@ const Positions: React.FC = () => {
             </Box>
           )}
           {positionFilter === 1 && (
-            <Box className={classes.tableContainer}>
+            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
               <Grid container alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
