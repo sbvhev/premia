@@ -102,7 +102,6 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   popover: {
-    pointerEvents: 'none',
     '& p': {
       fontSize: 14,
       lineHeight: '16px',
@@ -114,6 +113,7 @@ const useStyles = makeStyles(({ palette }) => ({
       lineHeight: '18px',
       marginTop: 6,
       color: palette.primary.main,
+      cursor: 'pointer',
     },
     '&.pool': {
       '& .MuiPopover-paper': {
@@ -226,12 +226,26 @@ const Options: React.FC = () => {
         }}
       >
         {popoverType === 'current' && (
-          <Box px={1.5} pt={'11px'} pb={1.25}>
+          <Box
+            px={1.5}
+            pt={'11px'}
+            pb={1.25}
+            onMouseLeave={() => {
+              setAnchorEl(null);
+            }}
+          >
             <p>24h change</p>
           </Box>
         )}
         {popoverType === 'break' && (
-          <Box pl={'17px'} pr={1} py={'14px'}>
+          <Box
+            pl={'17px'}
+            pr={1}
+            py={'14px'}
+            onMouseLeave={() => {
+              setAnchorEl(null);
+            }}
+          >
             <p>
               This option can be exercised for a profit if the price of AAVE:{' '}
               <b>Exceeds 500 DAI by June 11, 2021</b>
@@ -239,7 +253,15 @@ const Options: React.FC = () => {
           </Box>
         )}
         {popoverType === 'pool' && (
-          <Box pt={'23px'} pl={'18px'} pr={'13px'} pb={'19px'}>
+          <Box
+            pt={'23px'}
+            pl={'18px'}
+            pr={'13px'}
+            pb={'19px'}
+            onMouseLeave={() => {
+              setAnchorEl(null);
+            }}
+          >
             <p>
               <b>Premia pools</b> use state of the art liquidity-aware pricing
               models. When there is excess capital available, options become
@@ -276,9 +298,6 @@ const Options: React.FC = () => {
                     setPopoverType('current');
                     setAnchorEl(event.currentTarget);
                   }}
-                  onMouseLeave={(event: any) => {
-                    setAnchorEl(null);
-                  }}
                 >
                   <Box
                     width={1}
@@ -298,9 +317,6 @@ const Options: React.FC = () => {
                   onMouseEnter={(event) => {
                     setPopoverType('break');
                     setAnchorEl(event.currentTarget);
-                  }}
-                  onMouseLeave={() => {
-                    setAnchorEl(null);
                   }}
                 />
               </Grid>
@@ -346,9 +362,6 @@ const Options: React.FC = () => {
                   onMouseEnter={(event) => {
                     setPopoverType('pool');
                     setAnchorEl(event.currentTarget);
-                  }}
-                  onMouseLeave={() => {
-                    setAnchorEl(null);
                   }}
                 />
               </Grid>
