@@ -28,7 +28,7 @@ import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
 import { PageWithSidebar } from 'layouts';
-import { Options, Stake, Vault, Positions } from './pages';
+import { Options, Stake, Vault, Positions, LandingPage } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -171,9 +171,12 @@ const Providers: React.FC = ({ children }) => {
 const App: React.FC = () => {
   return (
     <Providers>
-      <PageWithSidebar>
-        <Switch>
-          <Route exact path='/'>
+      <Switch>
+        <Route exact path='/'>
+          <LandingPage />
+        </Route>
+        <PageWithSidebar>
+          <Route exact path='/positions'>
             <Positions />
           </Route>
 
@@ -192,8 +195,8 @@ const App: React.FC = () => {
           <Route path='*'>
             <Positions />
           </Route>
-        </Switch>
-      </PageWithSidebar>
+        </PageWithSidebar>
+      </Switch>
     </Providers>
   );
 };
