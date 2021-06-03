@@ -25,6 +25,15 @@ import { ReactComponent as GridIcon } from 'assets/svg/Grid.svg';
 import { ReactComponent as SubtractIcon } from 'assets/svg/Subtract.svg';
 import { ReactComponent as ThreeCirclesIcon } from 'assets/svg/ThreeCircles.svg';
 import { ReactComponent as SmallLogoIcon } from 'assets/svg/SmallLogo.svg';
+import { ReactComponent as Consetellation } from 'assets/svg/Consetellation1.svg';
+import { ReactComponent as ConsetellationTwo } from 'assets/svg/Consetellation2.svg';
+import { ReactComponent as ConsetellationThree } from 'assets/svg/Consetellation3.svg';
+import { ReactComponent as ConsetellationFour } from 'assets/svg/Consetellation4.svg';
+import { ReactComponent as ConsetellationSix } from 'assets/svg/Consetellation6.svg';
+import { ReactComponent as ConsetellationSeven } from 'assets/svg/Consetellation7.svg';
+import { ReactComponent as ConsetellationEight } from 'assets/svg/Consetellation8.svg';
+import { ReactComponent as ConsetellationNine } from 'assets/svg/Consetellation9.svg';
+import { ReactComponent as ConsetellationTen } from 'assets/svg/Consetellation10.svg';
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
@@ -190,15 +199,17 @@ const useStyles = makeStyles(({ palette }) => ({
     marginTop: 40,
   },
   rightSideImage: {
-    width: '40%',
+    width: '45%',
+    height: 360,
     backgroundImage: `url("${TradeOptionsImage}")`,
-    backgroundSize: '100% auto',
+    backgroundSize: 'auto 100%',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    position: 'relative',
   },
   leftSide: {
     position: 'relative',
-    width: '40%',
+    width: '45%',
     paddingLeft: 74,
 
     '& > svg': {
@@ -240,6 +251,21 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+
+    '& > svg': {
+      '&:first-of-type': {
+        position: 'absolute',
+        left: 0,
+        top: -50,
+      },
+
+      '&:last-of-type': {
+        position: 'absolute',
+        right: 0,
+        bottom: -200,
+      },
+    },
   },
   learnMoreBar: {
     height: 80,
@@ -357,6 +383,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     alignItems: 'center',
     marginBottom: 400,
+    position: 'relative',
   },
   keyIcon: {
     position: 'absolute',
@@ -430,6 +457,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'absolute',
   },
   footer: {
+    marginTop: 20,
     width: '100%',
     backgroundImage: `url("${BackgroundBottom}")`,
     backgroundSize: '100% auto',
@@ -503,6 +531,41 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'row',
   },
+  consetellation: {
+    position: 'absolute',
+    left: 20,
+    top: 3,
+  },
+  consetellationTwo: {
+    position: 'absolute',
+    left: 0,
+    top: 676,
+  },
+  consetellationThree: {
+    position: 'absolute',
+    right: 0,
+    top: 676,
+  },
+  consetellationFour: {
+    position: 'absolute',
+    top: -149,
+    left: -222,
+  },
+  consetellationTen: {
+    position: 'absolute',
+    top: -230,
+    left: -100,
+  },
+  consetellationEight: {
+    position: 'absolute',
+    right: 0,
+    top: 3700,
+  },
+  consetellationNine: {
+    position: 'absolute',
+    left: 0,
+    top: 4500,
+  },
 }));
 
 const LandingPage: React.FC = () => {
@@ -534,6 +597,7 @@ const LandingPage: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Container fixed className={classes.body}>
+        <Consetellation className={classes.consetellation} />
         <Box className={classes.topSection}>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
@@ -547,6 +611,7 @@ const LandingPage: React.FC = () => {
           </Box>
           <Box className={classes.topSectionRight}></Box>
         </Box>
+        <ConsetellationTwo className={classes.consetellationTwo} />
         <Box className={classes.explorePremia}>
           <Typography className={classes.gradientSubTitle}>
             Explore Premia
@@ -555,6 +620,7 @@ const LandingPage: React.FC = () => {
             A game changing and intuitive take on decentralized options
           </Typography>
         </Box>
+        <ConsetellationThree className={classes.consetellationThree} />
         <Box className={classes.tradeOptions}>
           <Box className={classes.leftSide}>
             <LandingTradingIcon />
@@ -616,10 +682,13 @@ const LandingPage: React.FC = () => {
               Protect Assets
             </Button>
           </Box>
-          <Box className={classes.rightSideImage}></Box>
+          <Box className={classes.rightSideImage}>
+            <ConsetellationFour className={classes.consetellationFour} />
+          </Box>
         </Box>
       </Container>
       <Box className={classes.learnMore}>
+        <ConsetellationSeven />
         <Box className={classes.learnMoreBar}>
           <Box>
             <MediumIcon />
@@ -627,6 +696,7 @@ const LandingPage: React.FC = () => {
           </Box>
           <Button>Learn More</Button>
         </Box>
+        <ConsetellationSix />
       </Box>
       <Container fixed className={classes.body}>
         <Box className={classes.defiNative}>
@@ -670,7 +740,10 @@ const LandingPage: React.FC = () => {
           </Box>
           <Button>Our Research</Button>
         </Box>
+        <ConsetellationEight className={classes.consetellationEight} />
+        <ConsetellationNine className={classes.consetellationNine} />
         <Box className={classes.decentralized}>
+          <ConsetellationTen className={classes.consetellationTen} />
           <Box className={classes.ourValues}>
             <Typography className={classes.gradientSubTitle}>
               Our Values
