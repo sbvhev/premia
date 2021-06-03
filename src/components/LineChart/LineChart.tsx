@@ -89,7 +89,7 @@ const LineChart: React.FC<LineChartProps> = ({
     grid: {
       show: false,
       padding: {
-        left: 20,
+        left: 30,
         right: 20,
       },
       xaxis: {

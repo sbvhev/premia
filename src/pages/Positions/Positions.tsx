@@ -591,7 +591,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 }));
 
 const getTodayHours = () => {
-  const hoursPerDay = 7;
+  const hoursPerDay = 24;
   let formattedTime;
   let times = [];
   for (let i = 0; i < hoursPerDay + 1; i++) {
@@ -618,12 +618,12 @@ const getThisWeekDates = () => {
 
 const getThisMonthDates = () => {
   let startOfMonth = Moment().startOf('month');
-  let today = Moment().endOf('month');
+  let endOfMonth = Moment().endOf('month');
 
   let days = [];
   let day = startOfMonth;
 
-  while (day <= today) {
+  while (day <= endOfMonth) {
     days.push(Moment(day.toDate()).format('MMM DD'));
     day = day.clone().add(1, 'd');
   }
@@ -652,6 +652,11 @@ const Positions: React.FC = () => {
     getThisMonthDates(),
   ];
 
+  const chartDateData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartWeekData = [3234, 6432, 1234, 3234, 6432, 1234, 3234];
+  const chartMonthData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartData = [chartDateData, chartWeekData, chartMonthData];
+ 
   const yieldData = [
     {
       tokenIcon: <UniIcon />,
@@ -872,7 +877,7 @@ const Positions: React.FC = () => {
                   <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
                       color='#14A887'
-                      data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                      data={chartData[dateFilter]}
                       categories={chartDateCats[dateFilter]}
                       chartType={chartTypes[dateFilter]}
                       width='100%'
