@@ -224,6 +224,9 @@ const Options: React.FC = () => {
           vertical: 'bottom',
           horizontal: popoverType === 'pool' ? 'left' : 'center',
         }}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
       >
         {popoverType === 'current' && (
           <Box
