@@ -117,7 +117,9 @@ const Stake: React.FC = () => {
     <Box
       display='flex'
       flexDirection='column'
-      style={{ marginTop: '8px', width: '100%', height: '100%' }}
+      width='100%'
+      height="100%"
+      marginTop={!mobile ? '42px' : '8px'}
     >
       <Box
         display='flex'
@@ -131,7 +133,7 @@ const Stake: React.FC = () => {
           className={classes.col}
           style={
             !mobile
-              ? { marginLeft: '12px' }
+              ? { marginLeft: '20px' }
               : { justifyContent: 'space-between' }
           }
         >

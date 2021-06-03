@@ -139,7 +139,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   addressAnchor: {
     height: '18px',
-    textDecorationColor: palette.primary.main,
+    textDecoration: 'none',
     display: 'flex',
     alignItems: 'center',
   },
@@ -148,7 +148,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     lineHeight: '24px',
     color: `${palette.text.secondary} !important`,
-    textDecorationColor: palette.text.secondary,
+    textDecoration: 'none',
   },
   clear: {
     padding: '6px',
@@ -301,7 +301,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
         rel='noreferrer'
       >
         <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Typography>{shortenTx(item.hash)}</Typography>
+          <Typography style={{ fontSize: '14px'}}>{shortenTx(item.hash)}</Typography>
           <Box
             marginLeft='4px'
             display='flex'

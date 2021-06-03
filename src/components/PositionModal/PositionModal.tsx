@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box, Button, Paper } from '@material-ui/core';
+import { Typography, Modal, Box, Paper } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
@@ -163,14 +163,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 26,
+    right: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '6px',
+    padding: '12px 0',
     cursor: 'pointer',
-    width: '20px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark,
@@ -508,9 +510,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                 </Box>
               </Box>
             </Box>
-            <Button className={classes.exitContainer} onClick={onClose}>
+            <Box className={classes.exitContainer} onClick={onClose}>
               <img src={XOut} alt='Exit' />
-            </Button>
+            </Box>
           </Box>
         </Box>
       </ModalContainer>
