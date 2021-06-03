@@ -151,6 +151,7 @@ const tabItems = [
     label: 'wBTC',
   },
   {
+    marginLeft: -2,
     image: UniIcon,
     label: 'Uni',
     highlight: true,
