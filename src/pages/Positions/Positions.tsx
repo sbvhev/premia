@@ -183,7 +183,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-    }
+    },
   },
   capital: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
@@ -287,8 +287,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 16,
       marginLeft: 4,
       '& path': {
-        fill: palette.text.secondary
-      }
+        fill: palette.text.secondary,
+      },
     },
   },
   noPositionsContainer: {
@@ -403,25 +403,25 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& svg': {
       '& path': {
-        fill: palette.text.secondary
-      }
-    }
+        fill: palette.text.secondary,
+      },
+    },
   },
   tableHeading: {
     height: 56,
     alignItems: 'center',
     justifyContent: 'space-between',
     [breakpoints.down('xs')]: {
-      height: 'auto'
+      height: 'auto',
     },
     '& .MuiBottomNavigation-root': {
       minWidth: 227,
       padding: '7px 7px 6px',
       '& button': {
         margin: 0,
-        padding: '6px 8px'
-      }
-    }
+        padding: '6px 8px',
+      },
+    },
   },
   tableContainer: {
     '& .MuiTableContainer-root': {
@@ -569,8 +569,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginTop: 2,
       display: 'flex',
       alignItems: 'center',
-      color: palette.text.secondary
-    }
+      color: palette.text.secondary,
+    },
   },
   yieldButtonCell: {
     marginTop: 12,
@@ -579,7 +579,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& .MuiButton-outlined': {
       border: `1px solid ${palette.divider}`,
       color: palette.text.secondary,
-    }
+    },
   },
   boundLine: {
     width: '100%',
@@ -587,15 +587,56 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: palette.divider,
     position: 'absolute',
     left: 0,
-  }
+  },
 }));
+
+const getTodayHours = () => {
+  const hoursPerDay = 7;
+  let formattedTime;
+  let times = [];
+  for (let i = 0; i < hoursPerDay + 1; i++) {
+    formattedTime = Moment().subtract(i, 'hours').format('h a');
+    times.unshift(formattedTime);
+  }
+  return times;
+};
+
+const getThisWeekDates = () => {
+  let startOfWeek = Moment().startOf('week');
+  let endOfWeek = Moment().endOf('week');
+
+  let days = [];
+  let day = startOfWeek;
+
+  while (day <= endOfWeek) {
+    days.push(Moment(day.toDate()).format('YYYY/MM/DD'));
+    day = day.clone().add(1, 'd');
+  }
+
+  return days;
+};
+
+const getThisMonthDates = () => {
+  let startOfMonth = Moment().startOf('month');
+  let today = Moment().endOf('month');
+
+  let days = [];
+  let day = startOfMonth;
+
+  while (day <= today) {
+    days.push(Moment(day.toDate()).format('MMM DD'));
+    day = day.clone().add(1, 'd');
+  }
+
+  return days;
+};
 
 const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [positionFilter, setPositionFilter] = useState(0);
-  const [yieldFilter, setYieldFilter] = useState(0);
+  const [dateFilter, setDateFilter] = useState(0);
   const [optionFilter, setOptionFilter] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
 
@@ -603,6 +644,13 @@ const Positions: React.FC = () => {
   const optionsHeadCells = getOptionsHeadCells();
 
   const noPositions = false;
+
+  const chartTypes = ['daily', 'weekly', 'monthly'];
+  const chartDateCats = [
+    getTodayHours(),
+    getThisWeekDates(),
+    getThisMonthDates(),
+  ];
 
   const yieldData = [
     {
@@ -678,29 +726,29 @@ const Positions: React.FC = () => {
 
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
-  const boundIndex = plPercents.findIndex(val => val === 0);
+  const boundIndex = plPercents.findIndex((val) => val === 0);
 
   const optionAssets = [
     {
       category: 'ETH',
-      value: 73
+      value: 73,
     },
     {
       category: 'Uni',
-      value: 27
-    }
+      value: 27,
+    },
   ];
 
   const yieldAssets = [
     {
       category: 'Option 1',
-      value: 73
+      value: 73,
     },
     {
       category: 'Option 2',
-      value: 27
-    }
-  ]
+      value: 27,
+    },
+  ];
 
   return (
     <>
@@ -727,10 +775,10 @@ const Positions: React.FC = () => {
         </BottomNavigation>
         {!noPositions && (
           <BottomNavigation
-            value={yieldFilter}
+            value={dateFilter}
             className={cx(mobile && classes.fullWidth)}
             onChange={(event, newValue) => {
-              setYieldFilter(newValue);
+              setDateFilter(newValue);
             }}
             showLabels={true}
           >
@@ -811,23 +859,22 @@ const Positions: React.FC = () => {
                 <Box display='flex' position='relative'>
                   <Box className={classes.plPercents}>
                     {plPercents.map((val, ind) => (
-                      <Typography key={ind}>{ val }{ val !== 0 && '%' }</Typography>
+                      <Typography key={ind}>
+                        {val}
+                        {val !== 0 && '%'}
+                      </Typography>
                     ))}
-                    <Box className={classes.boundLine} top={boundIndex * 26 + 23} />
+                    <Box
+                      className={classes.boundLine}
+                      top={boundIndex * 26 + 23}
+                    />
                   </Box>
-                  <Box flex={1} mb={-1.5}>
+                  <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
                       color='#14A887'
                       data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                      categories={[
-                        '2021/5/24',
-                        '2021/5/25',
-                        '2021/5/26',
-                        '2021/5/27',
-                        '2021/5/28',
-                        '2021/5/29',
-                        '2021/5/30',
-                      ]}
+                      categories={chartDateCats[dateFilter]}
+                      chartType={chartTypes[dateFilter]}
                       width='100%'
                       height={200}
                     />
@@ -857,7 +904,9 @@ const Positions: React.FC = () => {
                       colors={['#5294FF', '#EB4A97']}
                       endColors={['#1EFF78', '#8C43F6']}
                       rotations={[121.21, 316.57]}
-                      content={positionFilter === 0 ? 'My assets' : 'My options'}
+                      content={
+                        positionFilter === 0 ? 'My assets' : 'My options'
+                      }
                     />
                   </Box>
                 </Grid>
@@ -972,7 +1021,7 @@ const Positions: React.FC = () => {
                   </BottomNavigation>
                 </Box>
               </Grid>
-              <Box mt={mobile ? 1.5: 2.5}>
+              <Box mt={mobile ? 1.5 : 2.5}>
                 {mobile ? (
                   <>
                     {optionsData.map((item: any) => (
@@ -993,11 +1042,17 @@ const Positions: React.FC = () => {
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'call' ? classes.call : classes.put,
+                                item.type === 'call'
+                                  ? classes.call
+                                  : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === 'call' ? <CallIcon /> : <PutIcon />}
+                              {item.type === 'call' ? (
+                                <CallIcon />
+                              ) : (
+                                <PutIcon />
+                              )}
                               {item.type}
                             </Box>
                           </Box>

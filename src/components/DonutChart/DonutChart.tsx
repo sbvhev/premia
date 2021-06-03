@@ -1,18 +1,18 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { Box } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 
 am4core.useTheme(am4themes_animated);
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartBox: {
     '& g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3)': {
-      display: 'none'
-    }
-  }
+      display: 'none',
+    },
+  },
 }));
 
 export interface DonutChartProps {
@@ -33,13 +33,13 @@ const DonutChart: React.FC<DonutChartProps> = ({
   colors = [],
   endColors = [],
   rotations = [],
-  content = ''
+  content = '',
 }) => {
   const classes = useStyles();
   const theme = useTheme();
   let chart1 = useRef<any>();
   useLayoutEffect(() => {
-    var chart = am4core.create("chartdiv", am4charts.PieChart);
+    var chart = am4core.create('chartdiv', am4charts.PieChart);
     chart.hideTooltip();
     chart.hiddenState.properties.opacity = 0;
 
@@ -47,21 +47,25 @@ const DonutChart: React.FC<DonutChartProps> = ({
     chart.radius = am4core.percent(90);
     chart.innerRadius = am4core.percent(80);
     chart.startAngle = 270;
-    chart.endAngle = 630;  
+    chart.endAngle = 630;
 
     var series = chart.series.push(new am4charts.PieSeries());
-    series.dataFields.value = "value";
-    series.dataFields.category = "category";
+    series.dataFields.value = 'value';
+    series.dataFields.category = 'category';
 
     let gradients = colors.map((val, index) => {
       let gradient = new am4core.LinearGradient();
       gradient.addColor(am4core.color(val));
       gradient.addColor(am4core.color(endColors[index]));
-      gradient.rotation = rotations[index];  
+      gradient.rotation = rotations[index];
       return gradient;
     });
-    series.slices.template.adapter.add("fill", (fill, target) => {
-      return target.dataItem ? type === 'gradient' ? gradients[target.dataItem.index] : am4core.color(colors[target.dataItem.index]) : fill;
+    series.slices.template.adapter.add('fill', (fill, target) => {
+      return target.dataItem
+        ? type === 'gradient'
+          ? gradients[target.dataItem.index]
+          : am4core.color(colors[target.dataItem.index])
+        : fill;
     });
 
     series.slices.template.cornerRadius = 10;
@@ -69,41 +73,62 @@ const DonutChart: React.FC<DonutChartProps> = ({
     series.slices.template.draggable = true;
     series.slices.template.inert = true;
 
-    series.slices.template.stroke = am4core.color(theme.palette.background.paper);
+    series.slices.template.stroke = am4core.color(
+      theme.palette.background.paper,
+    );
     series.slices.template.strokeWidth = 2;
     series.slices.template.strokeOpacity = 1;
     series.labels.template.disabled = true;
 
     chart.legend = new am4charts.Legend();
-    chart.legend.position = "right";
-    chart.legend.maxWidth = 150
-    chart.legend.labels.template.fill = am4core.color(theme.palette.text.primary);
+    chart.legend.position = 'right';
+    chart.legend.maxWidth = 150;
+    chart.legend.labels.template.fill = am4core.color(
+      theme.palette.text.primary,
+    );
     chart.legend.labels.template.fontSize = 14;
     chart.legend.labels.template.fontFamily = 'DM Sans';
-    chart.legend.valueLabels.template.fill = am4core.color(theme.palette.text.secondary); 
+    chart.legend.valueLabels.template.fill = am4core.color(
+      theme.palette.text.secondary,
+    );
     chart.legend.valueLabels.template.fontSize = 14;
     chart.legend.valueLabels.template.fontFamily = 'DM Sans';
-    chart.legend.valueLabels.template.align = "right";
-    chart.legend.valueLabels.template.textAlign = "end"; 
+    chart.legend.valueLabels.template.align = 'right';
+    chart.legend.valueLabels.template.textAlign = 'end';
     chart.legend.markers.template.width = 12;
     chart.legend.markers.template.height = 12;
 
     let label = series.createChild(am4core.Label);
     label.text = content;
-    label.horizontalCenter = "middle";
-    label.verticalCenter = "middle";
+    label.horizontalCenter = 'middle';
+    label.verticalCenter = 'middle';
     label.fontSize = 14;
     label.fontFamily = 'DM Sans';
     label.fill = am4core.color(theme.palette.text.secondary);
-    
+
     chart1.current = chart;
     return () => {
       chart.dispose();
-    }; 
-  }, [colors, content, data, endColors, rotations, theme.palette.background.paper, theme.palette.text.primary, theme.palette.text.secondary, type]);
+    };
+  }, [
+    colors,
+    content,
+    data,
+    endColors,
+    rotations,
+    theme.palette.background.paper,
+    theme.palette.text.primary,
+    theme.palette.text.secondary,
+    type,
+  ]);
 
   return (
-    <Box id="chartdiv" className={classes.chartBox} height={height} width={width} />
+    <Box
+      id='chartdiv'
+      className={classes.chartBox}
+      height={height}
+      width={width}
+    />
   );
 };
 
