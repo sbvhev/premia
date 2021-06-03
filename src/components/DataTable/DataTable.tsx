@@ -21,7 +21,7 @@ import { Loader } from 'components';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      width: '100%'
+      width: '100%',
     },
     table: {
       width: '100%',
@@ -46,9 +46,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 4,
       display: 'flex',
       alignItems: 'center',
+      '& svg': {
+        '& path': {
+          stroke: theme.palette.text.secondary,
+        },
+      },
     },
     headCellLabel: {
-      cursor: 'default',
       color: theme.palette.text.secondary,
       display: 'flex',
       alignItems: 'center',

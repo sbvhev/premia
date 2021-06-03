@@ -13,6 +13,7 @@ export interface LineChartProps {
   width?: number | string;
   height?: number | string;
   palette?: Object;
+  chartType?: string;
   showYAxis?: boolean;
 }
 const LineChart: React.FC<LineChartProps> = ({
@@ -21,6 +22,7 @@ const LineChart: React.FC<LineChartProps> = ({
   data = [],
   width = 500,
   height = 200,
+  chartType = 'weekly',
   showYAxis = false,
 }) => {
   const dark = useIsDarkMode();
@@ -34,6 +36,7 @@ const LineChart: React.FC<LineChartProps> = ({
       toolbar: {
         show: false,
       },
+      width: '100%',
     },
     dataLabels: {
       enabled: false,
@@ -54,9 +57,12 @@ const LineChart: React.FC<LineChartProps> = ({
       },
     },
     xaxis: {
-      categories: categories.map(
-        (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
-      ),
+      categories:
+        chartType === 'weekly'
+          ? categories.map(
+              (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
+            )
+          : categories,
       axisBorder: {
         show: false,
       },
@@ -82,6 +88,10 @@ const LineChart: React.FC<LineChartProps> = ({
     },
     grid: {
       show: false,
+      padding: {
+        left: 30,
+        right: 20,
+      },
       xaxis: {
         lines: {
           show: false,
