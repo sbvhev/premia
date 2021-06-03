@@ -319,7 +319,7 @@ const OptionsPrice: React.FC = () => {
         >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>
-              Unlimited upside
+              Worthless expiration
             </Typography>
           </Box>
           <Box
