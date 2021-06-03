@@ -28,7 +28,7 @@ import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
 import { PageWithSidebar } from 'layouts';
-import { Options, Stake, Vault, Positions } from './pages';
+import { Options, Stake, Vault, Positions, PositionGuide } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -187,6 +187,10 @@ const App: React.FC = () => {
 
           <Route exact path='/vaults'>
             <Vault />
+          </Route>
+
+          <Route exact path='/position-guide'>
+            <PositionGuide />
           </Route>
 
           <Route path='*'>
