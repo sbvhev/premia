@@ -30,7 +30,7 @@ import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
 import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import WarningIcon from '@material-ui/icons/Warning';
+import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import Moment from 'moment';
 import cx from 'classnames';
@@ -160,7 +160,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 28,
     fontWeight: 700,
     lineHeight: 0.64,
-    margin: '0 13px',
   },
   mainTitle: {
     fontSize: 16,
@@ -205,7 +204,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   subtitle: {
     fontSize: 14,
-    lineHeight: 1.71,
+    lineHeight: 1.2,
   },
   errorIcon: {
     position: 'absolute',
@@ -266,8 +265,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   expirationCell: {
+    lineHeight: 1,
     '& p': {
       fontSize: 14,
+      lineHeight: 1,
+      marginTop: 2,
     },
   },
   cardRow: {
@@ -284,8 +286,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 16,
       marginLeft: 4,
       '& path': {
-        fill: palette.text.secondary
-      }
+        fill: palette.text.secondary,
+      },
     },
   },
   noPositionsContainer: {
@@ -332,8 +334,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   positionFilterContainer: {
+    boxSizing: 'border-box',
     justifyContent: 'space-between',
-    margin: '20px 0',
+    margin: '34px 0 20px',
     '& .MuiBottomNavigation-root': {
       padding: 6,
       '&:nth-child(2)': {
@@ -344,6 +347,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '& button': {
         padding: '6px 0',
+        margin: 0,
         '& svg': {
           marginRight: 7,
         },
@@ -360,7 +364,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     position: 'absolute',
     top: 4,
-    right: 10,
+    right: 2,
     '& p': {
       fontSize: 8,
       color: palette.common.black,
@@ -397,17 +401,44 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         marginLeft: 10,
       },
     },
+    '& svg': {
+      '& path': {
+        fill: palette.text.secondary,
+      },
+    },
+  },
+  tableHeading: {
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    [breakpoints.down('xs')]: {
+      height: 'auto',
+    },
+    '& .MuiBottomNavigation-root': {
+      minWidth: 227,
+      padding: '7px 7px 6px',
+      '& button': {
+        margin: 0,
+        padding: '6px 8px',
+      },
+    },
   },
   tableContainer: {
     '& .MuiTableContainer-root': {
       overflow: 'unset',
+    },
+    '& thead': {
+      height: 53,
+    },
+    '& tbody tr': {
+      height: 57,
     },
     '& thead tr th, & tbody tr td': {
       fontSize: 14,
       borderBottom: `1px solid ${palette.divider}`,
       '&.buttonCell': {
         width: 110,
-        padding: '6px 10px 7px 0',
+        padding: '6px 10px 6px 0',
         '& button': {
           padding: 0,
           margin: 0,
@@ -418,7 +449,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         },
       },
       '&.yieldButtonCell': {
-        padding: '6px 3px 7px 0',
+        padding: '6px 3px 6px 0',
         width: 187,
         '& button': {
           width: 85,
@@ -447,6 +478,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& thead tr th': {
       padding: '7px 6px',
+      cursor: 'pointer',
       '&:first-child': {
         padding: '7px 0px 7px 23px',
         [breakpoints.down('sm')]: {
@@ -460,11 +492,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
     '& tbody tr td': {
-      padding: '10px 6px',
+      padding: '6px',
       '&:first-child': {
-        padding: '10px 0px 10px 15px',
+        padding: '6px 0px 6px 15px',
         [breakpoints.down('sm')]: {
-          padding: '10px 6px',
+          padding: '6px',
         },
       },
       '&.buttonCell': {
@@ -530,7 +562,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   plPercents: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    margin: '9px 12px 18px 16px',
+    '& p': {
+      fontSize: 11,
+      height: 24,
+      marginTop: 2,
+      display: 'flex',
+      alignItems: 'center',
+      color: palette.text.secondary,
+    },
   },
   yieldButtonCell: {
     marginTop: 12,
@@ -539,16 +579,64 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& .MuiButton-outlined': {
       border: `1px solid ${palette.divider}`,
       color: palette.text.secondary,
-    }
-  }
+    },
+  },
+  boundLine: {
+    width: '100%',
+    height: 1,
+    background: palette.divider,
+    position: 'absolute',
+    left: 0,
+  },
 }));
+
+const getTodayHours = () => {
+  const hoursPerDay = 24;
+  let formattedTime;
+  let times = [];
+  for (let i = 0; i < hoursPerDay + 1; i++) {
+    formattedTime = Moment().subtract(i, 'hours').format('h a');
+    times.unshift(formattedTime);
+  }
+  return times;
+};
+
+const getThisWeekDates = () => {
+  let startOfWeek = Moment().startOf('week');
+  let endOfWeek = Moment().endOf('week');
+
+  let days = [];
+  let day = startOfWeek;
+
+  while (day <= endOfWeek) {
+    days.push(Moment(day.toDate()).format('YYYY/MM/DD'));
+    day = day.clone().add(1, 'd');
+  }
+
+  return days;
+};
+
+const getThisMonthDates = () => {
+  let startOfMonth = Moment().startOf('month');
+  let endOfMonth = Moment().endOf('month');
+
+  let days = [];
+  let day = startOfMonth;
+
+  while (day <= endOfMonth) {
+    days.push(Moment(day.toDate()).format('MMM DD'));
+    day = day.clone().add(1, 'd');
+  }
+
+  return days;
+};
 
 const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('xs'));
   const [positionFilter, setPositionFilter] = useState(0);
-  const [yieldFilter, setYieldFilter] = useState(0);
+  const [dateFilter, setDateFilter] = useState(0);
   const [optionFilter, setOptionFilter] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
 
@@ -557,6 +645,18 @@ const Positions: React.FC = () => {
 
   const noPositions = false;
 
+  const chartTypes = ['daily', 'weekly', 'monthly'];
+  const chartDateCats = [
+    getTodayHours(),
+    getThisWeekDates(),
+    getThisMonthDates(),
+  ];
+
+  const chartDateData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartWeekData = [3234, 6432, 1234, 3234, 6432, 1234, 3234];
+  const chartMonthData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartData = [chartDateData, chartWeekData, chartMonthData];
+ 
   const yieldData = [
     {
       tokenIcon: <UniIcon />,
@@ -629,7 +729,31 @@ const Positions: React.FC = () => {
     },
   ];
 
-  // const plPercents = [40, 30, 20, 10, 0, -10, -20];
+  const plPercents = [40, 30, 20, 10, 0, -10, -20];
+
+  const boundIndex = plPercents.findIndex((val) => val === 0);
+
+  const optionAssets = [
+    {
+      category: 'ETH',
+      value: 73,
+    },
+    {
+      category: 'Uni',
+      value: 27,
+    },
+  ];
+
+  const yieldAssets = [
+    {
+      category: 'Option 1',
+      value: 73,
+    },
+    {
+      category: 'Option 2',
+      value: 27,
+    },
+  ];
 
   return (
     <>
@@ -639,10 +763,19 @@ const Positions: React.FC = () => {
           setPositionModalOpen(false);
         }}
       />
-      <Typography component='h1' color='textPrimary' className={classes.title}>
+      <Typography
+        component='h1'
+        color='textPrimary'
+        className={classes.title}
+        style={!mobile ? { margin: '45px 0 0 20px' } : {}}
+      >
         My dashboard
       </Typography>
-      <Grid container className={classes.positionFilterContainer}>
+      <Grid
+        container
+        className={classes.positionFilterContainer}
+        style={!mobile ? { paddingLeft: '6px' } : {}}
+      >
         <BottomNavigation
           value={positionFilter}
           className={cx(mobile && classes.fullWidth)}
@@ -656,10 +789,10 @@ const Positions: React.FC = () => {
         </BottomNavigation>
         {!noPositions && (
           <BottomNavigation
-            value={yieldFilter}
+            value={dateFilter}
             className={cx(mobile && classes.fullWidth)}
             onChange={(event, newValue) => {
-              setYieldFilter(newValue);
+              setDateFilter(newValue);
             }}
             showLabels={true}
           >
@@ -670,7 +803,7 @@ const Positions: React.FC = () => {
         )}
       </Grid>
       {!noPositions && (
-        <Box mb={2.5}>
+        <Box mb={2.5} ml={!mobile ? '6px' : ''}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <Container fixed className={classes.fullWidth}>
@@ -686,7 +819,7 @@ const Positions: React.FC = () => {
                         <Box
                           width={1}
                           height={1}
-                          borderRadius={12}
+                          borderRadius={7}
                           className={classes.capital}
                         />
                         <img src={CapitalIcon} alt='Capital Active' />
@@ -713,7 +846,7 @@ const Positions: React.FC = () => {
                         <Box
                           width={1}
                           height={1}
-                          borderRadius={12}
+                          borderRadius={7}
                           className={classes.return}
                         />
                         <img src={ReturnIcon} alt='Current Return' />
@@ -737,30 +870,30 @@ const Positions: React.FC = () => {
                   </Box>
                 </Box>
                 <Divider />
-                <Grid container>
-                  {/* <Box className={classes.plPercents}>
-                    {plPercents.map(val => (
-                      <Typography>{ val }{ val !== 0 && '%' }</Typography>
+                <Box display='flex' position='relative'>
+                  <Box className={classes.plPercents}>
+                    {plPercents.map((val, ind) => (
+                      <Typography key={ind}>
+                        {val}
+                        {val !== 0 && '%'}
+                      </Typography>
                     ))}
-                  </Box> */}
-                  <Box flex={1}>
+                    <Box
+                      className={classes.boundLine}
+                      top={boundIndex * 26 + 23}
+                    />
+                  </Box>
+                  <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
                       color='#14A887'
-                      data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                      categories={[
-                        '2021/5/24',
-                        '2021/5/25',
-                        '2021/5/26',
-                        '2021/5/27',
-                        '2021/5/28',
-                        '2021/5/29',
-                        '2021/5/30',
-                      ]}
+                      data={chartData[dateFilter]}
+                      categories={chartDateCats[dateFilter]}
+                      chartType={chartTypes[dateFilter]}
                       width='100%'
                       height={200}
                     />
                   </Box>
-                </Grid>
+                </Box>
               </Container>
             </Grid>
             <Grid item container sm={12} md={12} lg={4}>
@@ -775,14 +908,19 @@ const Positions: React.FC = () => {
                   <Box
                     display='flex'
                     flex={1}
+                    width={1}
                     height={1}
                     justifyContent='center'
                     alignItems='center'
                   >
                     <DonutChart
-                      data={[73, 27]}
-                      labels={['ETH', 'Uni']}
-                      colors={['#14A887', '#BF47C3']}
+                      data={positionFilter === 0 ? optionAssets : yieldAssets}
+                      colors={['#5294FF', '#EB4A97']}
+                      endColors={['#1EFF78', '#8C43F6']}
+                      rotations={[121.21, 316.57]}
+                      content={
+                        positionFilter === 0 ? 'My assets' : 'My options'
+                      }
                     />
                   </Box>
                 </Grid>
@@ -801,7 +939,7 @@ const Positions: React.FC = () => {
           >
             You have no active positions
           </Typography>
-          <Box mt={mobile ? 3 : 5}>
+          <Box mt={mobile ? 3 : 5} ml={!mobile ? '6px' : ''}>
             <Container fixed className={classes.noPositionBox}>
               {positionFilter === 0 && (
                 <>
@@ -861,8 +999,8 @@ const Positions: React.FC = () => {
       ) : (
         <>
           {positionFilter === 0 && (
-            <Box className={classes.tableContainer}>
-              <Grid container alignItems='center' justify='space-between'>
+            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
+              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
                   color='textPrimary'
@@ -897,7 +1035,7 @@ const Positions: React.FC = () => {
                   </BottomNavigation>
                 </Box>
               </Grid>
-              <Box mt={mobile ? 1.5: 2.5}>
+              <Box mt={mobile ? 1.5 : 2.5}>
                 {mobile ? (
                   <>
                     {optionsData.map((item: any) => (
@@ -918,11 +1056,17 @@ const Positions: React.FC = () => {
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'call' ? classes.call : classes.put,
+                                item.type === 'call'
+                                  ? classes.call
+                                  : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === 'call' ? <CallIcon /> : <PutIcon />}
+                              {item.type === 'call' ? (
+                                <CallIcon />
+                              ) : (
+                                <PutIcon />
+                              )}
                               {item.type}
                             </Box>
                           </Box>
@@ -1054,8 +1198,8 @@ const Positions: React.FC = () => {
             </Box>
           )}
           {positionFilter === 1 && (
-            <Box className={classes.tableContainer}>
-              <Grid container alignItems='center' justify='space-between'>
+            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
+              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
                 <Typography
                   component='h1'
                   color='textPrimary'

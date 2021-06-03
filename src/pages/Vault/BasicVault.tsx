@@ -137,7 +137,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   rightCard: {
     paddingTop: 28,
-    width: 'calc(100% - 375px)',
+    width: 'calc(100% - 381px)',
 
     [breakpoints.down('md')]: {
       width: '100%',
@@ -335,7 +335,7 @@ const BasicVault: React.FC = () => {
 
   return (
     <Grid container direction={!mobile ? 'row' : 'column'}>
-      <Box className={classes.borderedCard}>
+      <Box className={classes.borderedCard} ml={!mobile ? '6px' : ''}>
         <Box className={classes.titleBox}>
           <Box>
             <Typography

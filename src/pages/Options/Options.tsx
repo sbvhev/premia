@@ -28,6 +28,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '28px',
     lineHeight: '27.5px',
     fontWeight: 700,
+    margin: '42px 0 0 20px',
   },
   price: {
     fontSize: 18,
@@ -153,7 +154,7 @@ const Options: React.FC = () => {
           Options
         </Typography>
       )}
-      <Box mt={2} mb={4}>
+      <Box mt={2} mb={4} ml={!mobile ? '6px' : '0'}>
         <SearchTabs
           items={tabItems}
           value={tokenIndex}
@@ -162,7 +163,7 @@ const Options: React.FC = () => {
           }}
         />
       </Box>
-      <Grid container>
+      <Grid container style={!mobile ? { marginLeft: '6px' } : {}}>
         <Grid item container lg={9}>
           <Grid item xs={12} sm={6}>
             <Container fixed>

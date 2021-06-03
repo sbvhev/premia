@@ -48,10 +48,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   topTab: {
-    marginBottom: 20,
+    margin: '20px 0 20px 6px',
 
     [theme.breakpoints.down('md')]: {
-      marginTop: 20,
+      margin: '20px 0 12px',
     },
   },
   mainContent: {},
@@ -392,6 +392,7 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
+          style={!phoneDevice ? { margin: '42px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
@@ -414,9 +415,9 @@ const ProVault: React.FC = () => {
             {!phoneDevice && !thinDesktop ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[55 + extraMargin, 154 + extraMargin]}
+                positions={[61 + extraMargin, 160 + extraMargin]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={55 + extraMargin}
+                start={61 + extraMargin}
                 gliderWidth={94}
                 gliderHeight={42}
               />
