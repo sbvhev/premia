@@ -160,7 +160,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 // mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 0 : 6}
+                mb={mobile ? 0 : 12}
               >
                 <Container>{children}</Container>
                 {mobile && (
