@@ -20,7 +20,7 @@ import {
   ChainModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
@@ -201,7 +201,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     alignItems: 'center',
     cursor: 'pointer',
-    fontSize: 14,
+
+    '& p': {
+      fontSize: 14,
+    },
 
     '& svg': {
       width: 33,
@@ -210,18 +213,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10,
-
-      '& path': {
-        fill: palette.text.secondary,
-      },
     },
 
     '&:hover:not(:active)': {
       borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.text.primary,
-      },
 
       '& p': {
         color: palette.text.primary,
@@ -324,7 +319,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   setChainModalOpen(true);
                 }}
               >
-                <EthIcon />
+                <EthHeadIcon />
                 <Typography color='secondary'>Ethereum</Typography>
               </Box>
               <Box clone mb={mobile ? 1 : 0}>
@@ -418,7 +413,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     setChainModalOpen(true);
                   }}
                 >
-                  <EthIcon />
+                  <EthHeadIcon />
                   <Typography color='secondary'>Ethereum</Typography>
                 </Box>
               </Box>
