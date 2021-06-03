@@ -808,7 +808,7 @@ export const darkTheme = responsiveFontSizes(
           background: `linear-gradient(316.57deg, ${putGradientA} 18.89%, ${putGradientB} 95.84%);`,
           color: black,
           fontWeight: 500,
-          boxShadow: '0px 0px 25px rgba(246, 67, 207, 0.4)',
+          boxShadow: '0px 0px 5px rgba(246, 67, 207, 0.4)',
           '&:hover': {
             background: `linear-gradient(316.57deg, ${putGradientB} 18.89%, ${putGradientA} 95.84%);`,
           },
