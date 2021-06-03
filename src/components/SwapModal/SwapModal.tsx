@@ -21,7 +21,7 @@ import DAI from 'assets/images/DAI-icon.png';
 import ETH from 'assets/images/ETH-icon.png';
 import WBTC from 'assets/images/WBTC-icon.png';
 import LINK from 'assets/svg/LINK-icon.svg';
-import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg'; 
+import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg';
 
 import { useSwapSettings } from 'state/swap/hooks';
 
@@ -463,7 +463,7 @@ export interface SwapModalProps {
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
@@ -726,7 +726,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       className={classes.borderedSelector}
                       onClick={handleChangeFromAsset}
                       style={
-                        fromAssetOpen ? { borderColor: palette.primary.main } : {}
+                        fromAssetOpen
+                          ? { borderColor: palette.primary.main }
+                          : {}
                       }
                     >
                       <Box
@@ -1265,7 +1267,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
             </Box>
             <Box
               className={
-                !mobile ? classes.settingsContainer : classes.settingsContainerMobile
+                !mobile
+                  ? classes.settingsContainer
+                  : classes.settingsContainerMobile
               }
               onClick={() => setEdditSettings(true)}
             >

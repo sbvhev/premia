@@ -118,7 +118,7 @@ const Stake: React.FC = () => {
       display='flex'
       flexDirection='column'
       width='100%'
-      height="100%"
+      height='100%'
       marginTop={!mobile ? '42px' : '8px'}
     >
       <Box

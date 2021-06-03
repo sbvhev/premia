@@ -90,8 +90,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     borderRadius: 12,
     background: theme.palette.background.paper,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+    border: (props: any) => props.dark && `1px solid ${theme.palette.divider}`,
+    boxShadow: (props: any) =>
+      props.dark ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.07)',
   },
   fireIcon: {
     position: 'absolute',

@@ -60,7 +60,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '&:hover': {
       borderColor: palette.primary.main,
 
-
       '&> $disconnect': {
         borderColor: palette.primary.main,
       },
@@ -285,7 +284,11 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       {wallet && wallet.provider && account ? (
-        <Box display='flex' width='100%' style={{ backgroundColor: 'transparent'}}>
+        <Box
+          display='flex'
+          width='100%'
+          style={{ backgroundColor: 'transparent' }}
+        >
           {!mobile ? (
             <>
               <Button color='primary' className={classes.button}>
@@ -442,7 +445,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           )}
         </Box>
       ) : (
-        <Box width="100%" p={1}>
+        <Box width='100%' p={1}>
           <Button
             variant='contained'
             color='primary'

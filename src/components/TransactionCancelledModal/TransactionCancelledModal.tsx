@@ -180,7 +180,7 @@ const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { txStateMsg } = useTxStateMsg();
   const { palette } = theme;
 

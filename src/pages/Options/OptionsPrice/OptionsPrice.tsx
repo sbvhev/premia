@@ -138,7 +138,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       margin: '-2px 0 -2px 4px',
       '& path': {
         fill: palette.text.secondary,
-      }
+      },
     },
   },
   priceFont: {
@@ -154,6 +154,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   draggableItem: {
     cursor: 'pointer',
     transition: 'opacity 0.5s',
+    '& img': {
+      marginLeft: -1,
+    },
   },
   currentPriceLine: {
     width: (props: any) => (props.mobile ? 1 : 31),
@@ -213,7 +216,7 @@ const OptionsPrice: React.FC = () => {
     >
       <Box
         position='relative'
-        mt={mobile ? 0 : 0.75}
+        mt={mobile ? 0 : 0.7}
         mb={mobile ? -4 : 0}
         mr={mobile ? 0 : -3.25}
         zIndex={2}
@@ -324,7 +327,7 @@ const OptionsPrice: React.FC = () => {
           </Box>
           <Box
             className={classes.limitBox}
-            top={mobile ? 'unset' : -16}
+            top={mobile ? 'unset' : -14.6}
             left={mobile ? -20 : 'unset'}
           >
             {!mobile && (

@@ -62,7 +62,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   const [gliderPosition, setGliderPosition] = React.useState<any>(start);
 
   React.useEffect(() => {
-      setGliderPosition(start);
+    setGliderPosition(start);
   }, [start]);
 
   const mappedClickFuncs = [
@@ -91,7 +91,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
       <Box>{item}</Box>
     </Box>
   ));
-  
+
   return (
     <Box className={classes.container}>
       {mappedElements}

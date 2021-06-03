@@ -1,16 +1,17 @@
 import React from 'react';
+import { Typography, Box, Tooltip } from '@material-ui/core';
 import {
-  Typography,
-  Box,
-  Tooltip,
-} from '@material-ui/core';
-import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+  makeStyles,
+  withStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { ReactComponent as BackIcon } from 'assets/svg/GoBackArrow.svg';
-import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
-import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg'; 
-import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg'; 
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
+import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg';
+import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
 import { SwitchWithGlider } from 'components';
 
@@ -170,8 +171,8 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   expandContainer: {
-    display: 'flex', 
-    alignItems: 'center', 
+    display: 'flex',
+    alignItems: 'center',
     padding: '8px 12px',
     borderRadius: '50%',
     marginLeft: '12px',
@@ -229,10 +230,10 @@ const useStyles = makeStyles(({ palette }) => ({
   switchContainer: {
     width: '258px',
     height: '44px',
-    padding:'5px',
+    padding: '5px',
     border: `1px solid ${palette.divider}`,
     borderRadius: '12px',
-  }
+  },
 }));
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
@@ -293,9 +294,7 @@ const MySwitch = withStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
       opacity: 1,
     },
-    checked: {
-      
-    },
+    checked: {},
     focusVisible: {},
   }),
 )(({ classes, ...props }: Props) => {
@@ -346,7 +345,6 @@ const exchanges = [
   },
 ];
 
-
 export interface SwapModalProps {
   goBack: () => void;
 }
@@ -357,13 +355,14 @@ interface enabledExchanges {
 
 const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const halfDeviceWidth = window.innerWidth / 2;
   const [slippage, setSlippage] = React.useState<string>('0.5');
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
   const [showExchanges, setShowExchanges] = React.useState(false);
-  const [showHighSlippageWarning, setShowHighSlippageWarning] = React.useState(true);
+  const [showHighSlippageWarning, setShowHighSlippageWarning] =
+    React.useState(true);
   const [checkedState, setCheckedState] = React.useState<enabledExchanges>({
     Uniswap: false,
     UniswapV2: true,
@@ -385,7 +384,9 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     >
       <Box display='flex' alignItems='center'>
         <Typography
-          className={slippage === '0.1' ? classes.textSelected : classes.textIdle}
+          className={
+            slippage === '0.1' ? classes.textSelected : classes.textIdle
+          }
           color='textSecondary'
         >
           0.1%
@@ -405,7 +406,9 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     >
       <Box display='flex' alignItems='center'>
         <Typography
-          className={slippage === '0.5' ? classes.textSelected : classes.textIdle}
+          className={
+            slippage === '0.5' ? classes.textSelected : classes.textIdle
+          }
           color='textSecondary'
         >
           0.5%
@@ -451,14 +454,16 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     if (hasAcceptedRisk) {
       setShowHighSlippageWarning(false);
     }
-  }, [])
+  }, []);
 
   const handleSetExtraHighSlippage = () => {
     localStorage.setItem('Accepted_high_slippage_risk', 'true');
     setShowHighSlippageWarning(false);
   };
 
-  const handleChangeCustomSlippage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCustomSlippage = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value } = e.target;
     const numberValue = value.replace(/[^0-9.]/g, '');
     setCustomSlippage(numberValue);
@@ -471,16 +476,29 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedState({ ...checkedState, [event.target.name]: event.target.checked });
+    setCheckedState({
+      ...checkedState,
+      [event.target.name]: event.target.checked,
+    });
   };
 
   const mappedExchanges = exchanges.map((item) => {
     return (
-      <Box key={item.name} display="flex" alignItems="center" justifyContent="space-between" margin="12px 0">
+      <Box
+        key={item.name}
+        display='flex'
+        alignItems='center'
+        justifyContent='space-between'
+        margin='12px 0'
+      >
         <Typography className={classes.elementHeader}>{item.name}</Typography>
-        <MySwitch checked={checkedState[item.name]} onChange={handleChange} name={item.name} />
+        <MySwitch
+          checked={checkedState[item.name]}
+          onChange={handleChange}
+          name={item.name}
+        />
       </Box>
-    )
+    );
   });
 
   return (
@@ -488,37 +506,73 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
         {!showExchanges ? (
           <>
-            <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
-              <Typography className={classes.title} style={{ marginBottom: '32px' }}>Swap settings</Typography>
-              <Box display="flex" width="100%" alignItems="center" margin="4px 0">
-                <Typography className={classes.elementHeader}>Slippage tolerance</Typography>
-                <Tooltip title="Lorem ipsum text">
+            <Box
+              className={
+                !mobile ? classes.topSection : classes.topSectionMobile
+              }
+            >
+              <Typography
+                className={classes.title}
+                style={{ marginBottom: '32px' }}
+              >
+                Swap settings
+              </Typography>
+              <Box
+                display='flex'
+                width='100%'
+                alignItems='center'
+                margin='4px 0'
+              >
+                <Typography className={classes.elementHeader}>
+                  Slippage tolerance
+                </Typography>
+                <Tooltip title='Lorem ipsum text'>
                   <InfoIcon style={{ marginLeft: '6px' }} />
                 </Tooltip>
               </Box>
               <Box
-                display="flex"
+                display='flex'
                 flexDirection={!mobile ? 'row' : 'column'}
                 height={!mobile ? '56px' : '104px'}
                 alignItems={!mobile ? 'center' : 'flex-start'}
-                width="100%"
-                padding="7px 4px"
+                width='100%'
+                padding='7px 4px'
               >
                 <Box className={classes.switchContainer}>
                   {!mobile ? (
-                    <SwitchWithGlider 
-                      elements={[LowSlippageButton, MidSlippageButton, HighSlippageButton]}
+                    <SwitchWithGlider
+                      elements={[
+                        LowSlippageButton,
+                        MidSlippageButton,
+                        HighSlippageButton,
+                      ]}
                       positions={[37, 120, 203]}
-                      clickFuncs={[hadleClickLowSlippage, hadleClickMidSlippage, hadleClickHighSlippage]}
+                      clickFuncs={[
+                        hadleClickLowSlippage,
+                        hadleClickMidSlippage,
+                        hadleClickHighSlippage,
+                      ]}
                       start={120}
                       gliderWidth={78}
                       gliderHeight={32}
                     />
                   ) : (
-                    <SwitchWithGlider 
-                      elements={[LowSlippageButton, MidSlippageButton, HighSlippageButton]}
-                      positions={[halfDeviceWidth - 150, halfDeviceWidth - 66, halfDeviceWidth + 17]}
-                      clickFuncs={[hadleClickLowSlippage, hadleClickMidSlippage, hadleClickHighSlippage]}
+                    <SwitchWithGlider
+                      elements={[
+                        LowSlippageButton,
+                        MidSlippageButton,
+                        HighSlippageButton,
+                      ]}
+                      positions={[
+                        halfDeviceWidth - 150,
+                        halfDeviceWidth - 66,
+                        halfDeviceWidth + 17,
+                      ]}
+                      clickFuncs={[
+                        hadleClickLowSlippage,
+                        hadleClickMidSlippage,
+                        hadleClickHighSlippage,
+                      ]}
                       start={halfDeviceWidth - 66}
                       gliderWidth={78}
                       gliderHeight={32}
@@ -526,7 +580,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                   )}
                 </Box>
                 <Box
-                  display="flex"
+                  display='flex'
                   width={!mobile ? '116px' : '100%'}
                   margin={!mobile ? '0 0 0 auto' : '6px 0'}
                   // justifyContent="center"
@@ -535,24 +589,35 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                     value={customSlippage}
                     onChange={handleChangeCustomSlippage}
                     className={classes.borderedInput}
-                    placeholder="Custom"
+                    placeholder='Custom'
                   />
                   <PercentageIcon
-                    style={!mobile ? 
-                      { position: 'absolute', marginTop: '16px', right: 46}
-                      : {position: 'relative', marginTop: '16px', right: 40}
+                    style={
+                      !mobile
+                        ? { position: 'absolute', marginTop: '16px', right: 46 }
+                        : { position: 'relative', marginTop: '16px', right: 40 }
                     }
                   />
                 </Box>
               </Box>
-              <Box display="flex" width="100%" alignItems="center" margin="10px 0">
-                <Typography className={classes.elementHeader}>Transaction deadline</Typography>
-                <Tooltip title="Lorem ipsum text2">
+              <Box
+                display='flex'
+                width='100%'
+                alignItems='center'
+                margin='10px 0'
+              >
+                <Typography className={classes.elementHeader}>
+                  Transaction deadline
+                </Typography>
+                <Tooltip title='Lorem ipsum text2'>
                   <InfoIcon style={{ marginLeft: '6px' }} />
                 </Tooltip>
               </Box>
-              <Box display="flex" width="100%" alignItems="center">
-                <Box width={!mobile ? '252px' : '260px'} padding={!mobile ? '7px 4px' : '7px 0' }>
+              <Box display='flex' width='100%' alignItems='center'>
+                <Box
+                  width={!mobile ? '252px' : '260px'}
+                  padding={!mobile ? '7px 4px' : '7px 0'}
+                >
                   <input
                     value={minutes}
                     onChange={handleChangeMinutes}
@@ -567,27 +632,50 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 </Typography>
               </Box>
             </Box>
-            <Box className={!mobile ? classes.pastSwapsSection : classes.pastSwapsSectionMobile}>
-              <Box display="flex" justifyContent="space-between" width="100%" alignItems="center">
-                <Typography className={classes.elementHeader}>Enabled Exchanges</Typography>
-                <Box display="flex" justifyContent="center" alignItems="center">
-                  <Typography className={classes.swapDetailsText}>{'11'}</Typography>
-                  <Box className={classes.expandContainer} onClick={() => setShowExchanges(true)}>
+            <Box
+              className={
+                !mobile
+                  ? classes.pastSwapsSection
+                  : classes.pastSwapsSectionMobile
+              }
+            >
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                width='100%'
+                alignItems='center'
+              >
+                <Typography className={classes.elementHeader}>
+                  Enabled Exchanges
+                </Typography>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                  <Typography className={classes.swapDetailsText}>
+                    {'11'}
+                  </Typography>
+                  <Box
+                    className={classes.expandContainer}
+                    onClick={() => setShowExchanges(true)}
+                  >
                     <Expand />
                   </Box>
-                </Box> 
-              </Box> 
+                </Box>
+              </Box>
             </Box>
           </>
         ) : (
           <>
             <Box className={classes.exchangesTopSection}>
-              <Typography style={{ marginTop: '16px' }}className={classes.title}>Enabled Exchanges</Typography>
+              <Typography
+                style={{ marginTop: '16px' }}
+                className={classes.title}
+              >
+                Enabled Exchanges
+              </Typography>
             </Box>
-            <Box width="100%" padding="6px 30px">
+            <Box width='100%' padding='6px 30px'>
               {mappedExchanges}
             </Box>
-          </> 
+          </>
         )}
       </Box>
       <Box

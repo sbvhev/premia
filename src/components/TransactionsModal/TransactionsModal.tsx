@@ -264,7 +264,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { account } = useWeb3();
   const disconnect = useDisconnect();
   const { palette } = theme;
@@ -301,7 +301,9 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
         rel='noreferrer'
       >
         <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Typography style={{ fontSize: '14px'}}>{shortenTx(item.hash)}</Typography>
+          <Typography style={{ fontSize: '14px' }}>
+            {shortenTx(item.hash)}
+          </Typography>
           <Box
             marginLeft='4px'
             display='flex'

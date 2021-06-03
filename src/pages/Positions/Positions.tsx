@@ -652,11 +652,18 @@ const Positions: React.FC = () => {
     getThisMonthDates(),
   ];
 
-  const chartDateData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartDateData = [
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+  ];
   const chartWeekData = [3234, 6432, 1234, 3234, 6432, 1234, 3234];
-  const chartMonthData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartMonthData = [
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234,
+  ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
- 
+
   const yieldData = [
     {
       tokenIcon: <UniIcon />,
@@ -1000,7 +1007,12 @@ const Positions: React.FC = () => {
         <>
           {positionFilter === 0 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
                 <Typography
                   component='h1'
                   color='textPrimary'
@@ -1199,7 +1211,12 @@ const Positions: React.FC = () => {
           )}
           {positionFilter === 1 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
                 <Typography
                   component='h1'
                   color='textPrimary'
