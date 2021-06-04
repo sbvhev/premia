@@ -37,6 +37,14 @@ import { ReactComponent as ConsetellationNine } from 'assets/svg/Consetellation9
 import { ReactComponent as ConsetellationTen } from 'assets/svg/Consetellation10.svg';
 import { ReactComponent as ArrowCircleIcon } from 'assets/svg/ArrowCircle.svg';
 import { ReactComponent as HamburgerIcon } from 'assets/svg/Hamburger.svg';
+import { ReactComponent as ConsetellationMobileOne } from 'assets/svg/mobile/Consetellation16.svg';
+import { ReactComponent as ConsetellationMobileTwo } from 'assets/svg/mobile/Consetellation3.svg';
+import { ReactComponent as ConsetellationMobileThree } from 'assets/svg/mobile/Consetellation11.svg';
+import { ReactComponent as ConsetellationMobileFour } from 'assets/svg/mobile/Consetellation111.svg';
+import { ReactComponent as ConsetellationMobileFive } from 'assets/svg/mobile/Consetellation112.svg';
+import { ReactComponent as ConsetellationMobileSix } from 'assets/svg/mobile/Consetellation13.svg';
+import { ReactComponent as ConsetellationMobileSeven } from 'assets/svg/mobile/Consetellation113.svg';
+import { ReactComponent as ConsetellationMobileEight } from 'assets/svg/mobile/Consetellation15.svg';
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
@@ -215,6 +223,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         textAlign: 'center',
         fontSize: 14,
         lineHeight: '18px',
+        padding: '0 30px',
       },
     },
 
@@ -227,7 +236,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
+      position: 'relative',
       padding: '20px 0',
+    },
+
+    '& svg': {
+      '&:first-of-type': {
+        left: -20,
+        top: 0,
+        position: 'absolute',
+      },
+
+      '&:last-of-type': {
+        position: 'absolute',
+        right: -20,
+        bottom: -60,
+      },
     },
   },
   tradeOptions: {
@@ -235,6 +259,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 180,
+    position: 'relative',
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
@@ -245,6 +270,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 180,
+    position: 'relative',
 
     '& $rightSideImage': {
       backgroundImage: `url("${VaultsBasicImage}")`,
@@ -482,6 +508,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 196,
+    position: 'relative',
 
     '& > p': {
       marginBottom: 129,
@@ -945,12 +972,14 @@ const LandingPage: React.FC = () => {
         </Box>
         {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
         <Box className={classes.explorePremia}>
+          {mobile && <ConsetellationMobileOne />}
           <Typography className={classes.gradientSubTitle}>
             Explore Premia
           </Typography>
           <Typography className={classes.subTitle}>
             A game changing and intuitive take on decentralized options
           </Typography>
+          {mobile && <ConsetellationMobileTwo />}
         </Box>
         {!mobile && (
           <ConsetellationThree className={classes.consetellationThree} />
@@ -976,6 +1005,11 @@ const LandingPage: React.FC = () => {
             </Button>
           </Box>
           {!mobile && <Box className={classes.rightSideImage}></Box>}
+          {mobile && (
+            <ConsetellationMobileThree
+              style={{ position: 'absolute', right: -20, bottom: -70 }}
+            />
+          )}
         </Box>
         <Box className={classes.earnYield}>
           <Box className={classes.leftSide}>
@@ -999,6 +1033,11 @@ const LandingPage: React.FC = () => {
             </Button>
           </Box>
           {!mobile && <Box className={classes.rightSideImage}></Box>}
+          {mobile && (
+            <ConsetellationMobileFour
+              style={{ position: 'absolute', left: -20, bottom: -15 }}
+            />
+          )}
         </Box>
         <Box className={classes.hedgeRisks}>
           <Box className={classes.leftSide}>
@@ -1048,6 +1087,16 @@ const LandingPage: React.FC = () => {
       </Box>
       <Container className={classes.body}>
         <Box className={classes.defiNative}>
+          {mobile && (
+            <ConsetellationMobileFive
+              style={{ position: 'absolute', left: -20, top: 14 }}
+            />
+          )}
+          {mobile && (
+            <ConsetellationMobileSix
+              style={{ position: 'absolute', left: -20, top: 600 }}
+            />
+          )}
           <Typography className={classes.gradientSubTitle}>
             A defi-native options architecture
           </Typography>
@@ -1101,6 +1150,11 @@ const LandingPage: React.FC = () => {
         <Box className={classes.decentralized}>
           {!mobile && (
             <ConsetellationTen className={classes.consetellationTen} />
+          )}
+          {mobile && (
+            <ConsetellationMobileSeven
+              style={{ position: 'absolute', left: -20, top: 156 }}
+            />
           )}
           <Box className={classes.ourValues}>
             <Typography className={classes.gradientSubTitle}>
@@ -1184,6 +1238,11 @@ const LandingPage: React.FC = () => {
         </Box>
       </Container>
       <Box className={classes.footer}>
+        {mobile && (
+          <ConsetellationMobileEight
+            style={{ position: 'absolute', right: -20, top: 30 }}
+          />
+        )}
         <Box className={classes.footerBar}>
           <Container className={classes.footerBarInner}>
             <Box>
