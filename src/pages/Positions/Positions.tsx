@@ -595,8 +595,8 @@ const getTodayHours = () => {
   let formattedTime;
   let times = [];
   for (let i = 0; i < hoursPerDay + 1; i++) {
-    formattedTime = Moment().subtract(i, 'hours').format('h a');
-    times.unshift(formattedTime);
+    formattedTime = Moment(i, 'hh').format('h a');
+    times.push(formattedTime);
   }
   return times;
 };
