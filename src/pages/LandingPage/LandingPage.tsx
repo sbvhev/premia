@@ -271,6 +271,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.down('md')]: {
       width: '100%',
+      backgroundSize: '100%',
     },
   },
   leftSide: {
@@ -354,6 +355,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         position: 'absolute',
         right: 0,
         bottom: -200,
+      },
+    },
+
+    [breakpoints.down('md')]: {
+      top: -120,
+      height: 200,
+
+      '& > div': {
+        position: 'absolute',
+        top: 200,
       },
     },
   },
@@ -440,6 +451,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         flexDirection: 'column',
       },
     },
+
+    [breakpoints.down('md')]: {
+      marginBottom: 0,
+
+      '& $gradientSubTitle': {
+        fontSize: 26,
+        lineHeight: '26px',
+        marginBottom: 10,
+      },
+    },
   },
   block: {
     display: 'flex',
@@ -465,6 +486,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       lineHeight: '22px',
       fontWeight: 400,
       color: 'rgba(220, 220, 220, 0.6)',
+    },
+
+    [breakpoints.down('md')]: {
+      marginBottom: 50,
     },
   },
   gridIcon: {
@@ -523,6 +548,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       width: '100%',
       maxWidth: '100%',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+
+      '& $gradientSubTitle': {
+        fontSize: 26,
+        lineHeight: '26px',
+        marginBottom: 8,
+      },
+
+      '& $subTitle': {
+        fontSize: 14,
+        lineHeight: '18px',
+        marginBottom: 60,
+      },
     },
   },
   decentralized: {
@@ -533,6 +574,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.down('md')]: {
       flexDirection: 'column',
+      marginBottom: 46,
     },
   },
   keyIcon: {
@@ -554,6 +596,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
+      height: 'auto',
+      marginBottom: 30,
 
       '& img': {
         width: 45,
@@ -586,6 +630,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
+      height: 'auto',
+      marginBottom: 30,
 
       '& img': {
         width: 45,
@@ -618,6 +664,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
+      height: 'auto',
+      marginBottom: 30,
 
       '& img': {
         width: 45,
@@ -673,6 +721,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+
+    [breakpoints.down('md')]: {
+      height: 270,
+    },
   },
   footerBar: {
     width: '100%',
@@ -829,7 +881,7 @@ const LandingPage: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Container fixed className={classes.body}>
-        <Consetellation className={classes.consetellation} />
+        {!mobile && <Consetellation className={classes.consetellation} />}
         <Box className={classes.topSection}>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
@@ -843,7 +895,7 @@ const LandingPage: React.FC = () => {
           </Box>
           <Box className={classes.topSectionRight}></Box>
         </Box>
-        <ConsetellationTwo className={classes.consetellationTwo} />
+        {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
         <Box className={classes.explorePremia}>
           <Typography className={classes.gradientSubTitle}>
             Explore Premia
@@ -852,7 +904,9 @@ const LandingPage: React.FC = () => {
             A game changing and intuitive take on decentralized options
           </Typography>
         </Box>
-        <ConsetellationThree className={classes.consetellationThree} />
+        {!mobile && (
+          <ConsetellationThree className={classes.consetellationThree} />
+        )}
         <Box className={classes.tradeOptions}>
           <Box className={classes.leftSide}>
             <LandingTradingIcon />
@@ -910,7 +964,9 @@ const LandingPage: React.FC = () => {
             </Typography>
             {mobile && (
               <Box className={classes.rightSideImage}>
-                <ConsetellationFour className={classes.consetellationFour} />
+                {!mobile && (
+                  <ConsetellationFour className={classes.consetellationFour} />
+                )}
               </Box>
             )}
             <Button
@@ -929,7 +985,7 @@ const LandingPage: React.FC = () => {
         </Box>
       </Container>
       <Box className={classes.learnMore}>
-        <ConsetellationSeven />
+        {!mobile && <ConsetellationSeven />}
         <Container className={classes.body} fixed style={{ zIndex: 3 }}>
           <Box className={classes.learnMoreBar}>
             <Box>
@@ -940,7 +996,7 @@ const LandingPage: React.FC = () => {
             {mobile && <ArrowCircleIcon />}
           </Box>
         </Container>
-        <ConsetellationSix />
+        {!mobile && <ConsetellationSix />}
       </Box>
       <Container fixed className={classes.body}>
         <Box className={classes.defiNative}>
@@ -976,7 +1032,10 @@ const LandingPage: React.FC = () => {
             </Box>
           </Box>
         </Box>
-        <Box className={classes.learnMoreBar} style={{ marginBottom: 260 }}>
+        <Box
+          className={classes.learnMoreBar}
+          style={{ marginBottom: !mobile ? 260 : 60 }}
+        >
           <Box>
             <Typography>
               Dive into our open collection of decentralized financial research
@@ -985,10 +1044,16 @@ const LandingPage: React.FC = () => {
           {!mobile && <Button>Our Research</Button>}
           {mobile && <ArrowCircleIcon />}
         </Box>
-        <ConsetellationEight className={classes.consetellationEight} />
-        <ConsetellationNine className={classes.consetellationNine} />
+        {!mobile && (
+          <ConsetellationEight className={classes.consetellationEight} />
+        )}
+        {!mobile && (
+          <ConsetellationNine className={classes.consetellationNine} />
+        )}
         <Box className={classes.decentralized}>
-          <ConsetellationTen className={classes.consetellationTen} />
+          {!mobile && (
+            <ConsetellationTen className={classes.consetellationTen} />
+          )}
           <Box className={classes.ourValues}>
             <Typography className={classes.gradientSubTitle}>
               Our Values
