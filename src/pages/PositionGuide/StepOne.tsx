@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
           width: 52,
           height: 52,
           marginBottom: 16,
+          opacity: 0.5,
 
           [theme.breakpoints.down('md')]: {
             width: 42,
@@ -88,14 +89,18 @@ const useStyles = makeStyles((theme: Theme) =>
         background: `linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)`,
         color: theme.palette.background.paper,
 
-        '& path': {
-          fill: theme.palette.background.paper,
+        '& svg': {
+          opacity: 1,
+
+          '& path': {
+            fill: theme.palette.background.paper,
+          },
         },
       },
     },
     divider: {
       width: '100%',
-      borderTop: '1px solid #E9E9E9',
+      borderTop: `1px solid ${theme.palette.divider}`,
       position: 'relative',
       color: '#646464',
 
@@ -133,6 +138,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
         '& path': {
           fill: theme.palette.text.primary,
+        },
+      },
+
+      '&$selected': {
+        background: `linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)`,
+        color: theme.palette.background.paper,
+
+        '& svg': {
+          opacity: 1,
+
+          '& path': {
+            opacity: 1,
+            fill: theme.palette.background.paper,
+          },
         },
       },
     },
@@ -198,7 +217,15 @@ const StepOne: React.FC<StepProps> = ({ activeStep }) => {
       </Box>
       <Box className={classes.divider}>
         <Typography>or</Typography>
-        <Box className={classes.entireMarket}>
+        <Box
+          className={cn(
+            selectedAsset === 'Entire Market' ? classes.selected : '',
+            classes.entireMarket,
+          )}
+          onClick={() => {
+            setSelectedAsset('Entire Market');
+          }}
+        >
           <CartIcon />
           Entire market
         </Box>
