@@ -36,6 +36,7 @@ import { ReactComponent as ConsetellationEight } from 'assets/svg/Consetellation
 import { ReactComponent as ConsetellationNine } from 'assets/svg/Consetellation9.svg';
 import { ReactComponent as ConsetellationTen } from 'assets/svg/Consetellation10.svg';
 import { ReactComponent as ArrowCircleIcon } from 'assets/svg/ArrowCircle.svg';
+import { ReactComponent as HamburgerIcon } from 'assets/svg/Hamburger.svg';
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
@@ -53,6 +54,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 0,
   },
 
   box: {
@@ -75,6 +77,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     color: 'black',
     width: 'auto',
     height: 40,
+    whiteSpace: 'nowrap',
   },
   appBar: {
     background: 'black',
@@ -87,7 +90,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: '18px',
     padding: '0px 10px',
     margin: '0 8px',
+    whiteSpace: 'nowrap',
     cursor: 'pointer',
+
+    [breakpoints.down('md')]: {
+      padding: 0,
+    },
   },
   topSection: {
     display: 'flex',
@@ -102,7 +110,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: '100%',
       position: 'absolute',
       height: '100%',
@@ -115,9 +123,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: '160px 0',
     zIndex: 333,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 'calc(100% - 100px)',
       padding: '50px 0',
+
+      '& $subTitle': {
+        fontSize: 14,
+        lineHeight: '18px',
+        color: 'white',
+      },
+    },
+
+    [breakpoints.between('sm', 'md')]: {
+      padding: '40px 0',
     },
   },
   gradientTitle: {
@@ -131,7 +149,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 21,
     zIndex: 333,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.between('sm', 'md')]: {
+      fontSize: 40,
+      lineHeight: '40px',
+    },
+
+    [breakpoints.down('sm')]: {
       fontSize: 32,
       lineHeight: '32px',
       marginBottom: 8,
@@ -166,11 +189,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: '16px 55px',
     borderRadius: 12,
     width: 'auto',
+
+    [breakpoints.down('sm')]: {
+      width: 140,
+      height: 40,
+      fontSize: 16,
+      lineHeight: '18px',
+    },
   },
   body: {
     border: 'none',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       padding: '0 20px',
     },
   },
@@ -181,7 +211,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'column',
 
     '& $subTitle': {
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         textAlign: 'center',
         fontSize: 14,
         lineHeight: '18px',
@@ -189,14 +219,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     '& $gradientSubTitle': {
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         textAlign: 'center',
         fontSize: 26,
         lineHeight: '55px',
       },
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       padding: '20px 0',
     },
   },
@@ -206,7 +236,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'space-between',
     marginBottom: 180,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
   },
@@ -220,7 +250,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       backgroundImage: `url("${VaultsBasicImage}")`,
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
   },
@@ -230,7 +260,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'space-between',
     marginBottom: 180,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
 
@@ -258,7 +288,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     color: 'white',
     marginTop: 40,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       fontSize: 22,
       lineHeight: '54px',
       marginTop: 33,
@@ -273,8 +303,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     backgroundRepeat: 'no-repeat',
     position: 'relative',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: '100%',
+      backgroundSize: '100%',
+    },
+
+    [breakpoints.between('sm', 'md')]: {
       backgroundSize: '100%',
     },
   },
@@ -288,14 +322,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 40,
       left: 0,
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         width: 40,
         height: 40,
       },
     },
 
     '& > button': {
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         margin: 'auto',
       },
     },
@@ -306,14 +340,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       left: 30,
       top: 100,
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         left: 20,
         top: 80,
         height: 'calc(100% - 40px)',
       },
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: '100%',
       paddingLeft: 56,
       display: 'flex',
@@ -362,7 +396,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       top: -120,
       height: 200,
 
@@ -386,7 +420,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 30,
     position: 'relative',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       padding: '13px 20px',
       height: 'auto',
     },
@@ -396,9 +430,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 18,
       lineHeight: '54px',
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         lineHeight: '21px',
         fontSize: 14,
+      },
+
+      [breakpoints.between('sm', 'md')]: {
+        lineHeight: '24px',
+        fontSize: 16,
       },
     },
 
@@ -427,6 +466,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: 'auto',
       height: 45,
       color: 'black',
+      whiteSpace: 'nowrap',
     },
 
     '& > svg': {
@@ -451,12 +491,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       flexDirection: 'row',
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         flexDirection: 'column',
       },
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       marginBottom: 0,
 
       '& $gradientSubTitle': {
@@ -492,7 +532,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       color: 'rgba(220, 220, 220, 0.6)',
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       marginBottom: 50,
     },
   },
@@ -515,7 +555,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       left: 'auto',
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 325,
       height: 325,
     },
@@ -523,25 +563,25 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   subtractIcon: {
     right: 0,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 162.5,
       height: 325,
     },
   },
   netIcon: {
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 325,
       height: 187.96,
     },
   },
   smallIcon: {
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 62.83,
       height: 53.62,
     },
   },
   threeCirclesIcon: {
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: 242.67,
       height: 242.67,
     },
@@ -549,7 +589,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   ourValues: {
     maxWidth: 280,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       width: '100%',
       maxWidth: '100%',
       textAlign: 'center',
@@ -576,7 +616,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 400,
     position: 'relative',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       flexDirection: 'column',
       marginBottom: 46,
     },
@@ -595,7 +635,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginTop: 21,
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       position: 'initial',
       display: 'flex',
       flexDirection: 'row',
@@ -629,7 +669,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginTop: 21,
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       position: 'initial',
       display: 'flex',
       flexDirection: 'row',
@@ -663,7 +703,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginTop: 21,
     },
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       position: 'initial',
       display: 'flex',
       flexDirection: 'row',
@@ -726,7 +766,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     position: 'relative',
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       height: 270,
     },
   },
@@ -739,7 +779,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'absolute',
     bottom: 0,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       padding: '20px 20px',
       height: 125,
     },
@@ -754,7 +794,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 12,
       fontWeight: 400,
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         marginTop: 16,
         marginBottom: 0,
       },
@@ -768,7 +808,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '&:last-of-type': {
       width: 150,
 
-      [breakpoints.down('md')]: {
+      [breakpoints.down('sm')]: {
         width: 'auto',
       },
     },
@@ -813,7 +853,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     left: 20,
     top: 3,
 
-    [breakpoints.down('md')]: {
+    [breakpoints.down('sm')]: {
       display: 'none',
     },
   },
@@ -847,18 +887,21 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     left: 0,
     top: 4500,
   },
+  hamburgerIcon: {
+    cursor: 'pointer',
+  },
 }));
 
 const LandingPage: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Grid container>
       <AppBar position='static' className={classes.appBar}>
         <Toolbar>
-          <Container fixed className={classes.container}>
+          <Container className={classes.container}>
             <PremiaLogo />
             {!mobile && (
               <Box
@@ -881,10 +924,11 @@ const LandingPage: React.FC = () => {
                 <Button className={classes.openApp}>Open App</Button>
               </Box>
             )}
+            {mobile && <HamburgerIcon className={classes.hamburgerIcon} />}
           </Container>
         </Toolbar>
       </AppBar>
-      <Container fixed className={classes.body}>
+      <Container className={classes.body}>
         {!mobile && <Consetellation className={classes.consetellation} />}
         <Box className={classes.topSection}>
           <Box className={classes.topSectionLeft}>
@@ -990,7 +1034,7 @@ const LandingPage: React.FC = () => {
       </Container>
       <Box className={classes.learnMore}>
         {!mobile && <ConsetellationSeven />}
-        <Container className={classes.body} fixed style={{ zIndex: 3 }}>
+        <Container className={classes.body} style={{ zIndex: 3 }}>
           <Box className={classes.learnMoreBar}>
             <Box>
               {!mobile && <MediumIcon />}
@@ -1002,7 +1046,7 @@ const LandingPage: React.FC = () => {
         </Container>
         {!mobile && <ConsetellationSix />}
       </Box>
-      <Container fixed className={classes.body}>
+      <Container className={classes.body}>
         <Box className={classes.defiNative}>
           <Typography className={classes.gradientSubTitle}>
             A defi-native options architecture
@@ -1141,7 +1185,7 @@ const LandingPage: React.FC = () => {
       </Container>
       <Box className={classes.footer}>
         <Box className={classes.footerBar}>
-          <Container fixed className={classes.footerBarInner}>
+          <Container className={classes.footerBarInner}>
             <Box>
               <PremiaLogo />
               <Typography className={classes.subTitle}>
