@@ -4,13 +4,13 @@ import {
   Box,
   Tooltip,
 } from '@material-ui/core';
-import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, Theme, useTheme, createStyles } from '@material-ui/core/styles';
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { ReactComponent as BackIcon } from 'assets/svg/GoBackArrow.svg';
 import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
 import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg'; 
-import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg'; 
+import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
 import { SwitchWithGlider } from 'components';
 
@@ -90,6 +90,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     fontWeight: 400,
     '&:hover': {
+      border: `1px solid ${palette.primary.main}`,
       backgroundColor: palette.primary.dark,
     },
     '&:after': {
@@ -145,6 +146,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '40px',
     height: '40px',
     borderRadius: '50%',
+    paddingRight: '6px',
     cursor: 'pointer',
     zIndex: 10,
     backgroundColor: 'transparent',
@@ -158,10 +160,11 @@ const useStyles = makeStyles(({ palette }) => ({
     left: 'calc(50% - 150px)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    width: '26px',
-    height: '26px',
+    alignItems: 'center',
+    width: '32px',
+    height: '32px',
     borderRadius: '50%',
+    paddingRight: '2px',
     cursor: 'pointer',
     zIndex: 10,
     backgroundColor: 'transparent',
@@ -225,6 +228,11 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   inactiveMode: {
     backgroundColor: 'transparent',
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.primary.main
+      },
+    },
   },
   switchContainer: {
     width: '258px',
@@ -357,6 +365,7 @@ interface enabledExchanges {
 
 const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
+  const { palette } = useTheme();
   const mobile = (/Mobi|Android/i.test(navigator.userAgent));
   const halfDeviceWidth = window.innerWidth / 2;
   const [slippage, setSlippage] = React.useState<string>('0.5');
@@ -492,8 +501,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
               <Typography className={classes.title} style={{ marginBottom: '32px' }}>Swap settings</Typography>
               <Box display="flex" width="100%" alignItems="center" margin="4px 0">
                 <Typography className={classes.elementHeader}>Slippage tolerance</Typography>
-                <Tooltip title="Lorem ipsum text">
-                  <InfoIcon style={{ marginLeft: '6px' }} />
+                <Tooltip title="Lorem ipsum text" arrow>
+                  <InfoIcon fill={palette.secondary.main} style={{ marginLeft: '6px' }} />
                 </Tooltip>
               </Box>
               <Box
@@ -537,7 +546,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                     className={classes.borderedInput}
                     placeholder="Custom"
                   />
-                  <PercentageIcon
+                  <PercentageIcon fill={palette.text.primary}
                     style={!mobile ? 
                       { position: 'absolute', marginTop: '16px', right: 46}
                       : {position: 'relative', marginTop: '16px', right: 40}
@@ -547,8 +556,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
               </Box>
               <Box display="flex" width="100%" alignItems="center" margin="10px 0">
                 <Typography className={classes.elementHeader}>Transaction deadline</Typography>
-                <Tooltip title="Lorem ipsum text2">
-                  <InfoIcon style={{ marginLeft: '6px' }} />
+                <Tooltip title="Lorem ipsum text2" arrow>
+                  <InfoIcon fill={palette.secondary.main} style={{ marginLeft: '6px' }} />
                 </Tooltip>
               </Box>
               <Box display="flex" width="100%" alignItems="center">
