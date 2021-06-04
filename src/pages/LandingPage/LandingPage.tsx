@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Container,
   Grid,
@@ -8,6 +8,7 @@ import {
   Typography,
   Button,
   Box,
+  useMediaQuery,
 } from '@material-ui/core';
 import cn from 'classnames';
 import { ReactComponent as PremiaLogo } from 'assets/svg/Logo.svg';
@@ -34,6 +35,7 @@ import { ReactComponent as ConsetellationSeven } from 'assets/svg/Consetellation
 import { ReactComponent as ConsetellationEight } from 'assets/svg/Consetellation8.svg';
 import { ReactComponent as ConsetellationNine } from 'assets/svg/Consetellation9.svg';
 import { ReactComponent as ConsetellationTen } from 'assets/svg/Consetellation10.svg';
+import { ReactComponent as ArrowCircleIcon } from 'assets/svg/ArrowCircle.svg';
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
@@ -44,7 +46,7 @@ import HeroImage from 'assets/images/HeroImage.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   container: {
     border: 'none',
     display: 'flex',
@@ -91,6 +93,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
+    position: 'relative',
   },
   topSectionRight: {
     width: '50%',
@@ -98,10 +101,24 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundSize: '100% auto',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+
+    [breakpoints.down('md')]: {
+      width: '100%',
+      position: 'absolute',
+      height: '100%',
+      top: 0,
+      left: 0,
+    },
   },
   topSectionLeft: {
     width: '50%',
     padding: '160px 0',
+    zIndex: 333,
+
+    [breakpoints.down('md')]: {
+      width: 'calc(100% - 100px)',
+      padding: '50px 0',
+    },
   },
   gradientTitle: {
     fontSize: 55,
@@ -112,6 +129,13 @@ const useStyles = makeStyles(({ palette }) => ({
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
     marginBottom: 21,
+    zIndex: 333,
+
+    [breakpoints.down('md')]: {
+      fontSize: 32,
+      lineHeight: '32px',
+      marginBottom: 8,
+    },
   },
   gradientSubTitle: {
     fontSize: 48,
@@ -145,18 +169,42 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   body: {
     border: 'none',
+
+    [breakpoints.down('md')]: {
+      padding: '0 20px',
+    },
   },
   explorePremia: {
     padding: '80px 0',
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
+
+    '& $subTitle': {
+      textAlign: 'center',
+      fontSize: 14,
+      lineHeight: '18px',
+    },
+
+    '& $gradientSubTitle': {
+      textAlign: 'center',
+      fontSize: 26,
+      lineHeight: '55px',
+    },
+
+    [breakpoints.down('md')]: {
+      padding: '20px 0',
+    },
   },
   tradeOptions: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 180,
+
+    [breakpoints.down('md')]: {
+      marginBottom: 0,
+    },
   },
   earnYield: {
     display: 'flex',
@@ -167,12 +215,20 @@ const useStyles = makeStyles(({ palette }) => ({
     '& $rightSideImage': {
       backgroundImage: `url("${VaultsBasicImage}")`,
     },
+
+    [breakpoints.down('md')]: {
+      marginBottom: 0,
+    },
   },
   hedgeRisks: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 180,
+
+    [breakpoints.down('md')]: {
+      marginBottom: 0,
+    },
 
     '& $rightSideImage': {
       backgroundImage: `url("${VaultsProImage}")`,
@@ -197,6 +253,12 @@ const useStyles = makeStyles(({ palette }) => ({
     marginBottom: 9,
     color: 'white',
     marginTop: 40,
+
+    [breakpoints.down('md')]: {
+      fontSize: 22,
+      lineHeight: '54px',
+      marginTop: 33,
+    },
   },
   rightSideImage: {
     width: '45%',
@@ -206,6 +268,10 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     position: 'relative',
+
+    [breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   leftSide: {
     position: 'relative',
@@ -216,6 +282,17 @@ const useStyles = makeStyles(({ palette }) => ({
       position: 'absolute',
       top: 40,
       left: 0,
+
+      [breakpoints.down('md')]: {
+        width: 40,
+        height: 40,
+      },
+    },
+
+    '& > button': {
+      [breakpoints.down('md')]: {
+        margin: 'auto',
+      },
     },
 
     '& $divider': {
@@ -223,6 +300,19 @@ const useStyles = makeStyles(({ palette }) => ({
       position: 'absolute',
       left: 30,
       top: 100,
+
+      [breakpoints.down('md')]: {
+        left: 20,
+        top: 80,
+        height: 'calc(100% - 40px)',
+      },
+    },
+
+    [breakpoints.down('md')]: {
+      width: '100%',
+      paddingLeft: 56,
+      display: 'flex',
+      flexDirection: 'column',
     },
   },
   outlinedButton: {
@@ -268,21 +358,33 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   learnMoreBar: {
+    zIndex: 100,
     height: 80,
     maxWidth: 1300,
     width: '100%',
     border: '1px solid rgba(255, 255, 255, 0.2)',
-    background: 'rgba(255,255, 255, 0.05)',
+    background: '#101010',
     borderRadius: 12,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 30,
+    position: 'relative',
+
+    [breakpoints.down('md')]: {
+      padding: '13px 20px',
+      height: 'auto',
+    },
 
     '& p': {
       fontWeight: 500,
       fontSize: 18,
       lineHeight: '54px',
+
+      [breakpoints.down('md')]: {
+        lineHeight: '21px',
+        fontSize: 14,
+      },
     },
 
     '& > div': {
@@ -311,6 +413,13 @@ const useStyles = makeStyles(({ palette }) => ({
       height: 45,
       color: 'black',
     },
+
+    '& > svg': {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      transform: 'translate(40%, -40%)',
+    },
   },
   defiNative: {
     textAlign: 'center',
@@ -326,6 +435,10 @@ const useStyles = makeStyles(({ palette }) => ({
     '& > div': {
       display: 'flex',
       flexDirection: 'row',
+
+      [breakpoints.down('md')]: {
+        flexDirection: 'column',
+      },
     },
   },
   block: {
@@ -372,18 +485,55 @@ const useStyles = makeStyles(({ palette }) => ({
       transform: 'none',
       left: 'auto',
     },
+
+    [breakpoints.down('md')]: {
+      width: 325,
+      height: 325,
+    },
   },
   subtractIcon: {
     right: 0,
+
+    [breakpoints.down('md')]: {
+      width: 162.5,
+      height: 325,
+    },
+  },
+  netIcon: {
+    [breakpoints.down('md')]: {
+      width: 325,
+      height: 187.96,
+    },
+  },
+  smallIcon: {
+    [breakpoints.down('md')]: {
+      width: 62.83,
+      height: 53.62,
+    },
+  },
+  threeCirclesIcon: {
+    [breakpoints.down('md')]: {
+      width: 242.67,
+      height: 242.67,
+    },
   },
   ourValues: {
     maxWidth: 280,
+
+    [breakpoints.down('md')]: {
+      width: '100%',
+      maxWidth: '100%',
+    },
   },
   decentralized: {
     display: 'flex',
     alignItems: 'center',
     marginBottom: 400,
     position: 'relative',
+
+    [breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   keyIcon: {
     position: 'absolute',
@@ -397,6 +547,24 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
       marginTop: 21,
+    },
+
+    [breakpoints.down('md')]: {
+      position: 'initial',
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+
+      '& img': {
+        width: 45,
+        height: 45,
+        marginRight: 15,
+      },
+
+      '& $subTitle': {
+        marginTop: 0,
+        width: 'auto',
+      },
     },
   },
   coinIcon: {
@@ -412,6 +580,24 @@ const useStyles = makeStyles(({ palette }) => ({
       lineHeight: '18px',
       marginTop: 21,
     },
+
+    [breakpoints.down('md')]: {
+      position: 'initial',
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+
+      '& img': {
+        width: 45,
+        height: 45,
+        marginRight: 15,
+      },
+
+      '& $subTitle': {
+        marginTop: 0,
+        width: 'auto',
+      },
+    },
   },
   labIcon: {
     position: 'absolute',
@@ -425,6 +611,24 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
       marginTop: 21,
+    },
+
+    [breakpoints.down('md')]: {
+      position: 'initial',
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+
+      '& img': {
+        width: 45,
+        height: 45,
+        marginRight: 15,
+      },
+
+      '& $subTitle': {
+        marginTop: 0,
+        width: 'auto',
+      },
     },
   },
   rightTopLine: {
@@ -478,6 +682,11 @@ const useStyles = makeStyles(({ palette }) => ({
     background: 'black',
     position: 'absolute',
     bottom: 0,
+
+    [breakpoints.down('md')]: {
+      padding: '20px 20px',
+      height: 125,
+    },
   },
   footerBarInner: {
     display: 'flex',
@@ -488,6 +697,11 @@ const useStyles = makeStyles(({ palette }) => ({
     '& $subTitle': {
       fontSize: 12,
       fontWeight: 400,
+
+      [breakpoints.down('md')]: {
+        marginTop: 16,
+        marginBottom: 0,
+      },
     },
   },
   footerLine: {
@@ -497,6 +711,10 @@ const useStyles = makeStyles(({ palette }) => ({
 
     '&:last-of-type': {
       width: 150,
+
+      [breakpoints.down('md')]: {
+        width: 'auto',
+      },
     },
 
     '& h1': {
@@ -505,6 +723,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '20px',
       marginBottom: 10,
+      cursor: 'pointer',
     },
 
     '& p': {
@@ -513,6 +732,7 @@ const useStyles = makeStyles(({ palette }) => ({
       marginBottom: 8,
       fontWeight: 400,
       color: '#646464',
+      cursor: 'pointer',
     },
 
     '& > div': {
@@ -524,6 +744,7 @@ const useStyles = makeStyles(({ palette }) => ({
         marginRight: 16,
         width: 16,
         height: 16,
+        cursor: 'pointer',
       },
     },
   },
@@ -535,6 +756,10 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'absolute',
     left: 20,
     top: 3,
+
+    [breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
   consetellationTwo: {
     position: 'absolute',
@@ -570,29 +795,36 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const LandingPage: React.FC = () => {
   const classes = useStyles();
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Grid container>
       <AppBar position='static' className={classes.appBar}>
         <Toolbar>
           <Container fixed className={classes.container}>
             <PremiaLogo />
-            <Box
-              flexDirection='row'
-              display='flex'
-              alignItems='center'
-              className={classes.box}
-            >
-              <Typography className={classes.menuItem}>
-                Explore Premia
-              </Typography>
-              <Typography className={classes.menuItem}>Architecture</Typography>
-              <Typography className={classes.menuItem}>Our Values</Typography>
-              <TwitterIcon />
-              <DiscordIcon />
-              <GithubIcon />
-              <MediumIcon />
-              <Button className={classes.openApp}>Open App</Button>
-            </Box>
+            {!mobile && (
+              <Box
+                flexDirection='row'
+                display='flex'
+                alignItems='center'
+                className={classes.box}
+              >
+                <Typography className={classes.menuItem}>
+                  Explore Premia
+                </Typography>
+                <Typography className={classes.menuItem}>
+                  Architecture
+                </Typography>
+                <Typography className={classes.menuItem}>Our Values</Typography>
+                <TwitterIcon />
+                <DiscordIcon />
+                <GithubIcon />
+                <MediumIcon />
+                <Button className={classes.openApp}>Open App</Button>
+              </Box>
+            )}
           </Container>
         </Toolbar>
       </AppBar>
@@ -632,6 +864,7 @@ const LandingPage: React.FC = () => {
               Buy and sell options using Premia’s state of the art automated
               peer-to-pool market making algorithm.
             </Typography>
+            {mobile && <Box className={classes.rightSideImage}></Box>}
             <Button
               variant='outlined'
               color='primary'
@@ -640,7 +873,7 @@ const LandingPage: React.FC = () => {
               Trade Options
             </Button>
           </Box>
-          <Box className={classes.rightSideImage}></Box>
+          {!mobile && <Box className={classes.rightSideImage}></Box>}
         </Box>
         <Box className={classes.earnYield}>
           <Box className={classes.leftSide}>
@@ -654,6 +887,7 @@ const LandingPage: React.FC = () => {
               underwriting on-chain options and other baskets of structured
               finance products.
             </Typography>
+            {mobile && <Box className={classes.rightSideImage}></Box>}
             <Button
               variant='outlined'
               color='primary'
@@ -662,7 +896,7 @@ const LandingPage: React.FC = () => {
               Earn Yield
             </Button>
           </Box>
-          <Box className={classes.rightSideImage}></Box>
+          {!mobile && <Box className={classes.rightSideImage}></Box>}
         </Box>
         <Box className={classes.hedgeRisks}>
           <Box className={classes.leftSide}>
@@ -674,6 +908,11 @@ const LandingPage: React.FC = () => {
             >
               Protect your assets against market volatility, insure your gains.
             </Typography>
+            {mobile && (
+              <Box className={classes.rightSideImage}>
+                <ConsetellationFour className={classes.consetellationFour} />
+              </Box>
+            )}
             <Button
               variant='outlined'
               color='primary'
@@ -682,20 +921,25 @@ const LandingPage: React.FC = () => {
               Protect Assets
             </Button>
           </Box>
-          <Box className={classes.rightSideImage}>
-            <ConsetellationFour className={classes.consetellationFour} />
-          </Box>
+          {!mobile && (
+            <Box className={classes.rightSideImage}>
+              <ConsetellationFour className={classes.consetellationFour} />
+            </Box>
+          )}
         </Box>
       </Container>
       <Box className={classes.learnMore}>
         <ConsetellationSeven />
-        <Box className={classes.learnMoreBar}>
-          <Box>
-            <MediumIcon />
-            <Typography>Interested in learning more about Premia?</Typography>
+        <Container className={classes.body} fixed style={{ zIndex: 3 }}>
+          <Box className={classes.learnMoreBar}>
+            <Box>
+              {!mobile && <MediumIcon />}
+              <Typography>Interested in learning more about Premia?</Typography>
+            </Box>
+            {!mobile && <Button>Learn More</Button>}
+            {mobile && <ArrowCircleIcon />}
           </Box>
-          <Button>Learn More</Button>
-        </Box>
+        </Container>
         <ConsetellationSix />
       </Box>
       <Container fixed className={classes.body}>
@@ -738,7 +982,8 @@ const LandingPage: React.FC = () => {
               Dive into our open collection of decentralized financial research
             </Typography>
           </Box>
-          <Button>Our Research</Button>
+          {!mobile && <Button>Our Research</Button>}
+          {mobile && <ArrowCircleIcon />}
         </Box>
         <ConsetellationEight className={classes.consetellationEight} />
         <ConsetellationNine className={classes.consetellationNine} />
@@ -755,35 +1000,64 @@ const LandingPage: React.FC = () => {
             </Typography>
           </Box>
           <Box className={classes.gridIcon}>
-            <GridIcon />
-            <SmallLogoIcon />
+            <GridIcon className={classes.netIcon} />
+            <SmallLogoIcon className={classes.smallIcon} />
             <SubtractIcon className={classes.subtractIcon} />
-            <ThreeCirclesIcon />
-            <Box className={classes.keyIcon}>
-              <img src={KeyIcon} alt='key' />
-              <Typography className={classes.subTitle}>
-                Enable universal access to best in class, decentralized
-                financial products
-              </Typography>
-            </Box>
-            <Box className={classes.rightTopLine}></Box>
-            <Box className={classes.labIcon}>
-              <img src={LabIcon} alt='lab' />
-              <Typography className={classes.subTitle}>
-                Build the next generation of financial infrastructure with
-                permissionless access to everyone
-              </Typography>
-            </Box>
-            <Box className={classes.rightCenterLine}></Box>
-            <Box className={classes.coinIcon}>
-              <img src={CoinIcon} alt='coin' />
-              <Typography className={classes.subTitle}>
-                Provide open access to state of the art research and innovation
-                in decentralized finance
-              </Typography>
-            </Box>
-            <Box className={classes.rightBottomLine}></Box>
+            <ThreeCirclesIcon className={classes.threeCirclesIcon} />
+            {!mobile && (
+              <>
+                <Box className={classes.keyIcon}>
+                  <img src={KeyIcon} alt='key' />
+                  <Typography className={classes.subTitle}>
+                    Enable universal access to best in class, decentralized
+                    financial products
+                  </Typography>
+                </Box>
+                <Box className={classes.rightTopLine}></Box>
+                <Box className={classes.labIcon}>
+                  <img src={LabIcon} alt='lab' />
+                  <Typography className={classes.subTitle}>
+                    Build the next generation of financial infrastructure with
+                    permissionless access to everyone
+                  </Typography>
+                </Box>
+                <Box className={classes.rightCenterLine}></Box>
+                <Box className={classes.coinIcon}>
+                  <img src={CoinIcon} alt='coin' />
+                  <Typography className={classes.subTitle}>
+                    Provide open access to state of the art research and
+                    innovation in decentralized finance
+                  </Typography>
+                </Box>
+                <Box className={classes.rightBottomLine}></Box>
+              </>
+            )}
           </Box>
+          {mobile && (
+            <>
+              <Box className={classes.keyIcon}>
+                <img src={KeyIcon} alt='key' />
+                <Typography className={classes.subTitle}>
+                  Enable universal access to best in class, decentralized
+                  financial products
+                </Typography>
+              </Box>
+              <Box className={classes.labIcon}>
+                <img src={LabIcon} alt='lab' />
+                <Typography className={classes.subTitle}>
+                  Build the next generation of financial infrastructure with
+                  permissionless access to everyone
+                </Typography>
+              </Box>
+              <Box className={classes.coinIcon}>
+                <img src={CoinIcon} alt='coin' />
+                <Typography className={classes.subTitle}>
+                  Provide open access to state of the art research and
+                  innovation in decentralized finance
+                </Typography>
+              </Box>
+            </>
+          )}
         </Box>
         <Box className={classes.learnMoreBar}>
           <Box>
@@ -792,7 +1066,8 @@ const LandingPage: React.FC = () => {
               finance.
             </Typography>
           </Box>
-          <Button>Careers</Button>
+          {!mobile && <Button>Careers</Button>}
+          {mobile && <ArrowCircleIcon />}
         </Box>
       </Container>
       <Box className={classes.footer}>
@@ -805,22 +1080,26 @@ const LandingPage: React.FC = () => {
               </Typography>
             </Box>
             <Box className={classes.footerLines}>
+              {!mobile && (
+                <Box className={classes.footerLine}>
+                  <Typography variant='h1'>Misc</Typography>
+                  <Typography>Contact Us</Typography>
+                  <Typography>Careers</Typography>
+                  <Typography>Documentation</Typography>
+                  <Typography>Bug Bounty</Typography>
+                </Box>
+              )}
+              {!mobile && (
+                <Box className={classes.footerLine}>
+                  <Typography variant='h1'>Legal</Typography>
+                  <Typography>Privacy Policy</Typography>
+                  <Typography>Cookie Policy</Typography>
+                  <Typography>Risk Policy</Typography>
+                  <Typography>Terms of Service</Typography>
+                </Box>
+              )}
               <Box className={classes.footerLine}>
-                <Typography variant='h1'>Misc</Typography>
-                <Typography>Contact Us</Typography>
-                <Typography>Careers</Typography>
-                <Typography>Documentation</Typography>
-                <Typography>Bug Bounty</Typography>
-              </Box>
-              <Box className={classes.footerLine}>
-                <Typography variant='h1'>Legal</Typography>
-                <Typography>Privacy Policy</Typography>
-                <Typography>Cookie Policy</Typography>
-                <Typography>Risk Policy</Typography>
-                <Typography>Terms of Service</Typography>
-              </Box>
-              <Box className={classes.footerLine}>
-                <Typography variant='h1'>Social</Typography>
+                {!mobile && <Typography variant='h1'>Social</Typography>}
                 <Box>
                   <TwitterIcon />
                   <DiscordIcon />
