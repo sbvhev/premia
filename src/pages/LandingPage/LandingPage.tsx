@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Container,
@@ -11,6 +11,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import cn from 'classnames';
+import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as PremiaLogo } from 'assets/svg/Logo.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -124,6 +125,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: '100%',
       top: 0,
       left: 0,
+      opacity: 0.6,
     },
   },
   topSectionLeft: {
@@ -640,7 +642,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   decentralized: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: 400,
+    marginBottom: 380,
     position: 'relative',
 
     [breakpoints.down('sm')]: {
@@ -656,7 +658,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 112,
 
     '& $subTitle': {
-      width: 180,
+      width: 210,
       fontSize: 14,
       lineHeight: '18px',
       marginTop: 21,
@@ -690,7 +692,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 112,
 
     '& $subTitle': {
-      width: 180,
+      width: 210,
       fontSize: 14,
       lineHeight: '18px',
       marginTop: 21,
@@ -724,7 +726,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 112,
 
     '& $subTitle': {
-      width: 180,
+      width: 210,
       fontSize: 14,
       lineHeight: '18px',
       marginTop: 21,
@@ -795,6 +797,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.down('sm')]: {
       height: 270,
+      marginTop: -20,
     },
   },
   footerBar: {
@@ -917,12 +920,72 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   hamburgerIcon: {
     cursor: 'pointer',
   },
+  closeIcon: {
+    cursor: 'pointer',
+
+    '& path': {
+      fill: '#646464',
+    },
+  },
+  mobileMenu: {
+    padding: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    background: 'black',
+    width: '100%',
+    position: 'fixed',
+    top: 60,
+    zIndex: 60000,
+
+    '& > div': {
+      '&:first-of-type': {
+        padding: '12px 20px',
+        borderBottom: '1px solid #212121',
+
+        '& button': {
+          width: '100%',
+          height: 40,
+        },
+      },
+
+      '&:nth-of-type(2)': {
+        display: 'flex',
+        flexDirection: 'column',
+        borderBottom: '1px solid #212121',
+        padding: '12px 20px',
+
+        '& p': {
+          margin: 0,
+          paddingTop: 12,
+          paddingBottom: 12,
+        },
+      },
+
+      '&:last-of-type': {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottom: '1px solid #212121',
+        padding: '16px 0',
+
+        '& svg': {
+          margin: '0 20px',
+        },
+      },
+    },
+  },
 }));
 
 const LandingPage: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [mobile]);
 
   return (
     <Grid container>
@@ -951,10 +1014,39 @@ const LandingPage: React.FC = () => {
                 <Button className={classes.openApp}>Open App</Button>
               </Box>
             )}
-            {mobile && <HamburgerIcon className={classes.hamburgerIcon} />}
+            {mobile && !menuOpen && (
+              <HamburgerIcon
+                className={classes.hamburgerIcon}
+                onClick={() => setMenuOpen(true)}
+              />
+            )}
+            {mobile && menuOpen && (
+              <CloseIcon
+                className={classes.closeIcon}
+                onClick={() => setMenuOpen(false)}
+              />
+            )}
           </Container>
         </Toolbar>
       </AppBar>
+      {menuOpen && mobile && (
+        <Box className={classes.mobileMenu}>
+          <Box>
+            <Button className={classes.openApp}>Open App</Button>
+          </Box>
+          <Box>
+            <Typography className={classes.menuItem}>Explore Premia</Typography>
+            <Typography className={classes.menuItem}>Architecture</Typography>
+            <Typography className={classes.menuItem}>Our Values</Typography>
+          </Box>
+          <Box>
+            <TwitterIcon />
+            <DiscordIcon />
+            <GithubIcon />
+            <MediumIcon />
+          </Box>
+        </Box>
+      )}
       <Container className={classes.body}>
         {!mobile && <Consetellation className={classes.consetellation} />}
         <Box className={classes.topSection}>
@@ -1240,7 +1332,7 @@ const LandingPage: React.FC = () => {
       <Box className={classes.footer}>
         {mobile && (
           <ConsetellationMobileEight
-            style={{ position: 'absolute', right: -20, top: 30 }}
+            style={{ position: 'absolute', right: 0, top: 30 }}
           />
         )}
         <Box className={classes.footerBar}>
