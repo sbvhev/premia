@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { PageWithSidebar } from 'layouts';
+
 import PositionStepper from './Stepper';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -29,15 +30,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 const ProVault: React.FC = () => {
   const classes = useStyles();
   return (
-    <PageWithSidebar>
-      <Grid container direction='column'>
+    <Grid container direction='column'>
+      <Link to='/'>
         <Typography className={classes.hyperlink}>
           Back to My positions
         </Typography>
-        <Typography className={classes.title}>Position Guide</Typography>
-        <PositionStepper />
-      </Grid>
-    </PageWithSidebar>
+      </Link>
+      <Typography className={classes.title}>Position Guide</Typography>
+      <PositionStepper />
+    </Grid>
   );
 };
 
