@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .MuiIconButton-root': {
-      padding: '12px 6px 12px 0',
+      padding: '12px 12px 12px 0',
       '&:hover': {
         background: 'transparent',
       },
