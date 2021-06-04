@@ -98,6 +98,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: 14,
         height: 14,
         position: 'relative',
+
+        '& path': {
+          fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+        },
       },
     },
   },
