@@ -133,6 +133,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginRight: 8,
       width: 16,
       height: 16,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+      },
     },
   },
   rightCard: {
