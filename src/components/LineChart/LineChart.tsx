@@ -69,6 +69,13 @@ const LineChart: React.FC<LineChartProps> = ({
       axisTicks: {
         show: false,
       },
+      labels: {
+        style: {
+          colors: new Array(categories.length).fill(
+            dark ? '#646464' : '#CACED3',
+          ),
+        },
+      },
     },
     yaxis: {
       show: showYAxis,
