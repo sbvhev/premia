@@ -1,5 +1,4 @@
 import React from 'react';
-import { Typography, Box, Tooltip } from '@material-ui/core';
 import {
   Typography,
   Box,
