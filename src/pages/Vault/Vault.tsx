@@ -75,18 +75,30 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
 
     '& h1': {
-      marginRight: 8,
+      fontWeight: 700,
+      marginRight: 4,
     },
 
     '& h2': {
       top: 1,
       position: 'relative',
+      fontSize: 14,
     },
 
     '& svg': {
-      marginRight: 8,
-      top: -1,
-      position: 'relative',
+      '&:first-of-type': {
+        marginRight: 8,
+        top: -1,
+        position: 'relative',
+      },
+
+      '&:last-of-type': {
+        marginRight: 4,
+        top: 1,
+        width: 14,
+        height: 14,
+        position: 'relative',
+      },
     },
   },
   topSector: {
@@ -278,11 +290,11 @@ const ProVault: React.FC = () => {
   const [coin, setCoin] = useState<any>(null);
   const thinDesktop = useMediaQuery(theme.breakpoints.down('sm'));
   const ultraThinWindow = useMediaQuery(theme.breakpoints.down('xs'));
-  const phoneDevice = (/Mobi|Android/i.test(navigator.userAgent));
+  const phoneDevice = /Mobi|Android/i.test(navigator.userAgent);
   const extraLargeDesktop = window.innerWidth > 1526;
   const deviceWidth = window.innerWidth;
-  const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
-  const largeMobileDeviceAdjustment = (!ultraThinWindow && thinDesktop) ? 8 : 0;
+  const extraMargin = extraLargeDesktop ? (deviceWidth - 1526) / 2 - 6 : 0;
+  const largeMobileDeviceAdjustment = !ultraThinWindow && thinDesktop ? 8 : 0;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
@@ -305,8 +317,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
-      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
+      width={phoneDevice || thinDesktop ? '160px' : '94px'}
+      height={phoneDevice || thinDesktop ? '32px' : '42px'}
       className={vaultIndex === 1 ? classes.modeItem : classes.inactiveMode}
     >
       <BasicIcon />
@@ -323,8 +335,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
-      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
+      width={phoneDevice || thinDesktop ? '160px' : '94px'}
+      height={phoneDevice || thinDesktop ? '32px' : '42px'}
       className={vaultIndex === 0 ? classes.modeItem : classes.inactiveMode}
     >
       <ProIcon />
@@ -424,7 +436,10 @@ const ProVault: React.FC = () => {
             ) : phoneDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21, deviceWidth - 182 + largeMobileDeviceAdjustment]}
+                positions={[
+                  21,
+                  deviceWidth - 182 + largeMobileDeviceAdjustment,
+                ]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={21}
                 gliderWidth={160}
@@ -433,7 +448,10 @@ const ProVault: React.FC = () => {
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21 + largeMobileDeviceAdjustment, deviceWidth - 193 - largeMobileDeviceAdjustment]}
+                positions={[
+                  21 + largeMobileDeviceAdjustment,
+                  deviceWidth - 193 - largeMobileDeviceAdjustment,
+                ]}
                 clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
                 start={21 + largeMobileDeviceAdjustment}
                 gliderWidth={160}
