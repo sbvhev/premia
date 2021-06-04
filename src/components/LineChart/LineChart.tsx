@@ -108,19 +108,26 @@ const LineChart: React.FC<LineChartProps> = ({
       custom: (props: any) => {
         return (
           `<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none; border-radius: 12px; background: transparent;">` +
-          `<span style="padding: 0.5rem; border: 2px solid #646464; border-radius: 12px 12px 0 0; background: ${
-            dark ? 'black' : 'white'
-          };">` +
+          `<span style="padding: 0.5rem; border: 1px solid ${
+            dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'
+          }; border-radius: 12px 12px 0 0; background: ${
+            dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
+          }; color: ${dark ? '#646464' : '#8D97A0'};">` +
           moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format(
             'DD MMM, YYYY',
           ) +
           '</span>' +
-          `<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none; border-radius: 0 0 12px 12px; background: ${
-            dark ? 'black' : 'white'
+          `<span style="padding: 0.5rem; border: 1px solid ${
+            dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'
+          }; border-top: none; border-radius: 0 0 12px 12px; background: ${
+            dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
+          }; color: ${dark ? '#646464' : '#8D97A0'};">` +
+          `Price: <b style="color: ${
+            dark ? 'white' : 'rgba(0, 0, 0, 0.91)'
           };">` +
-          'Price: ' +
+          '$' +
           props.series[props.seriesIndex][props.dataPointIndex] +
-          '</span>' +
+          '</b></span>' +
           '</div>'
         );
       },
