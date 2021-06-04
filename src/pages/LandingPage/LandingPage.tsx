@@ -181,15 +181,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'column',
 
     '& $subTitle': {
-      textAlign: 'center',
-      fontSize: 14,
-      lineHeight: '18px',
+      [breakpoints.down('md')]: {
+        textAlign: 'center',
+        fontSize: 14,
+        lineHeight: '18px',
+      },
     },
 
     '& $gradientSubTitle': {
-      textAlign: 'center',
-      fontSize: 26,
-      lineHeight: '55px',
+      [breakpoints.down('md')]: {
+        textAlign: 'center',
+        fontSize: 26,
+        lineHeight: '55px',
+      },
     },
 
     [breakpoints.down('md')]: {
