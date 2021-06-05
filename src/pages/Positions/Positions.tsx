@@ -595,8 +595,8 @@ const getTodayHours = () => {
   let formattedTime;
   let times = [];
   for (let i = 0; i < hoursPerDay + 1; i++) {
-    formattedTime = Moment().subtract(i, 'hours').format('h a');
-    times.unshift(formattedTime);
+    formattedTime = Moment(i, 'hh').format('h a');
+    times.push(formattedTime);
   }
   return times;
 };
@@ -1007,19 +1007,16 @@ const Positions: React.FC = () => {
         <>
           {positionFilter === 0 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid
-                container
-                className={classes.tableHeading}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Typography
-                  component='h1'
-                  color='textPrimary'
-                  className={classes.mainTitle}
-                >
-                  My option positions
-                </Typography>
+              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+                <Box mt={1.25}>
+                  <Typography
+                    component='h1'
+                    color='textPrimary'
+                    className={classes.mainTitle}
+                  >
+                    My option positions
+                  </Typography>
+                </Box>
                 <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
                   <BottomNavigation
                     value={optionFilter}
@@ -1211,19 +1208,16 @@ const Positions: React.FC = () => {
           )}
           {positionFilter === 1 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid
-                container
-                className={classes.tableHeading}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Typography
-                  component='h1'
-                  color='textPrimary'
-                  className={classes.mainTitle}
-                >
-                  My yield positions
-                </Typography>
+              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+                <Box mt={1.25}>
+                  <Typography
+                    component='h1'
+                    color='textPrimary'
+                    className={classes.mainTitle}
+                  >
+                    My yield positions
+                  </Typography>
+                </Box>
               </Grid>
               <Box mt={mobile ? 1.5 : 2.5}>
                 {mobile ? (

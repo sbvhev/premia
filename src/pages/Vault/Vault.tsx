@@ -61,11 +61,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
 
     '& svg': {
-      width: 18,
-      height: 18,
+      width: 14,
+      height: 14,
 
       '& path': {
-        fill: (props: any) => (props.dark ? 'white' : 'black'),
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
       },
     },
   },

@@ -27,8 +27,8 @@ export interface DonutChartProps {
 }
 const DonutChart: React.FC<DonutChartProps> = ({
   data = [],
-  width = 360,
-  height = 200,
+  width = '100%',
+  height = '100%',
   type = 'gradient',
   colors = [],
   endColors = [],
@@ -82,19 +82,18 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
     chart.legend = new am4charts.Legend();
     chart.legend.position = 'right';
-    chart.legend.maxWidth = 150;
+    chart.legend.fontSize = 14;
+    chart.legend.fontFamily = 'DM Sans';
+    chart.legend.labels.template.width = 120;
     chart.legend.labels.template.fill = am4core.color(
       theme.palette.text.primary,
     );
-    chart.legend.labels.template.fontSize = 14;
-    chart.legend.labels.template.fontFamily = 'DM Sans';
     chart.legend.valueLabels.template.fill = am4core.color(
       theme.palette.text.secondary,
     );
-    chart.legend.valueLabels.template.fontSize = 14;
-    chart.legend.valueLabels.template.fontFamily = 'DM Sans';
     chart.legend.valueLabels.template.align = 'right';
     chart.legend.valueLabels.template.textAlign = 'end';
+    chart.legend.markers.template.verticalCenter = 'top';
     chart.legend.markers.template.width = 12;
     chart.legend.markers.template.height = 12;
 
