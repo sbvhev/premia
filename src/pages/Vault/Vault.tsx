@@ -89,6 +89,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       position: 'relative',
     },
   },
+  helpIcon: {
+    '&> path': {
+      fill: '#7D7D7D',
+    },
+  },
   topSector: {
     padding: 28,
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -392,7 +397,7 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '42px 0 0 20px' } : {}}
+          style={!phoneDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
@@ -536,7 +541,7 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Call pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'
@@ -551,8 +556,8 @@ const ProVault: React.FC = () => {
                     alignItems={!thinDesktop ? 'flex-start' : 'center'}
                   >
                     <RadialChart
-                      color='#5294FF'
-                      secondaryColor='#1EFF78'
+                      color='#2DDEA0'
+                      secondaryColor='#4D9EF2'
                       width={200}
                       height={200}
                       data={[67]}
@@ -748,7 +753,7 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Put pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'
@@ -764,7 +769,7 @@ const ProVault: React.FC = () => {
                   >
                     <RadialChart
                       color='#EB4A97'
-                      secondaryColor='#8C43F6'
+                      secondaryColor='#A745DD'
                       trackColor={
                         dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
                       }

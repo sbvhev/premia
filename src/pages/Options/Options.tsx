@@ -31,7 +31,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '28px',
     lineHeight: '27.5px',
     fontWeight: 700,
-    margin: '42px 0 0 20px',
+    margin: '20px 0 0 20px',
   },
   price: {
     fontSize: 18,

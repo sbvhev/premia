@@ -78,22 +78,14 @@ const RadialChart: React.FC<RadialChartProps> = ({
           imageHeight: height,
 
           dropShadow: {
-            enabled: true,
-            top: 0,
-            left: 0,
-            blur: 25,
-            opacity: 0.25,
+            enabled: false,
           },
         },
         track: {
           background: trackColor,
           strokeWidth: '75%',
           dropShadow: {
-            enabled: true,
-            top: -3,
-            left: 0,
-            blur: 4,
-            opacity: 0.35,
+            enabled: false,
           },
         },
         dataLabels: {
