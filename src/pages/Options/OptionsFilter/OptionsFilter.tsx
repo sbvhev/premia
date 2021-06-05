@@ -70,8 +70,8 @@ const useStyles = makeStyles(({ palette }) => ({
       MozAppearance: 'textfield',
       '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
         WebkitAppearance: 'none',
-        margin: 0
-      }
+        margin: 0,
+      },
     },
   },
 
@@ -93,7 +93,7 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 20,
       '& path': {
         fill: palette.text.secondary,
-      }
+      },
     },
   },
 
