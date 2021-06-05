@@ -145,6 +145,12 @@ ul.bn-notify-custom.bn-notify-notifications {
   color: #5294ff;
 }
 
+.bn-onboard-custom.bn-onboard-modal-content
+  .bn-onboard-custom.bn-onboard-prepare-button:active {
+  opacity: 0.8;
+  color: #8d97a0;
+}
+
 .bn-onboard-modal-content-close {
   width: 30px;
   min-height: 30px;
