@@ -551,8 +551,8 @@ const ProVault: React.FC = () => {
                     alignItems={!thinDesktop ? 'flex-start' : 'center'}
                   >
                     <RadialChart
-                      color='#5294FF'
-                      secondaryColor='#1EFF78'
+                      color='#2DDEA0'
+                      secondaryColor='#4D9EF2'
                       width={200}
                       height={200}
                       data={[67]}
@@ -764,7 +764,7 @@ const ProVault: React.FC = () => {
                   >
                     <RadialChart
                       color='#EB4A97'
-                      secondaryColor='#8C43F6'
+                      secondaryColor='#A745DD'
                       trackColor={
                         dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
                       }
