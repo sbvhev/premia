@@ -774,7 +774,7 @@ const Positions: React.FC = () => {
         component='h1'
         color='textPrimary'
         className={classes.title}
-        style={!mobile ? { margin: '45px 0 0 20px' } : {}}
+        style={!mobile ? { margin: '25px 0 0 20px' } : {}}
       >
         My dashboard
       </Typography>
