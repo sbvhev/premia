@@ -50,6 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > div': {
         aspectRatio: '16/ 9',
         width: 'calc(33.33% - 10px)',
+        border: '1px solid transparent',
+
+        '&:hover:not(:active)': {
+          borderColor: theme.palette.text.primary,
+        },
+
+        '&:active': {
+          opacity: 0.8,
+        },
 
         [theme.breakpoints.down('md')]: {
           width: '100%',
@@ -246,7 +255,7 @@ const StepTwo: React.FC<StepProps> = ({ activeStep }) => {
           >
             <Box />
             <RemainStable />
-            <Typography>Remail stable</Typography>
+            <Typography>Remain stable</Typography>
           </Box>
           <Box
             className={cn(

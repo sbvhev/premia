@@ -50,6 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
         fontWeight: 'bold',
         borderRadius: 12,
         background: 'rgba(82, 148, 255, 0.1)',
+        border: '1px solid transparent',
+
+        '&:hover:not(:active)': {
+          borderColor: theme.palette.text.primary,
+        },
+
+        '&:active': {
+          opacity: 0.8,
+        },
 
         [theme.breakpoints.down('md')]: {
           padding: '20px 28px',
@@ -131,6 +140,15 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      border: '1px solid transparent',
+
+      '&:hover:not(:active)': {
+        borderColor: theme.palette.text.primary,
+      },
+
+      '&:active': {
+        opacity: 0.8,
+      },
 
       '& svg': {
         marginRight: 8,
