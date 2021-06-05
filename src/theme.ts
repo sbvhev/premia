@@ -221,10 +221,9 @@ export const lightTheme = responsiveFontSizes(
           color: primary,
           border: 'none',
           '&:hover': {
-            backgroundColor: premiaBlueDay,
-            color: primary,
+            backgroundColor: primary,
+            color: white,
             border: 'none',
-            opacity: 0.8,
           },
           '&:active': {
             color: white,
@@ -242,8 +241,8 @@ export const lightTheme = responsiveFontSizes(
           border: `1px solid ${dividerGreyDay}`,
           '&:hover': {
             backgroundColor: white,
-            color: black,
-            border: `1px solid ${primaryOnHover}`,
+            color: greySecondaryNight,
+            border: `1px solid ${greySecondaryDay}`,
           },
           '&:active': {
             color: textSecondaryDay,
@@ -908,10 +907,9 @@ export const darkTheme = responsiveFontSizes(
           border: 'none',
 
           '&:hover': {
-            backgroundColor: premiaBlueNight,
-            color: primary,
+            color: black,
             border: 'none',
-            opacity: 0.8,
+            backgroundColor: primary,
           },
 
           '&:active': {
@@ -929,8 +927,8 @@ export const darkTheme = responsiveFontSizes(
           color: greySecondaryNight,
           border: `1px solid ${dividerGreyNight}`,
           '&:hover': {
-            color: textPrimaryNight,
-            border: `1px solid ${primary}`,
+            color: white,
+            border: `1px solid ${greySecondaryNight}`,
           },
           '&:active': {
             color: greySecondaryNight,

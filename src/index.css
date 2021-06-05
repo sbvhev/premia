@@ -156,3 +156,28 @@ ul.bn-notify-custom.bn-notify-notifications {
   box-shadow: none !important;
   background: transparent !important;
 }
+
+/* Hover effect for new contained buttons */
+.custom-contained {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  background: linear-gradient(121.21deg, #5294ff 7.78%, #1eff78 118.78%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.custom-contained-secondary {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  background: linear-gradient(121.21deg, #eb4a97 7.78%, #8c43f6 118.78%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+}
