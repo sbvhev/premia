@@ -61,11 +61,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
 
     '& svg': {
-      width: 18,
-      height: 18,
+      width: 14,
+      height: 14,
 
       '& path': {
-        fill: (props: any) => (props.dark ? 'white' : 'black'),
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
       },
     },
   },
@@ -723,7 +723,7 @@ const ProVault: React.FC = () => {
                     </TooltipPan>
                   </Box>
                   <LineChart
-                    color='#14A887'
+                    isCall
                     data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                     categories={[
                       '2021/5/24',
@@ -765,6 +765,9 @@ const ProVault: React.FC = () => {
                     <RadialChart
                       color='#EB4A97'
                       secondaryColor='#8C43F6'
+                      trackColor={
+                        dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
+                      }
                       width={200}
                       height={200}
                       data={[67]}
@@ -935,7 +938,7 @@ const ProVault: React.FC = () => {
                     </TooltipPan>
                   </Box>
                   <LineChart
-                    color='#BF47C3'
+                    isCall={false}
                     data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                     categories={[
                       '2021/5/24',

@@ -7,7 +7,8 @@ import { useIsDarkMode } from 'state/user/hooks';
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export interface LineChartProps {
-  color: string;
+  backgroundColor?: string;
+  isCall?: boolean;
   data?: Array<number>;
   categories?: Array<string>;
   width?: number | string;
@@ -17,7 +18,8 @@ export interface LineChartProps {
   showYAxis?: boolean;
 }
 const LineChart: React.FC<LineChartProps> = ({
-  color,
+  backgroundColor,
+  isCall = false,
   categories = [],
   data = [],
   width = 500,
@@ -27,6 +29,13 @@ const LineChart: React.FC<LineChartProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const theme = useTheme();
+
+  let strokeColor = isCall ? '#14A887' : '#BF47C3';
+  let gradientColor = isCall ? '#D4F8FB' : '#F8D0E7';
+
+  if (dark) {
+    gradientColor = isCall ? '#022628' : '#350E25';
+  }
 
   const options = {
     chart: {
@@ -43,17 +52,17 @@ const LineChart: React.FC<LineChartProps> = ({
     },
     stroke: {
       width: 1,
-      colors: [color],
+      colors: [strokeColor],
     },
     fill: {
       type: 'gradient',
-      colors: [color],
+      colors: [gradientColor],
       gradient: {
-        gradientToColors: [theme.palette.background.paper],
+        gradientToColors: [backgroundColor || theme.palette.background.paper],
         shadeIntensity: 1,
-        opacityFrom: 0.6,
+        opacityFrom: 1,
         opacityTo: 0.5,
-        stops: [0, 90, 100],
+        stops: [0, 100],
       },
     },
     xaxis: {
@@ -68,6 +77,13 @@ const LineChart: React.FC<LineChartProps> = ({
       },
       axisTicks: {
         show: false,
+      },
+      labels: {
+        style: {
+          colors: new Array(categories.length).fill(
+            dark ? '#646464' : '#CACED3',
+          ),
+        },
       },
     },
     yaxis: {
@@ -108,19 +124,26 @@ const LineChart: React.FC<LineChartProps> = ({
       custom: (props: any) => {
         return (
           `<div class="tooltip" style="display: flex; flex-direction: column; box-shadow: none; border-radius: 12px; background: transparent;">` +
-          `<span style="padding: 0.5rem; border: 2px solid #646464; border-radius: 12px 12px 0 0; background: ${
-            dark ? 'black' : 'white'
-          };">` +
+          `<span style="padding: 0.5rem; border: 1px solid ${
+            dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'
+          }; border-radius: 12px 12px 0 0; background: ${
+            dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
+          }; color: ${dark ? '#646464' : '#8D97A0'};">` +
           moment(categories[props.dataPointIndex], 'YYYY/MM/DD').format(
             'DD MMM, YYYY',
           ) +
           '</span>' +
-          `<span style="padding: 0.5rem; border: 2px solid #646464; border-top: none; border-radius: 0 0 12px 12px; background: ${
-            dark ? 'black' : 'white'
+          `<span style="padding: 0.5rem; border: 1px solid ${
+            dark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'
+          }; border-top: none; border-radius: 0 0 12px 12px; background: ${
+            dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
+          }; color: ${dark ? '#646464' : '#8D97A0'};">` +
+          `Price: <b style="color: ${
+            dark ? 'white' : 'rgba(0, 0, 0, 0.91)'
           };">` +
-          'Price: ' +
+          '$' +
           props.series[props.seriesIndex][props.dataPointIndex] +
-          '</span>' +
+          '</b></span>' +
           '</div>'
         );
       },
