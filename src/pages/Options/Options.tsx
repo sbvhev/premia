@@ -369,7 +369,8 @@ const Options: React.FC = () => {
                 />
               </Grid>
               <LineChart
-                color={optionType === 'call' ? '#14A887' : '#BF47C3'}
+                isCall={optionType === 'call'}
+                backgroundColor={theme.palette.background.default}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={[
                   '2021/5/24',

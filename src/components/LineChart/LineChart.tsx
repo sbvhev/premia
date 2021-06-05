@@ -7,7 +7,8 @@ import { useIsDarkMode } from 'state/user/hooks';
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export interface LineChartProps {
-  color: string;
+  backgroundColor?: string;
+  isCall?: boolean;
   data?: Array<number>;
   categories?: Array<string>;
   width?: number | string;
@@ -17,7 +18,8 @@ export interface LineChartProps {
   showYAxis?: boolean;
 }
 const LineChart: React.FC<LineChartProps> = ({
-  color,
+  backgroundColor,
+  isCall = false,
   categories = [],
   data = [],
   width = 500,
@@ -27,6 +29,13 @@ const LineChart: React.FC<LineChartProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const theme = useTheme();
+
+  let strokeColor = isCall ? '#14A887' : '#BF47C3';
+  let gradientColor = isCall ? '#D4F8FB' : '#F8D0E7';
+
+  if (dark) {
+    gradientColor = isCall ? '#022628' : '#350E25';
+  }
 
   const options = {
     chart: {
@@ -43,17 +52,17 @@ const LineChart: React.FC<LineChartProps> = ({
     },
     stroke: {
       width: 1,
-      colors: [color],
+      colors: [strokeColor],
     },
     fill: {
       type: 'gradient',
-      colors: [color],
+      colors: [gradientColor],
       gradient: {
-        gradientToColors: [theme.palette.background.paper],
+        gradientToColors: [backgroundColor || theme.palette.background.paper],
         shadeIntensity: 1,
-        opacityFrom: 0.6,
+        opacityFrom: 1,
         opacityTo: 0.5,
-        stops: [0, 90, 100],
+        stops: [0, 100],
       },
     },
     xaxis: {

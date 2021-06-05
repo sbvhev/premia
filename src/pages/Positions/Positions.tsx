@@ -892,7 +892,7 @@ const Positions: React.FC = () => {
                   </Box>
                   <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
-                      color='#14A887'
+                      isCall
                       data={chartData[dateFilter]}
                       categories={chartDateCats[dateFilter]}
                       chartType={chartTypes[dateFilter]}
@@ -1007,7 +1007,12 @@ const Positions: React.FC = () => {
         <>
           {positionFilter === 0 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
                 <Box mt={1.25}>
                   <Typography
                     component='h1'
@@ -1208,7 +1213,12 @@ const Positions: React.FC = () => {
           )}
           {positionFilter === 1 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
                 <Box mt={1.25}>
                   <Typography
                     component='h1'

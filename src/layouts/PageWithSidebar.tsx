@@ -26,8 +26,15 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '100vh',
   },
   border: {
-    borderBottom: (props: any) => (props.darkMode || !props.mobileSidebarHidden) && `1px solid ${palette.divider}`,
-    boxShadow: (props: any) => props.darkMode ? 'none' : !props.mobileSidebarHidden ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
+    borderBottom: (props: any) =>
+      (props.darkMode || !props.mobileSidebarHidden) &&
+      `1px solid ${palette.divider}`,
+    boxShadow: (props: any) =>
+      props.darkMode
+        ? 'none'
+        : !props.mobileSidebarHidden
+        ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)'
+        : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
   },
 }));
 
@@ -168,7 +175,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 // mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 0 : 12}
+                mb={mobile ? 0 : 16}
               >
                 <Container>{children}</Container>
                 {mobile && (
