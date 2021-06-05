@@ -26,8 +26,15 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '100vh',
   },
   border: {
-    borderBottom: (props: any) => (props.darkMode || !props.mobileSidebarHidden) && `1px solid ${palette.divider}`,
-    boxShadow: (props: any) => props.darkMode ? 'none' : !props.mobileSidebarHidden ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
+    borderBottom: (props: any) =>
+      (props.darkMode || !props.mobileSidebarHidden) &&
+      `1px solid ${palette.divider}`,
+    boxShadow: (props: any) =>
+      props.darkMode
+        ? 'none'
+        : !props.mobileSidebarHidden
+        ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)'
+        : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
   },
 }));
 
@@ -66,43 +73,46 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           </Box>
         )}
 
-        <Box
-          className={cx(classes.page, mobile && classes.pageMobile)}
-        >
+        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           <Box
             position='fixed'
             width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
-            bgcolor={
-              !mobile ? 'transparent' : palette.background.paper
-            }
+            bgcolor={!mobile ? 'transparent' : palette.background.paper}
             pt={mobile ? 1 : 3}
             px={mobile ? 0 : 3}
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '72px'}
           >
-            <Box width="100%" display="flex" justifyContent="center">
+            <Box width='100%' display='flex' justifyContent='center'>
               <Box
-                display="flex"
-                width="100%"
-                maxWidth="1280px"
+                display='flex'
+                width='100%'
+                maxWidth='1280px'
                 justifyContent={!mobile ? 'flex-end' : 'space-between'}
                 alignItems='center'
                 pr={!mobile ? 3 : 0}
               >
                 {mobile && (
-                  <Box display='flex' alignItems='center' justifyContent="space-between" width="100%">
-                    <Box marginLeft="22px" marginTop="2px">
+                  <Box
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    width='100%'
+                  >
+                    <Box marginLeft='22px' marginTop='2px'>
                       <img
                         src={darkMode ? MainLogo : MainLogoBlack}
                         alt='main logo'
-                        style={{ height: '28px'}}
+                        style={{ height: '28px' }}
                       />
                     </Box>
-                    <Grid style={{ height: '48px', marginRight: '6px'}}>
+                    <Grid style={{ height: '48px', marginRight: '6px' }}>
                       <IconButton
                         style={{ height: '48px', padding: 0 }}
-                        onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                        onClick={() =>
+                          setMobileSidebarHidden(!mobileSidebarHidden)
+                        }
                       >
                         <Hamburger
                           size={20}
@@ -115,7 +125,12 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   </Box>
                 )}
                 {!mobile && (
-                  <Box display="flex" justifySelf="flex-end" id="test" style={{ backgroundColor: 'transparent'}}>
+                  <Box
+                    display='flex'
+                    justifySelf='flex-end'
+                    id='test'
+                    style={{ backgroundColor: 'transparent' }}
+                  >
                     <AccountButtons />
                   </Box>
                 )}
@@ -160,7 +175,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 // mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 0 : 12}
+                mb={mobile ? 0 : 16}
               >
                 <Container>{children}</Container>
                 {mobile && (

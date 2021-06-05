@@ -157,10 +157,6 @@ ul.bn-notify-custom.bn-notify-notifications {
   border-radius: 50% !important;
 }
 
-.svelte-q1527 {
-  /* max-width: 150px !important; */
-}
-
 @media only screen and (max-width: 450px) {
   .svelte-q1527 {
     width: 150px !important;

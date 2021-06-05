@@ -56,8 +56,8 @@ const useStyles = makeStyles(({ palette }) => ({
       margin: '-7.5px 0',
     },
     '& $helpIcon': {
-      marginLeft: 2
-    }
+      marginLeft: 2,
+    },
   },
   graphContainer: {
     '& p': {
@@ -94,8 +94,8 @@ const useStyles = makeStyles(({ palette }) => ({
       margin: 0,
       '& span': {
         fontSize: 16,
-        fontWeight: 700,  
-      }
+        fontWeight: 700,
+      },
     },
   },
 }));
@@ -172,12 +172,7 @@ const Options: React.FC = () => {
               </Box>
             </Container>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            className={classes.priceInfoBox}
-          >
+          <Grid item xs={12} sm={6} className={classes.priceInfoBox}>
             <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Current price</Typography>
               <Box display='flex' alignItems='center' mt={-0.5625}>
@@ -245,7 +240,8 @@ const Options: React.FC = () => {
                 <HelpIcon className={classes.helpIcon} />
               </Grid>
               <LineChart
-                color={optionType === 'call' ? '#14A887' : '#BF47C3'}
+                isCall={optionType === 'call'}
+                backgroundColor={theme.palette.background.default}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={[
                   '2021/5/24',
