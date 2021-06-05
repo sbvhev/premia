@@ -41,14 +41,23 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 16,
   },
   priceInfoBox: {
+    padding: '16px 0',
+    height: 340,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     '& p': {
       fontSize: 14,
+      lineHeight: '24px',
     },
     '& h2': {
       fontSize: 18,
       fontWeight: 700,
-      margin: '-6px 0',
+      margin: '-7.5px 0',
     },
+    '& $helpIcon': {
+      marginLeft: 2
+    }
   },
   graphContainer: {
     '& p': {
@@ -62,7 +71,7 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   currentPricePercent: {
-    marginLeft: 4,
+    marginLeft: 6,
     '& div': {
       background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
       position: 'absolute',
@@ -81,9 +90,12 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   depositButton: {
-    '& button span': {
-      fontSize: 16,
-      fontWeight: 700,
+    '& button': {
+      margin: 0,
+      '& span': {
+        fontSize: 16,
+        fontWeight: 700,  
+      }
     },
   },
 }));
@@ -162,16 +174,13 @@ const Options: React.FC = () => {
           </Grid>
           <Grid
             item
-            container
             xs={12}
             sm={6}
-            direction='column'
-            justify='space-around'
             className={classes.priceInfoBox}
           >
-            <Box py={1} pl={xs ? 1 : 3}>
+            <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Current price</Typography>
-              <Box display='flex' alignItems='center' mt={-0.375}>
+              <Box display='flex' alignItems='center' mt={-0.5625}>
                 <Typography color='textPrimary' component='h2'>
                   $1,222
                 </Typography>
@@ -191,7 +200,7 @@ const Options: React.FC = () => {
                 </Box>
               </Box>
             </Box>
-            <Box py={1} pl={xs ? 1 : 3}>
+            <Box pl={xs ? 1 : 3}>
               <Grid container alignItems='center'>
                 <Typography color='textSecondary'>Breakeven</Typography>
                 <HelpIcon className={classes.helpIcon} />
@@ -200,13 +209,13 @@ const Options: React.FC = () => {
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} pl={xs ? 1 : 3}>
+            <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Total cost</Typography>
               <Typography color='textPrimary' component='h2'>
                 $1,749.37
               </Typography>
             </Box>
-            <Box py={1} pl={xs ? 0 : 3} className={classes.depositButton}>
+            <Box pl={xs ? 0 : 3} className={classes.depositButton}>
               <Button
                 fullWidth
                 variant='contained'
