@@ -21,13 +21,13 @@ const useStyles = makeStyles(({ palette }) => ({
     marginLeft: 210,
   },
   pageMobile: {
-    backgroundColor: palette.background.paper,
     width: '100vw',
     marginLeft: 0,
     height: '100vh',
   },
   border: {
-    borderBottom: `1px solid ${palette.divider}`,
+    borderBottom: (props: any) => (props.darkMode || !props.mobileSidebarHidden) && `1px solid ${palette.divider}`,
+    boxShadow: (props: any) => props.darkMode ? 'none' : !props.mobileSidebarHidden ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)'
   },
 }));
 
@@ -45,7 +45,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const classes = useStyles();
+  const classes = useStyles({ darkMode, mobileSidebarHidden });
 
   const hideMobileMenu = () => {
     setMobileSidebarHidden(true);
@@ -129,7 +129,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               position='relative'
               mt='60px'
               mb={mobile ? 0 : 7}
-              height='555px'
+              height={1}
               maxHeight='calc(100vh - 160px)'
               style={{ backgroundColor: palette.background.paper }}
             >
@@ -160,7 +160,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                 width={mobile ? 1 : 'calc(100vw - 210px)'}
                 // mx='auto'
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 0 : 6}
+                mb={mobile ? 0 : 12}
               >
                 <Container>{children}</Container>
                 {mobile && (

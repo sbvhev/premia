@@ -7,7 +7,7 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core';
-import { SupervisorAccount, AccountBalanceWallet } from '@material-ui/icons';
+import { SupervisorAccount } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -20,12 +20,13 @@ import {
   ChainModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.svg';
+import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
-    marginRight: '6px',
+    marginRight: '8px',
   },
 
   divider: {
@@ -50,9 +51,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   account: {
-    padding: '0 12px',
+    padding: 0,
     height: 45,
-    width: 186,
+    width: 180,
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     cursor: 'pointer',
@@ -79,13 +80,24 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
 
+  accountInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: 12.78,
+    paddingRight: 8.92
+  },
+
   accountMobile: {
-    padding: '0 12px',
     height: 45,
     width: 'calc(67vw - 30px)',
     maxWidth: 'calc(100vw - 135px)',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
+
+    '& $disconnect': {
+      width: 43,
+      flex: 'none'
+    },
 
     '&:hover': {
       borderColor: palette.primary.main,
@@ -106,6 +118,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
 
     '& svg path': {
       fill: palette.text.secondary,
@@ -186,10 +199,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 6,
     height: 45,
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer',
-    fontSize: 14,
+
+    '& p': {
+      fontSize: 14,
+    },
 
     '& svg': {
       width: 33,
@@ -198,18 +213,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: '8px 11px',
       background: 'rgba(82, 148, 255, 0.2)',
       borderRadius: 10,
-
-      '& path': {
-        fill: palette.text.secondary,
-      },
     },
 
     '&:hover:not(:active)': {
       borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.text.primary,
-      },
 
       '& p': {
         color: palette.text.primary,
@@ -235,6 +242,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginBottom: 10,
     },
   },
+
+  connectWalletButton: {
+    fontSize: 14,
+  }
 }));
 
 interface AccountButtonsProps {
@@ -308,25 +319,16 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   setChainModalOpen(true);
                 }}
               >
-                <EthIcon />
+                <EthHeadIcon />
                 <Typography color='secondary'>Ethereum</Typography>
               </Box>
               <Box clone mb={mobile ? 1 : 0}>
                 <Box display='flex' id='test'>
                   <Grid
                     container
-                    direction='row'
-                    alignItems='center'
-                    justify='space-between'
                     className={classes.account}
                   >
-                    <Grid
-                      item
-                      container
-                      justify='center'
-                      alignItems='center'
-                      direction='row'
-                      xs={9}
+                    <Box height={1} className={classes.accountInfo}
                       onClick={() => setShowTransactions(true)}
                     >
                       <PersonIcon className={classes.avatar} />
@@ -339,17 +341,17 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                           {shortenAddress(account ?? '')}
                         </Typography>
                       </Box>
-                    </Grid>
+                    </Box>
 
                     <Box
                       height={1}
                       borderLeft={1}
-                      pl={1.5}
                       borderColor={theme.palette.divider}
                       className={classes.disconnect}
+                      onClick={disconnect}
                     >
                       <Tooltip title='Disconnect'>
-                        <LogoutIcon color='action' onClick={disconnect} />
+                        <LogoutIcon color='action' />
                       </Tooltip>
                     </Box>
                   </Grid>
@@ -375,9 +377,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       <Box
                         display='flex'
                         alignItems='center'
-                        justifyContent='center'
+                        flex={1}
+                        height={1}
+                        pl={'12.65px'}
                         onClick={() => setShowTransactions(true)}
-                        paddingTop='2px'
                       >
                         <Box style={{ margin: '2px 6px 0 0' }}>
                           <PersonIconMobile />
@@ -392,7 +395,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       <Box
                         height={1}
                         borderLeft={1}
-                        pl={1.5}
                         borderColor={theme.palette.divider}
                         className={classes.disconnect}
                       >
@@ -411,7 +413,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     setChainModalOpen(true);
                   }}
                 >
-                  <EthIcon />
+                  <EthHeadIcon />
                   <Typography color='secondary'>Ethereum</Typography>
                 </Box>
               </Box>
@@ -447,10 +449,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             variant='contained'
             color='primary'
             size='large'
-            className={cx(mobile && classes.fullWidth)}
+            className={cx(mobile && classes.fullWidth, classes.connectWalletButton)}
             onClick={() => setConfirmTermsModalOpen(true)}
           >
-            <AccountBalanceWallet className={classes.walletIcon} />
+            <ConnectWallet className={classes.walletIcon} />
             Connect wallet
           </Button>
         </Box>
