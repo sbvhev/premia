@@ -397,7 +397,7 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '42px 0 0 20px' } : {}}
+          style={!phoneDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
