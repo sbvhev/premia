@@ -202,6 +202,7 @@ const OptionsPrice: React.FC = () => {
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
+  const isCall = optionType === 'call';
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
@@ -281,7 +282,7 @@ const OptionsPrice: React.FC = () => {
         >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>
-              Unlimited upside
+              {isCall ? 'Unlimited upside' : 'Worthless expiration'}
             </Typography>
           </Box>
           <Box
@@ -322,7 +323,7 @@ const OptionsPrice: React.FC = () => {
         >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>
-              Worthless expiration
+              {isCall ? 'Worthless expiration' : 'Unlimited upside'}
             </Typography>
           </Box>
           <Box
