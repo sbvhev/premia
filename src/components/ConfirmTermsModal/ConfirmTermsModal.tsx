@@ -143,7 +143,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const { palette } = theme;
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
 

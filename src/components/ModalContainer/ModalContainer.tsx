@@ -41,7 +41,7 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
 
 const ModalContainer = React.forwardRef<ModalContainerProps, any>(
   ({ children, size = 'sm', className }, ref) => {
-    const mobile = (/Mobi|Android/i.test(navigator.userAgent));;
+    const mobile = /Mobi|Android/i.test(navigator.userAgent);
     const classes = useStyles({ children, size });
 
     return (

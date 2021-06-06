@@ -172,7 +172,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const [checkIsOn, setCheckIsOn] = useState(false);
 
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {

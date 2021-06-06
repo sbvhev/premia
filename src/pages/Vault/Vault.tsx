@@ -90,6 +90,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       position: 'relative',
     },
   },
+  helpIcon: {
+    '&> path': {
+      fill: '#7D7D7D',
+    },
+  },
   topSector: {
     padding: 28,
     borderBottom: `1px solid ${palette.divider}`,
@@ -396,7 +401,7 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '42px 0 0 20px' } : {}}
+          style={!phoneDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
@@ -539,7 +544,7 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Call pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'
@@ -751,7 +756,7 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Put pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'

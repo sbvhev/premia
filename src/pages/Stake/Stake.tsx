@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import cn from 'classnames';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
@@ -58,6 +58,9 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 700,
     fontSize: '24px',
     lineHeight: '21px',
+  },
+  subtitle: {
+    paddingTop: 5,
   },
   text: {
     fontWeight: 500,
@@ -118,8 +121,8 @@ const Stake: React.FC = () => {
       display='flex'
       flexDirection='column'
       width='100%'
-      height="100%"
-      marginTop={!mobile ? '42px' : '8px'}
+      height='100%'
+      marginTop={!mobile ? '20px' : '8px'}
     >
       <Box
         display='flex'
@@ -147,7 +150,10 @@ const Stake: React.FC = () => {
           <Typography
             component='p'
             color='textSecondary'
-            className={!mobile ? classes.text : classes.textMobile}
+            className={cn(
+              classes.subtitle,
+              !mobile ? classes.text : classes.textMobile,
+            )}
           >
             Refine your interaction rewards, stake your Premia for fee sharing,
             or lock for reduced fees

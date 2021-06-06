@@ -138,7 +138,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       margin: '-2px 0 -2px 4px',
       '& path': {
         fill: palette.text.secondary,
-      }
+      },
     },
   },
   priceFont: {
@@ -154,6 +154,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   draggableItem: {
     cursor: 'pointer',
     transition: 'opacity 0.5s',
+    '& img': {
+      marginLeft: -1,
+    },
   },
   currentPriceLine: {
     width: (props: any) => (props.mobile ? 1 : 31),
@@ -199,6 +202,7 @@ const OptionsPrice: React.FC = () => {
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
+  const isCall = optionType === 'call';
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
@@ -213,7 +217,7 @@ const OptionsPrice: React.FC = () => {
     >
       <Box
         position='relative'
-        mt={mobile ? 0 : 0.75}
+        mt={mobile ? 0 : 0.7}
         mb={mobile ? -4 : 0}
         mr={mobile ? 0 : -3.25}
         zIndex={2}
@@ -278,7 +282,7 @@ const OptionsPrice: React.FC = () => {
         >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>
-              Unlimited upside
+              {isCall ? 'Unlimited upside' : 'Worthless expiration'}
             </Typography>
           </Box>
           <Box
@@ -319,12 +323,12 @@ const OptionsPrice: React.FC = () => {
         >
           <Box className={classes.unlimitedText}>
             <Typography className={classes.priceFont}>
-              Worthless expiration
+              {isCall ? 'Worthless expiration' : 'Unlimited upside'}
             </Typography>
           </Box>
           <Box
             className={classes.limitBox}
-            top={mobile ? 'unset' : -16}
+            top={mobile ? 'unset' : -14.6}
             left={mobile ? -20 : 'unset'}
           >
             {!mobile && (
