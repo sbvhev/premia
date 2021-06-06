@@ -1,13 +1,45 @@
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { Token } from 'web3/tokens';
+import { OptionType } from 'web3/options';
 import { AppState, AppDispatch } from 'state';
 import {
+  updateBase,
+  updateUnderlying,
   updateOptionType,
   updateMaturityDate,
   updateStrikePrice,
-  updateOptionSize,
+  updateSize,
 } from './actions';
+
+export function useBase() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { base } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setBase = useCallback(
+    (base: Token) => dispatch(updateBase(base)),
+    [dispatch],
+  );
+
+  return { base, setBase };
+}
+
+export function useUnderlying() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { underlying } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setUnderlying = useCallback(
+    (underlying: Token) => dispatch(updateUnderlying(underlying)),
+    [dispatch],
+  );
+
+  return { underlying, setUnderlying };
+}
 
 export function useOptionType() {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,9 +48,7 @@ export function useOptionType() {
   );
 
   const setOptionType = useCallback(
-    (optionType: string) => {
-      dispatch(updateOptionType(optionType));
-    },
+    (optionType: OptionType) => dispatch(updateOptionType(optionType)),
     [dispatch],
   );
 
@@ -32,9 +62,7 @@ export function useMaturityDate() {
   );
 
   const setMaturityDate = useCallback(
-    (maturityDate: string) => {
-      dispatch(updateMaturityDate(maturityDate));
-    },
+    (maturityDate: string) => dispatch(updateMaturityDate(maturityDate)),
     [dispatch],
   );
 
@@ -48,27 +76,23 @@ export function useStrikePrice() {
   );
 
   const setStrikePrice = useCallback(
-    (strikePrice: number | number[]) => {
-      dispatch(updateStrikePrice(strikePrice));
-    },
+    (strikePrice: number) => dispatch(updateStrikePrice(strikePrice)),
     [dispatch],
   );
 
   return { strikePrice, setStrikePrice };
 }
 
-export function useOptionSize() {
+export function useSize() {
   const dispatch = useDispatch<AppDispatch>();
-  const { optionSize } = useSelector<AppState, AppState['options']>(
+  const { size } = useSelector<AppState, AppState['options']>(
     (state: AppState) => state.options,
   );
 
-  const setOptionSize = useCallback(
-    (optionSize: number) => {
-      dispatch(updateOptionSize(optionSize));
-    },
+  const setSize = useCallback(
+    (size: number) => dispatch(updateSize(size)),
     [dispatch],
   );
 
-  return { optionSize, setOptionSize };
+  return { size, setSize };
 }

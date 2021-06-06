@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Contract } from '@ethersproject/contracts';
-import { ChainId, WETH } from '@uniswap/sdk';
+import { ChainId } from '@uniswap/sdk';
 
+import { WETH } from '../constants';
 import {
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
   MULTICALL_NETWORKS,

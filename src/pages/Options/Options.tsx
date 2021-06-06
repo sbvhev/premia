@@ -8,23 +8,25 @@ import {
   Divider,
   Popover,
   Link,
+  useMediaQuery,
 } from '@material-ui/core';
-import { SearchTabs, BuyConfirmationModal } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import cx from 'classnames';
+
+import { useOptionType } from 'state/options/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { OptionType } from 'web3/options';
+
+import OptionsFilter from './OptionsFilter';
+import OptionsPrice from './OptionsPrice';
+import { SearchTabs, BuyConfirmationModal, LineChart } from 'components';
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
+import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
-import cx from 'classnames';
-import OptionsFilter from './OptionsFilter';
-import OptionsPrice from './OptionsPrice';
-import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
-import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
-import { LineChart } from 'components';
-import { useOptionType } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -338,7 +340,7 @@ const Options: React.FC = () => {
                 fullWidth
                 variant='contained'
                 size='large'
-                color={optionType === 'call' ? 'primary' : 'secondary'}
+                color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 onClick={() => setBuyConfirmationModalOpen(true)}
               >
                 Deposit
@@ -369,7 +371,7 @@ const Options: React.FC = () => {
                 />
               </Grid>
               <LineChart
-                isCall={optionType === 'call'}
+                isCall={optionType === OptionType.Call}
                 backgroundColor={theme.palette.background.default}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={[

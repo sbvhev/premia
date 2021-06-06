@@ -1,23 +1,26 @@
 import React, { useRef, useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
-import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
-import { ColoredSlider } from 'components';
-import cx from 'classnames';
 import { Box, Typography, Button } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import Calendar from 'react-calendar';
-import moment from 'moment';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import Calendar from 'react-calendar';
+import moment from 'moment';
+import cx from 'classnames';
+
 import {
   useOptionType,
   useMaturityDate,
   useStrikePrice,
-  useOptionSize,
+  useSize,
 } from 'state/options/hooks';
 import { useOutsideAlerter } from 'hooks';
+import { OptionType } from 'web3/options';
+
+import { ColoredSlider } from 'components';
+import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
+import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   optionButtons: {
@@ -46,7 +49,7 @@ const useStyles = makeStyles(({ palette }) => ({
     color: palette.text.secondary,
   },
 
-  optionSizeInputBox: {
+  sizeInputBox: {
     padding: 3,
     width: '100%',
     borderRadius: 12,
@@ -240,7 +243,7 @@ const OptionFilter: React.FC = () => {
   const { maturityDate, setMaturityDate } = useMaturityDate();
   const [maturityFocused, setMaturityFocused] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
-  const { optionSize, setOptionSize } = useOptionSize();
+  const { size, setSize } = useSize();
   const calendarRef = useRef<HTMLInputElement | null>(null);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
@@ -250,6 +253,8 @@ const OptionFilter: React.FC = () => {
   if (!moment(maturityDate).isValid()) {
     setMaturityDate(moment(new Date()).format('YYYY-MM-DD'));
   }
+
+  console.log('optionType', optionType, optionType === OptionType.Call);
 
   return (
     <Box width={1}>
@@ -263,9 +268,9 @@ const OptionFilter: React.FC = () => {
         <Box clone width={1 / 2}>
           <Button
             variant='contained'
-            color={optionType === 'call' ? 'primary' : undefined}
+            color={optionType === OptionType.Call ? 'primary' : undefined}
             style={{ marginRight: '3px' }}
-            onClick={() => setOptionType('call')}
+            onClick={() => setOptionType(OptionType.Call)}
           >
             <ArrowUpwardIcon />
             &nbsp;Call
@@ -275,9 +280,9 @@ const OptionFilter: React.FC = () => {
         <Box clone width={1 / 2}>
           <Button
             variant='contained'
-            color={optionType === 'put' ? 'secondary' : undefined}
+            color={optionType === OptionType.Put ? 'secondary' : undefined}
             style={{ marginLeft: '3px' }}
-            onClick={() => setOptionType('put')}
+            onClick={() => setOptionType(OptionType.Put)}
           >
             <ArrowDownwardIcon />
             &nbsp;Put
@@ -299,7 +304,7 @@ const OptionFilter: React.FC = () => {
             value={strikePrice}
             valueLabelDisplay='on'
             onChange={(event: any, value) => {
-              setStrikePrice(value);
+              setStrikePrice(value as number);
             }}
           />
         </Box>
@@ -362,13 +367,13 @@ const OptionFilter: React.FC = () => {
           Max size available: 40012
         </Typography>
       </Box>
-      <Box className={classes.optionSizeInputBox}>
+      <Box className={classes.sizeInputBox}>
         <UniIcon />
         <input
           type='number'
-          value={optionSize}
+          value={size}
           onChange={(ev) => {
-            setOptionSize(Number(ev.target.value));
+            setSize(Number(ev.target.value));
           }}
         />
         <Button color='primary' variant='outlined' size='small'>

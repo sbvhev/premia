@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Box, Grid, Typography, RootRef } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Draggable from 'react-draggable';
+import cx from 'classnames';
+
+import { useOptionType } from 'state/options/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { OptionType } from 'web3/options';
+
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
@@ -10,13 +20,6 @@ import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
 import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, Grid, Typography, RootRef } from '@material-ui/core';
-import { useOptionType } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
-import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
-import Draggable from 'react-draggable';
-import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartCallTop: {
@@ -202,7 +205,7 @@ const OptionsPrice: React.FC = () => {
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
-  const isCall = optionType === 'call';
+  const isCall = optionType === OptionType.Call;
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
@@ -268,7 +271,9 @@ const OptionsPrice: React.FC = () => {
           width={mobile ? 1 / 3 : 1}
           height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
+            optionType === OptionType.Call
+              ? classes.chartCallTop
+              : classes.chartPutTop,
             classes.chartItem,
             hoveredBottom && classes.hovered,
           )}
@@ -307,7 +312,7 @@ const OptionsPrice: React.FC = () => {
           width={mobile ? 1 / 3 : 1}
           height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call'
+            optionType === OptionType.Call
               ? classes.chartPutBottom
               : classes.chartCallBottom,
             classes.chartItem,

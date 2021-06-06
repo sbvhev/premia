@@ -21,7 +21,7 @@ import {
 export interface ApplicationState {
   onboard?: OnboardAPI;
   notify: NotifyAPI;
-  chainId?: ChainId;
+  chainId?: ChainId | 56;
   blockNumber: number;
   ethereum: any;
   account: string;

@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
 import { useQuery } from 'react-apollo';
+import { ChainId } from '@uniswap/sdk';
 import { get } from 'lodash';
 
+import { DAI } from '../constants';
 import { getTokenPairs } from 'graphql/queries';
+import { useBase } from 'state/options/hooks';
 import { Token, TokenPair } from 'web3/tokens';
-import { useDenominatorAddress } from 'hooks';
-import { contracts } from 'web3/contracts';
 
 export function useAllTokens() {
-  const denominatorAddress = useDenominatorAddress();
-
+  const { base } = useBase();
   const { data: tokenPairsData } = useQuery(getTokenPairs, {
-    variables: { denominatorAddress: denominatorAddress || contracts.DAI[1] },
+    variables: {
+      denominatorAddress: base ? base.address : DAI[ChainId.MAINNET],
+    },
   });
 
   const tokenPairs: TokenPair[] = useMemo(

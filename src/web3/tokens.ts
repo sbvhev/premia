@@ -22,7 +22,16 @@ export interface TokenPair {
   name: string;
   token: Token;
   denominator: Token;
-  strikePriceIncrement: BigNumber;
+
+  totalDeposited: BigNumber;
+  totalLocked: BigNumber;
+  totalAvailable: BigNumber;
   openInterest: BigNumber;
   totalVolume: BigNumber;
+  totalExercised: BigNumber;
+  uniqueTrades: BigNumber;
+  uniqueOptions: BigNumber;
+  uniqueExercises: BigNumber;
+  uniqueDeposits: BigNumber;
+  uniqueWithdrawals: BigNumber;
 }
