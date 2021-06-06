@@ -43,6 +43,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
+    '& path': {
+      fill: palette.text.hint,
+    },
     marginRight: '8px',
   },
 
@@ -83,7 +86,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     alignItems: 'center',
     paddingLeft: 12.78,
-    paddingRight: 8.92
+    paddingRight: 8.92,
   },
 
   accountMobile: {
@@ -95,7 +98,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& $disconnect': {
       width: 43,
-      flex: 'none'
+      flex: 'none',
     },
 
     '&:hover': {
@@ -244,7 +247,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   connectWalletButton: {
     fontSize: 14,
-  }
+  },
 }));
 
 interface AccountButtonsProps {
@@ -327,11 +330,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               </Box>
               <Box clone mb={mobile ? 1 : 0}>
                 <Box display='flex' id='test'>
-                  <Grid
-                    container
-                    className={classes.account}
-                  >
-                    <Box height={1} className={classes.accountInfo}
+                  <Grid container className={classes.account}>
+                    <Box
+                      height={1}
+                      className={classes.accountInfo}
                       onClick={() => setShowTransactions(true)}
                     >
                       <PersonIcon className={classes.avatar} />
@@ -452,7 +454,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             variant='contained'
             color='primary'
             size='large'
-            className={cx(mobile && classes.fullWidth, classes.connectWalletButton)}
+            className={cx(
+              mobile && classes.fullWidth,
+              classes.connectWalletButton,
+            )}
             onClick={() => setConfirmTermsModalOpen(true)}
           >
             <ConnectWallet className={classes.walletIcon} />
