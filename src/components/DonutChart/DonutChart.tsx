@@ -37,9 +37,10 @@ const DonutChart: React.FC<DonutChartProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  let chart1 = useRef<any>();
+  const chart1 = useRef<any>();
+
   useLayoutEffect(() => {
-    var chart = am4core.create('chartdiv', am4charts.PieChart);
+    const chart = am4core.create('chartdiv', am4charts.PieChart);
     chart.hideTooltip();
     chart.hiddenState.properties.opacity = 0;
 
@@ -49,17 +50,18 @@ const DonutChart: React.FC<DonutChartProps> = ({
     chart.startAngle = 270;
     chart.endAngle = 630;
 
-    var series = chart.series.push(new am4charts.PieSeries());
+    const series = chart.series.push(new am4charts.PieSeries());
     series.dataFields.value = 'value';
     series.dataFields.category = 'category';
 
-    let gradients = colors.map((val, index) => {
-      let gradient = new am4core.LinearGradient();
+    const gradients = colors.map((val, index) => {
+      const gradient = new am4core.LinearGradient();
       gradient.addColor(am4core.color(val));
       gradient.addColor(am4core.color(endColors[index]));
       gradient.rotation = rotations[index];
       return gradient;
     });
+
     series.slices.template.adapter.add('fill', (fill, target) => {
       return target.dataItem
         ? type === 'gradient'
@@ -97,7 +99,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
     chart.legend.markers.template.width = 12;
     chart.legend.markers.template.height = 12;
 
-    let label = series.createChild(am4core.Label);
+    const label = series.createChild(am4core.Label);
     label.text = content;
     label.horizontalCenter = 'middle';
     label.verticalCenter = 'middle';

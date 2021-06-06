@@ -922,9 +922,9 @@ const Positions: React.FC = () => {
                   >
                     <DonutChart
                       data={positionFilter === 0 ? optionAssets : yieldAssets}
-                      colors={['#5294FF', '#EB4A97']}
-                      endColors={['#1EFF78', '#8C43F6']}
-                      rotations={[121.21, 316.57]}
+                      colors={['#4D9EF2', '#EB4A97']}
+                      endColors={['#2DDEA0', '#A745DD']}
+                      rotations={[21.21, 116.57]}
                       content={
                         positionFilter === 0 ? 'My assets' : 'My options'
                       }
