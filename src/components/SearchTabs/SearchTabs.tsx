@@ -131,7 +131,7 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
               className={classes.tab}
               icon={
                 <>
-                  <Icon />
+                  <Icon style={{ marginLeft: val.marginLeft }} />
                   {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
