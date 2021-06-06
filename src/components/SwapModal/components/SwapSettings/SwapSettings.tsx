@@ -529,7 +529,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                         MidSlippageButton,
                         HighSlippageButton,
                       ]}
-                      currentPosition={
+                      currentGliderPostion={
                         slippage === '0.1' ? 37 : slippage === '0.5' ? 120 : 203
                       }
                       gliderWidth={78}
@@ -542,7 +542,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                         MidSlippageButton,
                         HighSlippageButton,
                       ]}
-                      currentPosition={
+                      currentGliderPostion={
                         slippage === '0.1'
                           ? halfDeviceWidth - 150
                           : slippage === '0.5'

@@ -26,7 +26,7 @@ export interface GliderDimentions {
 
 export interface SwitchWithGliderProps {
   elements: Array<React.FC>;
-  currentPosition: Number;
+  currentGliderPostion: Number;
   gliderHeight: Number;
   gliderWidth: Number;
   alignedRight?: boolean;
@@ -34,18 +34,18 @@ export interface SwitchWithGliderProps {
 
 const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   elements,
-  currentPosition,
+  currentGliderPostion,
   gliderHeight,
   gliderWidth,
   alignedRight,
 }) => {
   const classes = useStyles();
   const [gliderPosition, setGliderPosition] =
-    React.useState<any>(currentPosition);
+    React.useState<any>(currentGliderPostion);
 
   React.useEffect(() => {
-    setGliderPosition(currentPosition);
-  }, [currentPosition]);
+    setGliderPosition(currentGliderPostion);
+  }, [currentGliderPostion]);
 
   const wrappedElements = elements.map((item, index) => (
     <Box key={index}>{item}</Box>

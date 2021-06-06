@@ -424,8 +424,7 @@ const ProVault: React.FC = () => {
             {!phoneDevice && !thinDesktop ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                // positions={[61 + extraMargin, 160 + extraMargin]}
-                currentPosition={
+                currentGliderPostion={
                   vaultIndex === 0 ? 61 + extraMargin : 160 + extraMargin
                 }
                 gliderWidth={94}
@@ -434,7 +433,7 @@ const ProVault: React.FC = () => {
             ) : phoneDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                currentPosition={
+                currentGliderPostion={
                   vaultIndex === 0
                     ? 21 + extraMargin
                     : deviceWidth - 182 + largeMobileDeviceAdjustment
@@ -445,7 +444,7 @@ const ProVault: React.FC = () => {
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                currentPosition={
+                currentGliderPostion={
                   vaultIndex === 0
                     ? 21 + extraMargin
                     : deviceWidth - 193 - largeMobileDeviceAdjustment

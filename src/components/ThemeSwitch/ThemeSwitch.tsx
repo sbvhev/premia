@@ -119,14 +119,14 @@ const ThemeSwitch: React.FC = () => {
       {!mobile ? (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          currentPosition={!darkMode ? 21 : 107}
+          currentGliderPostion={!darkMode ? 21 : 107}
           gliderWidth={80}
           gliderHeight={30}
         />
       ) : (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          currentPosition={!darkMode ? 11 : deviceWidth / 2 + 4}
+          currentGliderPostion={!darkMode ? 11 : deviceWidth / 2 + 4}
           gliderWidth={deviceWidth / 2 - 15}
           gliderHeight={36}
         />

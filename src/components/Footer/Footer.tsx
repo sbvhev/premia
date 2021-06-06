@@ -360,7 +360,7 @@ const Footer: React.FC = () => {
           >
             <SwitchWithGlider
               elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
-              currentPosition={
+              currentGliderPostion={
                 gasType === 'standard' ? 224 : gasType === 'fast' ? 114 : 4
               }
               alignedRight={true}
