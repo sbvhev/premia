@@ -2,74 +2,53 @@ import React from 'react';
 import { ReactComponent as DayIcon } from 'assets/svg/DayIcon.svg';
 import { ReactComponent as NightIcon } from 'assets/svg/NightIcon.svg';
 import { Typography, Box } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { SwitchWithGlider } from 'components';
 
-import cx from 'classnames';
 import { useWeb3 } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  modeItem: {
-    border: `1px solid ${theme.palette.background.paper}`,
+const useStyles = makeStyles(({ palette }) => ({
+  activeMode: {
     borderRadius: 10,
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.primary.main,
+    },
+  },
+  inactiveMode: {
+    backgroundColor: 'transparent',
     cursor: 'pointer',
     '& svg': {
       marginRight: 8,
     },
     '& svg path': {
-      fill: theme.palette.text.secondary,
+      fill: palette.secondary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      fontSize: '14px',
+      color: palette.secondary.main,
     },
     '&:hover': {
-      backgroundColor: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
     },
-  },
-  textSelected: {
-    fontWeight: 700,
-    fontSize: '14px',
-    color: theme.palette.primary.main,
-  },
-  textIdle: {
-    fontWeight: 400,
-    fontSize: '14px',
-  },
-  inactiveMode: {
-    backgroundColor: 'transparent',
-    '& svg path': {
-      fill: theme.palette.primary.main,
-    },
-    '& span': {
-      fontWeight: 'bold',
-      color: theme.palette.primary.main,
-    },
-  },
-  glider: {
-    transition: 'left 0.4s ease-out',
-    position: 'absolute',
-    display: 'flex',
-    height: '30px',
-    width: '80px',
-    border: 'none',
-    zIndex: 10,
-    borderRadius: '10px',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    backgroundColor: theme.palette.primary.dark,
-    padding: '4px 18px',
-  },
-  gliderMobile: {
-    position: 'absolute',
-    display: 'flex',
-    height: '36px',
-    width: '172px',
-    backgroundColor: theme.palette.primary.dark,
-    border: 'none',
-    zIndex: 3,
-    borderRadius: '10px',
-    transition: 'left 0.4s ease-out',
   },
 }));
 
@@ -105,21 +84,13 @@ const ThemeSwitch: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      className={cx(classes.modeItem, {
-        [classes.inactiveMode]: !darkMode,
-      })}
+      className={!darkMode ? classes.activeMode : classes.inactiveMode}
       width={!mobile ? '80px' : deviceWidth / 2 - 15}
       height={!mobile ? '30px' : '36px'}
+      onClick={handleDayClick}
     >
-      <Box display='flex' alignItems='center'>
-        <DayIcon />
-        <Typography
-          className={!darkMode ? classes.textSelected : classes.textIdle}
-          color='textSecondary'
-        >
-          Day
-        </Typography>
-      </Box>
+      <DayIcon />
+      <Typography>Day</Typography>
     </Box>
   );
 
@@ -130,19 +101,11 @@ const ThemeSwitch: React.FC = () => {
       height={!mobile ? '30px' : '36px'}
       alignItems='center'
       justifyContent='center'
-      className={cx(classes.modeItem, {
-        [classes.inactiveMode]: darkMode,
-      })}
+      className={darkMode ? classes.activeMode : classes.inactiveMode}
+      onClick={handleNightClick}
     >
-      <Box display='flex' alignItems='center'>
-        <NightIcon />
-        <Typography
-          className={darkMode ? classes.textSelected : classes.textIdle}
-          color='textSecondary'
-        >
-          Night
-        </Typography>
-      </Box>
+      <NightIcon />
+      <Typography>Night</Typography>
     </Box>
   );
 
@@ -156,18 +119,14 @@ const ThemeSwitch: React.FC = () => {
       {!mobile ? (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          positions={[21, 107]}
-          clickFuncs={[handleDayClick, handleNightClick]}
-          start={!darkMode ? 21 : 107}
+          currentPosition={!darkMode ? 21 : 107}
           gliderWidth={80}
           gliderHeight={30}
         />
       ) : (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          positions={[11, deviceWidth /2 + 4]}
-          clickFuncs={[handleDayClick, handleNightClick]}
-          start={!darkMode ? 11 : deviceWidth /2 + 4}
+          currentPosition={!darkMode ? 11 : deviceWidth / 2 + 4}
           gliderWidth={deviceWidth / 2 - 15}
           gliderHeight={36}
         />
