@@ -1,0 +1,123 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "base",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "underlying",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "int128",
+        "name": "initialCLevel64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "baseOracle",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "underlyingOracle",
+        "type": "address"
+      }
+    ],
+    "name": "DeployPair",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset0",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "asset1",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "oracle0",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "oracle1",
+        "type": "address"
+      }
+    ],
+    "name": "deployPair",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset0",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "asset1",
+        "type": "address"
+      }
+    ],
+    "name": "getPair",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPairImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPoolImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

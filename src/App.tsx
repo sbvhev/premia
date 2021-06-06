@@ -42,7 +42,7 @@ import {
 
 const graphUrls: { [chainId: number]: string } = {
   1: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia',
-  4: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia-rinkeby',
+  4: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
   42: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia-kovan',
   56: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia-bsc',
 };
