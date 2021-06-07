@@ -2,6 +2,9 @@ import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { API as NotifyAPI } from 'bnc-notify';
 import { get } from 'lodash';
+import { ethers } from 'ethers';
+import { Token } from 'web3/tokens';
+import qs from 'qs';
 
 import { AppState, AppDispatch } from 'state';
 import {
@@ -74,6 +77,45 @@ export async function getPrice(coinName: string) {
 
     return 0;
   }
+}
+
+export async function getSwapQuote(
+  sellToken: Token | null | undefined,
+  buyToken: Token | null | undefined,
+  sellAmount: string,
+  buyAmount: string,
+  inputType: boolean | undefined,
+  chainId: number,
+  slippagePercentage: number,
+) {
+  let params: any = {
+    buyToken: buyToken?.address ?? buyToken?.symbol,
+    sellToken: sellToken?.address ?? sellToken?.symbol,
+    slippagePercentage: slippagePercentage,
+  };
+
+  if (inputType) {
+    params = {
+      ...params,
+      buyAmount: ethers.utils
+        .parseUnits(buyAmount, buyToken?.decimals)
+        .toString(),
+    };
+  } else {
+    params = {
+      ...params,
+      sellAmount: ethers.utils
+        .parseUnits(sellAmount, sellToken?.decimals)
+        .toString(),
+    };
+  }
+  const response = await fetch(
+    `https://${
+      chainId === 56 ? 'bsc.' : ''
+    }api.0x.org/swap/v1/quote?${qs.stringify(params)}`,
+  );
+
+  return await response.json();
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {

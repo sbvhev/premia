@@ -1,30 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-// import { Token } from 'web3/tokens';
-import LINK from 'assets/svg/LINK-icon.svg';
+import { Token } from 'web3/tokens';
 
 import { SetSwapSettings, setSwapSettings } from './actions';
 
-export interface SwapTokenTest {
-  symbol?: string;
-  name?: string;
-  icon?: string;
-  balance?: Number;
-}
-
 export interface SwapSettings {
-  fromToken?: SwapTokenTest | null;
-  toToken?: SwapTokenTest | null;
+  fromToken?: Token | null;
+  toToken?: Token | null;
   fromAmount?: string | null;
   toAmount?: string | null;
 }
-
-// export interface SwapSettings {
-//   fromToken?: Token | null;
-//   toToken?: Token | null;
-//   fromAmount?: string | null;
-//   toAmount?: string | null;
-// }
 
 export interface SwapState {
   swapSettings: SwapSettings;
@@ -35,8 +20,11 @@ export const initialState: SwapState = {
     fromToken: {
       symbol: 'LINK',
       name: 'Chainlink',
-      icon: LINK,
-      balance: 876,
+      logoURI:
+        'https://tokens.1inch.exchange/0x514910771af9ca656af840dff83e8264ecf986ca.png',
+      address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+      chainId: 1,
+      decimals: 18,
     },
     toToken: null,
     fromAmount: '0',

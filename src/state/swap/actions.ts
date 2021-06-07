@@ -1,17 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
-// import { Token } from 'web3/tokens';
-import { SwapTokenTest } from './reducer';
-// export interface SetSwapSettings {
-//   fromToken?: Token | null;
-//   toToken?: Token | null;
-//   fromAmount?: string | null;
-//   toAmount?: string | null;
-// }
-
+import { Token } from 'web3/tokens';
 export interface SetSwapSettings {
-  fromToken?: SwapTokenTest | null;
-  toToken?: SwapTokenTest | null;
+  fromToken?: Token | null;
+  toToken?: Token | null;
   fromAmount?: string | null;
   toAmount?: string | null;
 }

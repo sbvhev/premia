@@ -7,11 +7,19 @@ export enum TokenDenominator {
   BUSD = 'BUSD',
 }
 
+export const BNB: Currency = {
+  decimals: 18,
+  symbol: 'BNB',
+  name: 'Binance Coin',
+};
+
 export interface Token extends Currency {
   name: string;
   symbol: string;
   decimals: number;
   address: string;
+  logoURI?: string;
+  chainId?: number;
 }
 
 export function isToken(object: any): object is Token {

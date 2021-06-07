@@ -7,32 +7,38 @@ import {
   ButtonBase,
   Input,
   Menu,
-  MenuItem,
+  // MenuItem,
   Tooltip,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
-
-import { ModalContainer } from 'components';
+import { ETHER } from '@uniswap/sdk';
+// import { ethers } from 'ethers';
+// import { BigNumber } from 'bignumber.js';
 
 import XOut from 'assets/svg/XOutGrey.svg';
-import AAVE from 'assets/images/AAVE-icon.png';
-import DAI from 'assets/images/DAI-icon.png';
-import ETH from 'assets/images/ETH-icon.png';
-import WBTC from 'assets/images/WBTC-icon.png';
-import LINK from 'assets/svg/LINK-icon.svg';
+
 import { ReactComponent as Down } from 'assets/svg/DropDownArrow.svg';
-import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg'; 
-import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg'; 
-import { ReactComponent as Search } from 'assets/svg/Search.svg'; 
+import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg';
+import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg';
+import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { ReactComponent as SwitchArrows } from 'assets/svg/SwitchTokensArrows.svg';
-import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
+// import { useApproval } from 'hooks';
+import { Token, BNB } from 'web3/tokens';
+import { getSwapQuote, useWeb3 } from 'state/application/hooks';
 import { useSwapSettings } from 'state/swap/hooks';
+import { useCurrencyBalance } from 'state/wallet/hooks';
+// import { calculateGasMargin } from 'utils';
+// import { formatUnits, parseEther } from 'ethers/lib/utils';
+import TokenList from '../../tokens.json';
+// import ROUTE_ICON_LIST from '../../routeIconList.json';
 
-import { SwapSettings } from './components';
+import { ModalContainer } from 'components';
+import { SwapSettings, TokenMenuItem } from './components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -205,10 +211,10 @@ const useStyles = makeStyles(({ palette }) => ({
       borderLeft: '0px',
       boxShadow: 'none',
       '& .MuiTypography-root': {
-        color: palette.primary.main
+        color: palette.primary.main,
       },
       '& svg': {
-        stroke: palette.primary.main
+        stroke: palette.primary.main,
       },
     },
     '&:before': {
@@ -220,8 +226,8 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:after': {
       borderColor: palette.background.paper,
       '& .MuiTypography-root': {
-        color: palette.primary.main
-      }
+        color: palette.primary.main,
+      },
     },
     '&:select': {
       paddingRight: '0px',
@@ -243,7 +249,7 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     cursor: 'pointer',
     '& .MuiTypography-root': {
-      color: palette.primary.main
+      color: palette.primary.main,
     },
   },
   tokenTickerInSelector: {
@@ -442,7 +448,7 @@ const useStyles = makeStyles(({ palette }) => ({
       borderColor: palette.background.paper,
     },
     '&:after': {
-      // 
+      //
       display: 'none',
     },
   },
@@ -471,48 +477,40 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const coinsForSwap = [
-  {
-    symbol: 'DAI',
-    name: 'Dai Stablecoin',
-    icon: DAI,
-    balance: 556,
-  },
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    icon: ETH,
-    balance: 3543,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Wrapped Bitcoin',
-    icon: WBTC,
-    balance: 2,
-  },
-  {
-    symbol: 'AAVE',
-    name: 'Aave',
-    icon: AAVE,
-    balance: 0,
-  },
-  {
-    symbol: 'LINK',
-    name: 'Chainlink',
-    icon: LINK,
-    balance: 876,
-  },
-];
-
 export interface SwapModalProps {
   open: boolean;
   onClose: () => void;
+}
+
+enum SwapState {
+  INVALID,
+  LOADING,
+  VALID,
+}
+
+export interface IZeroXQuote {
+  price: string;
+  guaranteedPrice: string;
+  to: string;
+  data: string;
+  value: string;
+  gas: string;
+  estimatedGas: string;
+  gasPrice: string;
+  minimumProtocolFee: string;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  buyAmount: string;
+  sellAmount: string;
+  allowanceTarget: string;
+  orders: any[];
 }
 
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
+  const { account, chainId, web3 } = useWeb3();
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
@@ -530,6 +528,14 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     React.useState<null | HTMLElement>(null);
   const [toAssetOpen, setToAssetOpen] =
     React.useState<null | HTMLElement>(null);
+
+  const allTokens = [
+    ...TokenList.tokens,
+    chainId === 56 ? (BNB as Token) : (ETHER as Token),
+  ];
+
+  const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
+  const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
 
   const swapReady =
     fromToken &&
@@ -593,76 +599,22 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const handleSelectFromToken = (index: number) => {
-    setSwapSettings({ fromToken: coinsForSwap[index] });
+    setSwapSettings({ fromToken: allTokens[index] });
     handleClosefromAsset();
   };
 
   const handleSelectToToken = (index: number) => {
-    setSwapSettings({ toToken: coinsForSwap[index] });
+    setSwapSettings({ toToken: allTokens[index] });
     handleCloseToAsset();
   };
 
-  const mappedItemsFrom = coinsForSwap.map((item, index) => (
-    <MenuItem
-      className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.symbol}
-      onClick={() => handleSelectFromToken(index)}
-    >
-      <Box display='flex' alignItems='center'>
-        <img
-          src={item.icon}
-          alt={item.symbol}
-          style={{ width: '28px', height: '28px' }}
-        />
-        <Box
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          marginLeft='6px'
-          height='28px'
-        >
-          <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.symbol}
-          </Typography>
-          <Typography className={classes.menuItemAssetName}>
-            {item.name}
-          </Typography>
-        </Box>
-      </Box>
-      <Typography color='textSecondary'>{item.balance}</Typography>
-    </MenuItem>
-  ));
+  // const mappedItemsFrom = allTokens.map((item, index) => (
+  //   <TokenMenuItem token={item} onSelect={() => handleSelectFromToken(index)} />
+  // ));
 
-  const mappedItemsTo = coinsForSwap.map((item, index) => (
-    <MenuItem
-      className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.symbol}
-      onClick={() => handleSelectToToken(index)}
-    >
-      <Box display='flex' alignItems='center'>
-        <img
-          src={item.icon}
-          alt={item.symbol}
-          style={{ width: '28px', height: '28px' }}
-        />
-        <Box
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          marginLeft='6px'
-          height='28px'
-        >
-          <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.symbol}
-          </Typography>
-          <Typography className={classes.menuItemAssetName}>
-            {item.name}
-          </Typography>
-        </Box>
-      </Box>
-      <Typography color='textSecondary'>{item.balance}</Typography>
-    </MenuItem>
-  ));
+  // const mappedItemsTo = allTokens.map((item, index) => (
+  //   <TokenMenuItem token={item} onSelect={() => handleSelectToToken(index)} />
+  // ));
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -702,18 +654,24 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       onChange={handleChangeFromAmount}
                       className={classes.borderedInput}
                     />
-                   <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
-                    <Button
-                      color='primary'
-                      variant='outlined'
-                      size='small'
-                      onClick={handleMax}
-                      style={{ margin: '0px', width: '74px', height: '35px'}}
-                      className={classes.maxButton}
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.maxButtonContainer
+                          : classes.maxButtonContainerMobile
+                      }
                     >
-                      MAX
-                    </Button>
-                  </Box>
+                      <Button
+                        color='primary'
+                        variant='outlined'
+                        size='small'
+                        onClick={handleMax}
+                        style={{ margin: '0px', width: '74px', height: '35px' }}
+                        className={classes.maxButton}
+                      >
+                        MAX
+                      </Button>
+                    </Box>
                   </Box>
 
                   {!fromToken ? (
@@ -737,15 +695,19 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       </Typography>
                       <Box marginRight={!mobile ? '20px' : '16px'}>
                         {!fromAssetOpen ? (
-                          <Down stroke={palette.background.paper}/>
+                          <Down stroke={palette.background.paper} />
                         ) : (
-                          <Up stroke={palette.background.paper}/>
+                          <Up stroke={palette.background.paper} />
                         )}
                       </Box>
                     </ButtonBase>
                   ) : (
                     <ButtonBase
-                      className={!fromAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
+                      className={
+                        !fromAssetOpen
+                          ? classes.borderedSelector
+                          : classes.borderedSelectorActive
+                      }
                       onClick={handleChangeFromAsset}
                       style={
                         fromAssetOpen
@@ -760,7 +722,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         alignItems='center'
                       >
                         <img
-                          src={fromToken.icon}
+                          src={fromToken.logoURI}
                           alt={fromToken.symbol}
                           style={{ height: '18px' }}
                         />
@@ -774,8 +736,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       <Box marginRight='20px'>
                         {!fromAssetOpen ? (
                           <Down stroke={palette.secondary.main} />
-                          ) : (
-                          <Up stroke={palette.primary.main}/>
+                        ) : (
+                          <Up stroke={palette.primary.main} />
                         )}
                       </Box>
                     </ButtonBase>
@@ -808,14 +770,19 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       />
                     </Box>
                     <Box style={{ maxHeight: '22vh', overflowX: 'auto' }}>
-                      {mappedItemsFrom}
+                      {allTokens.map((item, index) => (
+                        <TokenMenuItem
+                          token={item}
+                          onSelect={() => handleSelectFromToken(index)}
+                        />
+                      ))}
                     </Box>
                   </Menu>
                 </Box>
 
                 {fromToken && (
                   <Typography className={classes.smallInfoText}>
-                    Balance: {fromToken?.balance} {fromToken?.symbol}
+                    Balance: {fromTokenBalance} {fromToken?.symbol}
                   </Typography>
                 )}
               </Box>
@@ -845,18 +812,28 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         onChange={handleChangeToAmount}
                         className={classes.borderedInput}
                       />
-                     <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
-                      <Button
-                        color='primary'
-                        variant='outlined'
-                        size='small'
-                        onClick={handleMax}
-                        style={{ margin: '0px', width: '74px', height: '35px'}}
-                        className={classes.maxButton}
+                      <Box
+                        className={
+                          !mobile
+                            ? classes.maxButtonContainer
+                            : classes.maxButtonContainerMobile
+                        }
                       >
-                        MAX
-                      </Button>
-                    </Box>
+                        <Button
+                          color='primary'
+                          variant='outlined'
+                          size='small'
+                          onClick={handleMax}
+                          style={{
+                            margin: '0px',
+                            width: '74px',
+                            height: '35px',
+                          }}
+                          className={classes.maxButton}
+                        >
+                          MAX
+                        </Button>
+                      </Box>
                     </Box>
                     <>
                       {!toToken ? (
@@ -880,16 +857,20 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           </Typography>
                           <Box marginRight={!mobile ? '20px' : '16px'}>
                             {!toAssetOpen ? (
-                               <Down stroke={palette.background.paper} />
-                               ) : (
-                               <Up stroke={palette.background.paper}/>
+                              <Down stroke={palette.background.paper} />
+                            ) : (
+                              <Up stroke={palette.background.paper} />
                             )}
                           </Box>
                         </ButtonBase>
                       ) : (
                         <ButtonBase
-                        className={!toAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
-                        onClick={handleChangeToAsset}
+                          className={
+                            !toAssetOpen
+                              ? classes.borderedSelector
+                              : classes.borderedSelectorActive
+                          }
+                          onClick={handleChangeToAsset}
                           style={
                             toAssetOpen
                               ? { borderColor: palette.primary.main }
@@ -903,7 +884,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                             alignItems='center'
                           >
                             <img
-                              src={toToken.icon}
+                              src={toToken.logoURI}
                               alt={toToken.symbol}
                               style={{ height: '18px' }}
                             />
@@ -918,7 +899,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                             {!toAssetOpen ? (
                               <Down stroke={palette.secondary.main} />
                             ) : (
-                              <Up stroke={palette.primary.main}/>
+                              <Up stroke={palette.primary.main} />
                             )}
                           </Box>
                         </ButtonBase>
@@ -958,7 +939,12 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           WebkitBorderBottomRightRadius: '12px',
                         }}
                       >
-                        {mappedItemsTo}
+                        {allTokens.map((item, index) => (
+                          <TokenMenuItem
+                            token={item}
+                            onSelect={() => handleSelectToToken(index)}
+                          />
+                        ))}
                       </Box>
                     </Menu>
                   </Box>
@@ -966,7 +952,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                   {toToken && (
                     <Box marginTop='2px'>
                       <Typography className={classes.smallInfoText}>
-                        Balance: {toToken?.balance} {toToken?.symbol}
+                        Balance: {toTokenBalance} {toToken?.symbol}
                       </Typography>
                     </Box>
                   )}
@@ -1003,7 +989,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           id='bottomTarget'
                           disabled
                           size='large'
-                          startIcon={(<ApprovedIcon fill={palette.background.paper} />)}
+                          startIcon={
+                            <ApprovedIcon fill={palette.background.paper} />
+                          }
                           style={{ marginBottom: '10px' }}
                         >
                           Approved
