@@ -589,8 +589,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
                     style={{ marginTop: '2rem' }}
                   >
                     <Box className={classes.leftPanel}>
@@ -809,8 +809,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
                     style={{ marginTop: '2rem' }}
                   >
                     <Box className={classes.leftPanel}>
