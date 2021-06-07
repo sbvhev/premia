@@ -120,7 +120,7 @@ const ThemeSwitch: React.FC = () => {
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
           defaultIndex={!darkMode ? 0 : 1}
-          marginBetweenSwitches={1}
+          marginBetweenSwitches={7}
           gliderWidth={80}
           gliderHeight={30}
         />

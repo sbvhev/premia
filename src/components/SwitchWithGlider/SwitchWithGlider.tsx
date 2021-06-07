@@ -19,11 +19,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-export interface GliderDimentions {
-  width: String;
-  height: String;
-}
-
 export interface SwitchWithGliderProps {
   elements: Array<React.FC>;
   defaultIndex: number;
@@ -53,7 +48,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   ));
 
   return (
-    <Box>
+    <Box width='100%' height='100%'>
       <Box
         className={classes.glider}
         width={gliderWidth}
