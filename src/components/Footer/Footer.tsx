@@ -166,7 +166,9 @@ const Footer: React.FC = () => {
   const [gasValue, setGasValue] = useState(25);
   const [gasPrices, setGasPrices] = useState<any>({});
 
-  const getGasPrices = () => {
+  let ws:any, websocket:any;
+
+  const fetchGasData = () => {
     fetch("https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension", {
       method: 'GET'
     }).then((res) => res.json())
@@ -175,22 +177,55 @@ const Footer: React.FC = () => {
     })
   };
 
-  getGasPrices();
-  setInterval(getGasPrices, 15000);
+  const createWebSocketConnection = () => {
+    if (ws) { return }
+    if('WebSocket' in window) {
+      // initial websocket status
+      websocket = false;
+  
+      // ws = new WebSocket('ws://localhost:8005/ws');
+      // ws = new WebSocket('wss://gasnow-test.sparkpool.com/ws/gasprice');
+      ws = new WebSocket('wss://www.gasnow.org/ws/gasprice');
+  
+      ws.onopen = function() {
+        console.log('WebSocket onOpen');
+      };
+  
+      ws.onmessage = function (event: any) {
+        const dataStr = event.data;
+        const json = JSON.parse(dataStr);
+        console.log('WebSocket onMessage:', json.data);
+        setGasPrices(json.data);
+      };
+  
+      ws.onclose = function() {
+        console.log('WebSocket onClose get Gas By WebSocket:', websocket);
+        ws = undefined;
+        getGas(websocket);
+      };
+    } else {
+      // not support WebSocket, fetch Gas by api;
+      getGas(false);
+    }
+  }
+
+  const getGas = (type: any) => {
+    type ? createWebSocketConnection() : fetchGasData();
+  }
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
-    setGasValue(25);
+    setGasValue(Math.floor(gasPrices.standard / Math.pow(10, 9)));
   };
 
   const handleSelectFastGas = () => {
     setGasType('fast');
-    setGasValue(50);
+    setGasValue(Math.floor(gasPrices.fast / Math.pow(10, 9)));
   };
 
   const handleSelectInstantGas = () => {
     setGasType('instant');
-    setGasValue(100);
+    setGasValue(Math.floor(gasPrices.rapid / Math.pow(10, 9)));
   };
 
   const StandardGasSwitch = () => (
