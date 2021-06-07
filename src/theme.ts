@@ -258,7 +258,6 @@ export const lightTheme = responsiveFontSizes(
       },
       MuiContainer: {
         fixed: {
-          border: `1px solid ${dividerGreyDay}`,
           borderRadius: 12,
           background: white,
           boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
@@ -776,8 +775,10 @@ export const darkTheme = responsiveFontSizes(
           '&.Mui-selected': {
             color: primary,
 
-            '& path': {
-              fill: primary,
+            '& svg:first-child': {
+              '& path': {
+                fill: primary,
+              },
             },
           },
         },

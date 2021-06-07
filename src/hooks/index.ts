@@ -10,6 +10,7 @@ export * from './useExpirations';
 export * from './useInterval';
 export * from './useIsHardwareWallet';
 export * from './useIsWindowVisible';
+export * from './useOutsideAlerter';
 export * from './useReferrer';
 export * from './useTransact';
 export * from './useWrapEther';

@@ -379,7 +379,7 @@ export interface PositionModalProps {
 const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const txStateMsg = 'Tell your friends about Premia and earn fees';
   const { palette } = theme;
 

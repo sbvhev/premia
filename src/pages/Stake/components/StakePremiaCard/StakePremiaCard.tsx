@@ -243,7 +243,7 @@ const StakePremiaCard: React.FC = () => {
       {!mobile && (
         <img
           src={StakePremiaIcon}
-          alt='Stake premia'
+          alt='Stake Premia'
           className={classes.stakeImg}
         />
       )}
@@ -254,7 +254,7 @@ const StakePremiaCard: React.FC = () => {
           {mobile && (
             <img
               src={StakePremiaMobile}
-              alt='Stake premia'
+              alt='Stake Premia'
               style={{ height: '80px', width: '52px' }}
             />
           )}
@@ -264,7 +264,7 @@ const StakePremiaCard: React.FC = () => {
               color='textPrimary'
               className={classes.title}
             >
-              Stake premia
+              Stake Premia
             </Typography>
             <Typography
               component='p'

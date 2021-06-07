@@ -17,21 +17,6 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '10px',
     backgroundColor: palette.primary.dark,
   },
-  elementFront: {
-    transition: 'border 0.4s ease-in-out',
-    boxSizing: 'border-box',
-    position: 'absolute',
-    border: '1px solid transparent',
-    backgroundColor: 'transparent',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    '&:hover': {
-      border: `1px solid ${palette.divider}`,
-    },
-    '&:active': {
-      borderRadius: '10px',
-    },
-  },
 }));
 
 export interface GliderDimentions {
@@ -41,75 +26,41 @@ export interface GliderDimentions {
 
 export interface SwitchWithGliderProps {
   elements: Array<React.FC>;
-  positions: Array<Number>;
-  clickFuncs: Array<() => void>;
-  start: Number;
+  defaultIndex: number;
   gliderHeight: Number;
-  gliderWidth: Number;
-  alignedRight?: boolean;
+  gliderWidth: number;
+  marginBetweenSwitches: number;
 }
 
 const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   elements,
-  positions,
-  clickFuncs,
-  start,
   gliderHeight,
   gliderWidth,
-  alignedRight,
+  defaultIndex,
+  marginBetweenSwitches,
 }) => {
   const classes = useStyles();
-  const [gliderPosition, setGliderPosition] = React.useState<any>(start);
+  const [gliderPosition, setGliderPosition] = React.useState<any>(0);
 
   React.useEffect(() => {
-      setGliderPosition(start);
-  }, [start]);
+    const incrementalDistance = gliderWidth + marginBetweenSwitches;
+    const newPosition = defaultIndex * incrementalDistance;
+    setGliderPosition(newPosition);
+  }, [defaultIndex, gliderWidth, marginBetweenSwitches]);
 
-  const mappedClickFuncs = [
-    () => {
-      setGliderPosition(positions[0]);
-      clickFuncs[0]();
-    },
-    () => {
-      setGliderPosition(positions[1]);
-      clickFuncs[1]();
-    },
-    () => {
-      setGliderPosition(positions[2]);
-      clickFuncs[2]();
-    },
-  ];
+  const wrappedElements = elements.map((item, index) => (
+    <Box key={index}>{item}</Box>
+  ));
 
-  const mappedElements = elements.map((item, index) => (
+  return (
     <Box>
       <Box
-        className={classes.elementFront}
+        className={classes.glider}
         width={gliderWidth}
         height={gliderHeight}
-        onClick={mappedClickFuncs[index]}
+        style={{ transform: `translateX(${gliderPosition}px)` }}
       />
-      <Box>{item}</Box>
-    </Box>
-  ));
-  
-  return (
-    <Box className={classes.container}>
-      {mappedElements}
-      {!alignedRight ? (
-        <Box
-          className={classes.glider}
-          left={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      ) : (
-        <Box
-          className={classes.glider}
-          right={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      )}
+      <Box className={classes.container}>{wrappedElements}</Box>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
@@ -17,6 +17,7 @@ import {
   useStrikePrice,
   useOptionSize,
 } from 'state/options/hooks';
+import { useOutsideAlerter } from 'hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   optionButtons: {
@@ -33,6 +34,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
   titleText: {
     fontSize: 14,
+    lineHeight: '24px',
     fontWeight: 500,
     color: palette.text.primary,
     marginLeft: 8,
@@ -46,7 +48,6 @@ const useStyles = makeStyles(({ palette }) => ({
 
   optionSizeInputBox: {
     padding: 3,
-    marginTop: 3,
     width: '100%',
     borderRadius: 12,
     display: 'flex',
@@ -67,6 +68,11 @@ const useStyles = makeStyles(({ palette }) => ({
       color: palette.text.primary,
       background: 'transparent',
       border: 'none',
+      MozAppearance: 'textfield',
+      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+        WebkitAppearance: 'none',
+        margin: 0,
+      },
     },
   },
 
@@ -74,6 +80,7 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '100%',
     height: 45,
     display: 'flex',
+    cursor: 'pointer',
     justifyContent: 'space-between',
     alignItems: 'center',
     border: `1px solid ${palette.divider}`,
@@ -85,6 +92,9 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     '& svg': {
       width: 20,
+      '& path': {
+        fill: palette.text.secondary,
+      },
     },
   },
 
@@ -231,6 +241,10 @@ const OptionFilter: React.FC = () => {
   const [maturityFocused, setMaturityFocused] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
+  const calendarRef = useRef<HTMLInputElement | null>(null);
+
+  useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
+
   moment.updateLocale('en', { weekdaysMin: 'S_M_T_W_T_F_S'.split('_') });
 
   if (!moment(maturityDate).isValid()) {
@@ -293,7 +307,7 @@ const OptionFilter: React.FC = () => {
 
       <Box width={1} marginBottom={2}>
         <Typography className={classes.titleText}>Maturity</Typography>
-        <Box position='relative' width={1} marginTop={1}>
+        <Box position='relative' width={1}>
           <Box
             className={cx(
               classes.dateInput,
@@ -311,6 +325,7 @@ const OptionFilter: React.FC = () => {
           {maturityFocused && (
             <Box className={classes.calendarContainer}>
               <Calendar
+                inputRef={calendarRef as any}
                 minDate={new Date()}
                 prevLabel={<ArrowBackIosIcon />}
                 nextLabel={<ArrowForwardIosIcon />}

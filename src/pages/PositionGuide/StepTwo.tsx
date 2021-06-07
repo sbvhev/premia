@@ -17,7 +17,7 @@ import { ArrowDropUp as ArrowDropUpIcon } from '@material-ui/icons';
 import { ColoredSlider } from 'components';
 import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as Decrease } from 'assets/svg/Decrease.svg';
-import { ReactComponent as RemailStable } from 'assets/svg/RemailStable.svg';
+import { ReactComponent as RemainStable } from 'assets/svg/RemainStable.svg';
 import { ReactComponent as Increase } from 'assets/svg/Increase.svg';
 import { StepProps } from './Stepper';
 
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     selector: {
       padding: 22,
-      borderBottom: `1px solid ${theme.palette.divider}`,
 
       [theme.breakpoints.down('md')]: {
         padding: '22px 10px',
@@ -51,6 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > div': {
         aspectRatio: '16/ 9',
         width: 'calc(33.33% - 10px)',
+        border: '1px solid transparent',
+
+        '&:hover:not(:active)': {
+          borderColor: theme.palette.text.primary,
+        },
+
+        '&:active': {
+          opacity: 0.8,
+        },
 
         [theme.breakpoints.down('md')]: {
           width: '100%',
@@ -125,7 +133,7 @@ const useStyles = makeStyles((theme: Theme) =>
           'linear-gradient(316.57deg, #EB4A97 18.89%, #8C43F6 95.84%)',
       },
     },
-    remailStable: {
+    remainStable: {
       '& > div': {
         background:
           'linear-gradient(266.96deg, #EB7A4A 29.5%, #F643CF 117.72%)',
@@ -142,6 +150,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '18px 25px',
       display: 'flex',
       flexDirection: 'row',
+      borderTop: `1px solid ${theme.palette.divider}`,
 
       [theme.breakpoints.down('md')]: {
         flexDirection: 'column',
@@ -239,14 +248,14 @@ const StepTwo: React.FC<StepProps> = ({ activeStep }) => {
           <Box
             className={cn(
               classes.asset,
-              classes.remailStable,
-              asset === 'Remail stable' ? classes.selected : '',
+              classes.remainStable,
+              asset === 'Remain stable' ? classes.selected : '',
             )}
-            onClick={() => setAsset('Remail stable')}
+            onClick={() => setAsset('Remain stable')}
           >
             <Box />
-            <RemailStable />
-            <Typography>Remail stable</Typography>
+            <RemainStable />
+            <Typography>Remain stable</Typography>
           </Box>
           <Box
             className={cn(

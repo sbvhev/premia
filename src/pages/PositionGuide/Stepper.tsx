@@ -86,7 +86,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     active: {
       background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
-      boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
       border: 'none',
       color: theme.palette.background.paper,
       fontWeight: 500,
@@ -142,7 +141,15 @@ const PositionStepper: React.FC = () => {
         orientation={mobile ? 'horizontal' : 'vertical'}
       >
         {steps.map((label, index) => (
-          <Step key={label}>
+          <Step
+            key={label}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              if (activeStep > index) {
+                setActiveStep(index);
+              }
+            }}
+          >
             <StepLabel
               StepIconComponent={(props) => {
                 return (
