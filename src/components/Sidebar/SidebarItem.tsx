@@ -85,12 +85,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     if (!href) {
       if (link) {
         history.push(link, { previous: location.pathname });
+        if (onHide) {
+          onHide();
+        }
       } else if(onClick) {
         onClick();
-      }
-
-      if (onHide) {
-        onHide();
       }
     } else {
       window.open(link, '_blank');
