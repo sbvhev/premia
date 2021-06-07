@@ -50,8 +50,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 0,
     height: 45,
     border: (props: any) => props.darkMode && `1px solid ${palette.divider}`,
-    backgroundColor: (props: any) => props.darkMode ? 'transparent' : 'white',
-    boxShadow: (props: any) => props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+    backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
+    boxShadow: (props: any) =>
+      props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     borderRadius: 12,
     cursor: 'pointer',
 
@@ -80,7 +81,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     alignItems: 'center',
     paddingLeft: 10,
-    paddingRight: 6
+    paddingRight: 6,
   },
 
   accountMobile: {
@@ -91,7 +92,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& $disconnect': {
       width: 43,
-      flex: 'none'
+      flex: 'none',
     },
 
     '&:hover': {
@@ -174,7 +175,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   fullWidth: {
     margin: 0,
-    width: '100%'
+    width: '100%',
   },
 
   swapButton: {
@@ -183,8 +184,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   connectWalletButton: {
     fontSize: 14,
-    color: 'black'
-  }
+    color: 'black',
+  },
 }));
 
 interface AccountButtonsProps {
@@ -234,18 +235,26 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         >
           {!mobile ? (
             <>
-              <Button color='primary' className={classes.button}>
+              <Button
+                color='primary'
+                className={classes.button}
+                onClick={() =>
+                  window.open(
+                    'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
+                    '_blank',
+                  )
+                }
+              >
                 <span>Get</span>
                 <LogoIcon />
               </Button>
 
               <Box clone mb={mobile ? 1 : 0}>
                 <Box display='flex' id='test'>
-                  <Grid
-                    container
-                    className={classes.account}
-                  >
-                    <Box height={1} className={classes.accountInfo}
+                  <Grid container className={classes.account}>
+                    <Box
+                      height={1}
+                      className={classes.accountInfo}
                       onClick={() => setShowTransactions(true)}
                     >
                       <Box>
@@ -326,7 +335,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               >
                 <Button
                   color='primary'
-                  className={cx(classes.button, mobile && classes.fullWidth )}
+                  className={cx(classes.button, mobile && classes.fullWidth)}
+                  onClick={() =>
+                    window.open(
+                      'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
+                      '_blank',
+                    )
+                  }
                 >
                   Get
                   <LogoIcon />
@@ -341,7 +356,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
             variant='contained'
             color='primary'
             size='large'
-            className={cx(mobile && classes.fullWidth, classes.connectWalletButton)}
+            className={cx(
+              mobile && classes.fullWidth,
+              classes.connectWalletButton,
+            )}
             onClick={() => setConfirmTermsModalOpen(true)}
           >
             <ConnectWallet className={classes.walletIcon} />
