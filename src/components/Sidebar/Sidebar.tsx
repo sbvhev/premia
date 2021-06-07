@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
@@ -18,54 +18,58 @@ import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
-import { ThemeSwitch, SwapModal } from 'components';
+import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const insights = [
+  {
+    title: 'Documentation',
+    link: 'https://premia.medium.com',
+    Icon: <DocumentationIcon />,
+    href: true,
+  },
+  {
+    title: 'Careers',
+    link: 'https://solidity.finance/audits/Premia/',
+    Icon: <CareerIcon />,
+    href: true,
+  },
+];
+
+const useStyles = makeStyles(({ palette }) => ({
   rightBorder: {
-    borderRight: `1px solid ${theme.palette.divider}`,
+    borderRight: `1px solid ${palette.divider}`,
   },
 
   subtitle: {
     marginBottom: 8,
     marginLeft: '1rem',
     fontSize: 10,
-    color: theme.palette.text.secondary,
-  },
-
-  modeItem: {
-    padding: '4px 8px',
-    borderRadius: 10,
-    cursor: 'pointer',
-    '& img': {
-      filter: 'grayscale(1)',
-      marginRight: 8,
-    },
-  },
-
-  inactiveMode: {
-    background: theme.palette.primary.dark,
-    fontWeight: 'bold',
-    '& img': {
-      filter: 'none',
-    },
-    '& span': {
-      color: theme.palette.primary.main,
-    },
+    color: palette.text.secondary,
   },
 
   light: {
-    background: theme.palette.background.paper,
+    background: palette.background.paper,
   },
 
-  glider: {
-    transition: 'top 0.4s ease-out',
-    position: 'absolute',
-    height: '47px',
+  switchContainer: {
+    marginTop: '18px',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: palette.background.paper,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     width: '180px',
-    border: 'none',
-    zIndex: 10,
-    borderRadius: '12px',
-    backgroundColor: theme.palette.primary.dark,
+    height: '251px',
+  },
+  switchContainerMobile: {
+    display: 'flex',
+    marginBottom: '4px',
+    flexDirection: 'column',
+    backgroundColor: palette.background.paper,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '251px',
   },
 }));
 
@@ -74,28 +78,42 @@ export interface SidebarProps {
   onHide?: () => void;
 }
 
-interface GliderHerights {
+interface PageIndexing {
   [key: string]: number;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
-  const history = useHistory();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
-  const [showSwapModal, setShowSwapModal] = useState(false);
-  const gliderHeights: GliderHerights = {
-    '/': 93,
-    '/vaults': 143,
-    '/options': 193,
-    '/stake': 243,
+  const pageIndexes: PageIndexing = {
+    '/': 0,
+    '/vaults': 1,
+    '/options': 2,
+    '/stake': 3,
   };
+  const [showSwapModal, setShowSwapModal] = useState(false);
+  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
   const state = location.state ? location.state.previous : false;
-  const startHeight = state
-    ? gliderHeights[state]
-    : gliderHeights[pathname] || 93;
-  const [gliderPosition, setGliderPosition] = React.useState(startHeight);
+  const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
+  const [pageNavigationIndex, setPageNavigationIndex] =
+    React.useState(startIndex);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  React.useEffect(() => {
+    const currentPage = pageIndexes[pathname];
+    setPageNavigationIndex(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const navigation = [
     {
@@ -124,26 +142,20 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
       Icon: <SwapIcon />,
     },
   ];
-  
-  const insights = [
-    {
-      title: 'Documentation',
-      link: 'https://premia.medium.com',
-      Icon: <DocumentationIcon />,
-      href: true,
-    },
-    {
-      title: 'Careers',
-      link: 'https://solidity.finance/audits/Premia/',
-      Icon: <CareerIcon />,
-      href: true,
-    },
-  ];
 
-  useEffect(() => {
-    setGliderPosition(gliderHeights[pathname] || 93);
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [pathname, history]);
+  const navigationItems = navigation.map(
+    ({ title, link, Icon, onClick }, i) => (
+      <SidebarItem
+        key={i}
+        title={title}
+        link={link}
+        Icon={Icon}
+        onHide={onHide}
+        onClick={onClick}
+        activeCondition={!onClick ? link === pathname : showSwapModal}
+      />
+    ),
+  );
 
   return (
     <Box
@@ -165,7 +177,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
         justifyContent='space-between'
         style={{ overflowY: 'auto' }}
       >
-        <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
+        <SwapModal
+          open={showSwapModal}
+          onClose={() => setShowSwapModal(false)}
+        />
         <Box>
           {!mobile && (
             <Grid container component={Link} to='/'>
@@ -178,18 +193,30 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
               </Box>
             </Grid>
           )}
-          <Box>
-            {navigation.map(({ title, link, Icon, onClick }, i) => (
-              <SidebarItem
-                key={i}
-                title={title}
-                link={link}
-                onClick={onClick}
-                Icon={Icon}
-                onHide={onHide}
+          <Box
+            className={
+              !mobile ? classes.switchContainer : classes.switchContainerMobile
+            }
+          >
+            {!mobile ? (
+              <SwitchWithGlider
+                elements={[...navigationItems]}
+                defaultIndex={pageNavigationIndex}
+                marginBetweenSwitches={4}
+                gliderWidth={180}
+                gliderHeight={47}
+                verticalGlider
               />
-            ))}
-            {!mobile && <Box top={gliderPosition} className={classes.glider} />}
+            ) : (
+              <SwitchWithGlider
+                elements={navigationItems}
+                defaultIndex={pageNavigationIndex}
+                marginBetweenSwitches={4}
+                gliderWidth={deviceWidth - 20}
+                gliderHeight={47}
+                verticalGlider
+              />
+            )}
           </Box>
         </Box>
 

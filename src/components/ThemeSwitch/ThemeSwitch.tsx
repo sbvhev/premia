@@ -57,9 +57,18 @@ const ThemeSwitch: React.FC = () => {
   const { onboard } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
-  const deviceWidth = window.innerWidth;
+  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleDayClick = () => {
     setTimeout(() => {
@@ -120,7 +129,7 @@ const ThemeSwitch: React.FC = () => {
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
           defaultIndex={!darkMode ? 0 : 1}
-          marginBetweenSwitches={1}
+          marginBetweenSwitches={7}
           gliderWidth={80}
           gliderHeight={30}
         />
@@ -129,7 +138,7 @@ const ThemeSwitch: React.FC = () => {
           elements={[DayButton, NightButton]}
           defaultIndex={!darkMode ? 0 : 1}
           gliderWidth={deviceWidth / 2 - 16}
-          marginBetweenSwitches={0}
+          marginBetweenSwitches={8}
           gliderHeight={36}
         />
       )}
