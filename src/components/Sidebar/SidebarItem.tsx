@@ -1,58 +1,55 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { makeStyles } from '@material-ui/core/styles';
-import cn from 'classnames';
+import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette }) => ({
-  item: {
-    border: '1px solid transparent',
-    backgroundColor: ({ active }: any) =>
-      active ? 'rgba(82, 148, 255, 0.1)' : 'transparent',
-    borderRadius: 12,
-    padding: '8px 16px',
-    margin: '0',
-    marginBottom: '3px',
+  inactiveSwitch: {
     cursor: 'pointer',
-    fontSize: 14,
-
-    '&:hover': {
-      border: ({ disabled }: any) =>
-        disabled
-          ? '1px solid transparent'
-          : `1px solid ${palette.primary.main}`,
-
-      '& $icon': {
-        color: ({ disabled }: any) =>
-          disabled ? palette.text.secondary : palette.text.primary,
-      },
-
-      '& $title': {
-        color: ({ disabled }: any) =>
-          disabled ? palette.text.secondary : palette.text.primary,
-      },
+    '& svg': {
+      marginRight: 10,
     },
-  },
-
-  icon: {
-    minWidth: 32,
     '& svg path': {
-      fill: ({ active }: any) =>
-        active ? palette.primary.main : palette.secondary.main,
+      fill: palette.secondary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      lineHeight: '14px',
+      fontSize: '14px',
+      color: palette.secondary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
     },
   },
-
-  title: {
-    whiteSpace: 'nowrap',
-    color: ({ active }: any) =>
-      active ? palette.primary.main : palette.text.secondary,
-
-    '&> span': {
-      fontSize: 14,
-      fontWeight: ({ active }: any) => active && 700,
+  activeSwitch: {
+    cursor: 'default',
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+      fontWeight: 700,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+        fontWeight: 700,
+      },
     },
   },
 }));
@@ -63,6 +60,7 @@ export interface SidebarItemProps {
   Icon: any;
   href?: boolean;
   onHide?: () => void;
+  activeCondition?: any;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -71,6 +69,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   Icon,
   href,
   onHide,
+  activeCondition,
 }) => {
   const location = useLocation();
   const active = location.pathname === link;
@@ -92,25 +91,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   };
 
   return (
-    <ListItem
-      className={cn(classes.item, { active })}
-      style={mobile ? {} : { backgroundColor: 'transparent' }}
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='flex-start'
+      paddingLeft='15px'
+      width={!mobile ? '180px' : '100%'}
+      height='47px'
+      className={cx(
+        classes.inactiveSwitch,
+        activeCondition && classes.activeSwitch,
+      )}
       onClick={handleClick}
     >
-      <ListItemIcon
-        className={classes.icon}
-        style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
-      >
-        {Icon}
-      </ListItemIcon>
-
-      <ListItemText
-        style={{ color: link === '/pbc' && !active ? 'orange' : undefined }}
-        className={classes.title}
-      >
-        {title}
-      </ListItemText>
-    </ListItem>
+      {Icon}
+      <Typography>{title}</Typography>
+    </Box>
   );
 };
 

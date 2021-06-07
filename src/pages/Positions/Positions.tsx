@@ -853,7 +853,7 @@ const Positions: React.FC = () => {
   );
 
   const ExpiredOptionsSwitch = () => {
-    const iconWaringMobileShift = deviceWidth / 4 + 19;
+    const iconWaringMobileShift = deviceWidth / 4 + 23;
     return (
       <Box
         width={mobileWindowSize ? '50%' : 'auto'}
@@ -867,7 +867,7 @@ const Positions: React.FC = () => {
                   transform: `translate(86px, 4px)`,
                 }
               : {
-                  transform: `translate(${iconWaringMobileShift}px, -1px)`,
+                  transform: `translate(${iconWaringMobileShift}px, 2px)`,
                 }
           }
         >
