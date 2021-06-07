@@ -1,0 +1,13 @@
+<svg width="374" height="146" viewBox="0 0 374 146" fill="none" xmlns="http://www.w3.org/2000/svg">
+<line opacity="0.6" y1="-0.5" x2="162.828" y2="-0.5" transform="matrix(0.841378 0.540447 0.540447 -0.841378 -67 14)" stroke="#260752"/>
+<line opacity="0.6" y1="-0.5" x2="118.849" y2="-0.5" transform="matrix(0.967617 -0.252422 -0.252422 -0.967617 70 102)" stroke="#260752"/>
+<line opacity="0.6" y1="-0.5" x2="96.2081" y2="-0.5" transform="matrix(0.686013 0.727589 0.727589 -0.686013 185 72)" stroke="#260752"/>
+<line opacity="0.6" y1="-0.5" x2="130.269" y2="-0.5" transform="matrix(0.913495 -0.406851 -0.406851 -0.913495 251 142)" stroke="#260752"/>
+<line opacity="0.6" y1="-0.5" x2="174.393" y2="-0.5" transform="matrix(-0.934669 0.355518 0.355518 0.934669 348 10)" stroke="#260752"/>
+<line opacity="0.6" y1="-0.5" x2="78.1601" y2="-0.5" transform="matrix(-0.281474 -0.959569 -0.959569 0.281474 370 89)" stroke="#260752"/>
+<circle r="4" transform="matrix(-1 0 0 1 185 72)" fill="#5713BA"/>
+<circle r="4" transform="matrix(-1 0 0 1 70 102)" fill="#5713BA"/>
+<circle r="4" transform="matrix(-1 0 0 1 251 142)" fill="#5713BA"/>
+<circle r="4" transform="matrix(-1 0 0 1 370 89)" fill="#5713BA"/>
+<circle r="4" transform="matrix(-1 0 0 1 348 10)" fill="#5713BA"/>
+</svg>

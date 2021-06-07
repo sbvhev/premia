@@ -100,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const navigation = [
     {
       title: 'My positions',
-      link: '/',
+      link: '/positions',
       Icon: <PositionsIcon />,
     },
     {
