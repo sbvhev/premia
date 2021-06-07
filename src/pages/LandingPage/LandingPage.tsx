@@ -63,7 +63,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 0,
+
+    [breakpoints.down('md')]: {
+      padding: 0,
+    },
   },
 
   box: {
@@ -90,6 +93,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   appBar: {
     background: 'black',
+    top: 0,
+    position: 'fixed',
+    width: '100%',
     boxShadow: '2px 5px 4px rgba(0, 0, 0, 0.25)',
     borderBottom: '1px solid #212121',
   },
@@ -188,7 +194,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: '26px',
     color: 'rgba(255, 255, 255, 0.6)',
     maxWidth: 526,
-    marginBottom: 23,
+    marginBottom: 50,
+
+    [breakpoints.down('sm')]: {
+      marginBottom: 11,
+    },
   },
   openAppBig: {
     color: '#000000',
@@ -208,10 +218,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   body: {
+    paddingTop: 56,
     border: 'none',
 
     [breakpoints.down('sm')]: {
-      padding: '0 20px',
+      padding: '56px 20px 0 20px',
     },
   },
   explorePremia: {
@@ -934,8 +945,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: 'black',
     width: '100%',
     position: 'fixed',
-    top: 60,
+    top: 56,
     zIndex: 60000,
+    borderTop: '1px solid #212121',
 
     '& > div': {
       '&:first-of-type': {
@@ -1055,8 +1067,9 @@ const LandingPage: React.FC = () => {
               Permissionless options and metavaults
             </Typography>
             <Typography className={classes.subTitle}>
-              Premia enables market-sensitive pricing, next generation capital
-              efficiency, and fully-featured peer-to-pool trading
+              Premia's next generation options AMM enables best-in-class pricing
+              based on market volatility, bringing fully-featured peer-to-pool
+              trading and capital efficiency to DeFi options.
             </Typography>
             <Button className={classes.openAppBig}>Open App</Button>
           </Box>
