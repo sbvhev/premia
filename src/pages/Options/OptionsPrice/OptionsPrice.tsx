@@ -5,7 +5,12 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Draggable from 'react-draggable';
 import cx from 'classnames';
 
-import { useOptionType } from 'state/options/hooks';
+import {
+  useOptionType,
+  useUnderlyingPrice,
+  usePricePerUnit,
+  useStrikePrice,
+} from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
 
@@ -198,9 +203,12 @@ const OptionsPrice: React.FC = () => {
   }, []);
 
   const theme = useTheme();
+  const { strikePrice } = useStrikePrice();
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const underlyingPrice = useUnderlyingPrice();
+  const { pricePerUnit } = usePricePerUnit();
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
@@ -210,6 +218,13 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const pLBoxPos = 250;
+
+  const breakEvenPrice =
+    optionType === OptionType.Call
+      ? strikePrice + pricePerUnit
+      : strikePrice - pricePerUnit;
+
+  console.log('perUnit', pricePerUnit);
 
   return (
     <Grid
@@ -244,7 +259,7 @@ const OptionsPrice: React.FC = () => {
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current price</p>
           <p>
-            <b>$1,749.37</b>
+            <b>${underlyingPrice}</b>
           </p>
         </Box>
       </Box>
@@ -303,7 +318,9 @@ const OptionsPrice: React.FC = () => {
             )}
             <Box>
               {mobile && <HelpIcon />}
-              <Typography className={classes.priceFont}>$1,843</Typography>
+              <Typography className={classes.priceFont}>
+                ${breakEvenPrice}
+              </Typography>
               {!mobile && <HelpIcon />}
             </Box>
           </Box>
@@ -343,7 +360,9 @@ const OptionsPrice: React.FC = () => {
               />
             )}
             <Box>
-              <Typography className={classes.priceFont}>$1,504</Typography>
+              <Typography className={classes.priceFont}>
+                ${breakEvenPrice}
+              </Typography>
               <HelpIcon />
             </Box>
           </Box>
@@ -410,7 +429,7 @@ const OptionsPrice: React.FC = () => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>$1,749.37</b>
+                  <b>${underlyingPrice}</b>
                 </Typography>
               </Box>
             </Box>

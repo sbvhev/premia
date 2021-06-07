@@ -13,20 +13,20 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
-import { useOptionType } from 'state/options/hooks';
+import {
+  useOptionType,
+  useUnderlying,
+  useUnderlyingPrice,
+} from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
+import { tokenIcons } from 'constants/tokenIcons';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
 import { SearchTabs, BuyConfirmationModal, LineChart } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
-import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
-import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -149,27 +149,32 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const tabItems = [
   {
-    image: WBTCIcon,
+    image: tokenIcons.WBTC,
     label: 'wBTC',
+    symbol: 'WBTC',
   },
   {
     marginLeft: -2,
-    image: UniIcon,
+    image: tokenIcons.UNI,
     label: 'Uni',
+    symbol: 'UNI',
     highlight: true,
   },
   {
-    image: LinkIcon,
+    image: tokenIcons.LINK,
     label: 'Link',
+    symbol: 'LINK',
   },
   {
-    image: YFIIcon,
+    image: tokenIcons.YFI,
     label: 'YFI',
+    symbol: 'YFI',
     highlight: true,
   },
   {
-    image: EthIcon,
+    image: tokenIcons.WETH,
     label: 'ETH',
+    symbol: 'WETH',
   },
 ];
 
@@ -181,9 +186,10 @@ const Options: React.FC = () => {
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
-  const [tokenIndex, setTokenIndex] = useState(2);
-  const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
+  const { optionType } = useOptionType();
+  const { underlying, setUnderlying } = useUnderlying();
+  const underlyingPrice = useUnderlyingPrice();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [popoverType, setPopoverType] = useState('');
 
@@ -207,10 +213,10 @@ const Options: React.FC = () => {
       <Box mt={2} mb={4} ml={!mobile ? '6px' : '0'}>
         <SearchTabs
           items={tabItems}
-          value={tokenIndex}
-          onChange={(ev, index) => {
-            setTokenIndex(index);
-          }}
+          value={tabItems.findIndex(
+            (item) => item.symbol === underlying.symbol,
+          )}
+          onChange={() => setUnderlying(underlying)}
         />
       </Box>
 
@@ -292,7 +298,7 @@ const Options: React.FC = () => {
               <Typography color='textSecondary'>Current price</Typography>
               <Box display='flex' alignItems='center' mt={-0.5625}>
                 <Typography color='textPrimary' component='h2'>
-                  $1,222
+                  ${underlyingPrice}
                 </Typography>
                 <Box
                   position='relative'

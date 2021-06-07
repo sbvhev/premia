@@ -87,10 +87,10 @@ export const contracts: ContractAddresses = {
     56: '0x581d114C4058230504F862119D5Bf01393E9e17e',
   },
   Pool: {
-    4: '0x1AEF6B1D4636f1aa107ac37DE4dc4EF491d4cd70',
+    4: '0xc23a4441c15f496bfd05a67d9861c96feeef38a8',
   },
   PremiaInstance: {
-    4: '0x3ABF35241F83f93b1b89f3Fe30a1E9d9dF40e3dD',
+    4: '0x50a5e78EF413F81024B9B529E554A686480C9aD5',
   },
   PremiaErc20: {
     1: '0x6399C842dD2bE3dE30BF99Bc7D1bBF6Fa3650E70',
@@ -108,7 +108,7 @@ export const contracts: ContractAddresses = {
     42: '0x1f87Beb89e43824C075d82B3a7061b1e50D1615d',
   },
   ProxyManager: {
-    4: '0x3ABF35241F83f93b1b89f3Fe30a1E9d9dF40e3dD',
+    4: '0x50a5e78EF413F81024B9B529E554A686480C9aD5',
   },
 };
 

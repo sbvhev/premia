@@ -31,35 +31,51 @@
         "internalType": "address",
         "name": "underlyingOracle",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
       }
     ],
-    "name": "DeployPair",
+    "name": "DeployPool",
     "type": "event"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset0",
+        "name": "base",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "asset1",
+        "name": "underlying",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "oracle0",
+        "name": "baseOracle",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "oracle1",
+        "name": "underlyingOracle",
         "type": "address"
+      },
+      {
+        "internalType": "int128",
+        "name": "price64x64",
+        "type": "int128"
+      },
+      {
+        "internalType": "int128",
+        "name": "emaLogReturns64x64",
+        "type": "int128"
       }
     ],
-    "name": "deployPair",
+    "name": "deployPool",
     "outputs": [
       {
         "internalType": "address",
@@ -74,29 +90,16 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset0",
+        "name": "base",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "asset1",
+        "name": "underlying",
         "type": "address"
       }
     ],
-    "name": "getPair",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getPairImplementation",
+    "name": "getPool",
     "outputs": [
       {
         "internalType": "address",

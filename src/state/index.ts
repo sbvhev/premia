@@ -9,7 +9,7 @@ import transactions from './transactions/reducer';
 import options from './options/reducer';
 import swap from './swap/reducer';
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'options'];
+const PERSISTED_KEYS: string[] = ['user', 'transactions'];
 
 const store = configureStore({
   reducer: {

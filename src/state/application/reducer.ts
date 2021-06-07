@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 import { Provider } from 'ethers-multicall';
 import { ChainId } from '@uniswap/sdk';
 
+import { PremiaContracts } from 'web3/contracts';
+
 import {
   ApplicationModal,
   ApplicationNotification,
@@ -32,7 +34,7 @@ export interface ApplicationState {
   wallet?: Wallet | null;
   activeModal?: ApplicationModal | null;
   activeNotification?: ApplicationNotification | null;
-  contracts: any;
+  contracts?: PremiaContracts;
   prices: { [symbol: string]: number };
   approvalType: string | null;
   wrapEthModalOpen: boolean;
@@ -55,7 +57,7 @@ export const initialState: ApplicationState = {
   wallet: undefined,
   activeModal: undefined,
   activeNotification: undefined,
-  contracts: {},
+  contracts: undefined,
   prices: {},
   approvalType: 'write',
   wrapEthModalOpen: false,
@@ -87,7 +89,7 @@ export default createReducer(initialState, (builder) =>
       state.signer = signer || state.signer;
       state.web3 = web3 !== undefined ? web3 : state.web3;
       state.wallet = wallet !== undefined ? wallet : state.wallet;
-      state.contracts = contracts || state.contracts;
+      state.contracts = (contracts as any) || state.contracts;
       state.chainId = chainId ?? state.chainId;
 
       if (state.web3) {

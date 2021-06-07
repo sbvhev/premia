@@ -3,11 +3,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "pairImplementation",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "poolImplementation",
         "type": "address"
       }

@@ -11,6 +11,7 @@ import {
   updateSize,
   updateOptionType,
   updateStrikePrice,
+  updatePricePerUnit,
 } from './actions';
 
 export interface OptionsState {
@@ -20,6 +21,7 @@ export interface OptionsState {
   maturityDate: string;
   strikePrice: number;
   size: number;
+  pricePerUnit: number;
 }
 
 export const initialState: OptionsState = {
@@ -27,8 +29,9 @@ export const initialState: OptionsState = {
   underlying: WETH[ChainId.MAINNET],
   optionType: OptionType.Call,
   maturityDate: '',
-  strikePrice: 50,
+  strikePrice: 0,
   size: 0,
+  pricePerUnit: 0,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -50,5 +53,8 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateSize, (state, { payload }) => {
       state.size = payload;
+    })
+    .addCase(updatePricePerUnit, (state, { payload }) => {
+      state.pricePerUnit = payload;
     }),
 );

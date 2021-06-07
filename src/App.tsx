@@ -23,6 +23,7 @@ import {
 import ApplicationUpdater from './state/application/updater';
 import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
+import OptionsUpdater from './state/options/updater';
 import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
@@ -129,6 +130,7 @@ const StateUpdaters: React.FC = () => {
       <ApplicationUpdater />
       <MulticallUpdater />
       <UserUpdater />
+      <OptionsUpdater />
     </>
   );
 };

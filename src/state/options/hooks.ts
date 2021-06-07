@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
 import { AppState, AppDispatch } from 'state';
+import { usePrices } from 'state/application/hooks';
 import {
   updateBase,
   updateUnderlying,
@@ -11,7 +12,22 @@ import {
   updateMaturityDate,
   updateStrikePrice,
   updateSize,
+  updatePricePerUnit,
 } from './actions';
+
+export function useUnderlyingPrice(): number {
+  const { underlying } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+  const tokenPrices = usePrices();
+
+  const underlyingPrice = useMemo(
+    () => tokenPrices[underlying.symbol],
+    [tokenPrices, underlying],
+  );
+
+  return underlyingPrice;
+}
 
 export function useBase() {
   const dispatch = useDispatch<AppDispatch>();
@@ -95,4 +111,18 @@ export function useSize() {
   );
 
   return { size, setSize };
+}
+
+export function usePricePerUnit() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { pricePerUnit } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPricePerUnit = useCallback(
+    (pricePerUnit: number) => dispatch(updatePricePerUnit(pricePerUnit)),
+    [dispatch],
+  );
+
+  return { pricePerUnit, setPricePerUnit };
 }
