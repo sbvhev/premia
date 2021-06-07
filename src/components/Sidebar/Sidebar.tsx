@@ -16,6 +16,8 @@ import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
 import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+
 import ThemeSwitch from 'components/ThemeSwitch';
 
 const navigation = [
@@ -38,6 +40,11 @@ const navigation = [
     title: 'Stake',
     link: '/stake',
     Icon: <StakeIcon />,
+  },
+  {
+    title: 'Swap',
+    link: '',
+    Icon: <SwapIcon />,
   },
 ];
 

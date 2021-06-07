@@ -9,11 +9,12 @@ import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
 import { ReactComponent as GithubIcon } from 'assets/svg/GithubIcon.svg';
-import { ReactComponent as LockIcon } from 'assets/svg/LockIcon.svg';
 import { ReactComponent as GasIcon } from 'assets/svg/GasIcon.svg';
 import { ReactComponent as GasStandardIcon } from 'assets/svg/GasStandardIcon.svg';
 import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
+import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
+import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   footer: {
@@ -32,26 +33,59 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
 
+  footerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: (props: any) => props.mobile ? 'space-between' : 'flex-end',
+    height: (props: any) => props.mobile ? '50px' : '40px',
+    order: (props: any) => props.mobile ? 0 : 1,
+    width: (props: any) => props.mobile ? '100%' : 'auto',
+
+    '& hr': {
+      height: 25
+    }
+  },
+
   footerRightItem: {
-    padding: '0px 22px',
+    padding: (props: any) => props.mobile ? '0 10px 0 24px' : '0px 5px 0 16.5px',
     display: 'flex',
     alignItems: 'center',
     color: palette.text.secondary,
+    cursor: 'pointer',
+    width: (props: any) => props.mobile ? '50%' : 'auto',
+    '&:first-child': {
+      '& svg': {
+        width: 13.25,
+        height: 21.58  
+      }
+    },
     '&:last-child': {
-      cursor: 'pointer',
+      justifyContent: (props: any) => props.mobile && 'flex-end'
+    },
+    '& span': {
+      fontSize: 14,
     },
     '& svg': {
       marginRight: 8,
 
       '& path': {
-        fill: (props: any) => (props.dark ? null : '#8D97A0'),
+        fill: palette.text.secondary,
       },
-    },
+    }
+  },
+
+  upArrow: {
+    margin: '0 7px !important',
+    height: '6.7px !important',
+    width: '10.68px !important',
+    '& path': {
+      fill: 'none !important',
+      stroke: palette.text.secondary
+    }
   },
 
   gasProgress: {
     width: 35,
-    marginLeft: 4,
     background: 'rgba(141, 151, 160, 0.4)',
   },
 
@@ -122,11 +156,10 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const Footer: React.FC = () => {
+  const { palette, breakpoints } = useTheme();
   const dark = useIsDarkMode();
-  const classes = useStyles({ dark });
-  const theme = useTheme();
-  const { palette } = theme;
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const mobile = useMediaQuery(breakpoints.down('xs'));
+  const classes = useStyles({ dark, mobile });
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
@@ -190,7 +223,7 @@ const Footer: React.FC = () => {
       height={mobile ? 99 : 42}
       width={1}
       borderTop={1}
-      borderColor={theme.palette.divider}
+      borderColor={palette.divider}
       style={mobile ? { backgroundColor: palette.background.paper } : {}}
     >
       <Grid
@@ -240,20 +273,15 @@ const Footer: React.FC = () => {
             <GithubIcon />
           </a>
         </Box>
-        <Box
-          display='flex'
-          justifyContent={mobile ? 'space-between' : 'flex-end'}
-          height={mobile ? '50px' : '40px'}
-          style={{ order: mobile ? 0 : 1 }}
-          width={mobile ? '100%' : 'auto'}
-        >
+        <Box className={classes.footerRight}>
           <Box className={classes.footerRightItem}>
-            <LockIcon />
-            <Typography component='span' style={{ fontSize: 14 }}>
-              TVL: 1000004$
+            <EthHeadIcon />
+            <Typography component='span'>
+              Ethereum
             </Typography>
+            <UpArrow className={classes.upArrow} />
           </Box>
-          <Divider orientation='vertical' flexItem />
+          <Divider orientation='vertical' />
           <Box
             className={classes.footerRightItem}
             onClick={(event) => {
@@ -262,11 +290,12 @@ const Footer: React.FC = () => {
           >
             <GasIcon />
             <Typography component='span'>Gas Price</Typography>
+            <UpArrow className={classes.upArrow} />
             <BorderLinearProgress
               value={gasValue}
               color={
                 gasType === 'instant'
-                  ? theme.palette.primary.main
+                  ? palette.primary.main
                   : gasType === 'fast'
                   ? '#FF9152'
                   : '#C2235C'
@@ -307,7 +336,7 @@ const Footer: React.FC = () => {
             borderRadius={12}
             border={1}
             p='7px'
-            borderColor={theme.palette.divider}
+            borderColor={palette.divider}
             position='relative'
             display='flex'
             justifyContent='space-between'
