@@ -349,7 +349,6 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
   const { palette } = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const halfDeviceWidth = window.innerWidth / 2;
   const [slippage, setSlippage] = React.useState<string>('0.5');
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
@@ -404,8 +403,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
         classes.slippageButton,
         slippage === '0.5' && classes.slippageButtonActive,
       )}
-      width={!mobile ? '78px' : '78px'}
-      height={!mobile ? '32px' : '32px'}
+      width='78px'
+      height='32px'
       onClick={handleClickMidSlippage}
     >
       <Typography>0.5%</Typography>
@@ -421,8 +420,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
         classes.slippageButton,
         slippage === '1' && classes.slippageButtonActive,
       )}
-      width={!mobile ? '78px' : '78px'}
-      height={!mobile ? '32px' : '32px'}
+      width='78px'
+      height='32px'
       onClick={handleClickHighSlippage}
     >
       <Typography>1%</Typography>
@@ -522,43 +521,24 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 padding='7px 4px'
               >
                 <Box className={classes.switchContainer}>
-                  {!mobile ? (
-                    <SwitchWithGlider
-                      elements={[
-                        LowSlippageButton,
-                        MidSlippageButton,
-                        HighSlippageButton,
-                      ]}
-                      currentGliderPostion={
-                        slippage === '0.1' ? 37 : slippage === '0.5' ? 120 : 203
-                      }
-                      gliderWidth={78}
-                      gliderHeight={32}
-                    />
-                  ) : (
-                    <SwitchWithGlider
-                      elements={[
-                        LowSlippageButton,
-                        MidSlippageButton,
-                        HighSlippageButton,
-                      ]}
-                      currentGliderPostion={
-                        slippage === '0.1'
-                          ? halfDeviceWidth - 150
-                          : slippage === '0.5'
-                          ? halfDeviceWidth - 66
-                          : halfDeviceWidth + 17
-                      }
-                      gliderWidth={78}
-                      gliderHeight={32}
-                    />
-                  )}
+                  <SwitchWithGlider
+                    elements={[
+                      LowSlippageButton,
+                      MidSlippageButton,
+                      HighSlippageButton,
+                    ]}
+                    defaultIndex={
+                      slippage === '0.1' ? 0 : slippage === '0.5' ? 1 : 2
+                    }
+                    marginBetweenSwitches={5.5}
+                    gliderWidth={78}
+                    gliderHeight={32}
+                  />
                 </Box>
                 <Box
                   display='flex'
                   width={!mobile ? '116px' : '100%'}
                   margin={!mobile ? '0 0 0 auto' : '6px 0'}
-                  // justifyContent="center"
                 >
                   <input
                     value={customSlippage}

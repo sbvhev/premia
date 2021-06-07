@@ -85,7 +85,7 @@ const ThemeSwitch: React.FC = () => {
       alignItems='center'
       justifyContent='center'
       className={!darkMode ? classes.activeMode : classes.inactiveMode}
-      width={!mobile ? '80px' : deviceWidth / 2 - 15}
+      width={!mobile ? '80px' : deviceWidth / 2 - 16}
       height={!mobile ? '30px' : '36px'}
       onClick={handleDayClick}
     >
@@ -97,7 +97,7 @@ const ThemeSwitch: React.FC = () => {
   const NightButton = () => (
     <Box
       display='flex'
-      width={!mobile ? '80px' : deviceWidth / 2 - 15}
+      width={!mobile ? '80px' : deviceWidth / 2 - 16}
       height={!mobile ? '30px' : '36px'}
       alignItems='center'
       justifyContent='center'
@@ -119,15 +119,17 @@ const ThemeSwitch: React.FC = () => {
       {!mobile ? (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          currentGliderPostion={!darkMode ? 21 : 107}
+          defaultIndex={!darkMode ? 0 : 1}
+          marginBetweenSwitches={1}
           gliderWidth={80}
           gliderHeight={30}
         />
       ) : (
         <SwitchWithGlider
           elements={[DayButton, NightButton]}
-          currentGliderPostion={!darkMode ? 11 : deviceWidth / 2 + 4}
-          gliderWidth={deviceWidth / 2 - 15}
+          defaultIndex={!darkMode ? 0 : 1}
+          gliderWidth={deviceWidth / 2 - 16}
+          marginBetweenSwitches={0}
           gliderHeight={36}
         />
       )}

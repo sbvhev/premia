@@ -26,49 +26,41 @@ export interface GliderDimentions {
 
 export interface SwitchWithGliderProps {
   elements: Array<React.FC>;
-  currentGliderPostion: Number;
+  defaultIndex: number;
   gliderHeight: Number;
-  gliderWidth: Number;
-  alignedRight?: boolean;
+  gliderWidth: number;
+  marginBetweenSwitches: number;
 }
 
 const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   elements,
-  currentGliderPostion,
   gliderHeight,
   gliderWidth,
-  alignedRight,
+  defaultIndex,
+  marginBetweenSwitches,
 }) => {
   const classes = useStyles();
-  const [gliderPosition, setGliderPosition] =
-    React.useState<any>(currentGliderPostion);
+  const [gliderPosition, setGliderPosition] = React.useState<any>(0);
 
   React.useEffect(() => {
-    setGliderPosition(currentGliderPostion);
-  }, [currentGliderPostion]);
+    const incrementalDistance = gliderWidth + marginBetweenSwitches;
+    const newPosition = defaultIndex * incrementalDistance;
+    setGliderPosition(newPosition);
+  }, [defaultIndex, gliderWidth, marginBetweenSwitches]);
 
   const wrappedElements = elements.map((item, index) => (
     <Box key={index}>{item}</Box>
   ));
 
   return (
-    <Box className={classes.container}>
-      {wrappedElements}
-      {!alignedRight ? (
-        <Box
-          className={classes.glider}
-          left={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      ) : (
-        <Box
-          className={classes.glider}
-          right={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      )}
+    <Box>
+      <Box
+        className={classes.glider}
+        width={gliderWidth}
+        height={gliderHeight}
+        style={{ transform: `translateX(${gliderPosition}px)` }}
+      />
+      <Box className={classes.container}>{wrappedElements}</Box>
     </Box>
   );
 };

@@ -185,9 +185,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   vaultSwitchContainerMobile: {
     border: `1px solid`,
     backgroundColor: palette.background.paper,
+    justifyContent: 'space-evenly',
     borderRadius: '12px',
     width: '100%',
-    height: '42px',
+    height: '43px',
     padding: '5px',
   },
   vaultSwitchButton: {
@@ -285,14 +286,20 @@ const ProVault: React.FC = () => {
   );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
-  const thinDesktop = useMediaQuery(theme.breakpoints.down('sm'));
-  const ultraThinWindow = useMediaQuery(theme.breakpoints.down('xs'));
-  const phoneDevice = /Mobi|Android/i.test(navigator.userAgent);
-  const extraLargeDesktop = window.innerWidth > 1526;
-  const deviceWidth = window.innerWidth;
-  const extraMargin = extraLargeDesktop ? (deviceWidth - 1526) / 2 - 6 : 0;
-  const largeMobileDeviceAdjustment = !ultraThinWindow && thinDesktop ? 8 : 0;
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
+  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -330,8 +337,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={phoneDevice || thinDesktop ? '160px' : '94px'}
-      height={phoneDevice || thinDesktop ? '32px' : '42px'}
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
       className={cx(
         classes.vaultSwitchButton,
         vaultIndex === 0 && classes.activeVaultswitch,
@@ -348,8 +355,8 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={phoneDevice || thinDesktop ? '160px' : '94px'}
-      height={phoneDevice || thinDesktop ? '32px' : '42px'}
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
       className={cx(
         classes.vaultSwitchButton,
         vaultIndex === 1 && classes.activeVaultswitch,
@@ -401,14 +408,14 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '20px 0 0 20px' } : {}}
+          style={!mobileDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
         <Grid container direction='row' className={classes.topTab}>
           <Box
             className={
-              phoneDevice || thinDesktop
+              mobileDevice || mediumWindow
                 ? classes.vaultSwitchContainerMobile
                 : classes.vaultSwitchContainer
             }
@@ -421,40 +428,41 @@ const ProVault: React.FC = () => {
                   }
             }
           >
-            {!phoneDevice && !thinDesktop ? (
+            {!mobileDevice && !mediumWindow ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                currentGliderPostion={
-                  vaultIndex === 0 ? 61 + extraMargin : 160 + extraMargin
-                }
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={4}
                 gliderWidth={94}
                 gliderHeight={42}
               />
-            ) : phoneDevice ? (
+            ) : mobileDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                currentGliderPostion={
-                  vaultIndex === 0
-                    ? 21 + extraMargin
-                    : deviceWidth - 182 + largeMobileDeviceAdjustment
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
                 }
-                gliderWidth={160}
-                gliderHeight={32}
+                gliderHeight={31}
               />
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                currentGliderPostion={
-                  vaultIndex === 0
-                    ? 21 + extraMargin
-                    : deviceWidth - 193 - largeMobileDeviceAdjustment
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
                 }
-                gliderWidth={160}
-                gliderHeight={32}
+                gliderHeight={31}
               />
             )}
           </Box>
-          {!thinDesktop && vaultIndex === 1 && (
+          {!mediumWindow && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
               <SearchTabs
                 items={tabItems}
@@ -465,7 +473,7 @@ const ProVault: React.FC = () => {
               />
             </Box>
           )}
-          {thinDesktop && vaultIndex === 1 && (
+          {mediumWindow && vaultIndex === 1 && (
             <>
               <Box className={classes.col}>
                 <Box
@@ -554,8 +562,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
                   >
                     <RadialChart
                       color='#2DDEA0'
@@ -766,8 +774,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
                   >
                     <RadialChart
                       color='#EB4A97'
