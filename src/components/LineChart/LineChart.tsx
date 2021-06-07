@@ -54,6 +54,10 @@ const LineChart: React.FC<LineChartProps> = ({
       width: 1,
       colors: [strokeColor],
     },
+    markers: {
+      colors: [strokeColor],
+      strokeWidth: 0,
+    },
     fill: {
       type: 'gradient',
       colors: [gradientColor],

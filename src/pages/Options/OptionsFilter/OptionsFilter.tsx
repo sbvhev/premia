@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
@@ -17,6 +17,7 @@ import {
   useStrikePrice,
   useOptionSize,
 } from 'state/options/hooks';
+import { useOutsideAlerter } from 'hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   optionButtons: {
@@ -240,6 +241,10 @@ const OptionFilter: React.FC = () => {
   const [maturityFocused, setMaturityFocused] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
+  const calendarRef = useRef<HTMLInputElement | null>(null);
+
+  useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
+
   moment.updateLocale('en', { weekdaysMin: 'S_M_T_W_T_F_S'.split('_') });
 
   if (!moment(maturityDate).isValid()) {
@@ -320,6 +325,7 @@ const OptionFilter: React.FC = () => {
           {maturityFocused && (
             <Box className={classes.calendarContainer}>
               <Calendar
+                inputRef={calendarRef as any}
                 minDate={new Date()}
                 prevLabel={<ArrowBackIosIcon />}
                 nextLabel={<ArrowForwardIosIcon />}
