@@ -1,6 +1,8 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setCurrentTx, setTxStateMsg, setTxOption } from './actions';
+import { setCurrentTx, setTxStateMsg, setTxOption, setGasType, setGasPrices } from './actions';
+
+export const GAS_MODE_LOCALSTORAGE_KEY = 'transactions/gas_mode';
 
 export interface CurrentTransaction {
   hash: string;
@@ -10,16 +12,30 @@ export interface SetCurrentTransaction {
   hash: string;
 }
 
+export interface GasNowData {
+  fast: Number;
+  rapid: Number;
+  slow: Number;
+  standard: Number;
+  timestamp: Number;
+}
+
 export interface PBCState {
   currentTx?: CurrentTransaction | null;
   txStateMsg?: string | null;
   txOption: any | null | undefined;
+  gasValue: number;
+  gasType?: keyof GasNowData;
+  gasPrices?: GasNowData;
 }
 
 export const initialState: PBCState = {
   currentTx: undefined,
   txStateMsg: '',
   txOption: null,
+  gasValue: 1,
+  gasType: (localStorage.getItem(GAS_MODE_LOCALSTORAGE_KEY) || 'fast') as keyof GasNowData,
+  gasPrices: undefined
 };
 
 export default createReducer(initialState, (builder) =>
@@ -40,5 +56,14 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setTxOption, (state, { payload }) => {
       state.txOption = payload;
+    })
+    .addCase(setGasType, (state, { payload }) => {
+      state.gasType = payload;
+      state.gasValue = Number(state.gasPrices?.[payload] ?? state.gasValue);
+      localStorage.setItem(GAS_MODE_LOCALSTORAGE_KEY, payload)
+    })
+    .addCase(setGasPrices, (state, { payload }) => {
+      state.gasPrices = payload;
+      state.gasValue = Number(payload[state.gasType as keyof GasNowData] ?? state.gasValue);
     }),
 );

@@ -584,6 +584,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: palette.divider,
     position: 'absolute',
     left: 0,
+    zIndex: 3
   },
   switchContainer: {
     border: `1px solid ${palette.divider}`,
