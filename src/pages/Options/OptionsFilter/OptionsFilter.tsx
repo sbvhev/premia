@@ -280,7 +280,7 @@ const OptionFilter: React.FC = () => {
   moment.updateLocale('en', { weekdaysMin: 'S_M_T_W_T_F_S'.split('_') });
 
   if (!moment(maturityDate).isValid()) {
-    setMaturityDate(moment(new Date()).format('YYYY-MM-DD'));
+    setMaturityDate(moment(new Date()).add(28, 'days').format('YYYY-MM-DD'));
   }
 
   useEffect(() => {

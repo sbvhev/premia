@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 import { useWeb3 } from 'state/application/hooks';
 import { useUnderlyingPrice } from 'state/options/hooks';
@@ -8,7 +9,6 @@ import { AppDispatch, AppState } from 'state';
 import { updatePricePerUnit } from './actions';
 import { fixedFromFloat } from 'utils/fixedFromFloat';
 import { floatFromFixed } from 'utils/floatFromFixed';
-import { formatBigNumber } from 'utils/formatNumber';
 import moment from 'moment';
 
 export default function Updater(): null {
@@ -36,8 +36,8 @@ export default function Updater(): null {
     const daysToMaturity = moment(maturityDate).diff(moment(), 'days');
     const maturity = getMaturity(daysToMaturity).toHexString();
     const strike64x64 = fixedFromFloat(strikePrice).toHexString();
-    const spot64x64 = fixedFromFloat(1.5).toHexString();
-    const optionSize = BigNumber.from(size).toHexString();
+    const spot64x64 = fixedFromFloat(underlyingPrice).toHexString();
+    const optionSize = parseUnits(String(size), underlying.decimals);
 
     console.log(
       daysToMaturity,
@@ -57,12 +57,12 @@ export default function Updater(): null {
       );
 
       return floatFromFixed(response.cost64x64, underlying.decimals).div(
-        BigNumber.from(size),
+        optionSize,
       );
     }
 
     fetchPricePerUnit().then((pricePerUnit) => {
-      dispatch(updatePricePerUnit(Number(formatBigNumber(pricePerUnit))));
+      dispatch(updatePricePerUnit(Number(pricePerUnit)));
     });
   }, [
     dispatch,

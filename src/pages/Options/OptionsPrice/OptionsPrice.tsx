@@ -9,7 +9,7 @@ import {
   useOptionType,
   useUnderlyingPrice,
   usePricePerUnit,
-  useStrikePrice,
+  useBreakEvenPrice,
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
@@ -203,8 +203,8 @@ const OptionsPrice: React.FC = () => {
   }, []);
 
   const theme = useTheme();
-  const { strikePrice } = useStrikePrice();
   const { optionType } = useOptionType();
+  const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const underlyingPrice = useUnderlyingPrice();
@@ -218,11 +218,6 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const pLBoxPos = 250;
-
-  const breakEvenPrice =
-    optionType === OptionType.Call
-      ? strikePrice + pricePerUnit
-      : strikePrice - pricePerUnit;
 
   console.log('perUnit', pricePerUnit);
 

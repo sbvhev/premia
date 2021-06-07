@@ -17,6 +17,7 @@ import {
   useOptionType,
   useUnderlying,
   useUnderlyingPrice,
+  useBreakEvenPrice,
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
@@ -181,6 +182,8 @@ const tabItems = [
 const Options: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<any>(null);
+  const [popoverType, setPopoverType] = useState('');
   const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
     useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -190,8 +193,7 @@ const Options: React.FC = () => {
   const { optionType } = useOptionType();
   const { underlying, setUnderlying } = useUnderlying();
   const underlyingPrice = useUnderlyingPrice();
-  const [anchorEl, setAnchorEl] = useState<any>(null);
-  const [popoverType, setPopoverType] = useState('');
+  const breakEvenPrice = useBreakEvenPrice();
 
   return (
     <>
@@ -332,13 +334,13 @@ const Options: React.FC = () => {
                 />
               </Grid>
               <Typography color='textPrimary' component='h2'>
-                $1,749.37
+                ${breakEvenPrice}
               </Typography>
             </Box>
             <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Total cost</Typography>
               <Typography color='textPrimary' component='h2'>
-                $1,749.37
+                ${breakEvenPrice}
               </Typography>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>

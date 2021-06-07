@@ -12,20 +12,16 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
+import { useDarkModeManager } from 'state/user/hooks';
+
 import { shortenAddress } from 'utils';
 import {
   BetaSoftwareModal,
   ConfirmTermsModal,
-  SwapModal,
-  ChainModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
-import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import { ReactComponent as PersonIcon } from 'assets/svg/PersonIcon.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
-import { ReactComponent as PersonIconMobile } from 'assets/svg/PersonIconMobile.svg';
 import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -56,22 +52,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   account: {
     padding: 0,
     height: 45,
-    width: 180,
-    border: `1px solid ${palette.divider}`,
+    border: (props: any) => props.darkMode && `1px solid ${palette.divider}`,
+    backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
+    boxShadow: (props: any) =>
+      props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     borderRadius: 12,
     cursor: 'pointer',
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '&> $disconnect': {
-        borderColor: palette.primary.main,
-      },
-    },
-
     '&> div:hover:not(:active)': {
-      borderColor: palette.primary.main,
-
       '&> svg path': {
         fill: palette.text.primary,
       },
@@ -85,24 +73,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   accountInfo: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: 12.78,
-    paddingRight: 8.92,
+    paddingLeft: 10,
+    paddingRight: 6,
   },
 
   accountMobile: {
     height: 45,
-    width: 'calc(67vw - 30px)',
-    maxWidth: 'calc(100vw - 135px)',
+    width: '100%',
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
 
     '& $disconnect': {
       width: 43,
       flex: 'none',
-    },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
     },
   },
 
@@ -120,14 +103,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
+    padding: '0 10px 0 12px',
 
     '& svg path': {
       fill: palette.text.secondary,
-    },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
     },
 
     '&:hover:not(:active)': {
@@ -179,74 +158,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
 
-  half: {
-    width: 'calc(50% - 4px)',
-    margin: 0,
-  },
-
   fullWidth: {
-    marginLeft: 4,
-    width: 'calc(100% - 8px)',
+    margin: 0,
+    width: '100%',
   },
 
   swapButton: {
     backgroundColor: palette.primary.dark,
   },
 
-  chain: {
-    border: `1px solid ${palette.divider}`,
-    width: 'fit-content',
-    borderRadius: 12,
-    marginRight: 10,
-    padding: 6,
-    height: 45,
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-
-    '& p': {
-      fontSize: 14,
-    },
-
-    '& svg': {
-      width: 33,
-      height: 33,
-      marginRight: 8,
-      padding: '8px 11px',
-      background: 'rgba(82, 148, 255, 0.2)',
-      borderRadius: 10,
-    },
-
-    '&:hover:not(:active)': {
-      borderColor: palette.primary.main,
-
-      '& p': {
-        color: palette.text.primary,
-      },
-    },
-
-    ':active': {
-      borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.text.secondary,
-      },
-
-      '& p': {
-        color: palette.text.secondary,
-      },
-    },
-
-    [breakpoints.down('sm')]: {
-      minWidth: '125px',
-      width: '33vw',
-      marginRight: 0,
-      marginBottom: 10,
-    },
-  },
-
   connectWalletButton: {
     fontSize: 14,
+    color: 'black',
   },
 }));
 
@@ -258,13 +181,12 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
-  const [showSwapModal, setShowSwapModal] = useState(false);
-  const [chainModalOpen, setChainModalOpen] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
   const { palette } = theme;
-  const classes = useStyles();
+  const [darkMode] = useDarkModeManager();
+  const classes = useStyles({ darkMode });
 
   return (
     <Grid container direction='row' alignItems='center' justify='flex-end'>
@@ -277,13 +199,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         <ConfirmTermsModal
           open={confirmTermsModalOpen}
           onClose={() => setConfirmTermsModalOpen(false)}
-        />
-      )}
-
-      {chainModalOpen && (
-        <ChainModal
-          open={chainModalOpen}
-          onClose={() => setChainModalOpen(false)}
         />
       )}
 
@@ -305,29 +220,20 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         >
           {!mobile ? (
             <>
-              <Button color='primary' className={classes.button}>
+              <Button
+                color='primary'
+                className={classes.button}
+                onClick={() =>
+                  window.open(
+                    'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
+                    '_blank',
+                  )
+                }
+              >
                 <span>Get</span>
                 <LogoIcon />
               </Button>
-              <Button
-                color='primary'
-                variant='outlined'
-                className={classes.button}
-                onClick={() => setShowSwapModal(true)}
-              >
-                <span>Swap</span>
-                <SwapIcon />
-              </Button>
 
-              <Box
-                className={classes.chain}
-                onClick={() => {
-                  setChainModalOpen(true);
-                }}
-              >
-                <EthHeadIcon />
-                <Typography color='secondary'>Ethereum</Typography>
-              </Box>
               <Box clone mb={mobile ? 1 : 0}>
                 <Box display='flex' id='test'>
                   <Grid container className={classes.account}>
@@ -336,7 +242,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       className={classes.accountInfo}
                       onClick={() => setShowTransactions(true)}
                     >
-                      <PersonIcon className={classes.avatar} />
                       <Box>
                         <Typography
                           className={
@@ -371,55 +276,39 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 paddingX={'10px'}
               >
                 <Box clone mb={mobile ? 1 : 0}>
-                  <Box display='flex'>
-                    <Grid
-                      container
-                      direction='row'
+                  <Grid
+                    container
+                    direction='row'
+                    alignItems='center'
+                    justify='space-between'
+                    className={classes.accountMobile}
+                  >
+                    <Box
+                      display='flex'
                       alignItems='center'
-                      justify='space-between'
-                      className={classes.accountMobile}
+                      justifyContent='center'
+                      flex={1}
+                      height={1}
+                      onClick={() => setShowTransactions(true)}
                     >
-                      <Box
-                        display='flex'
-                        alignItems='center'
-                        flex={1}
-                        height={1}
-                        pl={'12.65px'}
-                        onClick={() => setShowTransactions(true)}
-                      >
-                        <Box style={{ margin: '2px 6px 0 0' }}>
-                          <PersonIconMobile />
-                        </Box>
-                        <Box>
-                          <Typography className={classes.addressMobile}>
-                            {shortenAddress(account ?? '')}
-                          </Typography>
-                        </Box>
-                      </Box>
+                      <Typography className={classes.addressMobile}>
+                        {shortenAddress(account ?? '')}
+                      </Typography>
+                    </Box>
 
-                      <Box
-                        height={1}
-                        borderLeft={1}
-                        borderColor={theme.palette.divider}
-                        className={classes.disconnect}
-                      >
-                        <Tooltip title='Disconnect'>
-                          <IconButton onClick={disconnect}>
-                            <LogoutIcon color='action' />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </Grid>
-                  </Box>
-                </Box>
-                <Box
-                  className={classes.chain}
-                  onClick={() => {
-                    setChainModalOpen(true);
-                  }}
-                >
-                  <EthHeadIcon />
-                  <Typography color='secondary'>Ethereum</Typography>
+                    <Box
+                      height={1}
+                      borderLeft={1}
+                      borderColor={theme.palette.divider}
+                      className={classes.disconnect}
+                    >
+                      <Tooltip title='Disconnect'>
+                        <IconButton onClick={disconnect}>
+                          <LogoutIcon color='action' />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
                 </Box>
               </Box>
 
@@ -431,25 +320,23 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
               >
                 <Button
                   color='primary'
-                  className={cx(classes.button, mobile && classes.half)}
+                  className={cx(classes.button, mobile && classes.fullWidth)}
+                  onClick={() =>
+                    window.open(
+                      'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
+                      '_blank',
+                    )
+                  }
                 >
                   Get
                   <LogoIcon />
-                </Button>
-                <Button
-                  color='secondary'
-                  className={cx(classes.button, mobile && classes.half)}
-                  onClick={() => setShowSwapModal(true)}
-                >
-                  Swap
-                  <SwapIcon />
                 </Button>
               </Box>
             </Box>
           )}
         </Box>
       ) : (
-        <Box width='100%' p={1}>
+        <Box width='100%' p={1.25}>
           <Button
             variant='contained'
             color='primary'
@@ -467,7 +354,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       <Grid item xs={1} />
-      <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
       <TransactionsModal
         open={showTransactions}
         onClose={() => setShowTransactions(false)}

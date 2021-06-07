@@ -126,3 +126,17 @@ export function usePricePerUnit() {
 
   return { pricePerUnit, setPricePerUnit };
 }
+
+export function useBreakEvenPrice() {
+  const { optionType, pricePerUnit, strikePrice } = useSelector<
+    AppState,
+    AppState['options']
+  >((state: AppState) => state.options);
+
+  const breakEvenPrice =
+    optionType === OptionType.Call
+      ? strikePrice + pricePerUnit
+      : strikePrice - pricePerUnit;
+
+  return breakEvenPrice;
+}
