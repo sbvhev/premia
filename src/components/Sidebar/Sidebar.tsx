@@ -127,7 +127,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 243,
   };
   const state = location.state ? location.state.previous : false;
-  const startHeight = state ? gliderHeights[state] : (gliderHeights[pathname] || 93);
+  const startHeight = state
+    ? gliderHeights[state]
+    : gliderHeights[pathname] || 93;
   const [gliderPosition, setGliderPosition] = React.useState(startHeight);
 
   useEffect(() => {
@@ -149,7 +151,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
         [classes.light]: !darkMode,
       })}
     >
-      <Box display="flex" flexDirection='column' justifyContent='space-between' style={{overflowY: 'auto'}}>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-between'
+        style={{ overflowY: 'auto' }}
+      >
         <Box>
           {!mobile && (
             <Grid container component={Link} to='/'>

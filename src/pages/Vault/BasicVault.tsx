@@ -100,6 +100,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
+  uniItem: {
+    '& > svg': {
+      transform: 'scale(1.2)',
+    },
+  },
   inputIcon: {
     position: 'relative',
     top: -36,
@@ -133,6 +138,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginRight: 8,
       width: 16,
       height: 16,
+
+      '& path': {
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+      },
     },
   },
   rightCard: {
@@ -376,7 +385,10 @@ const BasicVault: React.FC = () => {
                     <WBTCIcon />
                     <Typography component='span'>WBTC</Typography>
                   </MenuItem>
-                  <MenuItem className={classes.menuItem} value='UNI'>
+                  <MenuItem
+                    className={cn(classes.uniItem, classes.menuItem)}
+                    value='UNI'
+                  >
                     <UniswapIcon />
                     <Typography component='span'>UNI</Typography>
                   </MenuItem>

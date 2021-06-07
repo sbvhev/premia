@@ -512,7 +512,7 @@ export interface SwapModalProps {
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
@@ -748,7 +748,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       className={!fromAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
                       onClick={handleChangeFromAsset}
                       style={
-                        fromAssetOpen ? { borderColor: palette.primary.main } : {}
+                        fromAssetOpen
+                          ? { borderColor: palette.primary.main }
+                          : {}
                       }
                     >
                       <Box
@@ -1121,7 +1123,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
             </Box>
             <Box
               className={
-                !mobile ? classes.settingsContainer : classes.settingsContainerMobile
+                !mobile
+                  ? classes.settingsContainer
+                  : classes.settingsContainerMobile
               }
               onClick={() => setEdditSettings(true)}
             >

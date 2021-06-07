@@ -595,8 +595,8 @@ const getTodayHours = () => {
   let formattedTime;
   let times = [];
   for (let i = 0; i < hoursPerDay + 1; i++) {
-    formattedTime = Moment().subtract(i, 'hours').format('h a');
-    times.unshift(formattedTime);
+    formattedTime = Moment(i, 'hh').format('h a');
+    times.push(formattedTime);
   }
   return times;
 };
@@ -652,11 +652,18 @@ const Positions: React.FC = () => {
     getThisMonthDates(),
   ];
 
-  const chartDateData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartDateData = [
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+  ];
   const chartWeekData = [3234, 6432, 1234, 3234, 6432, 1234, 3234];
-  const chartMonthData = [3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234];
+  const chartMonthData = [
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
+    3234, 6432, 1234, 3234, 6432, 1234,
+  ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
- 
+
   const yieldData = [
     {
       tokenIcon: <UniIcon />,
@@ -767,7 +774,7 @@ const Positions: React.FC = () => {
         component='h1'
         color='textPrimary'
         className={classes.title}
-        style={!mobile ? { margin: '45px 0 0 20px' } : {}}
+        style={!mobile ? { margin: '25px 0 0 20px' } : {}}
       >
         My dashboard
       </Typography>
@@ -885,7 +892,7 @@ const Positions: React.FC = () => {
                   </Box>
                   <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
-                      color='#14A887'
+                      isCall
                       data={chartData[dateFilter]}
                       categories={chartDateCats[dateFilter]}
                       chartType={chartTypes[dateFilter]}
@@ -915,9 +922,9 @@ const Positions: React.FC = () => {
                   >
                     <DonutChart
                       data={positionFilter === 0 ? optionAssets : yieldAssets}
-                      colors={['#5294FF', '#EB4A97']}
-                      endColors={['#1EFF78', '#8C43F6']}
-                      rotations={[121.21, 316.57]}
+                      colors={['#4D9EF2', '#EB4A97']}
+                      endColors={['#2DDEA0', '#A745DD']}
+                      rotations={[21.21, 116.57]}
                       content={
                         positionFilter === 0 ? 'My assets' : 'My options'
                       }
@@ -1000,14 +1007,21 @@ const Positions: React.FC = () => {
         <>
           {positionFilter === 0 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
-                <Typography
-                  component='h1'
-                  color='textPrimary'
-                  className={classes.mainTitle}
-                >
-                  My option positions
-                </Typography>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Box mt={1.25}>
+                  <Typography
+                    component='h1'
+                    color='textPrimary'
+                    className={classes.mainTitle}
+                  >
+                    My option positions
+                  </Typography>
+                </Box>
                 <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
                   <BottomNavigation
                     value={optionFilter}
@@ -1199,14 +1213,21 @@ const Positions: React.FC = () => {
           )}
           {positionFilter === 1 && (
             <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
-              <Grid container className={classes.tableHeading} alignItems='center' justify='space-between'>
-                <Typography
-                  component='h1'
-                  color='textPrimary'
-                  className={classes.mainTitle}
-                >
-                  My yield positions
-                </Typography>
+              <Grid
+                container
+                className={classes.tableHeading}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Box mt={1.25}>
+                  <Typography
+                    component='h1'
+                    color='textPrimary'
+                    className={classes.mainTitle}
+                  >
+                    My yield positions
+                  </Typography>
+                </Box>
               </Grid>
               <Box mt={mobile ? 1.5 : 2.5}>
                 {mobile ? (
