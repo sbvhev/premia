@@ -56,11 +56,12 @@ const useStyles = makeStyles(({ palette }) => ({
 
 export interface SidebarItemProps {
   title: string;
-  link: string;
+  link?: string | undefined;
   Icon: any;
   href?: boolean;
   onHide?: () => void;
   activeCondition?: any;
+  onClick?: (() => void) | undefined;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -68,6 +69,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   link,
   Icon,
   href,
+  onClick,
   onHide,
   activeCondition,
 }) => {
@@ -80,10 +82,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!href) {
-      history.push(link, { previous: location.pathname });
-
-      if (onHide) {
-        onHide();
+      if (link) {
+        history.push(link, { previous: location.pathname });
+        if (onHide) {
+          onHide();
+        }
+      } else if (onClick) {
+        onClick();
       }
     } else {
       window.open(link, '_blank');

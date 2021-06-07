@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
@@ -16,32 +16,9 @@ import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
 import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
-import ThemeSwitch from 'components/ThemeSwitch';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
-import { SwitchWithGlider } from 'components';
-
-const navigation = [
-  {
-    title: 'My positions',
-    link: '/',
-    Icon: <PositionsIcon />,
-  },
-  {
-    title: 'Vaults',
-    link: '/vaults',
-    Icon: <VaultsIcon />,
-  },
-  {
-    title: 'Options',
-    link: '/options',
-    Icon: <OptionsIcon />,
-  },
-  {
-    title: 'Stake',
-    link: '/stake',
-    Icon: <StakeIcon />,
-  },
-];
+import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 
 const insights = [
   {
@@ -82,7 +59,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     width: '180px',
-    height: '200px',
+    height: '251px',
   },
   switchContainerMobile: {
     display: 'flex',
@@ -92,7 +69,7 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     width: '100%',
-    height: '200px',
+    height: '251px',
   },
 }));
 
@@ -116,6 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/options': 2,
     '/stake': 3,
   };
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
   const state = location.state ? location.state.previous : false;
   const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
@@ -137,16 +115,47 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const navigationItems = navigation.map(({ title, link, Icon }, i) => (
-    <SidebarItem
-      key={i}
-      title={title}
-      link={link}
-      Icon={Icon}
-      onHide={onHide}
-      activeCondition={link === pathname}
-    />
-  ));
+  const navigation = [
+    {
+      title: 'My positions',
+      link: '/',
+      Icon: <PositionsIcon />,
+    },
+    {
+      title: 'Vaults',
+      link: '/vaults',
+      Icon: <VaultsIcon />,
+    },
+    {
+      title: 'Options',
+      link: '/options',
+      Icon: <OptionsIcon />,
+    },
+    {
+      title: 'Stake',
+      link: '/stake',
+      Icon: <StakeIcon />,
+    },
+    {
+      title: 'Swap',
+      onClick: () => setShowSwapModal(true),
+      Icon: <SwapIcon />,
+    },
+  ];
+
+  const navigationItems = navigation.map(
+    ({ title, link, Icon, onClick }, i) => (
+      <SidebarItem
+        key={i}
+        title={title}
+        link={link}
+        Icon={Icon}
+        onHide={onHide}
+        onClick={onClick}
+        activeCondition={!onClick ? link === pathname : showSwapModal}
+      />
+    ),
+  );
 
   return (
     <Box
@@ -168,6 +177,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
         justifyContent='space-between'
         style={{ overflowY: 'auto' }}
       >
+        <SwapModal
+          open={showSwapModal}
+          onClose={() => setShowSwapModal(false)}
+        />
         <Box>
           {!mobile && (
             <Grid container component={Link} to='/'>
@@ -189,9 +202,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
               <SwitchWithGlider
                 elements={[...navigationItems]}
                 defaultIndex={pageNavigationIndex}
-                marginBetweenSwitches={5}
+                marginBetweenSwitches={4}
                 gliderWidth={180}
-                gliderHeight={46}
+                gliderHeight={47}
                 verticalGlider
               />
             ) : (
