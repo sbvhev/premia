@@ -124,9 +124,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   content: {
     display: 'flex',
   },
+  leftPanel: {
+    width: 210,
+    height: 210,
+    position: 'relative',
+
+    '& > div': {
+      position: 'absolute',
+      left: -36,
+      top: -34,
+    },
+  },
   rightPanel: {
     display: 'flex',
-    width: 'calc(100% - 200px)',
+    width: 'calc(100% - 210px)',
 
     '& svg': {
       position: 'relative',
@@ -570,24 +581,27 @@ const ProVault: React.FC = () => {
                     container
                     direction={!thinDesktop ? 'row' : 'column'}
                     alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    style={{ marginTop: '2rem' }}
                   >
-                    <RadialChart
-                      color='#2DDEA0'
-                      secondaryColor='#4D9EF2'
-                      width={200}
-                      height={200}
-                      data={[67]}
-                    >
-                      <UniswapIcon />
-                      Pool size in Uni
-                      <Typography
-                        component='h5'
-                        variant='body2'
-                        color='textSecondary'
+                    <Box className={classes.leftPanel}>
+                      <RadialChart
+                        color='#2DDEA0'
+                        secondaryColor='#4D9EF2'
+                        width={260}
+                        height={260}
+                        data={[67]}
                       >
-                        211305
-                      </Typography>
-                    </RadialChart>
+                        <UniswapIcon />
+                        Pool size in Uni
+                        <Typography
+                          component='h5'
+                          variant='body2'
+                          color='textSecondary'
+                        >
+                          211305
+                        </Typography>
+                      </RadialChart>
+                    </Box>
                     <Grid
                       item
                       direction='column'
@@ -683,7 +697,12 @@ const ProVault: React.FC = () => {
                           </Grid>
                         </Grid>
                       </Grid>
-                      <Grid container direction='row' spacing={2}>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={2}
+                        style={{ marginTop: '1rem' }}
+                      >
                         <Grid item xs={6}>
                           <Button
                             size='large'
@@ -782,27 +801,30 @@ const ProVault: React.FC = () => {
                     container
                     direction={!thinDesktop ? 'row' : 'column'}
                     alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    style={{ marginTop: '2rem' }}
                   >
-                    <RadialChart
-                      color='#EB4A97'
-                      secondaryColor='#A745DD'
-                      trackColor={
-                        dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
-                      }
-                      width={200}
-                      height={200}
-                      data={[67]}
-                    >
-                      <UniswapIcon />
-                      Pool size in Uni
-                      <Typography
-                        component='h5'
-                        variant='body2'
-                        color='textSecondary'
+                    <Box className={classes.leftPanel}>
+                      <RadialChart
+                        color='#EB4A97'
+                        secondaryColor='#A745DD'
+                        trackColor={
+                          dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
+                        }
+                        width={260}
+                        height={260}
+                        data={[67]}
                       >
-                        211305
-                      </Typography>
-                    </RadialChart>
+                        <UniswapIcon />
+                        Pool size in Uni
+                        <Typography
+                          component='h5'
+                          variant='body2'
+                          color='textSecondary'
+                        >
+                          211305
+                        </Typography>
+                      </RadialChart>
+                    </Box>
                     <Grid
                       item
                       direction='column'
@@ -898,7 +920,12 @@ const ProVault: React.FC = () => {
                           </Grid>
                         </Grid>
                       </Grid>
-                      <Grid container direction='row' spacing={2}>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={2}
+                        style={{ marginTop: '1rem' }}
+                      >
                         <Grid item xs={6}>
                           <Button
                             size='large'
