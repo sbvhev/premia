@@ -283,12 +283,10 @@ const Footer: React.FC = () => {
       onClick={handleSelectStandardGas}
     >
       <GasStandardIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Standard</b>
-          <div>{Math.floor((gasPrices.standard || 0) / Math.pow(10, 9))} Gwei</div>
-        </Typography>
-      </Box>
+      <Typography >
+        <b>Standard</b>
+        <div>{Math.floor((gasPrices.standard || 0) / Math.pow(10, 9))} Gwei</div>
+      </Typography>
     </Box>
   );
 
@@ -300,12 +298,10 @@ const Footer: React.FC = () => {
       onClick={handleSelectFastGas}
     >
       <GasFastIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Fast</b>
-          <div>{Math.floor((gasPrices.fast || 0) / Math.pow(10, 9))} Gwei</div>
-        </Typography>
-      </Box>
+      <Typography >
+        <b>Fast</b>
+        <div>{Math.floor((gasPrices.fast || 0) / Math.pow(10, 9))} Gwei</div>
+      </Typography>
     </Box>
   );
 
@@ -320,12 +316,10 @@ const Footer: React.FC = () => {
       onClick={handleSelectInstantGas}
     >
       <ProIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Instant</b>
-          <div>{Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9))} Gwei</div>
-        </Typography>
-      </Box>
+      <Typography >
+        <b>Instant</b>
+        <div>{Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9))} Gwei</div>
+      </Typography>
     </Box>
   );
 
