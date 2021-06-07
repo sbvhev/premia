@@ -130,6 +130,19 @@ const Footer: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
+  const [gasPrices, setGasPrices] = useState<any>({});
+
+  const getGasPrices = () => {
+    fetch("https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension", {
+      method: 'GET'
+    }).then((res) => res.json())
+    .then((json) => {
+      setGasPrices(json.data);
+    })
+  };
+
+  getGasPrices();
+  setInterval(getGasPrices, 15000);
 
   const StandardGasSwitch = () => (
     <Box
@@ -144,7 +157,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Standard</b>
-          <div>90 Gwei</div>
+          <div>{Math.floor(gasPrices.standard / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
@@ -160,7 +173,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Fast</b>
-          <div>100 Gwei</div>
+          <div>{Math.floor(gasPrices.fast / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
@@ -179,7 +192,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography className={classes.gasPriceText}>
           <b>Instant</b>
-          <div>120 Gwei</div>
+          <div>{Math.floor(gasPrices.rapid / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
