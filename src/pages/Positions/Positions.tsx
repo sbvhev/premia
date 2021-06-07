@@ -587,6 +587,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: palette.divider,
     position: 'absolute',
     left: 0,
+    zIndex: 3
   },
 }));
 
