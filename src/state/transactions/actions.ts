@@ -13,3 +13,15 @@ export const setTxStateMsg = createAction<string | null | undefined>(
 export const setTxOption = createAction<any | null | undefined>(
   'transactions/setTxOption',
 );
+
+export const setGasType = createAction<string>(
+  'transactions/setGasType',
+);
+
+export const setGasValue = createAction<number>(
+  'transactions/setGasValue',
+);
+
+export const setGasPrices = createAction<any>(
+  'transactions/setGasPrices',
+);

@@ -5,6 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import cx from 'classnames';
 import { useIsDarkMode } from 'state/user/hooks';
+import { useGasType, useGasValue, useGasPrices } from 'state/transactions/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -36,6 +37,7 @@ const useStyles = makeStyles(({ palette }) => ({
   footerRight: {
     display: 'flex',
     alignItems: 'center',
+    marginRight: (props: any) => props.mobile ? 0 : 12.5,
     justifyContent: (props: any) => props.mobile ? 'space-between' : 'flex-end',
     height: (props: any) => props.mobile ? '50px' : '40px',
     order: (props: any) => props.mobile ? 0 : 1,
@@ -195,9 +197,9 @@ const Footer: React.FC = () => {
   const mobile = useMediaQuery(breakpoints.down('xs'));
   const classes = useStyles({ dark, mobile });
   const [anchorEl, setAnchorEl] = useState<any>(null);
-  const [gasType, setGasType] = useState('standard');
-  const [gasValue, setGasValue] = useState(25);
-  const [gasPrices, setGasPrices] = useState<any>({});
+  const { gasType, setGasType } = useGasType();
+  const { setGasValue } = useGasValue();
+  const { gasPrices, setGasPrices } = useGasPrices();
 
   let ws:any, websocket:any, timer:any, reConnectTimes = 0;
 
@@ -411,7 +413,13 @@ const Footer: React.FC = () => {
             <Typography component='span'>Gas Price</Typography>
             <UpArrow className={classes.upArrow} />
             <BorderLinearProgress
-              value={gasValue}
+              value={
+                gasType === 'instant'
+                  ? 100
+                  : gasType === 'fast'
+                  ? 50
+                  : 25
+              }
               color={
                 gasType === 'instant'
                   ? palette.primary.main
