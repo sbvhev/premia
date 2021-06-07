@@ -1,15 +1,18 @@
 import React from 'react';
+import { Typography, Box, Tooltip } from '@material-ui/core';
 import {
-  Typography,
-  Box,
-  Tooltip,
-} from '@material-ui/core';
-import { makeStyles, withStyles, Theme, useTheme, createStyles } from '@material-ui/core/styles';
+  makeStyles,
+  withStyles,
+  Theme,
+  useTheme,
+  createStyles,
+} from '@material-ui/core/styles';
+import cx from 'classnames';
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { ReactComponent as BackIcon } from 'assets/svg/GoBackArrow.svg';
-import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
-import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg'; 
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
+import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg';
 import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
 import { SwitchWithGlider } from 'components';
@@ -58,7 +61,6 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: '42px 14px 28px',
-    // height: '283px',
     borderBottom: `1px solid ${palette.divider}`,
   },
   title: {
@@ -156,7 +158,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   goBackContainerMobile: {
     position: 'absolute',
-    top: 'calc(20vh + 40px)',
+    top: 'calc(20vh + 36px)',
     left: 'calc(50% - 150px)',
     display: 'flex',
     justifyContent: 'center',
@@ -192,45 +194,28 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '88px',
     borderBottom: `1px solid ${palette.divider}`,
   },
-  diabledSwitch: {
-    width: '35px',
-    height: '20px',
-    backgroundColor: 'transpatent',
-    borderRadius: '12px',
-    border: `1px solid ${palette.divider}`,
-    padding: '2px',
-  },
-  enabledSwitch: {
-    width: '35px',
-    height: '20px',
-    backgroundColor: palette.primary.main,
-    borderRadius: '12px',
-    border: '1px solid transparent',
-    padding: '2px',
-  },
-  modeItem: {
-    border: `1px solid ${palette.background.paper}`,
-    borderRadius: 10,
+  slippageButton: {
     cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: palette.background.paper,
-      border: `1px solid ${palette.divider}`,
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      fontSize: '14px',
+      color: palette.secondary.main,
     },
-  },
-  textSelected: {
-    fontWeight: 700,
-    fontSize: '14px',
-    color: palette.primary.main,
-  },
-  textIdle: {
-    fontWeight: 400,
-    fontSize: '14px',
-  },
-  inactiveMode: {
-    backgroundColor: 'transparent',
     '&:hover': {
       '& .MuiTypography-root': {
-        color: palette.primary.main
+        color: palette.text.primary,
+      },
+    },
+  },
+  slippageButtonActive: {
+    cursor: 'pointer',
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+      fontWeight: 700,
+    },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
       },
     },
   },
@@ -363,8 +348,7 @@ interface enabledExchanges {
 const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
   const { palette } = useTheme();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
-  const halfDeviceWidth = window.innerWidth / 2;
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const [slippage, setSlippage] = React.useState<string>('0.5');
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
@@ -381,25 +365,32 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     MultiBridge: false,
   });
 
+  const handleClickLowSlippage = () => {
+    setSlippage('0.1');
+  };
+
+  const handleClickMidSlippage = () => {
+    setSlippage('0.5');
+  };
+
+  const handleClickHighSlippage = () => {
+    setSlippage('1');
+  };
+
   const LowSlippageButton = () => (
     <Box
       display='flex'
       alignItems='center'
       justifyContent='center'
-      className={slippage !== '0.1' ? classes.inactiveMode : classes.modeItem}
+      className={cx(
+        classes.slippageButton,
+        slippage === '0.1' && classes.slippageButtonActive,
+      )}
       width={!mobile ? '78px' : '78px'}
       height={!mobile ? '32px' : '32px'}
+      onClick={handleClickLowSlippage}
     >
-      <Box display='flex' alignItems='center'>
-        <Typography
-          className={
-            slippage === '0.1' ? classes.textSelected : classes.textIdle
-          }
-          color='textSecondary'
-        >
-          0.1%
-        </Typography>
-      </Box>
+      <Typography>0.1%</Typography>
     </Box>
   );
 
@@ -408,20 +399,15 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      className={slippage !== '0.5' ? classes.inactiveMode : classes.modeItem}
-      width={!mobile ? '78px' : '78px'}
-      height={!mobile ? '32px' : '32px'}
+      className={cx(
+        classes.slippageButton,
+        slippage === '0.5' && classes.slippageButtonActive,
+      )}
+      width='78px'
+      height='32px'
+      onClick={handleClickMidSlippage}
     >
-      <Box display='flex' alignItems='center'>
-        <Typography
-          className={
-            slippage === '0.5' ? classes.textSelected : classes.textIdle
-          }
-          color='textSecondary'
-        >
-          0.5%
-        </Typography>
-      </Box>
+      <Typography>0.5%</Typography>
     </Box>
   );
 
@@ -430,32 +416,17 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      className={slippage !== '1' ? classes.inactiveMode : classes.modeItem}
-      width={!mobile ? '78px' : '78px'}
-      height={!mobile ? '32px' : '32px'}
+      className={cx(
+        classes.slippageButton,
+        slippage === '1' && classes.slippageButtonActive,
+      )}
+      width='78px'
+      height='32px'
+      onClick={handleClickHighSlippage}
     >
-      <Box display='flex' alignItems='center'>
-        <Typography
-          className={slippage === '1' ? classes.textSelected : classes.textIdle}
-          color='textSecondary'
-        >
-          1%
-        </Typography>
-      </Box>
+      <Typography>1%</Typography>
     </Box>
   );
-
-  const hadleClickLowSlippage = () => {
-    setSlippage('0.1');
-  };
-
-  const hadleClickMidSlippage = () => {
-    setSlippage('0.5');
-  };
-
-  const hadleClickHighSlippage = () => {
-    setSlippage('1');
-  };
 
   React.useEffect(() => {
     const hasAcceptedRisk = localStorage.getItem('Accepted_high_slippage_risk');
@@ -514,12 +485,31 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
         {!showExchanges ? (
           <>
-            <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
-              <Typography className={classes.title} style={{ marginBottom: '32px' }}>Swap settings</Typography>
-              <Box display="flex" width="100%" alignItems="center" margin="4px 0">
-                <Typography className={classes.elementHeader}>Slippage tolerance</Typography>
-                <Tooltip title="Lorem ipsum text" arrow>
-                  <InfoIcon fill={palette.secondary.main} style={{ marginLeft: '6px' }} />
+            <Box
+              className={
+                !mobile ? classes.topSection : classes.topSectionMobile
+              }
+            >
+              <Typography
+                className={classes.title}
+                style={{ marginBottom: '32px' }}
+              >
+                Swap settings
+              </Typography>
+              <Box
+                display='flex'
+                width='100%'
+                alignItems='center'
+                margin='4px 0'
+              >
+                <Typography className={classes.elementHeader}>
+                  Slippage tolerance
+                </Typography>
+                <Tooltip title='Lorem ipsum text' arrow>
+                  <InfoIcon
+                    fill={palette.secondary.main}
+                    style={{ marginLeft: '6px' }}
+                  />
                 </Tooltip>
               </Box>
               <Box
@@ -531,51 +521,24 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 padding='7px 4px'
               >
                 <Box className={classes.switchContainer}>
-                  {!mobile ? (
-                    <SwitchWithGlider
-                      elements={[
-                        LowSlippageButton,
-                        MidSlippageButton,
-                        HighSlippageButton,
-                      ]}
-                      positions={[37, 120, 203]}
-                      clickFuncs={[
-                        hadleClickLowSlippage,
-                        hadleClickMidSlippage,
-                        hadleClickHighSlippage,
-                      ]}
-                      start={120}
-                      gliderWidth={78}
-                      gliderHeight={32}
-                    />
-                  ) : (
-                    <SwitchWithGlider
-                      elements={[
-                        LowSlippageButton,
-                        MidSlippageButton,
-                        HighSlippageButton,
-                      ]}
-                      positions={[
-                        halfDeviceWidth - 150,
-                        halfDeviceWidth - 66,
-                        halfDeviceWidth + 17,
-                      ]}
-                      clickFuncs={[
-                        hadleClickLowSlippage,
-                        hadleClickMidSlippage,
-                        hadleClickHighSlippage,
-                      ]}
-                      start={halfDeviceWidth - 66}
-                      gliderWidth={78}
-                      gliderHeight={32}
-                    />
-                  )}
+                  <SwitchWithGlider
+                    elements={[
+                      LowSlippageButton,
+                      MidSlippageButton,
+                      HighSlippageButton,
+                    ]}
+                    defaultIndex={
+                      slippage === '0.1' ? 0 : slippage === '0.5' ? 1 : 2
+                    }
+                    marginBetweenSwitches={5.5}
+                    gliderWidth={78}
+                    gliderHeight={32}
+                  />
                 </Box>
                 <Box
                   display='flex'
                   width={!mobile ? '116px' : '100%'}
                   margin={!mobile ? '0 0 0 auto' : '6px 0'}
-                  // justifyContent="center"
                 >
                   <input
                     value={customSlippage}
@@ -583,18 +546,30 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                     className={classes.borderedInput}
                     placeholder='Custom'
                   />
-                  <PercentageIcon fill={palette.text.primary}
-                    style={!mobile ? 
-                      { position: 'absolute', marginTop: '16px', right: 46}
-                      : {position: 'relative', marginTop: '16px', right: 40}
+                  <PercentageIcon
+                    fill={palette.text.primary}
+                    style={
+                      !mobile
+                        ? { position: 'absolute', marginTop: '16px', right: 46 }
+                        : { position: 'relative', marginTop: '16px', right: 40 }
                     }
                   />
                 </Box>
               </Box>
-              <Box display="flex" width="100%" alignItems="center" margin="10px 0">
-                <Typography className={classes.elementHeader}>Transaction deadline</Typography>
-                <Tooltip title="Lorem ipsum text2" arrow>
-                  <InfoIcon fill={palette.secondary.main} style={{ marginLeft: '6px' }} />
+              <Box
+                display='flex'
+                width='100%'
+                alignItems='center'
+                margin='10px 0'
+              >
+                <Typography className={classes.elementHeader}>
+                  Transaction deadline
+                </Typography>
+                <Tooltip title='Lorem ipsum text2' arrow>
+                  <InfoIcon
+                    fill={palette.secondary.main}
+                    style={{ marginLeft: '6px' }}
+                  />
                 </Tooltip>
               </Box>
               <Box display='flex' width='100%' alignItems='center'>

@@ -117,20 +117,54 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     color: palette.text.secondary,
-    padding: '6px',
+    cursor: 'pointer',
+    padding: '2px',
     '& svg': {
-      margin: '0 8px 0 2px',
+      marginRight: 8,
     },
     '& svg path': {
-      fill: palette.text.secondary,
+      fill: palette.secondary.main,
+    },
+    '& .MuiTypography-root': {
+      width: '62px',
+      fontWeight: 400,
+      lineHeight: '14px',
+      fontSize: '14px',
+      color: palette.secondary.main,
+      '& b': {
+        fontWeight: 400,
+      },
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
     },
   },
 
   activeButton: {
-    background: 'transparent',
-    color: palette.primary.main,
+    cursor: 'default',
     '& svg path': {
       fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+      '& b': {
+        fontWeight: 700,
+      },
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
     },
   },
 
@@ -165,6 +199,21 @@ const Footer: React.FC = () => {
   const [gasValue, setGasValue] = useState(25);
   const [chainModalOpen, setChainModalOpen] = useState(false);
 
+  const handleSelectStandardGas = () => {
+    setGasType('standard');
+    setGasValue(25);
+  };
+
+  const handleSelectFastGas = () => {
+    setGasType('fast');
+    setGasValue(50);
+  };
+
+  const handleSelectInstantGas = () => {
+    setGasType('instant');
+    setGasValue(100);
+  };
+
   const StandardGasSwitch = () => (
     <Box
       width='110px'
@@ -173,14 +222,13 @@ const Footer: React.FC = () => {
         classes.button,
         gasType === 'standard' && classes.activeButton,
       )}
+      onClick={handleSelectStandardGas}
     >
       <GasStandardIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Standard</b>
-          <div>90 Gwei</div>
-        </Typography>
-      </Box>
+      <Typography>
+        <b>Standard</b>
+        <div>90 Gwei</div>
+      </Typography>
     </Box>
   );
 
@@ -189,14 +237,13 @@ const Footer: React.FC = () => {
       width='110px'
       height='42px'
       className={cx(classes.button, gasType === 'fast' && classes.activeButton)}
+      onClick={handleSelectFastGas}
     >
       <GasFastIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Fast</b>
-          <div>100 Gwei</div>
-        </Typography>
-      </Box>
+      <Typography>
+        <b>Fast</b>
+        <div>100 Gwei</div>
+      </Typography>
     </Box>
   );
 
@@ -208,14 +255,13 @@ const Footer: React.FC = () => {
         classes.button,
         gasType === 'instant' && classes.activeButton,
       )}
+      onClick={handleSelectInstantGas}
     >
       <ProIcon />
-      <Box width='100%'>
-        <Typography component='div' className={classes.gasPriceText}>
-          <b>Instant</b>
-          <div>120 Gwei</div>
-        </Typography>
-      </Box>
+      <Typography>
+        <b>Instant</b>
+        <div>120 Gwei</div>
+      </Typography>
     </Box>
   );
 
@@ -354,24 +400,11 @@ const Footer: React.FC = () => {
           >
             <SwitchWithGlider
               elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
-              positions={[224, 114, 4]}
-              clickFuncs={[
-                () => {
-                  setGasType('standard');
-                  setGasValue(25);
-                },
-                () => {
-                  setGasType('fast');
-                  setGasValue(50);
-                },
-                () => {
-                  setGasType('instant');
-                  setGasValue(100);
-                },
-              ]}
-              start={224}
-              alignedRight={true}
-              gliderWidth={110}
+              defaultIndex={
+                gasType === 'standard' ? 0 : gasType === 'fast' ? 1 : 2
+              }
+              marginBetweenSwitches={0}
+              gliderWidth={109}
               gliderHeight={42}
             />
           </Box>
