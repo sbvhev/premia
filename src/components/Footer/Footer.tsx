@@ -225,19 +225,13 @@ const Footer: React.FC = () => {
   
       ws = new WebSocket('wss://www.gasnow.org/ws/gasprice');
   
-      ws.onopen = function() {
-        console.log('WebSocket onOpen');
-      };
-  
       ws.onmessage = function (event: any) {
         const dataStr = event.data;
         const json = JSON.parse(dataStr);
-        console.log('WebSocket onMessage:', json.data);
         setGasPrices(json.data);
       };
   
       ws.onclose = function() {
-        console.log('WebSocket onClose get Gas By WebSocket:', websocket);
         ws = undefined;
         getGas(websocket);
       };
@@ -252,29 +246,28 @@ const Footer: React.FC = () => {
   const [chainModalOpen, setChainModalOpen] = useState(false);
 
   useEffect(() => {
-    if (anchorEl) {
-      getGas(true);
-    } else {
-      if (!ws) { return }
+    getGas(true);
+    return () => {
+      if (!ws) return;
       ws.close();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anchorEl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
-    setGasValue(Math.floor(gasPrices.standard / Math.pow(10, 9)));
+    setGasValue(Math.floor((gasPrices.standard || 0) / Math.pow(10, 9)));
   };
 
   const handleSelectFastGas = () => {
     setGasType('fast');
-    setGasValue(Math.floor(gasPrices.fast / Math.pow(10, 9)));
+    setGasValue(Math.floor((gasPrices.fast || 0) / Math.pow(10, 9)));
   };
 
   const handleSelectInstantGas = () => {
     setGasType('instant');
-    setGasValue(Math.floor(gasPrices.rapid / Math.pow(10, 9)));
+    setGasValue(Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9)));
   };
 
   const StandardGasSwitch = () => (
@@ -291,7 +284,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography component='div' className={classes.gasPriceText}>
           <b>Standard</b>
-          <div>{Math.floor(gasPrices.standard / Math.pow(10, 9))} Gwei</div>
+          <div>{Math.floor((gasPrices.standard || 0) / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
@@ -308,7 +301,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography component='div' className={classes.gasPriceText}>
           <b>Fast</b>
-          <div>{Math.floor(gasPrices.fast / Math.pow(10, 9))} Gwei</div>
+          <div>{Math.floor((gasPrices.fast || 0) / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
@@ -328,7 +321,7 @@ const Footer: React.FC = () => {
       <Box width='100%'>
         <Typography component='div' className={classes.gasPriceText}>
           <b>Instant</b>
-          <div>{Math.floor(gasPrices.rapid / Math.pow(10, 9))} Gwei</div>
+          <div>{Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9))} Gwei</div>
         </Typography>
       </Box>
     </Box>
