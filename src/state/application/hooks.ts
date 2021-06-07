@@ -13,6 +13,7 @@ import {
   setApprovalType as _setApprovalType,
   setWrapEthModalOpen as _setWrapEthModalOpen,
   setWrapEth as _setWrapEth,
+  setSelectedNetwork as _setSelectedNetwork
 } from './actions';
 
 export function useBlockNumber(): number | undefined {
@@ -193,4 +194,19 @@ export const useApprovalType = () => {
     dispatch(_setApprovalType(approval));
 
   return { approvalType, setApprovalType };
+};
+
+export const useSelectedNetwork = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const selectedNetwork = useSelector<
+    AppState,
+    AppState['application']['selectedNetwork']
+  >((state) => state.application.selectedNetwork);
+
+  const networks = ['Ethereum', 'BSC', 'Polygon'];
+
+  const setSelectedNetwork = (selectedNetwork: number) =>
+    dispatch(_setSelectedNetwork(selectedNetwork));
+
+  return { selectedNetwork: {index: selectedNetwork, text: networks[selectedNetwork - 1]}, setSelectedNetwork };
 };

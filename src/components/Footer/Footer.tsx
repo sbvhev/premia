@@ -5,6 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import cx from 'classnames';
 import { useIsDarkMode } from 'state/user/hooks';
+import { useSelectedNetwork } from 'state/application/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -14,6 +15,8 @@ import { ReactComponent as GasStandardIcon } from 'assets/svg/GasStandardIcon.sv
 import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
+import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
+import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -192,6 +195,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Footer: React.FC = () => {
   const { palette, breakpoints } = useTheme();
   const dark = useIsDarkMode();
+  const { selectedNetwork } = useSelectedNetwork();
   const mobile = useMediaQuery(breakpoints.down('xs'));
   const classes = useStyles({ dark, mobile });
   const [anchorEl, setAnchorEl] = useState<any>(null);
@@ -332,9 +336,11 @@ const Footer: React.FC = () => {
             onClick={() => {
               setChainModalOpen(true);
             }}>
-            <EthHeadIcon />
+            { selectedNetwork.index === 1 && <EthHeadIcon /> }
+            { selectedNetwork.index === 2 && <BSCIcon /> }
+            { selectedNetwork.index === 3 && <PolygonIcon /> }
             <Typography component='span'>
-              Ethereum
+              { selectedNetwork.text }
             </Typography>
             <UpArrow className={classes.upArrow} />
           </Box>

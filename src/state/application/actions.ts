@@ -63,3 +63,5 @@ export const setWrapEthModalOpen = createAction<boolean>(
 );
 
 export const setWrapEth = createAction<boolean>('application/setWrapEth');
+
+export const setSelectedNetwork = createAction<number>('application/setSelectedNetwork');

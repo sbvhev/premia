@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, Modal, Box, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
+import { useWeb3, useSelectedNetwork } from 'state/application/hooks';
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
@@ -113,8 +114,10 @@ export interface ChainModalProps {
 }
 
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
+  const web3 = useWeb3();
+  console.log(web3);
   const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -129,15 +132,15 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 <Box
                   component='div'
                   className={cx({
-                    [classes.selected]: selectedIndex === 1,
+                    [classes.selected]: selectedNetwork.index === 1,
                   })}
                   onClick={() => {
-                    setSelectedIndex(1);
+                    setSelectedNetwork(1);
                   }}
                 >
                   <EthIcon />
                   Ethereum
-                  {selectedIndex === 1 && (
+                  {selectedNetwork.index === 1 && (
                     <Box component='div' className={classes.selected}>
                       Current
                     </Box>
@@ -148,15 +151,15 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 <Box
                   component='div'
                   className={cx({
-                    [classes.selected]: selectedIndex === 2,
+                    [classes.selected]: selectedNetwork.index === 2,
                   })}
                   onClick={() => {
-                    setSelectedIndex(2);
+                    setSelectedNetwork(2);
                   }}
                 >
                   <BSCIcon />
                   BSC
-                  {selectedIndex === 2 && (
+                  {selectedNetwork.index === 2 && (
                     <Box component='div' className={classes.selected}>
                       Current
                     </Box>
@@ -167,15 +170,15 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 <Box
                   component='div'
                   className={cx({
-                    [classes.selected]: selectedIndex === 3,
+                    [classes.selected]: selectedNetwork.index === 3,
                   })}
                   onClick={() => {
-                    setSelectedIndex(3);
+                    setSelectedNetwork(3);
                   }}
                 >
                   <PolygonIcon />
                   Polygon
-                  {selectedIndex === 3 && (
+                  {selectedNetwork.index === 3 && (
                     <Box component='div' className={classes.selected}>
                       Current
                     </Box>
