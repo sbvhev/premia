@@ -183,6 +183,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   connectWalletButton: {
     fontSize: 14,
+    color: 'black'
   }
 }));
 
