@@ -172,12 +172,13 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <>
               <Box
                 px={mobile ? 0 : 3}
-                width={mobile ? 1 : 'calc(100vw - 210px)'}
-                // mx='auto'
+                width={mobile ? '100vw' : 'calc(100vw - 210px)'}
                 mt={!mobile ? 11 : 10}
                 mb={mobile ? 0 : 16}
               >
-                <Container>{children}</Container>
+                <Container style={!mobile ? {} : { padding: '0 20px' }}>
+                  {children}
+                </Container>
                 {mobile && (
                   <Box width='100%' zIndex={14}>
                     <Footer />
