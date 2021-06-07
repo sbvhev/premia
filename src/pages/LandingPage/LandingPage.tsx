@@ -1082,7 +1082,10 @@ const LandingPage: React.FC = () => {
       <AppBar position='static' className={classes.appBar}>
         <Toolbar>
           <Container className={classes.container}>
-            <PremiaLogo />
+            <AnchorLink href="#hero" onClick={preventDefault}>
+              <PremiaLogo />
+            </AnchorLink>
+
             {!mobile && (
               <Box
                 flexDirection='row'
@@ -1185,7 +1188,7 @@ const LandingPage: React.FC = () => {
       )}
       <Container className={classes.body}>
         {!mobile && <Consetellation className={classes.consetellation} />}
-        <Box className={classes.topSection}>
+        <Box className={classes.topSection} id="hero">
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
               Permissionless options and metavaults
@@ -1517,7 +1520,10 @@ const LandingPage: React.FC = () => {
         <Box className={classes.footerBar}>
           <Container className={classes.footerBarInner}>
             <Box>
-              <PremiaLogo />
+              <AnchorLink href="#hero" onClick={preventDefault}>
+                <PremiaLogo />
+              </AnchorLink>
+
               <Typography className={classes.subTitle}>
                 Premia Finance© All Rights Reserved 2021{' '}
               </Typography>
