@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
@@ -16,45 +16,9 @@ import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
 import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
-import ThemeSwitch from 'components/ThemeSwitch';
+import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
 
-const navigation = [
-  {
-    title: 'My positions',
-    link: '/',
-    Icon: <PositionsIcon />,
-  },
-  {
-    title: 'Vaults',
-    link: '/vaults',
-    Icon: <VaultsIcon />,
-  },
-  {
-    title: 'Options',
-    link: '/options',
-    Icon: <OptionsIcon />,
-  },
-  {
-    title: 'Stake',
-    link: '/stake',
-    Icon: <StakeIcon />,
-  },
-];
-
-const insights = [
-  {
-    title: 'Documentation',
-    link: 'https://premia.medium.com',
-    Icon: <DocumentationIcon />,
-    href: true,
-  },
-  {
-    title: 'Careers',
-    link: 'https://solidity.finance/audits/Premia/',
-    Icon: <CareerIcon />,
-    href: true,
-  },
-];
+import { ThemeSwitch, SwapModal } from 'components';
 
 const useStyles = makeStyles((theme: Theme) => ({
   rightBorder: {
@@ -120,6 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const history = useHistory();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const gliderHeights: GliderHerights = {
     '/': 93,
     '/vaults': 143,
@@ -131,6 +96,49 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     ? gliderHeights[state]
     : gliderHeights[pathname] || 93;
   const [gliderPosition, setGliderPosition] = React.useState(startHeight);
+
+  const navigation = [
+    {
+      title: 'My positions',
+      link: '/',
+      Icon: <PositionsIcon />,
+    },
+    {
+      title: 'Vaults',
+      link: '/vaults',
+      Icon: <VaultsIcon />,
+    },
+    {
+      title: 'Options',
+      link: '/options',
+      Icon: <OptionsIcon />,
+    },
+    {
+      title: 'Stake',
+      link: '/stake',
+      Icon: <StakeIcon />,
+    },
+    {
+      title: 'Swap',
+      onClick: () => setShowSwapModal(true),
+      Icon: <SwapIcon />,
+    },
+  ];
+  
+  const insights = [
+    {
+      title: 'Documentation',
+      link: 'https://premia.medium.com',
+      Icon: <DocumentationIcon />,
+      href: true,
+    },
+    {
+      title: 'Careers',
+      link: 'https://solidity.finance/audits/Premia/',
+      Icon: <CareerIcon />,
+      href: true,
+    },
+  ];
 
   useEffect(() => {
     setGliderPosition(gliderHeights[pathname] || 93);
@@ -157,6 +165,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
         justifyContent='space-between'
         style={{ overflowY: 'auto' }}
       >
+        <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
         <Box>
           {!mobile && (
             <Grid container component={Link} to='/'>
@@ -170,11 +179,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             </Grid>
           )}
           <Box>
-            {navigation.map(({ title, link, Icon }, i) => (
+            {navigation.map(({ title, link, Icon, onClick }, i) => (
               <SidebarItem
                 key={i}
                 title={title}
                 link={link}
+                onClick={onClick}
                 Icon={Icon}
                 onHide={onHide}
               />
