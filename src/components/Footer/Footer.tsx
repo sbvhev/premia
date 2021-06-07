@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -199,25 +199,30 @@ const Footer: React.FC = () => {
   const [gasValue, setGasValue] = useState(25);
   const [gasPrices, setGasPrices] = useState<any>({});
 
-  let ws:any, websocket:any;
+  let ws:any, websocket:any, timer:any, reConnectTimes = 0;
 
   const fetchGasData = () => {
+    clearTimeout(timer);
     fetch("https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension", {
       method: 'GET'
     }).then((res) => res.json())
     .then((json) => {
       setGasPrices(json.data);
-    })
+      reConnectTimes = 0;
+      timer = setTimeout(() => {
+        getGas(true);
+      }, 8000);
+    }).catch(() => {
+      if (reConnectTimes < 20) { reConnectTimes++ }
+      timer = setTimeout(getGas, reConnectTimes < 20 ? 1000 : 5000);
+    });
   };
 
   const createWebSocketConnection = () => {
     if (ws) { return }
     if('WebSocket' in window) {
-      // initial websocket status
       websocket = false;
   
-      // ws = new WebSocket('ws://localhost:8005/ws');
-      // ws = new WebSocket('wss://gasnow-test.sparkpool.com/ws/gasprice');
       ws = new WebSocket('wss://www.gasnow.org/ws/gasprice');
   
       ws.onopen = function() {
@@ -237,15 +242,25 @@ const Footer: React.FC = () => {
         getGas(websocket);
       };
     } else {
-      // not support WebSocket, fetch Gas by api;
       getGas(false);
     }
-  }
+  };
 
   const getGas = (type: any) => {
     type ? createWebSocketConnection() : fetchGasData();
-  }
+  };
   const [chainModalOpen, setChainModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (anchorEl) {
+      getGas(true);
+    } else {
+      if (!ws) { return }
+      ws.close();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anchorEl]);
+
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
@@ -274,7 +289,7 @@ const Footer: React.FC = () => {
     >
       <GasStandardIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Standard</b>
           <div>{Math.floor(gasPrices.standard / Math.pow(10, 9))} Gwei</div>
         </Typography>
@@ -291,7 +306,7 @@ const Footer: React.FC = () => {
     >
       <GasFastIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Fast</b>
           <div>{Math.floor(gasPrices.fast / Math.pow(10, 9))} Gwei</div>
         </Typography>
@@ -311,7 +326,7 @@ const Footer: React.FC = () => {
     >
       <ProIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Instant</b>
           <div>{Math.floor(gasPrices.rapid / Math.pow(10, 9))} Gwei</div>
         </Typography>
