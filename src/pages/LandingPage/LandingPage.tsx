@@ -1131,7 +1131,7 @@ const LandingPage: React.FC = () => {
                     <MediumIcon />
                   </AnchorLink>
                 </Box>
-                <Button className={classes.openApp}>Open App</Button>
+                <Button className={classes.openApp} onClick={() => history.push('/positions')}>Open App</Button>
               </Box>
             )}
             {mobile && !menuOpen && (
@@ -1152,7 +1152,7 @@ const LandingPage: React.FC = () => {
       {menuOpen && mobile && (
         <Box className={classes.mobileMenu}>
           <Box>
-            <Button className={classes.openApp}>Open App</Button>
+            <Button className={classes.openApp} onClick={() => history.push('/positions')}>Open App</Button>
           </Box>
           <Box>
             <AnchorLink href='#' onClick={preventDefault}>
@@ -1195,7 +1195,7 @@ const LandingPage: React.FC = () => {
               based on market volatility, bringing fully-featured peer-to-pool
               trading and capital efficiency to DeFi options.
             </Typography>
-            <Button className={classes.openAppBig}>Open App</Button>
+            <Button className={classes.openAppBig} onClick={() => history.push('/positions')}>Open App</Button>
           </Box>
           <Box className={classes.topSectionRight}></Box>
         </Box>
@@ -1350,8 +1350,8 @@ const LandingPage: React.FC = () => {
               {!mobile && <MediumIcon />}
               <Typography>Interested in learning more about Premia?</Typography>
             </Box>
-            {!mobile && <Button>Learn More</Button>}
-            {mobile && <ArrowCircleIcon />}
+            {!mobile && <Button onClick={() => window.open('https://premia.medium.com', '_blank')}>Learn More</Button>}
+            {mobile && <ArrowCircleIcon onClick={() => window.open('https://premia.medium.com', '_blank')} />}
           </Box>
         </Container>
         {!mobile && <ConsetellationSix />}
@@ -1409,8 +1409,8 @@ const LandingPage: React.FC = () => {
               Dive into our open collection of decentralized financial research
             </Typography>
           </Box>
-          {!mobile && <Button>Our Research</Button>}
-          {mobile && <ArrowCircleIcon />}
+          {!mobile && <Button onClick={() => window.open('https://docs.premia.com', '_blank')}>Our Research</Button>}
+          {mobile && <ArrowCircleIcon onClick={() => window.open('https://docs.premia.com', '_blank')} />}
         </Box>
         {!mobile && (
           <ConsetellationEight className={classes.consetellationEight} />
@@ -1504,8 +1504,8 @@ const LandingPage: React.FC = () => {
               finance.
             </Typography>
           </Box>
-          {!mobile && <Button>Careers</Button>}
-          {mobile && <ArrowCircleIcon />}
+          {!mobile && <Button onClick={() => window.open('https://careers.premia.com', '_blank')}>Careers</Button>}
+          {mobile && <ArrowCircleIcon onClick={() => window.open('https://careers.premia.com', '_blank')} />}
         </Box>
       </Container>
       <Box className={classes.footer}>
