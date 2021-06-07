@@ -12,7 +12,8 @@ import {
   MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import cx from 'classnames';
 import {
   LineChart,
   RadialChart,
@@ -36,21 +37,21 @@ import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { useIsDarkMode } from 'state/user/hooks';
 import BasicVault from './BasicVault';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
     fontWeight: 700,
     fontSize: '28px',
     lineHeight: '27.5px',
     marginBottom: 36,
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       display: 'none',
     },
   },
   topTab: {
     margin: '20px 0 20px 6px',
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       margin: '20px 0 12px',
     },
   },
@@ -112,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   topSector: {
     padding: 28,
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${palette.divider}`,
   },
   bottomSector: {
     padding: '28px 28px 0 28px',
@@ -162,7 +163,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       lineHeight: '24px',
     },
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       width: '100%',
     },
   },
@@ -194,14 +195,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
   },
   readMore: {
-    color: theme.palette.primary.main,
+    color: palette.primary.main,
     fontSize: 14,
     lineHeight: '18px',
     marginTop: 6,
   },
   vaultSwitchContainer: {
     border: `1px solid`,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
     width: '206px',
     height: '55px',
@@ -210,58 +211,62 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   vaultSwitchContainerMobile: {
     border: `1px solid`,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: palette.background.paper,
+    justifyContent: 'space-evenly',
     borderRadius: '12px',
     width: '100%',
-    height: '42px',
+    height: '43px',
     padding: '5px',
   },
-  modeItem: {
-    border: `1px solid ${theme.palette.background.paper}`,
-    borderRadius: 10,
+  vaultSwitchButton: {
     cursor: 'pointer',
-    '& svg': {
-      marginRight: 8,
-    },
-    '& svg path': {
-      fill: theme.palette.text.secondary,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-    },
-  },
-  inactiveMode: {
-    border: `1px solid transparent`,
-    backgroundColor: 'transparent',
     '& svg': {
       marginRight: 9,
     },
     '& svg path': {
-      fill: theme.palette.primary.main,
+      fill: palette.secondary.main,
     },
-    '& span': {
-      color: theme.palette.primary.main,
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      lineHeight: '14px',
+      fontSize: '14px',
+      color: palette.secondary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
     },
   },
-  textSelected: {
-    fontWeight: 700,
-    fontSize: '14px',
-    color: theme.palette.primary.main,
-  },
-  textIdle: {
-    fontWeight: 400,
-    fontSize: '14px',
-    color: theme.palette.secondary.main,
+  activeVaultswitch: {
+    cursor: 'default',
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
+    },
   },
   expandMore: {
     marginRight: 8,
     position: 'absolute',
     right: 0,
     cursor: 'pointer',
-
     '& path': {
-      fill: theme.palette.secondary.main,
+      fill: palette.secondary.main,
     },
   },
 }));
@@ -308,14 +313,20 @@ const ProVault: React.FC = () => {
   );
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
-  const thinDesktop = useMediaQuery(theme.breakpoints.down('sm'));
-  const ultraThinWindow = useMediaQuery(theme.breakpoints.down('xs'));
-  const phoneDevice = /Mobi|Android/i.test(navigator.userAgent);
-  const extraLargeDesktop = window.innerWidth > 1526;
-  const deviceWidth = window.innerWidth;
-  const extraMargin = extraLargeDesktop ? (deviceWidth - 1526) / 2 - 6 : 0;
-  const largeMobileDeviceAdjustment = !ultraThinWindow && thinDesktop ? 8 : 0;
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
+  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -332,42 +343,6 @@ const ProVault: React.FC = () => {
     setCoin(coin);
   };
 
-  const BasicVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={phoneDevice || thinDesktop ? '160px' : '94px'}
-      height={phoneDevice || thinDesktop ? '32px' : '42px'}
-      className={vaultIndex === 1 ? classes.modeItem : classes.inactiveMode}
-    >
-      <BasicIcon />
-      <Typography
-        className={vaultIndex === 0 ? classes.textSelected : classes.textIdle}
-      >
-        Basic
-      </Typography>
-    </Box>
-  );
-
-  const ProVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={phoneDevice || thinDesktop ? '160px' : '94px'}
-      height={phoneDevice || thinDesktop ? '32px' : '42px'}
-      className={vaultIndex === 0 ? classes.modeItem : classes.inactiveMode}
-    >
-      <ProIcon />
-      <Typography
-        className={vaultIndex === 1 ? classes.textSelected : classes.textIdle}
-      >
-        Pro
-      </Typography>
-    </Box>
-  );
-
   const handleBasicVaultSwitch = () => {
     setVaultIndex(0);
     history.push({
@@ -383,6 +358,42 @@ const ProVault: React.FC = () => {
       search: '?tab="pro"',
     });
   };
+
+  const BasicVaultButton = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
+      className={cx(
+        classes.vaultSwitchButton,
+        vaultIndex === 0 && classes.activeVaultswitch,
+      )}
+      onClick={handleBasicVaultSwitch}
+    >
+      <BasicIcon />
+      <Typography>Basic</Typography>
+    </Box>
+  );
+
+  const ProVaultButton = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
+      className={cx(
+        classes.vaultSwitchButton,
+        vaultIndex === 1 && classes.activeVaultswitch,
+      )}
+      onClick={handleProVaultSwitch}
+    >
+      <ProIcon />
+      <Typography>Pro</Typography>
+    </Box>
+  );
 
   return (
     <Grid container direction='column'>
@@ -424,14 +435,14 @@ const ProVault: React.FC = () => {
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '20px 0 0 20px' } : {}}
+          style={!mobileDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
         <Grid container direction='row' className={classes.topTab}>
           <Box
             className={
-              phoneDevice || thinDesktop
+              mobileDevice || mediumWindow
                 ? classes.vaultSwitchContainerMobile
                 : classes.vaultSwitchContainer
             }
@@ -444,42 +455,41 @@ const ProVault: React.FC = () => {
                   }
             }
           >
-            {!phoneDevice && !thinDesktop ? (
+            {!mobileDevice && !mediumWindow ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[61 + extraMargin, 160 + extraMargin]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={61 + extraMargin}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={4}
                 gliderWidth={94}
                 gliderHeight={42}
               />
-            ) : phoneDevice ? (
+            ) : mobileDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[
-                  21,
-                  deviceWidth - 182 + largeMobileDeviceAdjustment,
-                ]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={21}
-                gliderWidth={160}
-                gliderHeight={32}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
+                }
+                gliderHeight={31}
               />
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[
-                  21 + largeMobileDeviceAdjustment,
-                  deviceWidth - 193 - largeMobileDeviceAdjustment,
-                ]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={21 + largeMobileDeviceAdjustment}
-                gliderWidth={160}
-                gliderHeight={32}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
+                }
+                gliderHeight={31}
               />
             )}
           </Box>
-          {!thinDesktop && vaultIndex === 1 && (
+          {!mediumWindow && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
               <SearchTabs
                 items={tabItems}
@@ -490,7 +500,7 @@ const ProVault: React.FC = () => {
               />
             </Box>
           )}
-          {thinDesktop && vaultIndex === 1 && (
+          {mediumWindow && vaultIndex === 1 && (
             <>
               <Box className={classes.col}>
                 <Box
