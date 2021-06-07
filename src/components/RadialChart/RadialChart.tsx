@@ -83,7 +83,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
         },
         track: {
           background: trackColor,
-          strokeWidth: '75%',
+          strokeWidth: '90%',
           dropShadow: {
             enabled: false,
           },
