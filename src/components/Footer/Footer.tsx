@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, Grid, Typography, Divider, Popover, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import cx from 'classnames';
+
 import { useIsDarkMode } from 'state/user/hooks';
-import { useGasType, useGasValue, useGasPrices } from 'state/transactions/hooks';
+import { useGasType, useGasPrices } from 'state/transactions/hooks';
+
+import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -196,80 +197,21 @@ const Footer: React.FC = () => {
   const dark = useIsDarkMode();
   const mobile = useMediaQuery(breakpoints.down('xs'));
   const classes = useStyles({ dark, mobile });
+  const [chainModalOpen, setChainModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const { gasType, setGasType } = useGasType();
-  const { setGasValue } = useGasValue();
-  const { gasPrices, setGasPrices } = useGasPrices();
-
-  let ws:any, websocket:any, timer:any, reConnectTimes = 0;
-
-  const fetchGasData = () => {
-    clearTimeout(timer);
-    fetch("https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension", {
-      method: 'GET'
-    }).then((res) => res.json())
-    .then((json) => {
-      setGasPrices(json.data);
-      reConnectTimes = 0;
-      timer = setTimeout(() => {
-        getGas(true);
-      }, 8000);
-    }).catch(() => {
-      if (reConnectTimes < 20) { reConnectTimes++ }
-      timer = setTimeout(getGas, reConnectTimes < 20 ? 1000 : 5000);
-    });
-  };
-
-  const createWebSocketConnection = () => {
-    if (ws) { return }
-    if('WebSocket' in window) {
-      websocket = false;
-  
-      ws = new WebSocket('wss://www.gasnow.org/ws/gasprice');
-  
-      ws.onmessage = function (event: any) {
-        const dataStr = event.data;
-        const json = JSON.parse(dataStr);
-        setGasPrices(json.data);
-      };
-  
-      ws.onclose = function() {
-        ws = undefined;
-        getGas(websocket);
-      };
-    } else {
-      getGas(false);
-    }
-  };
-
-  const getGas = (type: any) => {
-    type ? createWebSocketConnection() : fetchGasData();
-  };
-  const [chainModalOpen, setChainModalOpen] = useState(false);
-
-  useEffect(() => {
-    getGas(true);
-    return () => {
-      if (!ws) return;
-      ws.close();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  const { gasPrices } = useGasPrices();
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
-    setGasValue(Math.floor((gasPrices.standard || 0) / Math.pow(10, 9)));
   };
 
   const handleSelectFastGas = () => {
     setGasType('fast');
-    setGasValue(Math.floor((gasPrices.fast || 0) / Math.pow(10, 9)));
   };
 
-  const handleSelectInstantGas = () => {
-    setGasType('instant');
-    setGasValue(Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9)));
+  const handleSelectRapidGas = () => {
+    setGasType('rapid');
   };
 
   const StandardGasSwitch = () => (
@@ -285,7 +227,7 @@ const Footer: React.FC = () => {
       <GasStandardIcon />
       <Typography >
         <b>Standard</b>
-        <div>{Math.floor((gasPrices.standard || 0) / Math.pow(10, 9))} Gwei</div>
+        <div>{gasPrices?.standard || 1} Gwei</div>
       </Typography>
     </Box>
   );
@@ -300,25 +242,25 @@ const Footer: React.FC = () => {
       <GasFastIcon />
       <Typography >
         <b>Fast</b>
-        <div>{Math.floor((gasPrices.fast || 0) / Math.pow(10, 9))} Gwei</div>
+        <div>{gasPrices?.fast || 1} Gwei</div>
       </Typography>
     </Box>
   );
 
-  const InstantGasSwitch = () => (
+  const RapidGasSwitch = () => (
     <Box
       width='110px'
       height='42px'
       className={cx(
         classes.button,
-        gasType === 'instant' && classes.activeButton,
+        gasType === 'rapid' && classes.activeButton,
       )}
-      onClick={handleSelectInstantGas}
+      onClick={handleSelectRapidGas}
     >
       <ProIcon />
       <Typography >
-        <b>Instant</b>
-        <div>{Math.floor((gasPrices.rapid || 0) / Math.pow(10, 9))} Gwei</div>
+        <b>Rapid</b>
+        <div>{gasPrices?.rapid || 1} Gwei</div>
       </Typography>
     </Box>
   );
@@ -408,14 +350,14 @@ const Footer: React.FC = () => {
             <UpArrow className={classes.upArrow} />
             <BorderLinearProgress
               value={
-                gasType === 'instant'
+                gasType === 'rapid'
                   ? 100
                   : gasType === 'fast'
                   ? 50
                   : 25
               }
               color={
-                gasType === 'instant'
+                gasType === 'rapid'
                   ? palette.primary.main
                   : gasType === 'fast'
                   ? '#FF9152'
@@ -463,7 +405,7 @@ const Footer: React.FC = () => {
             justifyContent='space-between'
           >
             <SwitchWithGlider
-              elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+              elements={[StandardGasSwitch, FastGasSwitch, RapidGasSwitch]}
               defaultIndex={
                 gasType === 'standard' ? 0 : gasType === 'fast' ? 1 : 2
               }

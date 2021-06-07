@@ -8,10 +8,9 @@ import {
   setTxStateMsg as _setTxStateMsg,
   setTxOption as _setTxOption,
   setGasType as _setGasType,
-  setGasValue as _setGasValue,
   setGasPrices as _setGasPrices
 } from './actions';
-import { SetCurrentTransaction } from './reducer';
+import { GasNowData, SetCurrentTransaction } from './reducer';
 
 export const useCurrentTx = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,23 +46,19 @@ export const useGasType = () => {
     AppState['transactions']['gasType']
   >((state) => state.transactions.gasType);
 
-  const setGasType = (gasType: string) =>
+  const setGasType = (gasType: keyof GasNowData) =>
     dispatch(_setGasType(gasType));
 
   return { gasType, setGasType };
 };
 
 export const useGasValue = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const gasValue = useSelector<
     AppState,
     AppState['transactions']['gasValue']
   >((state) => state.transactions.gasValue);
 
-  const setGasValue = (gasValue: number) =>
-    dispatch(_setGasValue(gasValue));
-
-  return { gasValue, setGasValue };
+  return gasValue;
 };
 
 export const useGasPrices = () => {
@@ -73,7 +68,7 @@ export const useGasPrices = () => {
     AppState['transactions']['gasPrices']
   >((state) => state.transactions.gasPrices);
 
-  const setGasPrices = (gasPrices: any) =>
+  const setGasPrices = (gasPrices: GasNowData) =>
     dispatch(_setGasPrices(gasPrices));
 
   return { gasPrices, setGasPrices };
