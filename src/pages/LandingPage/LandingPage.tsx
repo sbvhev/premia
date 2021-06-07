@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
 import {
   Container,
   Grid,
@@ -10,6 +11,7 @@ import {
   Box,
   useMediaQuery,
 } from '@material-ui/core';
+import AnchorLink from 'react-anchor-link-smooth-scroll';
 import cn from 'classnames';
 import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as PremiaLogo } from 'assets/svg/Logo.svg';
@@ -49,14 +51,56 @@ import { ReactComponent as ConsetellationMobileEight } from 'assets/svg/mobile/C
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
-import TradeOptionsImage from 'assets/images/TradeOptions.png';
-import VaultsBasicImage from 'assets/images/Vaults.png';
-import VaultsProImage from 'assets/images/VaultsPro.png';
+import { ReactComponent as TradeOptionsSVG } from 'assets/images/TradeOptions.svg';
+import { ReactComponent as VaultsBasicSVG } from 'assets/images/Vaults.svg';
+import { ReactComponent as VaultsProSVG } from 'assets/images/VaultsPro.svg';
 import HeroImage from 'assets/images/HeroImage.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
+  mainContainer: {
+    '& a': {
+      transition: 'all 0.3s',
+      display: 'flex',
+      textDecoration: 'none',
+
+      '&:hover': {
+        textDecoration: 'none',
+        opacity: 1,
+
+        '& p': {
+          opacity: 1,
+          color: 'white',
+        },
+
+        '& svg': {
+          opacity: 1,
+
+          '& path': {
+            fill: 'white',
+          },
+        },
+      },
+
+      '&:active': {
+        opacity: 1,
+
+        '& p': {
+          opacity: 1,
+          color: 'rgba(255, 255, 255, 0.8)',
+        },
+
+        '& svg': {
+          opacity: 1,
+
+          '& path': {
+            fill: 'rgba(255, 255, 255, 0.8)',
+          },
+        },
+      },
+    },
+  },
   container: {
     border: 'none',
     display: 'flex',
@@ -71,11 +115,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   box: {
     '& svg': {
-      marginRight: 16,
-
-      '&:first-of-type': {
-        marginLeft: 16,
-      },
+      margin: 0,
 
       '& path': {
         fill: 'rgba(255, 255, 255, 0.8)',
@@ -90,6 +130,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: 'auto',
     height: 40,
     whiteSpace: 'nowrap',
+    border: '2px solid #5294FF',
+
+    '&:hover': {
+      color: '#5294FF',
+      borderColor: '#5294FF',
+      background: 'transparent',
+    },
   },
   appBar: {
     background: 'black',
@@ -156,7 +203,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   gradientTitle: {
     fontSize: 55,
-    lineHeight: '64px',
+    lineHeight: '51px',
     fontWeight: 700,
     background:
       '-webkit-linear-gradient(-55deg, #FFFFFF 0%, #5294FF 67%, #EB4A97 88%)',
@@ -208,7 +255,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     whiteSpace: 'nowrap',
     padding: '16px 55px',
     borderRadius: 12,
+    border: '2px solid #5294FF',
     width: 'auto',
+
+    '&:hover': {
+      color: '#5294FF',
+      borderColor: '#5294FF',
+      background: 'transparent',
+    },
 
     [breakpoints.down('sm')]: {
       width: 140,
@@ -285,10 +339,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
-    '& $rightSideImage': {
-      backgroundImage: `url("${VaultsBasicImage}")`,
-    },
-
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -297,14 +347,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 180,
+    marginBottom: 0,
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
-    },
-
-    '& $rightSideImage': {
-      backgroundImage: `url("${VaultsProImage}")`,
     },
 
     '& $leftSide': {
@@ -336,19 +382,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   rightSideImage: {
     width: '45%',
     height: 360,
-    backgroundImage: `url("${TradeOptionsImage}")`,
-    backgroundSize: 'auto 100%',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
     position: 'relative',
+
+    '& svg:first-of-type': {
+      zIndex: 300000,
+    },
 
     [breakpoints.down('sm')]: {
       width: '100%',
-      backgroundSize: '100%',
-    },
 
-    [breakpoints.between('sm', 'md')]: {
-      backgroundSize: '100%',
+      '& svg': {
+        width: '100%',
+      },
     },
   },
   leftSide: {
@@ -404,6 +449,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: '18px',
     fontWeight: 700,
     background: 'transparent',
+
+    '&:hover': {
+      border: '1.5px solid #5294FF',
+      background: 'transparent',
+      opacity: 0.8,
+    },
+
+    '&:active': {
+      color: '#5294FF',
+      background: 'rgba(82, 148, 255, 0.1)',
+    },
   },
   divider: {
     borderLeft: '1px solid rgba(255, 255, 255, 0.15)',
@@ -506,6 +562,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 45,
       color: 'black',
       whiteSpace: 'nowrap',
+      border: '2px solid #5294FF',
+
+      '&:hover': {
+        color: '#5294FF',
+        borderColor: '#5294FF',
+        background: 'transparent',
+      },
     },
 
     '& > svg': {
@@ -938,6 +1001,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fill: '#646464',
     },
   },
+  headerIcons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 4,
+    marginRight: 12,
+
+    '& svg': {
+      margin: 'auto 8px',
+    },
+  },
   mobileMenu: {
     padding: 0,
     display: 'flex',
@@ -992,15 +1067,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 const LandingPage: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const [menuOpen, setMenuOpen] = useState(false);
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const preventDefault = (event: React.SyntheticEvent) =>
+    event.preventDefault();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [mobile]);
 
   return (
-    <Grid container>
+    <Grid container className={classes.mainContainer}>
       <AppBar position='static' className={classes.appBar}>
         <Toolbar>
           <Container className={classes.container}>
@@ -1012,17 +1090,47 @@ const LandingPage: React.FC = () => {
                 alignItems='center'
                 className={classes.box}
               >
-                <Typography className={classes.menuItem}>
-                  Explore Premia
-                </Typography>
-                <Typography className={classes.menuItem}>
-                  Architecture
-                </Typography>
-                <Typography className={classes.menuItem}>Our Values</Typography>
-                <TwitterIcon />
-                <DiscordIcon />
-                <GithubIcon />
-                <MediumIcon />
+                <AnchorLink
+                  href='#explore-premia'
+                  offset='100'
+                  onClick={preventDefault}
+                >
+                  <Typography className={classes.menuItem}>
+                    Explore Premia
+                  </Typography>
+                </AnchorLink>
+                <AnchorLink
+                  offset='100'
+                  href='#definative-architecture'
+                  onClick={preventDefault}
+                >
+                  <Typography className={classes.menuItem}>
+                    Architecture
+                  </Typography>
+                </AnchorLink>
+                <AnchorLink
+                  href='#our-values'
+                  offset='400'
+                  onClick={preventDefault}
+                >
+                  <Typography className={classes.menuItem}>
+                    Our Values
+                  </Typography>
+                </AnchorLink>
+                <Box className={classes.headerIcons}>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <TwitterIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <DiscordIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <GithubIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <MediumIcon />
+                  </AnchorLink>
+                </Box>
                 <Button className={classes.openApp}>Open App</Button>
               </Box>
             )}
@@ -1047,15 +1155,31 @@ const LandingPage: React.FC = () => {
             <Button className={classes.openApp}>Open App</Button>
           </Box>
           <Box>
-            <Typography className={classes.menuItem}>Explore Premia</Typography>
-            <Typography className={classes.menuItem}>Architecture</Typography>
-            <Typography className={classes.menuItem}>Our Values</Typography>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <Typography className={classes.menuItem}>
+                Explore Premia
+              </Typography>
+            </AnchorLink>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <Typography className={classes.menuItem}>Architecture</Typography>
+            </AnchorLink>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <Typography className={classes.menuItem}>Our Values</Typography>
+            </AnchorLink>
           </Box>
           <Box>
-            <TwitterIcon />
-            <DiscordIcon />
-            <GithubIcon />
-            <MediumIcon />
+            <AnchorLink href='#' onClick={preventDefault}>
+              <TwitterIcon />
+            </AnchorLink>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <DiscordIcon />
+            </AnchorLink>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <GithubIcon />
+            </AnchorLink>
+            <AnchorLink href='#' onClick={preventDefault}>
+              <MediumIcon />
+            </AnchorLink>
           </Box>
         </Box>
       )}
@@ -1076,7 +1200,7 @@ const LandingPage: React.FC = () => {
           <Box className={classes.topSectionRight}></Box>
         </Box>
         {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
-        <Box className={classes.explorePremia}>
+        <Box className={classes.explorePremia} id='explore-premia'>
           {mobile && <ConsetellationMobileOne />}
           <Typography className={classes.gradientSubTitle}>
             Explore Premia
@@ -1100,16 +1224,32 @@ const LandingPage: React.FC = () => {
               Buy and sell options using Premia’s state of the art automated
               peer-to-pool market making algorithm.
             </Typography>
-            {mobile && <Box className={classes.rightSideImage}></Box>}
+            {mobile && (
+              <Box className={classes.rightSideImage}>
+                <TradeOptionsSVG />
+              </Box>
+            )}
             <Button
               variant='outlined'
               color='primary'
               className={classes.outlinedButton}
+              onClick={() => {
+                history.push('/options');
+              }}
             >
               Trade Options
             </Button>
           </Box>
-          {!mobile && <Box className={classes.rightSideImage}></Box>}
+          {!mobile && (
+            <Box
+              className={classes.rightSideImage}
+              onClick={() => {
+                history.push('/options');
+              }}
+            >
+              <TradeOptionsSVG />
+            </Box>
+          )}
           {mobile && (
             <ConsetellationMobileThree
               style={{ position: 'absolute', right: -20, bottom: -70 }}
@@ -1128,16 +1268,32 @@ const LandingPage: React.FC = () => {
               underwriting on-chain options and other baskets of structured
               finance products.
             </Typography>
-            {mobile && <Box className={classes.rightSideImage}></Box>}
+            {mobile && (
+              <Box className={classes.rightSideImage}>
+                <VaultsBasicSVG />
+              </Box>
+            )}
             <Button
               variant='outlined'
               color='primary'
               className={classes.outlinedButton}
+              onClick={() => {
+                history.push('/vaults?tab=basic');
+              }}
             >
               Earn Yield
             </Button>
           </Box>
-          {!mobile && <Box className={classes.rightSideImage}></Box>}
+          {!mobile && (
+            <Box
+              className={classes.rightSideImage}
+              onClick={() => {
+                history.push('/vaults?tab=basic');
+              }}
+            >
+              <VaultsBasicSVG />
+            </Box>
+          )}
           {mobile && (
             <ConsetellationMobileFour
               style={{ position: 'absolute', left: -20, bottom: -15 }}
@@ -1156,6 +1312,7 @@ const LandingPage: React.FC = () => {
             </Typography>
             {mobile && (
               <Box className={classes.rightSideImage}>
+                <VaultsProSVG />
                 {!mobile && (
                   <ConsetellationFour className={classes.consetellationFour} />
                 )}
@@ -1165,18 +1322,27 @@ const LandingPage: React.FC = () => {
               variant='outlined'
               color='primary'
               className={classes.outlinedButton}
+              onClick={() => {
+                history.push('/vaults?tab=pro');
+              }}
             >
               Protect Assets
             </Button>
           </Box>
           {!mobile && (
-            <Box className={classes.rightSideImage}>
+            <Box
+              className={classes.rightSideImage}
+              onClick={() => {
+                history.push('/vaults?tab=pro');
+              }}
+            >
+              <VaultsProSVG />
               <ConsetellationFour className={classes.consetellationFour} />
             </Box>
           )}
         </Box>
       </Container>
-      <Box className={classes.learnMore}>
+      <Box className={classes.learnMore} id='learn-more'>
         {!mobile && <ConsetellationSeven />}
         <Container className={classes.body} style={{ zIndex: 3 }}>
           <Box className={classes.learnMoreBar}>
@@ -1190,7 +1356,7 @@ const LandingPage: React.FC = () => {
         </Container>
         {!mobile && <ConsetellationSix />}
       </Box>
-      <Container className={classes.body}>
+      <Container className={classes.body} id='definative-architecture'>
         <Box className={classes.defiNative}>
           {mobile && (
             <ConsetellationMobileFive
@@ -1261,7 +1427,7 @@ const LandingPage: React.FC = () => {
               style={{ position: 'absolute', left: -20, top: 156 }}
             />
           )}
-          <Box className={classes.ourValues}>
+          <Box className={classes.ourValues} id='our-values'>
             <Typography className={classes.gradientSubTitle}>
               Our Values
             </Typography>
@@ -1359,29 +1525,57 @@ const LandingPage: React.FC = () => {
             <Box className={classes.footerLines}>
               {!mobile && (
                 <Box className={classes.footerLine}>
-                  <Typography variant='h1'>Misc</Typography>
-                  <Typography>Contact Us</Typography>
-                  <Typography>Careers</Typography>
-                  <Typography>Documentation</Typography>
-                  <Typography>Bug Bounty</Typography>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography variant='h1'>Misc</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Contact Us</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Careers</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Documentation</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Bug Bounty</Typography>
+                  </AnchorLink>
                 </Box>
               )}
               {!mobile && (
                 <Box className={classes.footerLine}>
-                  <Typography variant='h1'>Legal</Typography>
-                  <Typography>Privacy Policy</Typography>
-                  <Typography>Cookie Policy</Typography>
-                  <Typography>Risk Policy</Typography>
-                  <Typography>Terms of Service</Typography>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography variant='h1'>Legal</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Privacy Policy</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Cookie Policy</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Risk Policy</Typography>
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <Typography>Terms of Service</Typography>
+                  </AnchorLink>
                 </Box>
               )}
               <Box className={classes.footerLine}>
                 {!mobile && <Typography variant='h1'>Social</Typography>}
                 <Box>
-                  <TwitterIcon />
-                  <DiscordIcon />
-                  <GithubIcon />
-                  <MediumIcon />
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <TwitterIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <DiscordIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <GithubIcon />
+                  </AnchorLink>
+                  <AnchorLink href='#' onClick={preventDefault}>
+                    <MediumIcon />
+                  </AnchorLink>
                 </Box>
               </Box>
             </Box>
