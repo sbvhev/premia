@@ -6,8 +6,6 @@ import {
   Container,
   Divider,
   Typography,
-  BottomNavigation,
-  BottomNavigationAction,
   TableRow,
   TableCell,
   Button,
@@ -20,14 +18,13 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import Moment from 'moment';
 import cx from 'classnames';
 
+import { useDarkModeManager } from 'state/user/hooks';
 import { formatNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 
-import { DataTable, LineChart, DonutChart, PositionModal } from 'components';
+import { DataTable, LineChart, DonutChart, PositionModal, SwitchWithGlider } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
-import CapitalIcon from 'assets/svg/CapitalIcon.svg';
-import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
@@ -37,9 +34,11 @@ import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
 import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
 import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
+import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
+import CapitalIcon from 'assets/svg/CapitalIcon.svg';
+import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 
 const getYieldHeadCells = () => [
   {
@@ -365,8 +364,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    top: 4,
-    right: 2,
     '& p': {
       fontSize: 8,
       color: palette.common.black,
@@ -589,6 +586,71 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: palette.divider,
     position: 'absolute',
     left: 0,
+    zIndex: 3
+  },
+  switchContainer: {
+    border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.paper,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    display: 'flex',
+    borderRadius: '12px',
+    height: '56px',
+    padding: '6px',
+  },
+  switchContainerMobile: {
+    border: `1px solid ${palette.divider}`,
+    backgroundColor: palette.background.paper,
+    justifyContent: 'space-evenly',
+    borderRadius: '12px',
+    display: 'flex',
+    width: '100%',
+    height: '43px',
+    padding: '5px',
+  },
+  inactiveSwitch: {
+    cursor: 'pointer',
+    '& svg': {
+      marginRight: 7,
+    },
+    '& svg path': {
+      fill: palette.secondary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      lineHeight: '14px',
+      fontSize: '14px',
+      color: palette.secondary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
+    },
+  },
+  activeSwitch: {
+    cursor: 'default',
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+      fontWeight: 700,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+        fontWeight: 700,
+      },
+    },
   },
 }));
 
@@ -636,14 +698,203 @@ const getThisMonthDates = () => {
 const Positions: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
-  const [positionFilter, setPositionFilter] = useState(0);
-  const [dateFilter, setDateFilter] = useState(0);
-  const [optionFilter, setOptionFilter] = useState(0);
+  const mobileWindowSize = useMediaQuery(theme.breakpoints.down('xs'));
+
+  const [positionFilterIndex, setPositionFilterIndex] = useState(0);
+  const [dateFilterIndex, setDateFilterIndex] = useState(0);
+  const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [darkMode] = useDarkModeManager();
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const yieldHeadCells = getYieldHeadCells();
   const optionsHeadCells = getOptionsHeadCells();
+
+  const handleFilterOptions = () => {
+    setPositionFilterIndex(0);
+  };
+
+  const handleFilterYield = () => {
+    setPositionFilterIndex(1);
+  };
+
+  const handleFilterToday = () => {
+    setDateFilterIndex(0);
+  };
+
+  const handleFilterThisWeek = () => {
+    setDateFilterIndex(1);
+  };
+
+  const handleFilterThisMonth = () => {
+    setDateFilterIndex(2);
+  };
+
+  const handleFilterCurrentOptions = () => {
+    setOptionFilterIndex(0);
+  };
+
+  const handleFilterExpiredOptions = () => {
+    setOptionFilterIndex(1);
+  };
+
+  const OptionsSwitch = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      padding='0 10px'
+      justifyContent='center'
+      className={cx(
+        classes.inactiveSwitch,
+        positionFilterIndex === 0 && classes.activeSwitch,
+      )}
+      width={mobileWindowSize ? '50%' : '104px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      onClick={handleFilterOptions}
+    >
+      <OptionsIcon />
+      <Typography>Options</Typography>
+    </Box>
+  );
+
+  const YieldSwitch = () => (
+    <Box
+      display='flex'
+      width={mobileWindowSize ? '50%' : '104px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      alignItems='center'
+      padding='0 20px'
+      justifyContent='center'
+      className={cx(
+        classes.inactiveSwitch,
+        positionFilterIndex === 1 && classes.activeSwitch,
+      )}
+      onClick={handleFilterYield}
+    >
+      <YieldIcon />
+      <Typography style={{ marginTop: '3px' }}>Yield</Typography>
+    </Box>
+  );
+
+  const TodayFilterSwitch = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cx(
+        classes.inactiveSwitch,
+        dateFilterIndex === 0 && classes.activeSwitch,
+      )}
+      width={mobileWindowSize ? '33.3%' : '102px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      onClick={handleFilterToday}
+    >
+      <Typography>Today</Typography>
+    </Box>
+  );
+
+  const WeekFilterSwitch = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cx(
+        classes.inactiveSwitch,
+        dateFilterIndex === 1 && classes.activeSwitch,
+      )}
+      width={mobileWindowSize ? '33.3%' : '102px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      onClick={handleFilterThisWeek}
+    >
+      <Typography>This Week</Typography>
+    </Box>
+  );
+
+  const MonthFilterSwitch = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      width={mobileWindowSize ? '33.3%' : '102px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      className={cx(
+        classes.inactiveSwitch,
+        dateFilterIndex === 2 && classes.activeSwitch,
+      )}
+      onClick={handleFilterThisMonth}
+    >
+      <Typography>This month</Typography>
+    </Box>
+  );
+
+  const CurrentOptionsSwitch = () => (
+    <Box
+      display='flex'
+      alignItems='center'
+      padding='0 12px'
+      justifyContent='center'
+      width={mobileWindowSize ? '50%' : '102px'}
+      height={mobileWindowSize ? '31px' : '42px'}
+      className={cx(
+        classes.inactiveSwitch,
+        optionFilterIndex === 0 && classes.activeSwitch,
+      )}
+      onClick={handleFilterCurrentOptions}
+    >
+      <WatchLaterIcon />
+      <Typography>Current</Typography>
+    </Box>
+  );
+
+  const ExpiredOptionsSwitch = () => {
+    const iconWaringMobileShift = deviceWidth / 4 + 23;
+    return (
+      <Box
+        width={mobileWindowSize ? '50%' : 'auto'}
+        height={mobileWindowSize ? '100%' : 'auto'}
+      >
+        <Box
+          className={classes.expiredIcon}
+          style={
+            !mobileWindowSize
+              ? {
+                  transform: `translate(86px, 4px)`,
+                }
+              : {
+                  transform: `translate(${iconWaringMobileShift}px, 2px)`,
+                }
+          }
+        >
+          <p>{1}</p>
+        </Box>
+        <Box
+          display='flex'
+          alignItems='center'
+          padding='0 10px'
+          justifyContent='center'
+          width={mobileWindowSize ? '100%' : '102px'}
+          height={mobileWindowSize ? '100%' : '42px'}
+          className={cx(
+            classes.inactiveSwitch,
+            optionFilterIndex === 1 && classes.activeSwitch,
+          )}
+          onClick={handleFilterExpiredOptions}
+        >
+          <WarningIcon />
+          <Typography style={{ marginTop: '2px' }}>Expired</Typography>
+        </Box>
+      </Box>
+    );
+  };
 
   const noPositions = false;
 
@@ -776,43 +1027,99 @@ const Positions: React.FC = () => {
         component='h1'
         color='textPrimary'
         className={classes.title}
-        style={!mobile ? { margin: '25px 0 0 20px' } : {}}
+        style={!mobileWindowSize ? { margin: '25px 0 0 20px' } : {}}
       >
         My dashboard
       </Typography>
       <Grid
         container
         className={classes.positionFilterContainer}
-        style={!mobile ? { paddingLeft: '6px' } : {}}
+        style={
+          !mobileWindowSize ? { paddingLeft: '6px' } : { margin: '18px 0 12px' }
+        }
       >
-        <BottomNavigation
-          value={positionFilter}
-          className={cx(mobile && classes.fullWidth)}
-          onChange={(event, newValue) => {
-            setPositionFilter(newValue);
-          }}
-          showLabels={true}
+        <Box
+          className={
+            !mobileWindowSize
+              ? classes.switchContainer
+              : classes.switchContainerMobile
+          }
+          width={!mobileWindowSize ? '224px' : '100%'}
+          style={
+            darkMode
+              ? {}
+              : {
+                  borderColor: 'transparent',
+                  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                }
+          }
         >
-          <BottomNavigationAction label='Options' icon={<OptionsIcon />} />
-          <BottomNavigationAction label='Yield' icon={<YieldIcon />} />
-        </BottomNavigation>
+          {!mobileWindowSize ? (
+            <SwitchWithGlider
+              elements={[OptionsSwitch, YieldSwitch]}
+              defaultIndex={positionFilterIndex}
+              marginBetweenSwitches={1}
+              gliderWidth={104}
+              gliderHeight={42}
+            />
+          ) : (
+            <SwitchWithGlider
+              elements={[OptionsSwitch, YieldSwitch]}
+              defaultIndex={positionFilterIndex}
+              marginBetweenSwitches={-2}
+              gliderWidth={(deviceWidth - 50) / 2}
+              gliderHeight={31}
+            />
+          )}
+        </Box>
         {!noPositions && (
-          <BottomNavigation
-            value={dateFilter}
-            className={cx(mobile && classes.fullWidth)}
-            onChange={(event, newValue) => {
-              setDateFilter(newValue);
-            }}
-            showLabels={true}
+          <Box
+            className={
+              !mobileWindowSize
+                ? classes.switchContainer
+                : classes.switchContainerMobile
+            }
+            width={!mobileWindowSize ? '335px' : '100%'}
+            style={
+              darkMode
+                ? {}
+                : {
+                    borderColor: 'transparent',
+                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                  }
+            }
+            marginTop={!mobileWindowSize ? 0 : '10px'}
           >
-            <BottomNavigationAction label='Today' />
-            <BottomNavigationAction label='This week' />
-            <BottomNavigationAction label='This month' />
-          </BottomNavigation>
+            {!mobileWindowSize ? (
+              <SwitchWithGlider
+                elements={[
+                  TodayFilterSwitch,
+                  WeekFilterSwitch,
+                  MonthFilterSwitch,
+                ]}
+                defaultIndex={dateFilterIndex}
+                marginBetweenSwitches={7}
+                gliderWidth={102}
+                gliderHeight={42}
+              />
+            ) : (
+              <SwitchWithGlider
+                elements={[
+                  TodayFilterSwitch,
+                  WeekFilterSwitch,
+                  MonthFilterSwitch,
+                ]}
+                defaultIndex={dateFilterIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={(deviceWidth - 50) / 3}
+                gliderHeight={31}
+              />
+            )}
+          </Box>
         )}
       </Grid>
       {!noPositions && (
-        <Box mb={2.5} ml={!mobile ? '6px' : ''}>
+        <Box mb={2.5} ml={!mobileWindowSize ? '6px' : ''}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12} lg={8}>
               <Container fixed className={classes.fullWidth}>
@@ -895,9 +1202,9 @@ const Positions: React.FC = () => {
                   <Box flex={1} mb={-1.5} mr={1.5}>
                     <LineChart
                       isCall
-                      data={chartData[dateFilter]}
-                      categories={chartDateCats[dateFilter]}
-                      chartType={chartTypes[dateFilter]}
+                      data={chartData[dateFilterIndex]}
+                      categories={chartDateCats[dateFilterIndex]}
+                      chartType={chartTypes[dateFilterIndex]}
                       width='100%'
                       height={200}
                     />
@@ -923,12 +1230,14 @@ const Positions: React.FC = () => {
                     alignItems='center'
                   >
                     <DonutChart
-                      data={positionFilter === 0 ? optionAssets : yieldAssets}
+                      data={
+                        positionFilterIndex === 0 ? optionAssets : yieldAssets
+                      }
                       colors={['#4D9EF2', '#EB4A97']}
                       endColors={['#2DDEA0', '#A745DD']}
                       rotations={[21.21, 116.57]}
                       content={
-                        positionFilter === 0 ? 'My assets' : 'My options'
+                        positionFilterIndex === 0 ? 'My assets' : 'My options'
                       }
                     />
                   </Box>
@@ -948,9 +1257,12 @@ const Positions: React.FC = () => {
           >
             You have no active positions
           </Typography>
-          <Box mt={mobile ? 3 : 5} ml={!mobile ? '6px' : ''}>
+          <Box
+            mt={mobileWindowSize ? 3 : 5}
+            ml={!mobileWindowSize ? '6px' : ''}
+          >
             <Container fixed className={classes.noPositionBox}>
-              {positionFilter === 0 && (
+              {positionFilterIndex === 0 && (
                 <>
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionOptions} alt='No Options' />
@@ -968,7 +1280,7 @@ const Positions: React.FC = () => {
                   </Box>
                 </>
               )}
-              {positionFilter === 1 && (
+              {positionFilterIndex === 1 && (
                 <>
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionYield} alt='No Yield' />
@@ -990,7 +1302,7 @@ const Positions: React.FC = () => {
           </Box>
           <Grid
             container
-            justify={mobile ? 'center' : 'space-between'}
+            justify={mobileWindowSize ? 'center' : 'space-between'}
             alignItems='center'
             className={classes.findPositionContainer}
           >
@@ -1007,8 +1319,11 @@ const Positions: React.FC = () => {
         </Box>
       ) : (
         <>
-          {positionFilter === 0 && (
-            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
+          {positionFilterIndex === 0 && (
+            <Box
+              className={classes.tableContainer}
+              ml={!mobileWindowSize ? '6px' : ''}
+            >
               <Grid
                 container
                 className={classes.tableHeading}
@@ -1024,35 +1339,48 @@ const Positions: React.FC = () => {
                     My option positions
                   </Typography>
                 </Box>
-                <Box mt={mobile ? 2 : 0} width={mobile ? 1 : 'auto'}>
-                  <BottomNavigation
-                    value={optionFilter}
-                    className={cx(mobile && classes.fullWidth)}
-                    onChange={(event, newValue) => {
-                      setOptionFilter(newValue);
-                    }}
-                    showLabels={true}
+                <Box
+                  mt={mobileWindowSize ? 2 : 0}
+                  width={mobileWindowSize ? 1 : 'auto'}
+                >
+                  <Box
+                    className={
+                      !mobileWindowSize
+                        ? classes.switchContainer
+                        : classes.switchContainerMobile
+                    }
+                    width={!mobileWindowSize ? '224px' : '100%'}
+                    style={
+                      darkMode
+                        ? {}
+                        : {
+                            borderColor: 'transparent',
+                            boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                          }
+                    }
                   >
-                    <BottomNavigationAction
-                      label='Current'
-                      icon={<WatchLaterIcon />}
-                    />
-                    <BottomNavigationAction
-                      label='Expired'
-                      icon={
-                        <>
-                          <WarningIcon />
-                          <Box className={classes.expiredIcon}>
-                            <Typography>1</Typography>
-                          </Box>
-                        </>
-                      }
-                    />
-                  </BottomNavigation>
+                    {!mobileWindowSize ? (
+                      <SwitchWithGlider
+                        elements={[CurrentOptionsSwitch, ExpiredOptionsSwitch]}
+                        defaultIndex={optionFilterIndex}
+                        marginBetweenSwitches={1}
+                        gliderWidth={104}
+                        gliderHeight={42}
+                      />
+                    ) : (
+                      <SwitchWithGlider
+                        elements={[CurrentOptionsSwitch, ExpiredOptionsSwitch]}
+                        defaultIndex={optionFilterIndex}
+                        marginBetweenSwitches={-2}
+                        gliderWidth={(deviceWidth - 50) / 2}
+                        gliderHeight={31}
+                      />
+                    )}
+                  </Box>
                 </Box>
               </Grid>
-              <Box mt={mobile ? 1.5 : 2.5}>
-                {mobile ? (
+              <Box mt={mobileWindowSize ? 1.5 : 2.5}>
+                {mobileWindowSize ? (
                   <>
                     {optionsData.map((item: any) => (
                       <Box mb={2}>
@@ -1213,8 +1541,11 @@ const Positions: React.FC = () => {
               </Box>
             </Box>
           )}
-          {positionFilter === 1 && (
-            <Box className={classes.tableContainer} ml={!mobile ? '6px' : ''}>
+          {positionFilterIndex === 1 && (
+            <Box
+              className={classes.tableContainer}
+              ml={!mobileWindowSize ? '6px' : ''}
+            >
               <Grid
                 container
                 className={classes.tableHeading}
@@ -1231,8 +1562,8 @@ const Positions: React.FC = () => {
                   </Typography>
                 </Box>
               </Grid>
-              <Box mt={mobile ? 1.5 : 2.5}>
-                {mobile ? (
+              <Box mt={mobileWindowSize ? 1.5 : 2.5}>
+                {mobileWindowSize ? (
                   <>
                     {yieldData.map((item: any, index) => (
                       <Box mb={2}>

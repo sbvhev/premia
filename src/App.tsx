@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom';
 import { Provider as StateProvider } from 'react-redux';
 import {
   ThemeProvider as MuiThemeProvider,
@@ -24,12 +24,20 @@ import ApplicationUpdater from './state/application/updater';
 import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
 import OptionsUpdater from './state/options/updater';
+import TransactionsUpdater from './state/transactions/updater';
 import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
 
 import { PageWithSidebar } from 'layouts';
-import { Options, Stake, Vault, Positions, PositionGuide } from './pages';
+import {
+  Options,
+  Stake,
+  Vault,
+  Positions,
+  LandingPage,
+  PositionGuide,
+} from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
@@ -131,13 +139,20 @@ const StateUpdaters: React.FC = () => {
       <MulticallUpdater />
       <UserUpdater />
       <OptionsUpdater />
+      <TransactionsUpdater />
     </>
   );
 };
 
 const ThemeProvider: React.FC = ({ children }) => {
+  const location = useLocation();
   const darkMode = useIsDarkMode();
-  const theme = darkMode ? darkTheme : lightTheme;
+  let theme = darkMode ? darkTheme : lightTheme;
+
+  if (location.pathname.replace('/', '') === '') {
+    theme = darkTheme;
+  }
+
 
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
 };
@@ -173,33 +188,47 @@ const Providers: React.FC = ({ children }) => {
 const App: React.FC = () => {
   return (
     <Providers>
-      <PageWithSidebar>
-        <Switch>
-          <Route exact path='/'>
-            <Positions />
-          </Route>
+      <Switch>
+        <Route exact path='/'>
+          <LandingPage />
+        </Route>
 
-          <Route exact path='/options'>
+        <Route exact path='/positions'>
+          <PageWithSidebar>
+            <Positions />
+          </PageWithSidebar>
+        </Route>
+
+        <Route exact path='/options'>
+          <PageWithSidebar>
             <Options />
-          </Route>
+          </PageWithSidebar>
+        </Route>
 
-          <Route exact path='/stake'>
+        <Route exact path='/stake'>
+          <PageWithSidebar>
             <Stake />
-          </Route>
+          </PageWithSidebar>
+        </Route>
 
-          <Route exact path='/vaults'>
+        <Route exact path='/vaults'>
+          <PageWithSidebar>
             <Vault />
-          </Route>
+          </PageWithSidebar>
+        </Route>
 
-          <Route exact path='/position-guide'>
+        <Route exact path='/position-guide'>
+          <PageWithSidebar>
             <PositionGuide />
-          </Route>
+          </PageWithSidebar>
+        </Route>
 
-          <Route path='*'>
+        <Route path='*'>
+          <PageWithSidebar>
             <Positions />
-          </Route>
-        </Switch>
-      </PageWithSidebar>
+          </PageWithSidebar>
+        </Route>
+      </Switch>
     </Providers>
   );
 };

@@ -128,7 +128,6 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   <Box
                     display='flex'
                     justifySelf='flex-end'
-                    id='test'
                     style={{ backgroundColor: 'transparent' }}
                   >
                     <AccountButtons />

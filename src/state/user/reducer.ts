@@ -8,7 +8,7 @@ import {
 
 const currentTimestamp = () => new Date().getTime();
 
-export const DARK_MODE_LOCALSTORAGE_KEY = 'user_dark_mode';
+export const DARK_MODE_LOCALSTORAGE_KEY = 'user/dark_mode';
 export interface UserState {
   lastUpdateVersionTimestamp?: number;
   userDarkMode: boolean | null; // the user's choice for dark mode or light mode
