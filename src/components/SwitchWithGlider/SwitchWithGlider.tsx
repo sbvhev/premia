@@ -81,7 +81,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   ];
 
   const mappedElements = elements.map((item, index) => (
-    <Box>
+    <Box key={index}>
       <Box
         className={classes.elementFront}
         width={gliderWidth}

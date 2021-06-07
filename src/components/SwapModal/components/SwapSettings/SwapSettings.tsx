@@ -307,14 +307,14 @@ const MySwitch = withStyles((theme: Theme) =>
 )(({ classes, ...props }: Props) => {
   return (
     <Switch
-      focusVisibleClassName={classes.focusVisible}
+      focusVisibleClassName={classes.focusVisible || ''}
       disableRipple
       classes={{
-        root: classes.root,
-        switchBase: classes.switchBase,
-        thumb: classes.thumb,
-        track: classes.track,
-        checked: classes.checked,
+        root: classes.root || '',
+        switchBase: classes.switchBase || '',
+        thumb: classes.thumb || '',
+        track: classes.track || '',
+        checked: classes.checked || '',
       }}
       {...props}
     />

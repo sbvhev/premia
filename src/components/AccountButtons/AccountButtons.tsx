@@ -18,8 +18,6 @@ import { shortenAddress } from 'utils';
 import {
   BetaSoftwareModal,
   ConfirmTermsModal,
-  SwapModal,
-  ChainModal,
   TransactionsModal,
 } from 'components';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
@@ -183,58 +181,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     backgroundColor: palette.primary.dark,
   },
 
-  chain: {
-    border: `1px solid ${palette.divider}`,
-    width: 'fit-content',
-    borderRadius: 12,
-    marginRight: 10,
-    padding: 6,
-    height: 45,
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-
-    '& p': {
-      fontSize: 14,
-    },
-
-    '& svg': {
-      width: 33,
-      height: 33,
-      marginRight: 8,
-      padding: '8px 11px',
-      background: 'rgba(82, 148, 255, 0.2)',
-      borderRadius: 10,
-    },
-
-    '&:hover:not(:active)': {
-      borderColor: palette.primary.main,
-
-      '& p': {
-        color: palette.text.primary,
-      },
-    },
-
-    ':active': {
-      borderColor: palette.primary.main,
-
-      '& svg path': {
-        fill: palette.text.secondary,
-      },
-
-      '& p': {
-        color: palette.text.secondary,
-      },
-    },
-
-    [breakpoints.down('sm')]: {
-      minWidth: '125px',
-      width: '33vw',
-      marginRight: 0,
-      marginBottom: 10,
-    },
-  },
-
   connectWalletButton: {
     fontSize: 14,
   }
@@ -248,8 +194,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
-  const [showSwapModal, setShowSwapModal] = useState(false);
-  const [chainModalOpen, setChainModalOpen] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const theme = useTheme();
@@ -268,13 +212,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         <ConfirmTermsModal
           open={confirmTermsModalOpen}
           onClose={() => setConfirmTermsModalOpen(false)}
-        />
-      )}
-
-      {chainModalOpen && (
-        <ChainModal
-          open={chainModalOpen}
-          onClose={() => setChainModalOpen(false)}
         />
       )}
 
@@ -300,25 +237,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 <span>Get</span>
                 <LogoIcon />
               </Button>
-              {/* <Button
-                color='primary'
-                variant='outlined'
-                className={classes.button}
-                onClick={() => setShowSwapModal(true)}
-              >
-                <span>Swap</span>
-                <SwapIcon />
-              </Button> */}
 
-              {/* <Box
-                className={classes.chain}
-                onClick={() => {
-                  setChainModalOpen(true);
-                }}
-              >
-                <EthHeadIcon />
-                <Typography color='secondary'>Ethereum</Typography>
-              </Box> */}
               <Box clone mb={mobile ? 1 : 0}>
                 <Box display='flex' id='test'>
                   <Grid
@@ -328,7 +247,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     <Box height={1} className={classes.accountInfo}
                       onClick={() => setShowTransactions(true)}
                     >
-                      {/* <PersonIcon className={classes.avatar} /> */}
                       <Box>
                         <Typography
                           className={
@@ -378,9 +296,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                       height={1}
                       onClick={() => setShowTransactions(true)}
                     >
-                      {/* <Box style={{ margin: '2px 6px 0 0' }}>
-                        <PersonIconMobile />
-                      </Box> */}
                       <Typography className={classes.addressMobile}>
                         {shortenAddress(account ?? '')}
                       </Typography>
@@ -400,15 +315,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                     </Box>
                   </Grid>
                 </Box>
-                {/* <Box
-                  className={classes.chain}
-                  onClick={() => {
-                    setChainModalOpen(true);
-                  }}
-                >
-                  <EthHeadIcon />
-                  <Typography color='secondary'>Ethereum</Typography>
-                </Box> */}
               </Box>
 
               <Box
@@ -424,14 +330,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   Get
                   <LogoIcon />
                 </Button>
-                {/* <Button
-                  color='secondary'
-                  className={cx(classes.button, mobile && classes.half)}
-                  onClick={() => setShowSwapModal(true)}
-                >
-                  Swap
-                  <SwapIcon />
-                </Button> */}
               </Box>
             </Box>
           )}
@@ -452,7 +350,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       )}
 
       <Grid item xs={1} />
-      <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} />
       <TransactionsModal
         open={showTransactions}
         onClose={() => setShowTransactions(false)}

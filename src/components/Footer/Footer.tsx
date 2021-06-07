@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { BorderLinearProgress, SwitchWithGlider } from 'components';
+import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import cx from 'classnames';
 import { useIsDarkMode } from 'state/user/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
@@ -163,6 +163,7 @@ const Footer: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [gasType, setGasType] = useState('standard');
   const [gasValue, setGasValue] = useState(25);
+  const [chainModalOpen, setChainModalOpen] = useState(false);
 
   const StandardGasSwitch = () => (
     <Box
@@ -175,7 +176,7 @@ const Footer: React.FC = () => {
     >
       <GasStandardIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Standard</b>
           <div>90 Gwei</div>
         </Typography>
@@ -191,7 +192,7 @@ const Footer: React.FC = () => {
     >
       <GasFastIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Fast</b>
           <div>100 Gwei</div>
         </Typography>
@@ -210,7 +211,7 @@ const Footer: React.FC = () => {
     >
       <ProIcon />
       <Box width='100%'>
-        <Typography className={classes.gasPriceText}>
+        <Typography component='div' className={classes.gasPriceText}>
           <b>Instant</b>
           <div>120 Gwei</div>
         </Typography>
@@ -232,6 +233,12 @@ const Footer: React.FC = () => {
         alignItems='center'
         className={classes.footer}
       >
+        {chainModalOpen && (
+          <ChainModal
+            open={chainModalOpen}
+            onClose={() => setChainModalOpen(false)}
+          />
+        )}
         <Box
           display='flex'
           width={mobile ? '100%' : 'auto'}
@@ -274,7 +281,11 @@ const Footer: React.FC = () => {
           </a>
         </Box>
         <Box className={classes.footerRight}>
-          <Box className={classes.footerRightItem}>
+          <Box
+            className={classes.footerRightItem}
+            onClick={() => {
+              setChainModalOpen(true);
+            }}>
             <EthHeadIcon />
             <Typography component='span'>
               Ethereum
