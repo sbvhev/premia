@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, Modal, Box, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
-
+import { chainIds, chainLabels, PARAMS } from 'utils';
+import { useWeb3 } from 'state/application/hooks';
 import { ModalContainer } from 'components';
-import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
+import { ReactComponent as FantomIcon } from 'assets/svg/FantomIcon.svg';
+
+import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -104,6 +107,13 @@ const useStyles = makeStyles(({ palette }) => ({
       },
     },
   },
+  testnet: {
+    position: 'absolute',
+    bottom: -2,
+    fontSize: 14,
+    fontWeight: 400,
+    color: palette.text.secondary
+  },
   selected: {},
 }));
 
@@ -113,8 +123,23 @@ export interface ChainModalProps {
 }
 
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
+  const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  let testnetLabel = '';
+  switch(chainId) {
+    case 3:
+      testnetLabel = 'Ropsten Testnet';
+      break;
+    case 42:
+      testnetLabel = 'Kovan Testnet';
+      break;
+    case 4:
+      testnetLabel = 'Rinkeby Testnet';
+      break;
+    case 5:
+      testnetLabel = 'Goerli Testnet';
+      break;    
+  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -125,63 +150,35 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               Select network
             </Typography>
             <Grid container direction='row'>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedIndex === 1,
-                  })}
-                  onClick={() => {
-                    setSelectedIndex(1);
-                  }}
-                >
-                  <EthIcon />
-                  Ethereum
-                  {selectedIndex === 1 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedIndex === 2,
-                  })}
-                  onClick={() => {
-                    setSelectedIndex(2);
-                  }}
-                >
-                  <BSCIcon />
-                  BSC
-                  {selectedIndex === 2 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedIndex === 3,
-                  })}
-                  onClick={() => {
-                    setSelectedIndex(3);
-                  }}
-                >
-                  <PolygonIcon />
-                  Polygon
-                  {selectedIndex === 3 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
+              { chainIds.map((val, ind) => (
+                <Grid item key={ind} xs={3} className={classes.chain}>
+                  <Box
+                    component='div'
+                    className={cx({
+                      [classes.selected]: chainId === val,
+                    })}
+                    onClick={() => {
+                      const params = PARAMS[val];
+                      web3?.send('wallet_addEthereumChain', [
+                        params,
+                        account,
+                      ]);
+                    }}
+                  >
+                    { ind === 0 && <EthIcon /> }
+                    { ind === 1 && <BSCIcon /> }
+                    { ind === 2 && <PolygonIcon /> }
+                    { ind === 3 && <FantomIcon /> }
+                    { chainLabels[ind] }
+                    {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
+                      <Box component='div' className={classes.selected}>
+                        Current
+                      </Box>
+                    )}
+                    {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
+                  </Box>
+                </Grid>
+              ))}
             </Grid>
             <Button className={classes.exitContainer} onClick={onClose}>
               <img src={XOut} alt='Exit' />

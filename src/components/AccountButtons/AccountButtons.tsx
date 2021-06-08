@@ -43,6 +43,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fill: palette.text.hint,
     },
     marginRight: '8px',
+
+    '& path': {
+      fill: palette.text.hint,
+    }
   },
 
   divider: {
@@ -52,7 +56,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   account: {
     padding: 0,
     height: 45,
-    border: (props: any) => props.darkMode && `1px solid ${palette.divider}`,
+    border: `1px solid ${palette.divider}`,
     backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
     boxShadow: (props: any) =>
       props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
@@ -169,7 +173,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   connectWalletButton: {
     fontSize: 14,
-    color: 'black',
   },
 }));
 
