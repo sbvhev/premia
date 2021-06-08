@@ -88,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const pageIndexes: PageIndexing = {
-    '/': 0,
+    '/positions': 0,
     '/vaults': 1,
     '/options': 2,
     '/stake': 3,

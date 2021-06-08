@@ -2650,6 +2650,19 @@
     ejs "^2.6.1"
     magic-string "^0.25.0"
 
+"@sushiswap/sdk@^5.0.0-canary.14":
+  version "5.0.0-canary.14"
+  resolved "https://registry.yarnpkg.com/@sushiswap/sdk/-/sdk-5.0.0-canary.14.tgz#5c1d9dbd2ed2d6f5046e0474b14d145d6f1cc447"
+  integrity sha512-AXfHx22DkvlenYPMwaJOW59AKj6Q8bj+dT+KCYd6DSzLH6gl/K+f8UGBIzy/w1rNLXeA1MdU3XOG2Uub8CYMpA==
+  dependencies:
+    "@uniswap/v2-core" "^1.0.0"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
 "@svgr/babel-plugin-add-jsx-attribute@^5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-5.4.0.tgz#81ef61947bb268eb9d50523446f9c638fb355906"
