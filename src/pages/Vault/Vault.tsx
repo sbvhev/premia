@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -327,8 +326,6 @@ const tabItems = [
 
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
-  const history = useHistory();
-  const location = useLocation();
   const classes = useStyles({ dark });
   const theme = useTheme();
   const { palette } = theme;
