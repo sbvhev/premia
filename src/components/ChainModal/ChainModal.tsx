@@ -8,6 +8,7 @@ import { ModalContainer } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
+import { ReactComponent as FantomIcon } from 'assets/svg/FantomIcon.svg';
 
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -106,6 +107,13 @@ const useStyles = makeStyles(({ palette }) => ({
       },
     },
   },
+  testnet: {
+    position: 'absolute',
+    bottom: -2,
+    fontSize: 14,
+    fontWeight: 400,
+    color: palette.text.secondary
+  },
   selected: {},
 }));
 
@@ -117,6 +125,21 @@ export interface ChainModalProps {
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
   const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
+  let testnetLabel = '';
+  switch(chainId) {
+    case 3:
+      testnetLabel = 'Ropsten Testnet';
+      break;
+    case 42:
+      testnetLabel = 'Kovan Testnet';
+      break;
+    case 4:
+      testnetLabel = 'Rinkeby Testnet';
+      break;
+    case 5:
+      testnetLabel = 'Goerli Testnet';
+      break;    
+  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -145,13 +168,14 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                     { ind === 0 && <EthIcon /> }
                     { ind === 1 && <BSCIcon /> }
                     { ind === 2 && <PolygonIcon /> }
-                    { ind === 3 && <Box width={40} height={40} mb={2} />}
+                    { ind === 3 && <FantomIcon /> }
                     { chainLabels[ind] }
-                    {chainId === val && (
+                    {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
                       <Box component='div' className={classes.selected}>
                         Current
                       </Box>
                     )}
+                    {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
                   </Box>
                 </Grid>
               ))}

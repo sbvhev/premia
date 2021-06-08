@@ -18,6 +18,7 @@ import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
+import { ReactComponent as FantomIcon } from 'assets/svg/FantomIcon.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 
@@ -207,6 +208,22 @@ const Footer: React.FC = () => {
   const { chainId } = useWeb3();
   const chainIndex = chainIds.findIndex(val => val === chainId);
 
+  let testnetLabel = '';
+  switch(chainId) {
+    case 3:
+      testnetLabel = 'Ropsten Testnet';
+      break;
+    case 42:
+      testnetLabel = 'Kovan Testnet';
+      break;
+    case 4:
+      testnetLabel = 'Rinkeby Testnet';
+      break;
+    case 5:
+      testnetLabel = 'Goerli Testnet';
+      break;    
+  }
+
   const handleSelectStandardGas = () => {
     setGasType('standard');
   };
@@ -337,11 +354,12 @@ const Footer: React.FC = () => {
             onClick={() => {
               setChainModalOpen(true);
             }}>
-            { chainIndex === 0 && <EthHeadIcon /> }
+            { (chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon /> }
             { chainIndex === 1 && <BSCIcon /> }
             { chainIndex === 2 && <PolygonIcon /> }
+            { chainIndex === 3 && <FantomIcon /> }
             <Typography component='span'>
-              { chainLabels[chainIndex] }
+              { chainIndex === -1 ? testnetLabel : chainLabels[chainIndex] }
             </Typography>
             <UpArrow className={classes.upArrow} />
           </Box>
