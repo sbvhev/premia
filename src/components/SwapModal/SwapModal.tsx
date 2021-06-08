@@ -1012,6 +1012,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         value={toAmount || ''}
                         onChange={handleChangeToAmount}
                         className={classes.borderedInput}
+                        style={{ paddingRight: '8px' }}
                       />
                     </Box>
                     <>
