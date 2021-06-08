@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -34,6 +33,7 @@ import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
+import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import { useIsDarkMode } from 'state/user/hooks';
 import BasicVault from './BasicVault';
 
@@ -269,6 +269,34 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fill: palette.secondary.main,
     },
   },
+  basicVault: {
+    opacity: (props: any) => (props.dark ? 0.8 : 0.9),
+    height: (props: any) => props.mediumWindow ? 'calc(100% - 75px)' : '100%',
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    background: (props: any) => (props.dark ? '#000000' : '#F2F4F5'),
+    zIndex: 33,
+
+    '& div': {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 350,
+      fontSize: 18,
+      lineHeight: '18px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+
+      '& p': {
+        marginTop: 12,
+        fontWeight: 700,
+      },
+    },
+  },
 }));
 
 const tabItems = [
@@ -298,24 +326,20 @@ const tabItems = [
 
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
-  const history = useHistory();
-  const location = useLocation();
-  const classes = useStyles({ dark });
   const theme = useTheme();
+  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
+  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
+  const classes = useStyles({ dark, mediumWindow });
   const { palette } = theme;
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
   const [depositCallOpen, setDepositCallOpen] = useState(false);
   const [withdrawPutOpen, setWithdrawPutOpen] = useState(false);
   const [depositPutOpen, setDepositPutOpen] = useState(false);
-  const [vaultIndex, setVaultIndex] = useState(
-    new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
-  );
+  const [vaultIndex, setVaultIndex] = useState(1);
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
-  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
-  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -345,18 +369,10 @@ const ProVault: React.FC = () => {
 
   const handleBasicVaultSwitch = () => {
     setVaultIndex(0);
-    history.push({
-      pathname: '/vaults',
-      search: '?tab="basic"',
-    });
   };
 
   const handleProVaultSwitch = () => {
     setVaultIndex(1);
-    history.push({
-      pathname: '/vaults',
-      search: '?tab="pro"',
-    });
   };
 
   const BasicVaultButton = () => (
@@ -396,7 +412,7 @@ const ProVault: React.FC = () => {
   );
 
   return (
-    <Grid container direction='column'>
+    <Grid container direction='column' style={{ position: 'relative' }}>
       {withdrawCallOpen && (
         <WithdrawDepositModal
           open={withdrawCallOpen}
@@ -567,7 +583,20 @@ const ProVault: React.FC = () => {
             </>
           )}
         </Grid>
-        {vaultIndex === 0 && <BasicVault />}
+        {vaultIndex === 0 && (
+          <>
+            <Box className={classes.basicVault}>
+              <Box>
+                <AttentionIcon />
+                <Typography>
+                  Basic vaults will be enabled after the trading competition is
+                  complete
+                </Typography>
+              </Box>
+            </Box>
+            <BasicVault />
+          </>
+        )}
         {vaultIndex === 1 && (
           <Grid container direction='row' spacing={3}>
             <Grid item xs={12} sm={12} md={6}>

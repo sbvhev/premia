@@ -7,9 +7,10 @@ import user from './user/reducer';
 import multicall from './multicall/reducer';
 import transactions from './transactions/reducer';
 import options from './options/reducer';
+import vaults from './vaults/reducer';
 import swap from './swap/reducer';
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'options'];
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'options', 'vaults'];
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     user,
     transactions,
     options,
+    vaults,
     swap,
   },
   middleware: [
