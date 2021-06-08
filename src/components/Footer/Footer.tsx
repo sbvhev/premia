@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Divider, Popover } from '@material-ui/core';
+import { Box, Grid, Typography, Divider, Popover, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import cx from 'classnames';
+
 import { useIsDarkMode } from 'state/user/hooks';
 import { useSelectedNetwork } from 'state/application/hooks';
+import { useGasType, useGasPrices } from 'state/transactions/hooks';
+
+import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -39,6 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
   footerRight: {
     display: 'flex',
     alignItems: 'center',
+    marginRight: (props: any) => props.mobile ? 0 : 12.5,
     justifyContent: (props: any) => props.mobile ? 'space-between' : 'flex-end',
     height: (props: any) => props.mobile ? '50px' : '40px',
     order: (props: any) => props.mobile ? 0 : 1,
@@ -198,24 +201,21 @@ const Footer: React.FC = () => {
   const { selectedNetwork } = useSelectedNetwork();
   const mobile = useMediaQuery(breakpoints.down('xs'));
   const classes = useStyles({ dark, mobile });
-  const [anchorEl, setAnchorEl] = useState<any>(null);
-  const [gasType, setGasType] = useState('standard');
-  const [gasValue, setGasValue] = useState(25);
   const [chainModalOpen, setChainModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<any>(null);
+  const { gasType, setGasType } = useGasType();
+  const { gasPrices } = useGasPrices();
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
-    setGasValue(25);
   };
 
   const handleSelectFastGas = () => {
     setGasType('fast');
-    setGasValue(50);
   };
 
-  const handleSelectInstantGas = () => {
-    setGasType('instant');
-    setGasValue(100);
+  const handleSelectRapidGas = () => {
+    setGasType('rapid');
   };
 
   const StandardGasSwitch = () => (
@@ -229,9 +229,9 @@ const Footer: React.FC = () => {
       onClick={handleSelectStandardGas}
     >
       <GasStandardIcon />
-      <Typography>
+      <Typography >
         <b>Standard</b>
-        <div>90 Gwei</div>
+        <div>{gasPrices?.standard || 1} Gwei</div>
       </Typography>
     </Box>
   );
@@ -244,27 +244,27 @@ const Footer: React.FC = () => {
       onClick={handleSelectFastGas}
     >
       <GasFastIcon />
-      <Typography>
+      <Typography >
         <b>Fast</b>
-        <div>100 Gwei</div>
+        <div>{gasPrices?.fast || 1} Gwei</div>
       </Typography>
     </Box>
   );
 
-  const InstantGasSwitch = () => (
+  const RapidGasSwitch = () => (
     <Box
       width='110px'
       height='42px'
       className={cx(
         classes.button,
-        gasType === 'instant' && classes.activeButton,
+        gasType === 'rapid' && classes.activeButton,
       )}
-      onClick={handleSelectInstantGas}
+      onClick={handleSelectRapidGas}
     >
       <ProIcon />
-      <Typography>
-        <b>Instant</b>
-        <div>120 Gwei</div>
+      <Typography >
+        <b>Rapid</b>
+        <div>{gasPrices?.rapid || 1} Gwei</div>
       </Typography>
     </Box>
   );
@@ -355,9 +355,15 @@ const Footer: React.FC = () => {
             <Typography component='span'>Gas Price</Typography>
             <UpArrow className={classes.upArrow} />
             <BorderLinearProgress
-              value={gasValue}
+              value={
+                gasType === 'rapid'
+                  ? 100
+                  : gasType === 'fast'
+                  ? 50
+                  : 25
+              }
               color={
-                gasType === 'instant'
+                gasType === 'rapid'
                   ? palette.primary.main
                   : gasType === 'fast'
                   ? '#FF9152'
@@ -405,7 +411,7 @@ const Footer: React.FC = () => {
             justifyContent='space-between'
           >
             <SwitchWithGlider
-              elements={[StandardGasSwitch, FastGasSwitch, InstantGasSwitch]}
+              elements={[StandardGasSwitch, FastGasSwitch, RapidGasSwitch]}
               defaultIndex={
                 gasType === 'standard' ? 0 : gasType === 'fast' ? 1 : 2
               }
