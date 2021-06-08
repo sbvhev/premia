@@ -93,7 +93,6 @@ export async function getSwapQuote(
     sellToken: sellToken?.address ?? sellToken?.symbol,
     slippagePercentage: slippagePercentage,
   };
-  console.log('here swap...', sellAmount);
 
   if (inputType) {
     params = {
@@ -117,7 +116,7 @@ export async function getSwapQuote(
   );
 
   const final = await response.json();
-  console.log('final', final);
+  // console.log('final', final);
   return final;
 }
 

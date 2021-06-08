@@ -20,19 +20,19 @@ export interface SwapState {
 export const initialState: SwapState = {
   swapSettings: {
     fromToken: {
-      symbol: 'LINK',
-      name: 'Chainlink',
-      logoURI:
-        'https://tokens.1inch.exchange/0x514910771af9ca656af840dff83e8264ecf986ca.png',
-      address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       chainId: 1,
+      name: 'WrappedEther',
+      symbol: 'WETH',
       decimals: 18,
+      logoURI:
+        'https://tokens.1inch.exchange/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     },
     toToken: null,
     fromAmount: '0',
     toAmount: '0',
     inputType: false,
-    slippagePercentage: 0.5,
+    slippagePercentage: 0.1,
   },
 };
 

@@ -16,6 +16,7 @@ import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg'
 import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
 import { SwitchWithGlider } from 'components';
+import { useSwapSettings } from 'state/swap/hooks';
 
 import { SettingsConfirmation } from '../../components';
 
@@ -349,7 +350,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
   const { palette } = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const [slippage, setSlippage] = React.useState<string>('0.5');
+  const { setSwapSettings } = useSwapSettings();
+  const [slippage, setSlippage] = React.useState<number>(0.5);
   const [customSlippage, setCustomSlippage] = React.useState<string>('');
   const [minutes, setMinutes] = React.useState<string>('20');
   const [showExchanges, setShowExchanges] = React.useState(false);
@@ -366,15 +368,24 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   });
 
   const handleClickLowSlippage = () => {
-    setSlippage('0.1');
+    setSwapSettings({
+      slippagePercentage: 0.1,
+    });
+    setSlippage(0.1);
   };
 
   const handleClickMidSlippage = () => {
-    setSlippage('0.5');
+    setSwapSettings({
+      slippagePercentage: 0.5,
+    });
+    setSlippage(0.5);
   };
 
   const handleClickHighSlippage = () => {
-    setSlippage('1');
+    setSwapSettings({
+      slippagePercentage: 1,
+    });
+    setSlippage(1);
   };
 
   const LowSlippageButton = () => (
@@ -384,7 +395,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       justifyContent='center'
       className={cx(
         classes.slippageButton,
-        slippage === '0.1' && classes.slippageButtonActive,
+        slippage === 0.1 && classes.slippageButtonActive,
       )}
       width={!mobile ? '78px' : '78px'}
       height={!mobile ? '32px' : '32px'}
@@ -401,7 +412,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       justifyContent='center'
       className={cx(
         classes.slippageButton,
-        slippage === '0.5' && classes.slippageButtonActive,
+        slippage === 0.5 && classes.slippageButtonActive,
       )}
       width='78px'
       height='32px'
@@ -418,7 +429,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       justifyContent='center'
       className={cx(
         classes.slippageButton,
-        slippage === '1' && classes.slippageButtonActive,
+        slippage === 1 && classes.slippageButtonActive,
       )}
       width='78px'
       height='32px'
@@ -444,8 +455,11 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    const numberValue = value.replace(/[^0-9.]/g, '');
-    setCustomSlippage(numberValue);
+    const valueString = value.replace(/[^0-9.]/g, '');
+    setCustomSlippage(valueString);
+    setSwapSettings({
+      slippagePercentage: parseFloat(valueString),
+    });
   };
 
   const handleChangeMinutes = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -528,7 +542,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                       HighSlippageButton,
                     ]}
                     defaultIndex={
-                      slippage === '0.1' ? 0 : slippage === '0.5' ? 1 : 2
+                      slippage === 0.1 ? 0 : slippage === 0.5 ? 1 : 2
                     }
                     marginBetweenSwitches={5.5}
                     gliderWidth={78}
