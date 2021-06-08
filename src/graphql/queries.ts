@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { Token, TokenPair } from './fragments';
+import { Token, TokenPair, Pool } from './fragments';
 
 export const getToken = gql`
   ${Token}
@@ -26,16 +26,26 @@ export const getTokenPairs = gql`
   ${TokenPair}
 
   query TokenPairs(
-    $denominatorAddress: String!
+    $baseAddress: String!
     $first: Int = 100
     $skip: Int = 0
   ) {
     tokenPairs(
-      where: { denominator: $denominatorAddress }
+      where: { base: $baseAddress }
       first: $first
       skip: $skip
     ) {
       ...TokenPair
+    }
+  }
+`;
+
+export const getPool = gql`
+  ${Pool}
+
+  query Pool($id: String!) {
+    pool(id: $id) {
+      ...Pool
     }
   }
 `;

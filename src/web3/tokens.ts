@@ -8,6 +8,7 @@ export enum TokenDenominator {
 }
 
 export interface Token extends Currency {
+  id: string
   name: string;
   symbol: string;
   decimals: number;
@@ -19,9 +20,10 @@ export function isToken(object: any): object is Token {
 }
 
 export interface TokenPair {
+  id: string
   name: string;
-  token: Token;
-  denominator: Token;
+  base: Token;
+  underlying: Token;
 
   totalDeposited: BigNumber;
   totalLocked: BigNumber;

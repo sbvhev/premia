@@ -279,9 +279,11 @@ const OptionFilter: React.FC = () => {
 
   moment.updateLocale('en', { weekdaysMin: 'S_M_T_W_T_F_S'.split('_') });
 
-  if (!moment(maturityDate).isValid()) {
-    setMaturityDate(moment(new Date()).add(28, 'days').format('YYYY-MM-DD'));
-  }
+  useEffect(() => {
+    if (!moment(maturityDate).isValid()) {
+      setMaturityDate(moment(new Date()).add(27, 'days').format('YYYY-MM-DD'))
+    }
+  }, [maturityDate, setMaturityDate]);
 
   useEffect(() => {
     if (strikePrice === 0 && underlyingPrice) {
@@ -404,6 +406,7 @@ const OptionFilter: React.FC = () => {
       </Box>
       <Box className={classes.sizeInputBox}>
         <TokenIcon
+          height={18}
           className={underlying.symbol === 'UNI' ? classes.uniIcon : ''}
         />
         <input

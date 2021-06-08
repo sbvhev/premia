@@ -8,11 +8,11 @@ import cx from 'classnames';
 import {
   useOptionType,
   useUnderlyingPrice,
-  usePricePerUnit,
   useBreakEvenPrice,
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
+import { formatCompact } from 'utils/formatNumber';
 
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
@@ -208,7 +208,6 @@ const OptionsPrice: React.FC = () => {
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
   const underlyingPrice = useUnderlyingPrice();
-  const { pricePerUnit } = usePricePerUnit();
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
@@ -218,8 +217,6 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const pLBoxPos = 250;
-
-  console.log('perUnit', pricePerUnit);
 
   return (
     <Grid
@@ -254,7 +251,7 @@ const OptionsPrice: React.FC = () => {
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current price</p>
           <p>
-            <b>${underlyingPrice}</b>
+            <b>${formatCompact(underlyingPrice)}</b>
           </p>
         </Box>
       </Box>
@@ -314,7 +311,7 @@ const OptionsPrice: React.FC = () => {
             <Box>
               {mobile && <HelpIcon />}
               <Typography className={classes.priceFont}>
-                ${breakEvenPrice}
+                ${formatCompact(breakEvenPrice)}
               </Typography>
               {!mobile && <HelpIcon />}
             </Box>
@@ -356,7 +353,7 @@ const OptionsPrice: React.FC = () => {
             )}
             <Box>
               <Typography className={classes.priceFont}>
-                ${breakEvenPrice}
+                ${formatCompact(breakEvenPrice)}
               </Typography>
               <HelpIcon />
             </Box>
@@ -424,7 +421,7 @@ const OptionsPrice: React.FC = () => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>${underlyingPrice}</b>
+                  <b>${formatCompact(underlyingPrice)}</b>
                 </Typography>
               </Box>
             </Box>

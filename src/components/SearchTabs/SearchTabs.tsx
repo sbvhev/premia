@@ -130,14 +130,15 @@ const SearchTabs: React.FC<SwitchProps> = ({
     <Box component='div' className={classes.box}>
       <Tabs variant='scrollable' value={value} onChange={onChange}>
         {items.map((val, index) => {
-          const Icon = val.image;
+          const Icon = val.icon;
+
           return (
             <Tab
               key={index}
               className={classes.tab}
               icon={
                 <>
-                  <Icon style={{ marginLeft: val.marginLeft }} />
+                  <Icon height={18} style={{ marginLeft: val.marginLeft }} />
                   {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
@@ -146,6 +147,7 @@ const SearchTabs: React.FC<SwitchProps> = ({
           );
         })}
       </Tabs>
+      
       {!hideSearch && (
         <TextField
           placeholder='Search...'

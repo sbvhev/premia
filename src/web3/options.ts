@@ -9,6 +9,7 @@ export enum OptionType {
 }
 
 export interface Option {
+  id: string;
   pool: Pool;
   pair: TokenPair;
   base: Token;
@@ -29,6 +30,7 @@ export interface Option {
 }
 
 export interface UserOwnedOption {
+  id: string;
   user: string;
   option: Option;
   size: BigNumber;

@@ -43,6 +43,7 @@ export const Pool = gql`
 
   fragment Pool on Pool {
     id
+    address
     name
     pair {
       ...TokenPair
@@ -131,6 +132,7 @@ export const UserOwnedPool = gql`
 
   fragment UserOwnedPool on UserOwnedPool {
     id
+    address
     user
     pool {
       ...Pool

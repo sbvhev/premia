@@ -12,7 +12,7 @@ export function useAllTokens() {
   const { base } = useBase();
   const { data: tokenPairsData } = useQuery(getTokenPairs, {
     variables: {
-      denominatorAddress: base ? base.address : DAI[ChainId.MAINNET],
+      baseAddress: base ? base.address : DAI[ChainId.MAINNET],
     },
   });
 
@@ -22,8 +22,8 @@ export function useAllTokens() {
   );
 
   const allTokens: Token[] = useMemo(() => {
-    return tokenPairs.map(({ token }) => token);
+    return tokenPairs.map(({ underlying }) => underlying);
   }, [tokenPairs]);
 
-  return allTokens;
+  return [base, ...allTokens];
 }

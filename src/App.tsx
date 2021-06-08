@@ -50,10 +50,10 @@ import {
 } from 'components';
 
 const graphUrls: { [chainId: number]: string } = {
-  1: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia',
+  1: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
   4: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
-  42: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia-kovan',
-  56: 'https://api.thegraph.com/subgraphs/name/premiafinance/premia-bsc',
+  42: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
+  56: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
 };
 
 const TransactionNotifications: React.FC = () => {
@@ -150,9 +150,8 @@ const ThemeProvider: React.FC = ({ children }) => {
   let theme = darkMode ? darkTheme : lightTheme;
 
   if (location.pathname.replace('/', '') === '') {
-    theme = darkTheme;
+    theme = darkTheme
   }
-
 
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
 };

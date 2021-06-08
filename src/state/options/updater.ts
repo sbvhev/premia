@@ -1,77 +1,92 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import { useQuery } from 'react-apollo';
+import { get } from 'lodash';
 
-import { useWeb3 } from 'state/application/hooks';
-import { useUnderlyingPrice } from 'state/options/hooks';
+import { getPool } from 'graphql/queries';
+import { getPoolId } from 'graphql/utils';
+import { Pool } from 'web3/pools';
+import { useUnderlyingPrice, usePoolContract, useOnChainOptionData } from 'state/options/hooks';
 import { AppDispatch, AppState } from 'state';
-import { updatePricePerUnit } from './actions';
-import { fixedFromFloat } from 'utils/fixedFromFloat';
+import { updatePricePerUnit, updateTotalCost } from './actions';
 import { floatFromFixed } from 'utils/floatFromFixed';
-import moment from 'moment';
+import { usePoolContract as usePoolContractHook } from 'hooks'
 
 export default function Updater(): null {
-  const { contracts } = useWeb3();
   const dispatch = useDispatch<AppDispatch>();
-  const { underlying, maturityDate, strikePrice, size } = useSelector<
+  const { setPoolContract } = usePoolContract();
+  const { maturity, strike64x64, spot64x64, optionSize } = useOnChainOptionData();
+  const { base, underlying, optionType, size, poolContract } = useSelector<
     AppState,
     AppState['options']
-  >((state) => state.options);
+    >((state) => state.options);
   const underlyingPrice = useUnderlyingPrice();
+  
+  const { data: poolData } = useQuery(getPool, {
+    variables: {
+      id: getPoolId(base, underlying, optionType),
+    },
+  });
+
+  const pool: Pool | null = useMemo(
+    () => get(poolData, 'pool') || null,
+    [poolData],
+  );
+
+  const contract = usePoolContractHook(pool?.address)
 
   useEffect(() => {
-    if (!contracts || !size || !strikePrice || !maturityDate) return;
+    if (!poolContract && contract) {
+      setPoolContract(contract);
+    }
+  }, [contract, poolContract, setPoolContract]);
 
-    const getMaturity = (days: number) => {
-      return BigNumber.from(
-        Math.floor(new Date(maturityDate).getTime() / 1000 / ONE_DAY) *
-          ONE_DAY +
-          days * ONE_DAY,
-      );
-    };
+  useEffect(() => {
+    if (!poolContract || !maturity || !strike64x64 || !spot64x64 || !optionSize) return;
 
-    const ONE_DAY = 3600 * 24;
+    async function fetchPricePerUnit() {
+      console.log('maturity', maturity);
+      console.log('strike64x64', strike64x64);
+      console.log('spot64x64', spot64x64);
+      console.log('optionSize', optionSize);
 
-    const daysToMaturity = moment(maturityDate).diff(moment(), 'days');
-    const maturity = getMaturity(daysToMaturity).toHexString();
-    const strike64x64 = fixedFromFloat(strikePrice).toHexString();
-    const spot64x64 = fixedFromFloat(underlyingPrice).toHexString();
-    const optionSize = parseUnits(String(size), underlying.decimals);
+      try {
+        const response = await poolContract!.quote(
+          maturity,
+          strike64x64,
+          spot64x64,
+          optionSize,
+        );
 
-    console.log(
-      daysToMaturity,
-      maturityDate,
-      strikePrice,
-      underlyingPrice,
-      size,
-    );
-    console.log(maturity, strike64x64, spot64x64, optionSize);
+        const totalCost = floatFromFixed(response.cost64x64) * underlyingPrice;
+        const pricePerUnit = totalCost / size;
 
-    async function fetchPricePerUnit(): Promise<BigNumber> {
-      const response = await contracts!.Pool.quote(
-        maturity,
-        strike64x64,
-        spot64x64,
-        optionSize,
-      );
+        return { totalCost, pricePerUnit };
+      } catch (err) {
+        console.log('Error fetching price per unit: ', err);
+      }
 
-      return floatFromFixed(response.cost64x64, underlying.decimals).div(
-        optionSize,
-      );
+      return null;
     }
 
-    fetchPricePerUnit().then((pricePerUnit) => {
-      dispatch(updatePricePerUnit(Number(pricePerUnit)));
-    });
+    fetchPricePerUnit().then((response) => {
+      if (response == null) return;
+
+      const { totalCost, pricePerUnit } = response;
+
+      dispatch(updatePricePerUnit(pricePerUnit))
+      dispatch(updateTotalCost(totalCost))
+    })
   }, [
     dispatch,
-    contracts,
-    maturityDate,
-    strikePrice,
+    maturity,
+    strike64x64,
+    spot64x64,
+    optionSize,
     size,
     underlying,
     underlyingPrice,
+    poolContract,
   ]);
 
   return null;

@@ -79,6 +79,7 @@ export default function Updater(): null {
 
   const baseToken: Token = useMemo(
     () => ({
+      id: DAI[chainId || ChainId.MAINNET].address,
       address: DAI[chainId || ChainId.MAINNET].address,
       symbol: DAI[chainId || ChainId.MAINNET].symbol,
       name: DAI[chainId || ChainId.MAINNET].name,
@@ -215,7 +216,7 @@ export default function Updater(): null {
 
       const lpAddresses = await multicallProvider.all(
         tokenList.map((el) =>
-          uniswapFactory.getPair(comparisonToken, el.address),
+          uniswapFactory.getPair(comparisonToken.address, el.address),
         ),
       );
 
@@ -267,10 +268,19 @@ export default function Updater(): null {
     const onboard = Onboard({
       subscriptions: {
         address: (account: string) => dispatch(setWeb3Settings({ account })),
-        network: (chainId: ChainId) => {
+        network: (chainId: ChainId | 56) => {
+          const underlying: Token = chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
+          const base: Token = {
+            id: DAI[chainId || ChainId.MAINNET].address,
+            address: DAI[chainId || ChainId.MAINNET].address,
+            symbol: DAI[chainId || ChainId.MAINNET].symbol,
+            name: DAI[chainId || ChainId.MAINNET].name,
+            decimals: DAI[chainId || ChainId.MAINNET].decimals,
+          };
+    
           dispatch(setWeb3Settings({ chainId }));
-          dispatch(updateBase(baseToken));
-          dispatch(updateUnderlying(comparisonToken));
+          dispatch(updateBase(base));
+          dispatch(updateUnderlying(underlying));
           localStorage.setItem('chainId', String(chainId));
         },
         balance: (balance: string) => dispatch(setWeb3Settings({ balance })),

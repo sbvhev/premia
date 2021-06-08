@@ -4,6 +4,8 @@ import { Token, TokenPair } from './tokens';
 import { OptionType } from './options';
 
 export interface Pool {
+  id: string;
+  address: string;
   name: string;
   pair: TokenPair;
   base: Token;
@@ -26,6 +28,8 @@ export interface Pool {
 }
 
 export interface UserOwnedPool {
+  id: string;
+  address: string;
   user: string;
   pair: TokenPair;
   base: Token;

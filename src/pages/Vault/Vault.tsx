@@ -17,7 +17,7 @@ import cx from 'classnames';
 import {
   LineChart,
   RadialChart,
-  SearchTabs,
+  SelectTokenTabs,
   TooltipPan,
   WithdrawDepositModal,
   SwitchWithGlider,
@@ -271,31 +271,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-const tabItems = [
-  {
-    image: WBTCIcon,
-    label: 'wBTC',
-  },
-  {
-    image: UniswapIcon,
-    label: 'Uni',
-    highlight: true,
-  },
-  {
-    image: LinkIcon,
-    label: 'Link',
-  },
-  {
-    image: YFIIcon,
-    label: 'YFI',
-    highlight: true,
-  },
-  {
-    image: ETHIcon,
-    label: 'ETH',
-  },
-];
-
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
   const history = useHistory();
@@ -311,7 +286,6 @@ const ProVault: React.FC = () => {
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
-  const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
@@ -491,13 +465,7 @@ const ProVault: React.FC = () => {
           </Box>
           {!mediumWindow && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
-              <SearchTabs
-                items={tabItems}
-                value={tabIndex}
-                onChange={(ev, index) => {
-                  setTabIndex(index);
-                }}
-              />
+              <SelectTokenTabs />
             </Box>
           )}
           {mediumWindow && vaultIndex === 1 && (

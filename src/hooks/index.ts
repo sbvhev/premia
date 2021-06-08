@@ -9,5 +9,6 @@ export * from './useInterval';
 export * from './useIsHardwareWallet';
 export * from './useIsWindowVisible';
 export * from './useOutsideAlerter';
+export * from './usePurchaseOption';
 export * from './useTransact';
 export * from './useWrapEther';

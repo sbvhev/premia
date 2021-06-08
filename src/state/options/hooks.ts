@@ -1,8 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BigNumber } from 'ethers';
+import moment from 'moment';
 
+import { Pool as PoolContract } from 'contracts';
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
+import { fixedFromFloat } from 'utils/fixedFromFloat';
+import { floatToBigNumber } from 'utils/floatToBigNumber';
 import { AppState, AppDispatch } from 'state';
 import { usePrices } from 'state/application/hooks';
 import {
@@ -13,6 +18,8 @@ import {
   updateStrikePrice,
   updateSize,
   updatePricePerUnit,
+  updateTotalCost,
+  updatePoolContract,
 } from './actions';
 
 export function useUnderlyingPrice(): number {
@@ -113,6 +120,37 @@ export function useSize() {
   return { size, setSize };
 }
 
+export function useOnChainOptionData() {
+  const underlyingPrice = useUnderlyingPrice();
+  const { underlying, strikePrice, size, maturityDate, pricePerUnit } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const getMaturity = (days: number) => {
+    const ONE_DAY = 3600 * 24;
+    return BigNumber.from(
+      Math.floor(new Date(maturityDate).getTime() / 1000 / ONE_DAY) *
+        ONE_DAY +
+        days * ONE_DAY,
+    );
+  };
+
+  const daysToMaturity = moment(maturityDate).diff(moment(), 'days');
+  const maturity = getMaturity(daysToMaturity).toHexString();
+  const strike64x64 = fixedFromFloat(strikePrice || 1).toHexString();
+  const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
+  const optionSize = floatToBigNumber(size, underlying.decimals);
+  const maxCost = floatToBigNumber(size * pricePerUnit * 1.2, underlying.decimals);
+
+  return {
+    maturity,
+    strike64x64,
+    spot64x64,
+    optionSize,
+    maxCost,
+  }
+}
+
 export function usePricePerUnit() {
   const dispatch = useDispatch<AppDispatch>();
   const { pricePerUnit } = useSelector<AppState, AppState['options']>(
@@ -127,16 +165,44 @@ export function usePricePerUnit() {
   return { pricePerUnit, setPricePerUnit };
 }
 
+export function useTotalCost() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { totalCost } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setTotalCost = useCallback(
+    (totalCost: number) => dispatch(updateTotalCost(totalCost)),
+    [dispatch],
+  );
+
+  return { totalCost, setTotalCost };
+}
+
+export function usePoolContract() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { poolContract } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPoolContract = useCallback(
+    (poolContract: PoolContract) => dispatch(updatePoolContract(poolContract)),
+    [dispatch],
+  );
+
+  return { poolContract, setPoolContract };
+}
+
 export function useBreakEvenPrice() {
-  const { optionType, pricePerUnit, strikePrice } = useSelector<
+  const { optionType, totalCost, strikePrice } = useSelector<
     AppState,
     AppState['options']
-  >((state: AppState) => state.options);
+    >((state: AppState) => state.options);
 
   const breakEvenPrice =
     optionType === OptionType.Call
-      ? strikePrice + pricePerUnit
-      : strikePrice - pricePerUnit;
-
+      ? strikePrice + (totalCost)
+      : strikePrice - (totalCost);
+  
   return breakEvenPrice;
 }

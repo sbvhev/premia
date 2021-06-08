@@ -5,8 +5,6 @@ import {
   Erc20__factory,
   FeeCalculator,
   FeeCalculator__factory,
-  Pool,
-  Pool__factory,
   Premia,
   Premia__factory,
   PremiaErc20,
@@ -30,7 +28,6 @@ export enum ContractType {
   Busd = 'BUSD',
   SushiswapRouter = 'SushiswapRouter',
   FeeCalculator = 'FeeCalculator',
-  Pool = 'Pool',
   PremiaInstance = 'PremiaInstance',
   PremiaErc20 = 'PremiaErc20',
   PremiaFeeDiscount = 'PremiaFeeDiscount',
@@ -49,7 +46,6 @@ export interface PremiaContracts {
   Busd: Erc20;
   SushiswapRouter: UniswapV2Router02;
   FeeCalculator: FeeCalculator;
-  Pool: Pool;
   PremiaInstance: Premia;
   PremiaErc20: PremiaErc20;
   PremiaFeeDiscount: PremiaFeeDiscount;
@@ -85,9 +81,6 @@ export const contracts: ContractAddresses = {
     4: '0xf3a726eDd344513f81000379819669AC78205BCB',
     42: '0x4E831efC11511c6d259b5fd9f4cA6FE732728FAB',
     56: '0x581d114C4058230504F862119D5Bf01393E9e17e',
-  },
-  Pool: {
-    4: '0x25d8dda9f72fa15dcd00260cdcd80ad85b44159c',
   },
   PremiaInstance: {
     4: '0xeda8F7435148C0e70e35485D75d71A00815Af1e7',
@@ -166,12 +159,6 @@ export async function getSignerAndContracts(
   );
   preContracts.FeeCalculator = FeeCalculator__factory.connect(
     feeCalculatorAddress,
-    signer.connectUnchecked(),
-  );
-
-  const poolAddress = getContractAddress(chainId, ContractType.Pool);
-  preContracts.Pool = Pool__factory.connect(
-    poolAddress,
     signer.connectUnchecked(),
   );
 
