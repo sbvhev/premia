@@ -271,7 +271,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   basicVault: {
     opacity: (props: any) => (props.dark ? 0.8 : 0.9),
-    height: 'calc(100% - 132px)',
+    height: (props: any) => props.mediumWindow ? 'calc(100% - 75px)' : '100%',
     display: 'flex',
     position: 'absolute',
     width: '100%',
@@ -326,8 +326,10 @@ const tabItems = [
 
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
-  const classes = useStyles({ dark });
   const theme = useTheme();
+  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
+  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
+  const classes = useStyles({ dark, mediumWindow });
   const { palette } = theme;
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
@@ -338,8 +340,6 @@ const ProVault: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
-  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
-  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
