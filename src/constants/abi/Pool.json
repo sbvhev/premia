@@ -180,7 +180,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "cost",
+        "name": "baseCost",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "feeCost",
         "type": "uint256"
       }
     ],
@@ -438,7 +444,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "longTokenId",
         "type": "uint256"
       },
       {
@@ -626,7 +632,12 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "cost",
+        "name": "baseCost",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feeCost",
         "type": "uint256"
       }
     ],
@@ -660,7 +671,12 @@
     "outputs": [
       {
         "internalType": "int128",
-        "name": "cost64x64",
+        "name": "baseCost64x64",
+        "type": "int128"
+      },
+      {
+        "internalType": "int128",
+        "name": "feeCost64x64",
         "type": "int128"
       },
       {
@@ -689,7 +705,12 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "cost",
+        "name": "baseCost",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feeCost",
         "type": "uint256"
       }
     ],

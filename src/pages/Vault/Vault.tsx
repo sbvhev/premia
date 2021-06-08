@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -305,6 +306,7 @@ const ProVault: React.FC = () => {
   const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
   const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ dark, mediumWindow });
+  const location = useLocation();
   const { palette } = theme;
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);

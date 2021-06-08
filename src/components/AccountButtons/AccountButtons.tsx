@@ -39,9 +39,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   walletIcon: {
-    '& path': {
-      fill: palette.text.hint,
-    },
     marginRight: '8px',
 
     '& path': {
