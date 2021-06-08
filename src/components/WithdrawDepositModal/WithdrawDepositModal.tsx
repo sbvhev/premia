@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Typography, Modal, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -226,6 +226,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
+  const [value, setValue] = useState(100);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -255,16 +256,14 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   >
                     {type === 'withdraw' ? 'Amount' : 'Uni Amount'}
                   </Typography>
-                  {type === 'withdraw' && (
-                    <Typography
-                      component='p'
-                      color='textSecondary'
-                      className={classes.smallInfoText}
-                    >
-                      Max size available:
-                      <b>40012</b>
-                    </Typography>
-                  )}
+                  <Typography
+                    component='p'
+                    color='textSecondary'
+                    className={classes.smallInfoText}
+                  >
+                    Max size available:
+                    <b>40012</b>
+                  </Typography>
                 </Box>
 
                 <Box
@@ -273,21 +272,22 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   style={{ position: 'relative' }}
                 >
                   <input
-                    value={'100'}
+                    value={value}
                     onChange={() => {}}
                     className={classes.borderedInput}
                   />
                   <UniswapIcon className={classes.inputIcon} />
-                  {type === 'withdraw' && (
-                    <Button
-                      color='primary'
-                      variant='outlined'
-                      size='small'
-                      className={classes.maxButton}
-                    >
-                      MAX
-                    </Button>
-                  )}
+                  <Button
+                    color='primary'
+                    variant='outlined'
+                    size='small'
+                    className={classes.maxButton}
+                    onClick={() => {
+                      setValue(40012);
+                    }}
+                  >
+                    MAX
+                  </Button>
                 </Box>
               </Box>
 
