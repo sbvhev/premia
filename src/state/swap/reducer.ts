@@ -9,6 +9,8 @@ export interface SwapSettings {
   toToken?: Token | null;
   fromAmount?: string | null;
   toAmount?: string | null;
+  inputType?: boolean | false;
+  slippagePercentage?: number | null;
 }
 
 export interface SwapState {
@@ -29,6 +31,8 @@ export const initialState: SwapState = {
     toToken: null,
     fromAmount: '0',
     toAmount: '0',
+    inputType: false,
+    slippagePercentage: 0.5,
   },
 };
 

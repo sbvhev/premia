@@ -150,38 +150,46 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
   const balance = useCurrencyBalance(account, token);
 
   return (
-    <MenuItem
-      className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={token.symbol}
-      onClick={onSelect}
-    >
-      <Box display='flex' alignItems='center'>
-        <img
-          src={token.logoURI}
-          alt={token.symbol}
-          style={{ width: '28px', height: '28px' }}
-        />
-        <Box
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          marginLeft='6px'
-          height='28px'
+    <>
+      {token ? (
+        <MenuItem
+          className={!mobile ? classes.menuItem : classes.menuItemMobile}
+          key={token.symbol}
+          onClick={onSelect}
         >
-          <Typography className={classes.elementHeader} color='textPrimary'>
-            {token.symbol}
-          </Typography>
-          <Typography className={classes.menuItemAssetName}>
-            {token.name}
-          </Typography>
-        </Box>
-      </Box>
-      {balance ? (
-        <Typography color='textSecondary'>{formatCompact(balance)}</Typography>
-      ) : account ? (
+          <Box display='flex' alignItems='center'>
+            <img
+              src={token.logoURI}
+              alt={token.symbol}
+              style={{ width: '28px', height: '28px' }}
+            />
+            <Box
+              display='flex'
+              flexDirection='column'
+              justifyContent='center'
+              marginLeft='6px'
+              height='28px'
+            >
+              <Typography className={classes.elementHeader} color='textPrimary'>
+                {token.symbol}
+              </Typography>
+              <Typography className={classes.menuItemAssetName}>
+                {token.name}
+              </Typography>
+            </Box>
+          </Box>
+          {balance ? (
+            <Typography color='textSecondary'>
+              {formatCompact(balance)}
+            </Typography>
+          ) : account ? (
+            <Loader />
+          ) : null}
+        </MenuItem>
+      ) : (
         <Loader />
-      ) : null}
-    </MenuItem>
+      )}
+    </>
   );
 };
 

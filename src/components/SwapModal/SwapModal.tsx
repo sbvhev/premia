@@ -13,8 +13,8 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 import { ETHER } from '@uniswap/sdk';
-// import { ethers } from 'ethers';
-// import { BigNumber } from 'bignumber.js';
+import { ethers } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -27,18 +27,19 @@ import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
-// import { useApproval } from 'hooks';
+import { useApproval } from 'hooks';
 import { Token, BNB } from 'web3/tokens';
 import { getSwapQuote, useWeb3 } from 'state/application/hooks';
 import { useSwapSettings } from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 // import { calculateGasMargin } from 'utils';
-// import { formatUnits, parseEther } from 'ethers/lib/utils';
+import { formatUnits, parseEther } from 'ethers/lib/utils';
 import TokenList from '../../tokens.json';
 // import ROUTE_ICON_LIST from '../../routeIconList.json';
 
 import { ModalContainer } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
+// import Loader from 'components/Loader';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -482,13 +483,13 @@ export interface SwapModalProps {
   onClose: () => void;
 }
 
-enum SwapState {
-  INVALID,
-  LOADING,
-  VALID,
-}
+// enum SwapState {
+//   INVALID,
+//   LOADING,
+//   VALID,
+// }
 
-export interface IZeroXQuote {
+export interface SwapQuote {
   price: string;
   guaranteedPrice: string;
   to: string;
@@ -506,6 +507,12 @@ export interface IZeroXQuote {
   orders: any[];
 }
 
+// enum SwapStatusState {
+//   INVALID,
+//   LOADING,
+//   VALID,
+// }
+
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -514,28 +521,45 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
-  const { fromToken, toToken, fromAmount, toAmount, setSwapSettings } =
-    useSwapSettings();
-  const [topInputValue, setTopInputValue] =
-    React.useState<string | number>('0');
-  const [botInputValue, setBotInputValue] =
-    React.useState<string | number>('0');
-  // const [searchValueFrom, setSearchValueFrom] = React.useState(null);
-  // const [searchValueTo, setSearchValueTo] = React.useState(null);
-  // const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  // const [approved, setApproved] = React.useState(true);
+  const {
+    fromToken,
+    toToken,
+    fromAmount,
+    toAmount,
+    slippagePercentage,
+    inputType,
+    setSwapSettings,
+  } = useSwapSettings();
+  const [tokenList, setTokenList] = React.useState(TokenList.tokens);
+  const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
+  const [searchValueTo, setSearchValueTo] = React.useState<string>('');
+  const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
+  const [preSwapButtonGuide, setPreSwapButtonGuide] =
+    React.useState<string>('Select tokens');
+  const [approved, setApproved] = React.useState(false);
   const [fromAssetOpen, setFromAssetOpen] =
     React.useState<null | HTMLElement>(null);
   const [toAssetOpen, setToAssetOpen] =
     React.useState<null | HTMLElement>(null);
+  // const [swapStatus, setSwapStatus] = React.useState<SwapStatusState>(
+  //   SwapStatusState.INVALID,
+  // );
+  const [defaultSwapQuote, setDefaultSwapQuote] =
+    React.useState<SwapQuote | undefined>(undefined);
 
-  const allTokens = [
-    ...TokenList.tokens,
-    chainId === 56 ? (BNB as Token) : (ETHER as Token),
-  ];
+  // const allTokens = [
+  //   ...TokenList.tokens,
+  //   chainId === 56 ? (BNB as Token) : (ETHER as Token),
+  // ];
 
   const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
   const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
+  console.log('here');
+
+  const { loading, allowance, onApprove } = useApproval(
+    fromToken?.address as string,
+    defaultSwapQuote?.allowanceTarget as string,
+  );
 
   const swapReady =
     fromToken &&
@@ -556,26 +580,57 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const handleMax = () => {
-    // if (fromToken) {
-    //   setSwapSettings({ fromAmount: fromTokenBalance });
-    // }
+    if (fromToken) {
+      setSwapSettings({ fromAmount: fromTokenBalance });
+    }
   };
 
   const handleChangeFromAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const numberValue = value.replace(/[^0-9.]/g, '');
-    // if (fromTokenBalance && parseFloat(numberValue) <= parseFloat(fromTokenBalance)) {
-    //   setSwapSettings({ fromAmount: numberValue });
-    // }
-    setTopInputValue(numberValue);
-    setSwapSettings({ fromAmount: numberValue });
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ fromAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ fromAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ fromAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ fromAmount: paddedValue });
+    }
   };
 
   const handleChangeToAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const numberValue = value.replace(/[^0-9.]/g, '');
-    setBotInputValue(numberValue);
-    setSwapSettings({ toAmount: numberValue });
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ toAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ toAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ toAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ toAmount: paddedValue });
+    }
   };
 
   const handleChangeFromAsset = (
@@ -599,22 +654,148 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const handleSelectFromToken = (index: number) => {
-    setSwapSettings({ fromToken: allTokens[index] });
+    setSwapSettings({ fromToken: tokenList[index] });
+    setTokenList(TokenList.tokens);
     handleClosefromAsset();
+    setSearchValueFrom('');
   };
 
   const handleSelectToToken = (index: number) => {
-    setSwapSettings({ toToken: allTokens[index] });
+    setSwapSettings({ toToken: tokenList[index] });
+    setTokenList(TokenList.tokens);
     handleCloseToAsset();
+    setSearchValueTo('');
   };
 
-  // const mappedItemsFrom = allTokens.map((item, index) => (
-  //   <TokenMenuItem token={item} onSelect={() => handleSelectFromToken(index)} />
-  // ));
+  const handleSearchFromAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueFrom(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenList(filteredList);
+  };
 
-  // const mappedItemsTo = allTokens.map((item, index) => (
-  //   <TokenMenuItem token={item} onSelect={() => handleSelectToToken(index)} />
-  // ));
+  const handleSearchToAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueFrom(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenList(filteredList);
+  };
+
+  React.useEffect(() => {
+    console.log('use effect');
+    (async () => {
+      if (!web3 || !account || !chainId) {
+        return;
+      }
+
+      if (
+        (!inputType && new BigNumber(fromAmount ?? '0').eq(0)) ||
+        (inputType && new BigNumber(toAmount ?? '0').eq(0))
+      ) {
+        setPreSwapButtonGuide('Enter an amount');
+
+        return;
+      }
+
+      if (
+        fromAmount &&
+        fromTokenBalance &&
+        new BigNumber(fromAmount).gt(new BigNumber(fromTokenBalance))
+      ) {
+        console.log('not enough..');
+        // setSwapStatus(SwapStatusState.INVALID);
+        setPreSwapButtonGuide('Insufficient Balance');
+
+        return;
+      }
+
+      if (!fromToken || !toToken) {
+        return;
+      }
+
+      if (!fromAmount && !toAmount) {
+        return;
+      }
+
+      // setSwapStatus(SwapStatusState.LOADING);
+      setPreSwapButtonGuide('Loading');
+      const newQuote = await getSwapQuote(
+        fromToken,
+        toToken,
+        fromAmount ?? '0',
+        toAmount ?? '0',
+        inputType,
+        chainId,
+        slippagePercentage ?? 0.5,
+      );
+
+      setDefaultSwapQuote(newQuote);
+
+      if (inputType) {
+        setSwapSettings({
+          fromAmount: formatUnits(newQuote.sellAmount, fromToken?.decimals),
+        });
+      } else {
+        setSwapSettings({
+          toAmount: formatUnits(newQuote.buyAmount, toToken?.decimals),
+        });
+      }
+
+      if (
+        new BigNumber(fromAmount ?? '0').gt(
+          new BigNumber(fromTokenBalance ?? 0),
+        )
+      ) {
+        // setSwapStatus(SwapStatusState.INVALID);
+        setPreSwapButtonGuide('Insufficient Balance');
+
+        return;
+      }
+      // setSwapStatus(SwapStatusState.VALID);
+    })();
+  }, [fromAmount, fromToken, toAmount, toToken, slippagePercentage, web3]);
+
+  // React.useEffect(() => {
+  //   // console.log('allowance', allowance);
+  //   if (allowance.lt(parseEther((fromAmount ?? 0).toString()))) {
+  //     console.log('needs approval');
+  //     setTokenNeedsapproval(true);
+  //   } else {
+  //     console.log('Token approved');
+  //     setTokenNeedsapproval(false);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [allowance]);
+
+  const mappedItemsFrom = tokenList.map((item, index) => (
+    <TokenMenuItem
+      key={`from${item.symbol}`}
+      token={item}
+      onSelect={() => handleSelectFromToken(index)}
+    />
+  ));
+
+  const mappedItemsTo = tokenList.map((item, index) => (
+    <TokenMenuItem
+      key={`to${item.symbol}`}
+      token={item}
+      onSelect={() => handleSelectToToken(index)}
+    />
+  ));
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -650,7 +831,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 >
                   <Box width='65%' height='46px' maxWidth='250px'>
                     <input
-                      value={topInputValue}
+                      value={fromAmount || fromAmount === '' ? fromAmount : ''}
                       onChange={handleChangeFromAmount}
                       className={classes.borderedInput}
                     />
@@ -760,7 +941,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                     >
                       <Input
                         className={classes.assetSearchInput}
-                        // value={searchValueFrom}
+                        value={searchValueFrom}
+                        onChange={handleSearchFromAsset}
                         placeholder='Search...'
                         endAdornment={
                           <Box>
@@ -770,12 +952,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       />
                     </Box>
                     <Box style={{ maxHeight: '22vh', overflowX: 'auto' }}>
-                      {allTokens.map((item, index) => (
-                        <TokenMenuItem
-                          token={item}
-                          onSelect={() => handleSelectFromToken(index)}
-                        />
-                      ))}
+                      {mappedItemsFrom}
                     </Box>
                   </Menu>
                 </Box>
@@ -808,11 +985,12 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                   >
                     <Box width='65%' height='46px' maxWidth='250px'>
                       <input
-                        value={botInputValue}
+                        value={toAmount || ''}
                         onChange={handleChangeToAmount}
                         className={classes.borderedInput}
+                        readOnly
                       />
-                      <Box
+                      {/* <Box
                         className={
                           !mobile
                             ? classes.maxButtonContainer
@@ -833,7 +1011,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         >
                           MAX
                         </Button>
-                      </Box>
+                      </Box> */}
                     </Box>
                     <>
                       {!toToken ? (
@@ -922,8 +1100,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       >
                         <Input
                           className={classes.assetSearchInput}
-                          // value={searchValueFrom}
+                          value={searchValueFrom}
                           placeholder='Search...'
+                          onChange={handleSearchToAsset}
                           endAdornment={
                             <Box>
                               <Search fill={palette.secondary.main} />
@@ -939,12 +1118,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           WebkitBorderBottomRightRadius: '12px',
                         }}
                       >
-                        {allTokens.map((item, index) => (
-                          <TokenMenuItem
-                            token={item}
-                            onSelect={() => handleSelectToToken(index)}
-                          />
-                        ))}
+                        {mappedItemsTo}
                       </Box>
                     </Menu>
                   </Box>
@@ -959,14 +1133,15 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 </Box>
 
                 <>
-                  {true && (
+                  {swapReady && (
                     <>
-                      {!true ? (
+                      {tokenNeedsapproval ? (
                         <Button
                           color='primary'
                           variant='contained'
                           id='bottomTarget'
                           size='large'
+                          onClick={() => onApprove()}
                           endIcon={
                             <Tooltip
                               arrow
@@ -980,7 +1155,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           }
                           style={{ marginBottom: '10px' }}
                         >
-                          {`Approve ${`Link`}`}
+                          {`Approve ${fromToken?.symbol}`}
                         </Button>
                       ) : (
                         <Button
@@ -999,20 +1174,33 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       )}
                     </>
                   )}
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    disabled={false}
-                    id='bottomTarget'
-                    size='large'
-                    style={{ marginBottom: '20px' }}
-                  >
-                    Swap
-                  </Button>
+                  {!swapReady ? (
+                    <Button
+                      color='primary'
+                      variant='contained'
+                      id='bottomTarget'
+                      size='large'
+                      disabled
+                      style={{ marginBottom: '20px' }}
+                    >
+                      {preSwapButtonGuide}
+                    </Button>
+                  ) : (
+                    <Button
+                      color='primary'
+                      variant='contained'
+                      disabled={!approved}
+                      id='bottomTarget'
+                      size='large'
+                      style={{ marginBottom: '20px' }}
+                    >
+                      Swap
+                    </Button>
+                  )}
                 </>
               </Box>
 
-              {!swapReady && (
+              {swapReady && (
                 <Box
                   className={
                     !mobile
@@ -1053,7 +1241,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       className={classes.swapDetailsText}
                       color='textPrimary'
                     >
-                      {`${0.5}%`}
+                      {`${slippagePercentage}%`}
                     </Typography>
                   </Box>
                   <Box

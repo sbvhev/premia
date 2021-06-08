@@ -93,6 +93,7 @@ export async function getSwapQuote(
     sellToken: sellToken?.address ?? sellToken?.symbol,
     slippagePercentage: slippagePercentage,
   };
+  console.log('here swap...', sellAmount);
 
   if (inputType) {
     params = {
@@ -115,7 +116,9 @@ export async function getSwapQuote(
     }api.0x.org/swap/v1/quote?${qs.stringify(params)}`,
   );
 
-  return await response.json();
+  const final = await response.json();
+  console.log('final', final);
+  return final;
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
