@@ -4,9 +4,9 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useIsDarkMode } from 'state/user/hooks';
-import { useSelectedNetwork } from 'state/application/hooks';
 import { useGasType, useGasPrices } from 'state/transactions/hooks';
-
+import { chainIds, chainLabels } from 'utils';
+import { useWeb3 } from 'state/application/hooks';
 import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
@@ -198,13 +198,14 @@ const useStyles = makeStyles(({ palette }) => ({
 const Footer: React.FC = () => {
   const { palette, breakpoints } = useTheme();
   const dark = useIsDarkMode();
-  const { selectedNetwork } = useSelectedNetwork();
   const mobile = useMediaQuery(breakpoints.down('xs'));
   const classes = useStyles({ dark, mobile });
   const [chainModalOpen, setChainModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const { gasType, setGasType } = useGasType();
   const { gasPrices } = useGasPrices();
+  const { chainId } = useWeb3();
+  const chainIndex = chainIds.findIndex(val => val === chainId);
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
@@ -336,11 +337,11 @@ const Footer: React.FC = () => {
             onClick={() => {
               setChainModalOpen(true);
             }}>
-            { selectedNetwork.index === 1 && <EthHeadIcon /> }
-            { selectedNetwork.index === 2 && <BSCIcon /> }
-            { selectedNetwork.index === 3 && <PolygonIcon /> }
+            { chainIndex === 0 && <EthHeadIcon /> }
+            { chainIndex === 1 && <BSCIcon /> }
+            { chainIndex === 2 && <PolygonIcon /> }
             <Typography component='span'>
-              { selectedNetwork.text }
+              { chainLabels[chainIndex] }
             </Typography>
             <UpArrow className={classes.upArrow} />
           </Box>

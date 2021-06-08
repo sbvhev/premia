@@ -16,7 +16,6 @@ import {
   setApprovalType,
   setWrapEthModalOpen,
   setWrapEth,
-  setSelectedNetwork,
 } from './actions';
 
 export interface ApplicationState {
@@ -38,7 +37,6 @@ export interface ApplicationState {
   approvalType: string | null;
   wrapEthModalOpen: boolean;
   wrapEth: boolean;
-  selectedNetwork: number;
 }
 
 export const initialState: ApplicationState = {
@@ -62,7 +60,6 @@ export const initialState: ApplicationState = {
   approvalType: 'write',
   wrapEthModalOpen: false,
   wrapEth: true,
-  selectedNetwork: 1
 };
 
 export default createReducer(initialState, (builder) =>
@@ -122,8 +119,5 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setWrapEth, (state, { payload }) => {
       state.wrapEth = payload;
-    })
-    .addCase(setSelectedNetwork, (state, { payload }) => {
-      state.selectedNetwork = payload;
     }),
 );

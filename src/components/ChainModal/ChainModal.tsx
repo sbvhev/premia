@@ -2,13 +2,14 @@ import React from 'react';
 import { Typography, Modal, Box, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
-
-import { useWeb3, useSelectedNetwork } from 'state/application/hooks';
+import { chainIds, chainLabels, PARAMS } from 'utils';
+import { useWeb3 } from 'state/application/hooks';
 import { ModalContainer } from 'components';
-import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
+
+import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -114,10 +115,8 @@ export interface ChainModalProps {
 }
 
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
-  const web3 = useWeb3();
-  console.log(web3);
+  const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
-  const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -128,63 +127,34 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               Select network
             </Typography>
             <Grid container direction='row'>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedNetwork.index === 1,
-                  })}
-                  onClick={() => {
-                    setSelectedNetwork(1);
-                  }}
-                >
-                  <EthIcon />
-                  Ethereum
-                  {selectedNetwork.index === 1 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedNetwork.index === 2,
-                  })}
-                  onClick={() => {
-                    setSelectedNetwork(2);
-                  }}
-                >
-                  <BSCIcon />
-                  BSC
-                  {selectedNetwork.index === 2 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
-              <Grid item xs={4} className={classes.chain}>
-                <Box
-                  component='div'
-                  className={cx({
-                    [classes.selected]: selectedNetwork.index === 3,
-                  })}
-                  onClick={() => {
-                    setSelectedNetwork(3);
-                  }}
-                >
-                  <PolygonIcon />
-                  Polygon
-                  {selectedNetwork.index === 3 && (
-                    <Box component='div' className={classes.selected}>
-                      Current
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
+              { chainIds.map((val, ind) => (
+                <Grid item key={ind} xs={3} className={classes.chain}>
+                  <Box
+                    component='div'
+                    className={cx({
+                      [classes.selected]: chainId === val,
+                    })}
+                    onClick={() => {
+                      const params = PARAMS[val];
+                      web3?.send('wallet_addEthereumChain', [
+                        params,
+                        account,
+                      ]);
+                    }}
+                  >
+                    { ind === 0 && <EthIcon /> }
+                    { ind === 1 && <BSCIcon /> }
+                    { ind === 2 && <PolygonIcon /> }
+                    { ind === 3 && <Box width={40} height={40} mb={2} />}
+                    { chainLabels[ind] }
+                    {chainId === val && (
+                      <Box component='div' className={classes.selected}>
+                        Current
+                      </Box>
+                    )}
+                  </Box>
+                </Grid>
+              ))}
             </Grid>
             <Button className={classes.exitContainer} onClick={onClose}>
               <img src={XOut} alt='Exit' />
