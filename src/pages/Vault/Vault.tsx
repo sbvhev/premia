@@ -655,7 +655,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textSecondary'
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid
@@ -878,7 +878,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textSecondary'
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid

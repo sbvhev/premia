@@ -62,6 +62,14 @@ export function usePrices() {
   return prices;
 }
 
+export function usePriceChanges() {
+  const { priceChanges } = useSelector<AppState, AppState['application']>(
+    (state) => state.application,
+  );
+
+  return priceChanges;
+}
+
 export async function getPrice(coinName: string) {
   const geckoUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinName}`;
   try {
@@ -71,6 +79,20 @@ export async function getPrice(coinName: string) {
     return Number(get(priceJson, '0.current_price'));
   } catch (err) {
     console.log(`Error fetching price for ${coinName}:`, err);
+
+    return 0;
+  }
+}
+
+export async function get24HourPriceChange(coinName: string) {
+  const geckoUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinName}&include_24hr_change=true`;
+  try {
+    const result = await fetch(geckoUrl);
+    const priceJson = await result.json();
+
+    return Number(get(priceJson, '0.price_change_percentage_24h'));
+  } catch (err) {
+    console.log(`Error fetching 24 hour price change for ${coinName}:`, err);
 
     return 0;
   }

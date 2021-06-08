@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -11,6 +11,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import moment from 'moment'
 import cx from 'classnames';
 
 import {
@@ -18,9 +19,13 @@ import {
   useUnderlyingPrice,
   useBreakEvenPrice,
   useTotalCost,
+  useBase,
+  useUnderlying,
+  useMaturityDate,
 } from 'state/options/hooks';
-import { formatNumber } from 'utils/formatNumber';
+import { usePriceChanges } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import { formatNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 
 import OptionsFilter from './OptionsFilter';
@@ -40,7 +45,12 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 18,
   },
   priceIcon: {
-    color: palette.success.dark,
+    marginTop:(props: any) => props.priceChange < 0 ? '-5px' : '',
+    transform: (props: any) => props.priceChange < 0 ? 'rotate(180deg)' : '',
+
+    '& path': {
+      fill: (props: any) => props.priceChange < 0 ? palette.error.light : palette.success.dark,
+    },
   },
   helpIcon: {
     color: palette.text.secondary,
@@ -79,7 +89,9 @@ const useStyles = makeStyles(({ palette }) => ({
   currentPricePercent: {
     marginLeft: 6,
     '& div': {
-      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      background: (props: any) => props.priceChange < 0
+        ? `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.light} 118.78%)`
+        : `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
       position: 'absolute',
       top: 0,
       left: 0,
@@ -149,7 +161,6 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const Options: React.FC = () => {
-  const classes = useStyles();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [popoverType, setPopoverType] = useState('');
@@ -158,12 +169,18 @@ const Options: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const darkMode = useIsDarkMode();
+  const { base } = useBase();
+  const { underlying } = useUnderlying();
   const { optionType } = useOptionType();
+  const { maturityDate } = useMaturityDate();
   const { totalCost } = useTotalCost();
+  const priceChanges = usePriceChanges();
   const underlyingPrice = useUnderlyingPrice();
   const breakEvenPrice = useBreakEvenPrice();
 
-  console.log('totalCost', totalCost);
+  const priceChange = useMemo(() => priceChanges[underlying.symbol], [priceChanges, underlying]);
+
+  const classes = useStyles({ priceChange });
 
   return (
     <>
@@ -224,8 +241,8 @@ const Options: React.FC = () => {
             }}
           >
             <p>
-              This option can be exercised for a profit if the price of AAVE:{' '}
-              <b>Exceeds 500 DAI by June 11, 2021</b>
+              This option can be exercised for a profit if the price of {underlying.symbol}:{' '}
+              <b>{optionType === OptionType.Call ? 'Exceeds' : 'Goes below'} {formatNumber(breakEvenPrice)} {base.symbol} by {moment(new Date(maturityDate)).format('MMMM DD, YYYY')}</b>
             </p>
           </Box>
         )}
@@ -281,7 +298,7 @@ const Options: React.FC = () => {
                     height={1}
                     style={{ opacity: darkMode ? 0.1 : 0.2 }}
                   ></Box>
-                  <Typography color='textPrimary'>+13%</Typography>
+                  <Typography color='textPrimary'>{priceChange < 0 ? '' : '+'}{formatNumber(priceChange)}%</Typography>
                   <PriceTriangle className={classes.priceIcon} />
                 </Box>
               </Box>

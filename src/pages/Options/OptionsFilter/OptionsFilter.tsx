@@ -17,6 +17,7 @@ import {
   useSize,
   useUnderlying,
 } from 'state/options/hooks';
+import { initialState as initialOptionsState } from 'state/options/reducer';
 import { useOutsideAlerter } from 'hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
@@ -281,7 +282,7 @@ const OptionFilter: React.FC = () => {
 
   useEffect(() => {
     if (!moment(maturityDate).isValid()) {
-      setMaturityDate(moment(new Date()).add(27, 'days').format('YYYY-MM-DD'))
+      setMaturityDate(initialOptionsState.maturityDate)
     }
   }, [maturityDate, setMaturityDate]);
 
@@ -411,7 +412,7 @@ const OptionFilter: React.FC = () => {
         />
         <input
           type='number'
-          value={size || ''}
+          value={size}
           onChange={(ev) => {
             setSize(Number(ev.target.value));
           }}

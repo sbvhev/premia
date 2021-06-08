@@ -10,12 +10,13 @@ import { useUnderlyingPrice, usePoolContract, useOnChainOptionData } from 'state
 import { AppDispatch, AppState } from 'state';
 import { updatePricePerUnit, updateTotalCost } from './actions';
 import { floatFromFixed } from 'utils/floatFromFixed';
-import { usePoolContract as usePoolContractHook } from 'hooks'
+import { usePoolContract as usePoolContractHook, useDebounce } from 'hooks'
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
   const { setPoolContract } = usePoolContract();
-  const { maturity, strike64x64, spot64x64, optionSize } = useOnChainOptionData();
+  const onChainOptionData = useOnChainOptionData();
+  const { maturity, strike64x64, spot64x64, optionSize } = useDebounce(onChainOptionData, 100);
   const { base, underlying, optionType, size, poolContract } = useSelector<
     AppState,
     AppState['options']

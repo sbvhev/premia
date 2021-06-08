@@ -1,5 +1,5 @@
 export function floatToBigNumber(float: number, decimals: number): string {
-  return String(Math.floor(float * 10 ** decimals));
+  return Math.floor(float * 10 ** decimals).toLocaleString('fullwide', { useGrouping:false });
 }
 
 export default floatToBigNumber;

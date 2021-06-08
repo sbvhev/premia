@@ -34,7 +34,7 @@ export const initialState: OptionsState = {
   base: DAI[ChainId.MAINNET],
   underlying: WETH[ChainId.MAINNET],
   optionType: OptionType.Call,
-  maturityDate: moment(new Date()).add(27, 'days').format('YYYY-MM-DD'),
+  maturityDate: moment(new Date()).add(14, 'days').format('YYYY-MM-DD'),
   strikePrice: 0,
   size: 0,
   pricePerUnit: 0,

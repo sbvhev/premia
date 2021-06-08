@@ -19,7 +19,7 @@ export enum ApplicationNotification {
   TransactionSuccess = 'TransactionSuccess',
 }
 
-export type TokenPrice = { key: string; value: number };
+export type TokenPriceUpdate = { key: string; value: number };
 
 export interface SetWeb3Settings {
   onboard?: API;
@@ -37,8 +37,12 @@ export const updateBlockNumber = createAction<number>(
   'application/updateBlockNumber',
 );
 
-export const updateTokenPrices = createAction<TokenPrice[]>(
+export const updateTokenPrices = createAction<TokenPriceUpdate[]>(
   'application/updateTokenPrice',
+);
+
+export const updateTokenPriceChanges = createAction<TokenPriceUpdate[]>(
+  'application/updateTokenPriceChange',
 );
 
 export const setWeb3Settings = createAction<SetWeb3Settings>(

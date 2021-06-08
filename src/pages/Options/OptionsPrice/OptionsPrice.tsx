@@ -9,6 +9,7 @@ import {
   useOptionType,
   useUnderlyingPrice,
   useBreakEvenPrice,
+  useStrikePrice,
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
@@ -204,6 +205,7 @@ const OptionsPrice: React.FC = () => {
 
   const theme = useTheme();
   const { optionType } = useOptionType();
+  const { strikePrice } = useStrikePrice();
   const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -311,7 +313,7 @@ const OptionsPrice: React.FC = () => {
             <Box>
               {mobile && <HelpIcon />}
               <Typography className={classes.priceFont}>
-                ${formatCompact(breakEvenPrice)}
+                ${formatCompact(isCall ? breakEvenPrice : strikePrice)}
               </Typography>
               {!mobile && <HelpIcon />}
             </Box>
@@ -353,7 +355,7 @@ const OptionsPrice: React.FC = () => {
             )}
             <Box>
               <Typography className={classes.priceFont}>
-                ${formatCompact(breakEvenPrice)}
+                ${formatCompact(isCall ? strikePrice : breakEvenPrice)}
               </Typography>
               <HelpIcon />
             </Box>

@@ -122,7 +122,7 @@ export function useSize() {
 
 export function useOnChainOptionData() {
   const underlyingPrice = useUnderlyingPrice();
-  const { underlying, strikePrice, size, maturityDate, pricePerUnit } = useSelector<AppState, AppState['options']>(
+  const { underlying, strikePrice, size, maturityDate, totalCost } = useSelector<AppState, AppState['options']>(
     (state: AppState) => state.options,
   );
 
@@ -140,7 +140,7 @@ export function useOnChainOptionData() {
   const strike64x64 = fixedFromFloat(strikePrice || 1).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
-  const maxCost = floatToBigNumber(size * pricePerUnit * 1.2, underlying.decimals);
+  const maxCost = floatToBigNumber(totalCost, underlying.decimals);
 
   return {
     maturity,
@@ -194,15 +194,15 @@ export function usePoolContract() {
 }
 
 export function useBreakEvenPrice() {
-  const { optionType, totalCost, strikePrice } = useSelector<
+  const { optionType, pricePerUnit, strikePrice } = useSelector<
     AppState,
     AppState['options']
     >((state: AppState) => state.options);
 
   const breakEvenPrice =
     optionType === OptionType.Call
-      ? strikePrice + (totalCost)
-      : strikePrice - (totalCost);
+      ? strikePrice + pricePerUnit
+      : strikePrice - pricePerUnit;
   
   return breakEvenPrice;
 }

@@ -12,7 +12,7 @@ import { get } from 'lodash';
 import { UNISWAP_FACTORY, wallets, WETH, WBNB, DAI } from '../../constants';
 import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
 import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
-import { getPrice, useBlockNumber, usePrices } from 'state/application/hooks';
+import { getPrice, get24HourPriceChange, useBlockNumber, usePrices, usePriceChanges } from 'state/application/hooks';
 import { useAllTokens, useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
@@ -22,8 +22,9 @@ import { AppState } from 'state';
 import {
   updateBlockNumber,
   updateTokenPrices,
+  updateTokenPriceChanges,
   setWeb3Settings,
-  TokenPrice,
+  TokenPriceUpdate,
 } from './actions';
 
 const assetList = [
@@ -54,6 +55,7 @@ export default function Updater(): null {
   const location = useLocation();
   const windowVisible = useIsWindowVisible();
   const latestBlockNumber = useBlockNumber();
+  const priceChanges = usePriceChanges();
   const prices = usePrices();
   const tokens = useAllTokens();
   const dark = useIsDarkMode();
@@ -195,7 +197,7 @@ export default function Updater(): null {
       const uniswapFactory = new Contract(
         UNISWAP_FACTORY[chainId],
         UniswapV2FactoryAbi.abi,
-      );
+      )
 
       const tokenList = [
         ...tokens.filter(
@@ -203,47 +205,48 @@ export default function Updater(): null {
             el.address.toLowerCase() !== comparisonToken.address.toLowerCase(),
         ),
         baseToken,
-      ];
+      ]
 
-      const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH';
+      const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH'
       const comparisonTokenUsdPrice = await getPrice(
         chainId === 56 ? 'wbnb' : 'ethereum',
-      );
-      const tokenPrices: TokenPrice[] = [
+      )
+      const tokenPrices: TokenPriceUpdate[] = [
         { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
         { key: comparisonTokenName, value: comparisonTokenUsdPrice },
-      ];
+      ]
 
       const lpAddresses = await multicallProvider.all(
         tokenList.map((el) =>
           uniswapFactory.getPair(comparisonToken.address, el.address),
         ),
-      );
+      )
 
       const calls: ContractCall[] = lpAddresses.map((address: string) => {
-        const lpContract = new Contract(address, UniswapV2PairAbi.abi);
-        return lpContract.getReserves();
-      });
+        const lpContract = new Contract(address, UniswapV2PairAbi.abi)
+        return lpContract.getReserves()
+      })
 
-      const results = await multicallProvider.all(calls);
+      const results = await multicallProvider.all(calls)
 
       for (let i = 0; i < tokenList.length; i++) {
         const tokensPerComparisonToken =
           parseInt(comparisonToken.address) < parseInt(tokenList[i].address)
             ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
-              Number(formatEther(results[i][0]))
+            Number(formatEther(results[i][0]))
             : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
-              Number(formatEther(results[i][1]));
+            Number(formatEther(results[i][1]))
 
         const tokenUsdPrice =
-          comparisonTokenUsdPrice / tokensPerComparisonToken;
+          comparisonTokenUsdPrice / tokensPerComparisonToken
 
         tokenPrices.push({
           key: tokenList[i].symbol,
           value: tokenUsdPrice,
-        });
+        })
       }
-      dispatch(updateTokenPrices(tokenPrices));
+
+      dispatch(updateTokenPrices(tokenPrices))
     })();
   }, [
     baseToken,
@@ -366,6 +369,37 @@ export default function Updater(): null {
 
     return () => clearInterval(geckoFetch);
   }, [wallet, account, web3, prices, dispatch]);
+
+  useEffect(() => {
+    let geckoFetch: any;
+
+    if ((!wallet || !web3 || !account) && Object.keys(priceChanges).length < 1) {
+      const fetchFromGecko = async () => {
+        const geckoPriceChangesPromises = assetList.map((asset) =>
+          get24HourPriceChange(asset.coinGeckoId),
+        );
+        const priceChanges = await Promise.all(geckoPriceChangesPromises);
+        const tokenPriceChanges = [];
+
+        for (const [index, asset] of assetList.entries()) {
+          tokenPriceChanges.push({
+            key: asset.key,
+            value: priceChanges[index],
+          });
+        }
+
+        dispatch(updateTokenPriceChanges(tokenPriceChanges));
+      };
+
+      fetchFromGecko();
+
+      geckoFetch = setInterval(() => {
+        fetchFromGecko();
+      }, 130000);
+    }
+
+    return () => clearInterval(geckoFetch);
+  }, [wallet, account, web3, priceChanges, dispatch]);
 
   return null;
 }

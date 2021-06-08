@@ -15,6 +15,7 @@ import {
   setActiveNotification,
   updateBlockNumber,
   updateTokenPrices,
+  updateTokenPriceChanges,
   setApprovalType,
   setWrapEthModalOpen,
   setWrapEth,
@@ -36,6 +37,7 @@ export interface ApplicationState {
   activeNotification?: ApplicationNotification | null;
   contracts?: PremiaContracts;
   prices: { [symbol: string]: number };
+  priceChanges: { [symbol: string]: number };
   approvalType: string | null;
   wrapEthModalOpen: boolean;
   wrapEth: boolean;
@@ -59,6 +61,7 @@ export const initialState: ApplicationState = {
   activeNotification: undefined,
   contracts: undefined,
   prices: {},
+  priceChanges: {},
   approvalType: 'write',
   wrapEthModalOpen: false,
   wrapEth: true,
@@ -105,6 +108,11 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateTokenPrices, (state, { payload }) => {
       for (const el of payload) {
         state.prices[el.key] = el.value;
+      }
+    })
+    .addCase(updateTokenPriceChanges, (state, { payload }) => {
+      for (const el of payload) {
+        state.priceChanges[el.key] = el.value;
       }
     })
     .addCase(setActiveModal, (state, { payload }) => {
