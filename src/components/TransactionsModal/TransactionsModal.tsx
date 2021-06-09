@@ -218,6 +218,9 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
+  accountLink: {
+    textDecoration: 'none',
+  },
 }));
 
 const fakeRecentTxs = [
@@ -265,9 +268,12 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const { account } = useWeb3();
+  const web3 = useWeb3();
+  const account = web3.account;
   const disconnect = useDisconnect();
   const { palette } = theme;
+
+  console.log('--------web3--------', web3);
 
   const shortenTx = (tx: string) => {
     if (tx.length) {
@@ -282,6 +288,10 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
   const handleDisconnect = () => {
     disconnect();
     onClose();
+  };
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(`https://etherscan.io/address/${account}`);
   };
 
   const moreThanFiveTXs = fakeRecentTxs.length > 5;
@@ -370,7 +380,14 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                     />
                   </svg>
                 </Box>
-                <Typography className={classes.title}>Account</Typography>
+                <a
+                  className={classes.accountLink}
+                  href={`https://etherscan.io/address/${account}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <Typography className={classes.title}>Account</Typography>
+                </a>
               </Box>
               <Box
                 width='100%'
@@ -424,6 +441,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                     variant='outlined'
                     color='secondary'
                     className={classes.borderedBox}
+                    onClick={onCopy}
                     startIcon={
                       <Box margin='2px 0 0 8px'>
                         <svg

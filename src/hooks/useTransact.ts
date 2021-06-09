@@ -40,6 +40,8 @@ export function useTransact() {
   const toggleTxStartNotification = useToggleTxStartNotification();
   const toggleTxSuccessNotification = useToggleTxSuccessNotification();
 
+  console.log('-------------here---------');
+
   const transact = useCallback(
     async (
       contractFnPromise: Promise<ContractTransaction | undefined> | undefined,
