@@ -115,9 +115,7 @@ export async function getSwapQuote(
     }api.0x.org/swap/v1/quote?${qs.stringify(params)}`,
   );
 
-  const final = await response.json();
-  // console.log('final', final);
-  return final;
+  return await response.json();
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {

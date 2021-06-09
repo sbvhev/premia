@@ -350,9 +350,10 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const classes = useStyles();
   const { palette } = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const { setSwapSettings } = useSwapSettings();
+  const { setSwapSettings, slippagePercentage } = useSwapSettings();
   const [slippage, setSlippage] = React.useState<number>(0.5);
-  const [customSlippage, setCustomSlippage] = React.useState<string>('');
+  const [customSlippage, setCustomSlippage] =
+    React.useState<string | number>('');
   const [minutes, setMinutes] = React.useState<string>('20');
   const [showExchanges, setShowExchanges] = React.useState(false);
   const [showHighSlippageWarning, setShowHighSlippageWarning] =
@@ -367,11 +368,22 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     MultiBridge: false,
   });
 
+  React.useEffect(() => {
+    const defaultSlippageOptions = [0.1, 0.5, 1];
+    if (slippagePercentage) {
+      const isCustom = !defaultSlippageOptions.includes(slippagePercentage);
+      if (isCustom) {
+        setCustomSlippage(slippagePercentage);
+      }
+    }
+  }, [slippagePercentage]);
+
   const handleClickLowSlippage = () => {
     setSwapSettings({
       slippagePercentage: 0.1,
     });
     setSlippage(0.1);
+    setCustomSlippage('');
   };
 
   const handleClickMidSlippage = () => {
@@ -379,6 +391,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       slippagePercentage: 0.5,
     });
     setSlippage(0.5);
+    setCustomSlippage('');
   };
 
   const handleClickHighSlippage = () => {
@@ -386,6 +399,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       slippagePercentage: 1,
     });
     setSlippage(1);
+    setCustomSlippage('');
   };
 
   const LowSlippageButton = () => (
@@ -458,7 +472,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     const valueString = value.replace(/[^0-9.]/g, '');
     setCustomSlippage(valueString);
     setSwapSettings({
-      slippagePercentage: parseFloat(valueString),
+      slippagePercentage: Number(valueString),
     });
   };
 
@@ -661,10 +675,10 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
         <BackIcon />
       </Box>
       <SettingsConfirmation
-        open={parseFloat(customSlippage) > 1 && showHighSlippageWarning}
-        onClose={() => setCustomSlippage('1')}
+        open={customSlippage > 1 && showHighSlippageWarning}
+        onClose={() => setCustomSlippage(1)}
         agree={handleSetExtraHighSlippage}
-        disagree={() => setCustomSlippage('1')}
+        disagree={() => setCustomSlippage(1)}
       />
     </Box>
   );

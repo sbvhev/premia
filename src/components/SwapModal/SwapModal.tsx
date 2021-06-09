@@ -7,13 +7,11 @@ import {
   ButtonBase,
   Input,
   Menu,
-  // MenuItem,
   Tooltip,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
-// import { ETHER } from '@uniswap/sdk';
-// import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -32,14 +30,13 @@ import { getSwapQuote, useWeb3 } from 'state/application/hooks';
 import { useSwapSettings } from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 
-// import { calculateGasMargin } from 'utils';
+import { calculateGasMargin } from 'utils';
 import { formatUnits, parseEther } from 'ethers/lib/utils';
 import TokenList from '../../tokens.json';
 // import ROUTE_ICON_LIST from '../../routeIconList.json';
 
 import { ModalContainer } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
-// import Loader from 'components/Loader';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -501,12 +498,6 @@ export interface SwapQuote {
   orders: any[];
 }
 
-enum SwapState {
-  INVALID,
-  LOADING,
-  VALID,
-}
-
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -528,21 +519,14 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
   const [searchValueTo, setSearchValueTo] = React.useState<string>('');
   const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  const [approveFunction, setApproveFunction] = React.useState<() => void>(
-    () => {},
-  );
   const [preSwapButtonGuide, setPreSwapButtonGuide] =
     React.useState<string>('Select tokens');
-  const [approved, setApproved] = React.useState(false);
   const [fromAssetOpen, setFromAssetOpen] =
     React.useState<null | HTMLElement>(null);
-
   const [toAssetOpen, setToAssetOpen] =
     React.useState<null | HTMLElement>(null);
-
   const [zeroXQuote, setZeroXQuote] =
     useState<SwapQuote | undefined>(undefined);
-
   const [swapValid, setSwapValid] = React.useState(false);
   const [swapReady, setSwapReady] = React.useState(false);
 
@@ -558,17 +542,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     fromToken?.address as string,
     zeroXQuote?.allowanceTarget as string,
   );
-
-  // console.log('extracted elelemtns');
-  // console.log('loading ?', loading);
-
-  // const swapReady =
-  //   fromToken &&
-  //   toToken &&
-  //   fromAmount &&
-  //   fromAmount !== '0' &&
-  //   toAmount &&
-  //   toAmount !== '0';
 
   const handleSwapTokenPositions = () => {
     setSwitched(!switched);
@@ -708,13 +681,11 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         setPreSwapButtonGuide('Select tokens');
         return;
       }
-      console.log('here1');
       if (!fromAmount && !toAmount) {
         setPreSwapButtonGuide('Enter amount');
         return;
       }
 
-      console.log('here1');
       if (!inputType && (!fromAmount || parseFloat(fromAmount) === 0)) {
         setPreSwapButtonGuide('Enter amount');
         return;
@@ -729,7 +700,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         !inputType &&
         parseFloat(fromAmount ?? '0') > parseFloat(fromTokenBalance ?? '0')
       ) {
-        console.log('not enough');
         setPreSwapButtonGuide('Insufficient balance');
         return;
       }
@@ -758,8 +728,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           toAmount: formatUnits(_zeroXQuote.buyAmount, toToken?.decimals),
         });
       }
-
-      console.log('here3');
 
       if (inputType) {
         const calculatedSendAmount = formatUnits(
@@ -803,8 +771,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     }
   }, [tokenNeedsapproval, swapValid, fromTokenBalance, fromAmount]);
 
-  React.useEffect(() => {}, [swapValid]);
-
   const mappedItemsFrom = tokenList.map((item, index) => (
     <TokenMenuItem
       key={`from${item.symbol}`}
@@ -820,6 +786,20 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
       onSelect={() => handleSelectToToken(index)}
     />
   ));
+
+  const handleSwap = async () => {
+    if (zeroXQuote && swapReady) {
+      await web3?.getSigner(account).sendTransaction({
+        to: zeroXQuote.to,
+        data: zeroXQuote.data,
+        gasPrice: ethers.BigNumber.from(zeroXQuote.gasPrice),
+        value: ethers.BigNumber.from(zeroXQuote.value),
+        gasLimit: calculateGasMargin(
+          ethers.BigNumber.from(zeroXQuote.estimatedGas),
+        ),
+      });
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -1135,15 +1115,15 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                 </Box>
 
                 <>
-                  {swapValid && tokenNeedsapproval && (
+                  {swapValid && (
                     <>
-                      {!approved ? (
+                      {tokenNeedsapproval ? (
                         <Button
                           color='primary'
                           variant='contained'
                           id='bottomTarget'
                           size='large'
-                          onClick={() => approveFunction()}
+                          onClick={() => onApprove()}
                           endIcon={
                             <Tooltip
                               arrow
@@ -1183,7 +1163,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       id='bottomTarget'
                       size='large'
                       style={{ marginBottom: '20px' }}
-                      onClick={() => {}}
+                      onClick={handleSwap}
                     >
                       Swap
                     </Button>
