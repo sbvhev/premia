@@ -57,6 +57,13 @@ import VaultsProSVGBackground from 'assets/images/VaultPro.svg';
 import HeroImage from 'assets/images/HeroImage.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
+import Layer2 from 'assets/images/layer-2.png';
+import Layer1 from 'assets/images/layer-1.png';
+import Layer3 from 'assets/images/layer-3.png';
+import Layer4 from 'assets/images/layer-4-min.png';
+import BgGalaxy from 'assets/images/bg-galaxy.jpg';
+import WebflowScript from 'assets/js/webflow.js';
+import { useScript } from 'hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   mainContainer: {
@@ -167,10 +174,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   topSectionRight: {
     width: '50%',
-    backgroundImage: `url("${HeroImage}")`,
-    backgroundSize: '100% auto',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    // backgroundImage: `url("${HeroImage}")`,
+    // backgroundSize: '100% auto',
+    // backgroundPosition: 'center',
+    // backgroundRepeat: 'no-repeat',
 
     [breakpoints.down('sm')]: {
       width: '100%',
@@ -1103,6 +1110,12 @@ const LandingPage: React.FC = () => {
   const preventDefault = (event: React.SyntheticEvent) =>
     event.preventDefault();
 
+  useScript(
+    'https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=60b8e0e65515cc7eee86f540',
+    'jquery',
+  );
+  useScript(WebflowScript, 'webflow');
+
   useEffect(() => {
     setMenuOpen(false);
   }, [mobile]);
@@ -1245,7 +1258,37 @@ const LandingPage: React.FC = () => {
               Open App
             </Button>
           </Box>
-          <Box className={classes.topSectionRight}></Box>
+          <Box className={classes.topSectionRight}>
+            <div className='hero-wrapper'>
+              <div className='section'>
+                <img
+                  src={Layer2}
+                  data-w-id='51afd06a-3fc7-5715-27c4-937506cd6279'
+                  alt=''
+                  className='image _4'
+                />
+                <img
+                  src={Layer1}
+                  data-w-id='eb61a5d0-2761-c611-f16f-9435ecda8f1a'
+                  alt=''
+                  className='image _5'
+                />
+                <img
+                  src={Layer3}
+                  data-w-id='873300e0-789c-48e7-09b7-ffbae4dde8ef'
+                  alt=''
+                  className='image _3'
+                />
+                <img
+                  src={Layer4}
+                  data-w-id='3c771359-42b2-5b31-a3e8-b60fca55d9ba'
+                  alt=''
+                  className='image _2'
+                />
+                <img src={BgGalaxy} alt='' className='image bg' />
+              </div>
+            </div>
+          </Box>
         </Box>
         {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
         <Box className={classes.explorePremia} id='explore-premia'>
