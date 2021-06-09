@@ -272,7 +272,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   basicVault: {
     opacity: (props: any) => (props.dark ? 0.8 : 0.9),
-    height: (props: any) => props.mediumWindow ? 'calc(100% - 75px)' : '100%',
+    height: (props: any) => (props.mediumWindow ? 'calc(100% - 75px)' : '100%'),
     display: 'flex',
     position: 'absolute',
     width: '100%',
@@ -687,6 +687,7 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
                               % of my capital active
                             </Typography>
@@ -910,6 +911,7 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
                               % of my capital active
                             </Typography>

@@ -15,8 +15,12 @@ import {
   updateStrikePrice,
   updatePricePerUnit,
   updateTotalCost,
-  updatePoolContract
+  updateCallPool,
+  updatePutPool,
+  updateCallPoolContract,
+  updatePutPoolContract,
 } from './actions';
+import { Pool } from 'web3/pools';
 
 export interface OptionsState {
   base: Token;
@@ -27,7 +31,10 @@ export interface OptionsState {
   size: number;
   pricePerUnit: number;
   totalCost: number;
-  poolContract?: PoolContract;
+  callPool?: Pool;
+  putPool?: Pool;
+  callPoolContract?: PoolContract;
+  putPoolContract?: PoolContract;
 }
 
 export const initialState: OptionsState = {
@@ -39,7 +46,8 @@ export const initialState: OptionsState = {
   size: 0,
   pricePerUnit: 0,
   totalCost: 0,
-  poolContract: undefined,
+  callPoolContract: undefined,
+  putPoolContract: undefined,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -68,7 +76,16 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateTotalCost, (state, { payload }) => {
       state.totalCost = payload;
     })
-    .addCase(updatePoolContract, (state, { payload }) => {
-      state.poolContract = payload as any;
+    .addCase(updateCallPool, (state, { payload }) => {
+      state.callPool = payload;
+    })
+    .addCase(updatePutPool, (state, { payload }) => {
+      state.putPool = payload;
+    })
+    .addCase(updateCallPoolContract, (state, { payload }) => {
+      state.callPoolContract = payload as any;
+    })
+    .addCase(updatePutPoolContract, (state, { payload }) => {
+      state.putPoolContract = payload as any;
     }),
 );

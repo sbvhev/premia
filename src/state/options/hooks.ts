@@ -19,7 +19,8 @@ import {
   updateSize,
   updatePricePerUnit,
   updateTotalCost,
-  updatePoolContract,
+  updateCallPoolContract,
+  updatePutPoolContract,
 } from './actions';
 
 export function useUnderlyingPrice(): number {
@@ -122,15 +123,15 @@ export function useSize() {
 
 export function useOnChainOptionData() {
   const underlyingPrice = useUnderlyingPrice();
-  const { underlying, strikePrice, size, maturityDate, totalCost } = useSelector<AppState, AppState['options']>(
-    (state: AppState) => state.options,
-  );
+  const { underlying, strikePrice, size, maturityDate, totalCost } =
+    useSelector<AppState, AppState['options']>(
+      (state: AppState) => state.options,
+    );
 
   const getMaturity = (days: number) => {
     const ONE_DAY = 3600 * 24;
     return BigNumber.from(
-      Math.floor(new Date(maturityDate).getTime() / 1000 / ONE_DAY) *
-        ONE_DAY +
+      Math.floor(new Date(maturityDate).getTime() / 1000 / ONE_DAY) * ONE_DAY +
         days * ONE_DAY,
     );
   };
@@ -148,7 +149,7 @@ export function useOnChainOptionData() {
     spot64x64,
     optionSize,
     maxCost,
-  }
+  };
 }
 
 export function usePricePerUnit() {
@@ -179,30 +180,55 @@ export function useTotalCost() {
   return { totalCost, setTotalCost };
 }
 
-export function usePoolContract() {
+export function useCallPoolContract() {
   const dispatch = useDispatch<AppDispatch>();
-  const { poolContract } = useSelector<AppState, AppState['options']>(
+  const { callPoolContract } = useSelector<AppState, AppState['options']>(
     (state: AppState) => state.options,
   );
 
-  const setPoolContract = useCallback(
-    (poolContract: PoolContract) => dispatch(updatePoolContract(poolContract)),
+  const setCallPoolContract = useCallback(
+    (poolContract: PoolContract) =>
+      dispatch(updateCallPoolContract(poolContract)),
     [dispatch],
   );
 
-  return { poolContract, setPoolContract };
+  return { callPoolContract, setCallPoolContract };
+}
+
+export function usePutPoolContract() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { putPoolContract } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPutPoolContract = useCallback(
+    (poolContract: PoolContract) =>
+      dispatch(updatePutPoolContract(poolContract)),
+    [dispatch],
+  );
+
+  return { putPoolContract, setPutPoolContract };
+}
+
+export function useOptionsPoolContract() {
+  const { optionType, callPoolContract, putPoolContract } = useSelector<
+    AppState,
+    AppState['options']
+  >((state: AppState) => state.options);
+
+  return optionType === OptionType.Call ? callPoolContract : putPoolContract;
 }
 
 export function useBreakEvenPrice() {
   const { optionType, pricePerUnit, strikePrice } = useSelector<
     AppState,
     AppState['options']
-    >((state: AppState) => state.options);
+  >((state: AppState) => state.options);
 
   const breakEvenPrice =
     optionType === OptionType.Call
       ? strikePrice + pricePerUnit
       : strikePrice - pricePerUnit;
-  
+
   return breakEvenPrice;
 }

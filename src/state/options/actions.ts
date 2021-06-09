@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { Pool as PoolContract } from 'contracts';
 import { Token } from 'web3/tokens';
+import { Pool } from 'web3/pools';
 import { OptionType } from 'web3/options';
 
 export const updateBase = createAction<Token>('options/updateBase');
@@ -26,11 +27,16 @@ export const updatePricePerUnit = createAction<number>(
   'options/updatePricePerUnit',
 );
 
-export const updateTotalCost = createAction<number>(
-  'options/updateTotalCost',
+export const updateTotalCost = createAction<number>('options/updateTotalCost');
+
+export const updateCallPool = createAction<Pool>('options/updateCallPool');
+
+export const updatePutPool = createAction<Pool>('options/updatePutPool');
+
+export const updateCallPoolContract = createAction<PoolContract>(
+  'options/updateCallPoolContract',
 );
 
-export const updatePoolContract = createAction<PoolContract>(
-  'options/updatePoolContract',
+export const updatePutPoolContract = createAction<PoolContract>(
+  'options/updatePutPoolContract',
 );
-
