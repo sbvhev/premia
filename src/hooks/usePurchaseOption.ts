@@ -8,6 +8,7 @@ import {
   useOptionType,
 } from 'state/options/hooks';
 import { useTransact } from 'hooks';
+import { OptionType } from 'web3/options';
 
 export function usePurchaseOption() {
   const poolContract = useOptionsPoolContract();
@@ -21,7 +22,13 @@ export function usePurchaseOption() {
     if (!poolContract) return;
 
     return transact(
-      poolContract.purchase(maturity, strike64x64, optionSize, maxCost),
+      poolContract.purchase({
+        maturity,
+        strike64x64,
+        amount: optionSize,
+        maxCost,
+        isCall: optionType === OptionType.Call,
+      }),
       {
         description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
       },

@@ -281,7 +281,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 
     const amount = floatToBigNumber(value, activeToken!.decimals);
 
-    transact(depositWithdraw(amount)).then(async (tx) => {
+    transact(depositWithdraw(amount, call)).then(async (tx) => {
       try {
         await tx?.wait();
         onClose();
@@ -289,7 +289,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
         console.error(e);
       }
     });
-  }, [type, value, activeToken, activePoolContract, transact, onClose]);
+  }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
 
   return (
     <Modal open={open} onClose={onClose}>

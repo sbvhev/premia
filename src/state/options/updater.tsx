@@ -72,6 +72,8 @@ export default function Updater(): null {
   const callContract = usePoolContractHook(callP?.address);
   const putContract = usePoolContractHook(putP?.address);
 
+  console.log('callP', callP, putP);
+
   useEffect(() => {
     if (callP && !isEqual(callP, callPool)) {
       dispatch(setCallPool(callP));
@@ -97,8 +99,8 @@ export default function Updater(): null {
   }, [dispatch, putContract, putPoolContract, setPutPoolContract]);
 
   useEffect(() => {
-    const poolContract =
-      optionType === OptionType.Call ? callPoolContract : putPoolContract;
+    const isCall = optionType === OptionType.Call;
+    const poolContract = isCall ? callPoolContract : putPoolContract;
 
     if (!poolContract || !maturity || !strike64x64 || !spot64x64 || !optionSize)
       return;
@@ -107,12 +109,13 @@ export default function Updater(): null {
 
     async function fetchPricePerUnit() {
       try {
-        const response = await poolContract!.quote(
+        const response = await poolContract!.quote({
           maturity,
           strike64x64,
           spot64x64,
-          optionSize,
-        );
+          amount: optionSize,
+          isCall,
+        });
 
         const fee = floatFromFixed(response.feeCost64x64) * underlyingPrice;
         const baseCost =

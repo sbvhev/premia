@@ -63,6 +63,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "shortTokenId",
         "type": "uint256"
@@ -106,6 +112,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "isCallPool",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -134,6 +146,12 @@
         "internalType": "address",
         "name": "underlying",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
       },
       {
         "indexed": false,
@@ -198,6 +216,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "int128",
         "name": "strike64x64",
         "type": "int128"
@@ -256,6 +280,12 @@
         "internalType": "address",
         "name": "underlying",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
       },
       {
         "indexed": false,
@@ -413,6 +443,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "shortTokenId",
         "type": "uint256"
@@ -450,6 +486,12 @@
       },
       {
         "indexed": true,
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "int128",
         "name": "cLevel64x64",
         "type": "int128"
@@ -490,6 +532,12 @@
         "internalType": "address",
         "name": "underlying",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isCallPool",
+        "type": "bool"
       },
       {
         "indexed": false,
@@ -580,6 +628,11 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isCallPool",
+        "type": "bool"
       }
     ],
     "name": "deposit",
@@ -590,14 +643,26 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "longTokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "longTokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isCall",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct PoolStorage.ExerciseArgs",
+        "name": "args",
+        "type": "tuple"
       }
     ],
     "name": "exercise",
@@ -632,7 +697,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
+      }
+    ],
     "name": "getCLevel64x64",
     "outputs": [
       {
@@ -755,24 +826,36 @@
   {
     "inputs": [
       {
-        "internalType": "uint64",
-        "name": "maturity",
-        "type": "uint64"
-      },
-      {
-        "internalType": "int128",
-        "name": "strike64x64",
-        "type": "int128"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "maxCost",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "maturity",
+            "type": "uint64"
+          },
+          {
+            "internalType": "int128",
+            "name": "strike64x64",
+            "type": "int128"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isCall",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct PoolStorage.PurchaseArgs",
+        "name": "args",
+        "type": "tuple"
       }
     ],
     "name": "purchase",
@@ -794,24 +877,36 @@
   {
     "inputs": [
       {
-        "internalType": "uint64",
-        "name": "maturity",
-        "type": "uint64"
-      },
-      {
-        "internalType": "int128",
-        "name": "strike64x64",
-        "type": "int128"
-      },
-      {
-        "internalType": "int128",
-        "name": "spot64x64",
-        "type": "int128"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "maturity",
+            "type": "uint64"
+          },
+          {
+            "internalType": "int128",
+            "name": "strike64x64",
+            "type": "int128"
+          },
+          {
+            "internalType": "int128",
+            "name": "spot64x64",
+            "type": "int128"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isCall",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct PoolStorage.QuoteArgs",
+        "name": "args",
+        "type": "tuple"
       }
     ],
     "name": "quote",
@@ -846,6 +941,11 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isCall",
+        "type": "bool"
       }
     ],
     "name": "reassign",
@@ -1037,6 +1137,11 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isCallPool",
+        "type": "bool"
       }
     ],
     "name": "withdraw",
