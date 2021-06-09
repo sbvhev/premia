@@ -16,7 +16,7 @@ import {
   useOnChainOptionData,
 } from 'state/options/hooks';
 import { AppDispatch, AppState } from 'state';
-import { updatePricePerUnit, updateTotalCost } from './actions';
+import { updatePricePerUnit, updateTotalCost, updateFee } from './actions';
 import { floatFromFixed } from 'utils/floatFromFixed';
 import { usePoolContract as usePoolContractHook, useDebounce } from 'hooks';
 import { OptionType } from 'web3/options';
@@ -114,10 +114,13 @@ export default function Updater(): null {
           optionSize,
         );
 
-        const totalCost = floatFromFixed(response.cost64x64) * underlyingPrice;
+        const fee = floatFromFixed(response.feeCost64x64) * underlyingPrice;
+        const baseCost =
+          floatFromFixed(response.baseCost64x64) * underlyingPrice;
+        const totalCost = fee + baseCost;
         const pricePerUnit = totalCost / size;
 
-        return { totalCost, pricePerUnit };
+        return { fee, totalCost, pricePerUnit };
       } catch (err) {
         console.log('Error fetching price per unit: ', err);
       }
@@ -128,10 +131,11 @@ export default function Updater(): null {
     fetchPricePerUnit().then((response) => {
       if (response == null) return;
 
-      const { totalCost, pricePerUnit } = response;
+      const { totalCost, fee, pricePerUnit } = response;
 
       dispatch(updatePricePerUnit(pricePerUnit));
       dispatch(updateTotalCost(totalCost));
+      dispatch(updateFee(fee));
     });
   }, [
     dispatch,

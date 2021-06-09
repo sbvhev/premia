@@ -138,7 +138,7 @@ export const UserOwnedPool = gql`
       ...Pool
     }
     pair {
-      ...Pair
+      ...TokenPair
     }
     base {
       ...Token

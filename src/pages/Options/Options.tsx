@@ -182,12 +182,17 @@ const Options: React.FC = () => {
   const { totalCost } = useTotalCost();
   const { account } = useWeb3();
 
+  const activeToken = useMemo(
+    () => (optionType === OptionType.Call ? underlying : base),
+    [optionType, base, underlying],
+  );
+
   const poolContract = useOptionsPoolContract();
   const priceChanges = usePriceChanges();
   const underlyingPrice = useUnderlyingPrice();
   const breakEvenPrice = useBreakEvenPrice();
   const { allowance, onApprove } = useApproval(
-    underlying.address,
+    activeToken.address,
     poolContract?.address || account,
   );
 

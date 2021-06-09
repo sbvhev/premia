@@ -11,4 +11,6 @@ export * from './useIsWindowVisible';
 export * from './useOutsideAlerter';
 export * from './usePurchaseOption';
 export * from './useTransact';
+export * from './useUserOwnedOptions';
+export * from './useUserOwnedPools';
 export * from './useWrapEther';

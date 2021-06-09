@@ -321,7 +321,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                     color='textPrimary'
                     className={classes.elementHeader}
                   >
-                    {type === 'withdraw' ? 'Amount' : 'Uni Amount'}
+                    {activeToken?.symbol} Amount
                   </Typography>
                   <Typography
                     component='p'

@@ -15,6 +15,7 @@ import {
   updateStrikePrice,
   updatePricePerUnit,
   updateTotalCost,
+  updateFee,
   updateCallPool,
   updatePutPool,
   updateCallPoolContract,
@@ -31,6 +32,7 @@ export interface OptionsState {
   size: number;
   pricePerUnit: number;
   totalCost: number;
+  fee: number;
   callPool?: Pool;
   putPool?: Pool;
   callPoolContract?: PoolContract;
@@ -46,6 +48,7 @@ export const initialState: OptionsState = {
   size: 0,
   pricePerUnit: 0,
   totalCost: 0,
+  fee: 0,
   callPoolContract: undefined,
   putPoolContract: undefined,
 };
@@ -75,6 +78,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateTotalCost, (state, { payload }) => {
       state.totalCost = payload;
+    })
+    .addCase(updateFee, (state, { payload }) => {
+      state.fee = payload;
     })
     .addCase(updateCallPool, (state, { payload }) => {
       state.callPool = payload;

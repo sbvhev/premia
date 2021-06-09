@@ -29,6 +29,8 @@ export const updatePricePerUnit = createAction<number>(
 
 export const updateTotalCost = createAction<number>('options/updateTotalCost');
 
+export const updateFee = createAction<number>('options/updateFee');
+
 export const updateCallPool = createAction<Pool>('options/updateCallPool');
 
 export const updatePutPool = createAction<Pool>('options/updatePutPool');

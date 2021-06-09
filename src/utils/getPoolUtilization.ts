@@ -6,5 +6,10 @@ export function getPoolUtilization(pool?: Pool): number {
 
   const totalCapital = getPoolSize(pool);
 
-  return totalCapital > 0 ? Number(pool?.totalLocked) / totalCapital / 100 : 0;
+  return totalCapital > 0
+    ? (Number(pool?.totalLocked) /
+        10 ** pool?.underlying.decimals /
+        totalCapital) *
+        100
+    : 0;
 }

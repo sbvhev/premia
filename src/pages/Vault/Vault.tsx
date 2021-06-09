@@ -18,9 +18,15 @@ import cx from 'classnames';
 
 import { useIsDarkMode } from 'state/user/hooks';
 import { useCallPool, usePutPool } from 'state/options/hooks';
+import { useUserOwnedPools } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
-import { formatNumber, formatCompact } from 'utils/formatNumber';
+import {
+  formatNumber,
+  formatBigNumber,
+  formatCompact,
+} from 'utils/formatNumber';
+import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
   LineChart,
@@ -42,7 +48,7 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
-import { getTokenIcon } from 'utils/getTokenIcon';
+import { OptionType } from 'web3/options';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -309,12 +315,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
   const theme = useTheme();
+  const { palette } = theme;
   const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
   const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ dark, mediumWindow });
   const history = useHistory();
   const location = useLocation();
-  const { palette } = theme;
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
   const [depositCallOpen, setDepositCallOpen] = useState(false);
@@ -327,13 +333,23 @@ const ProVault: React.FC = () => {
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+  const userOwnedPools = useUserOwnedPools();
   const { callPool } = useCallPool();
   const { putPool } = usePutPool();
 
+  console.log('userOwnedPools', userOwnedPools);
+
+  const userOwnedCallPool = useMemo(
+    () => userOwnedPools.find((pool) => pool.optionType === OptionType.Call),
+    [userOwnedPools],
+  );
+  const userOwnedPutPool = useMemo(
+    () => userOwnedPools.find((pool) => pool.optionType === OptionType.Put),
+    [userOwnedPools],
+  );
+
   const callPoolSize = useMemo(() => getPoolSize(callPool), [callPool]);
   const putPoolSize = useMemo(() => getPoolSize(putPool), [putPool]);
-
-  console.log('callPool', callPool?.totalAvailable);
 
   const callPoolUtilization = useMemo(
     () => getPoolUtilization(callPool),
@@ -348,13 +364,6 @@ const ProVault: React.FC = () => {
     () => getTokenIcon(callPool?.underlying.symbol),
     [callPool],
   );
-
-  const BaseIcon = useMemo(
-    () => getTokenIcon(callPool?.base.symbol),
-    [callPool],
-  );
-
-  console.log('callPoolSize', callPoolSize);
 
   useEffect(() => {
     const handleResize = () => {
@@ -637,10 +646,10 @@ const ProVault: React.FC = () => {
                         secondaryColor='#4D9EF2'
                         width={260}
                         height={260}
-                        data={[67]}
+                        data={[callPoolUtilization]}
                       >
                         <UnderlyingIcon />
-                        Pool size in Uni
+                        Pool size in {callPool?.underlying.symbol}
                         <Typography
                           component='h5'
                           variant='body2'
@@ -686,7 +695,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatBigNumber(
+                                userOwnedCallPool?.totalDeposited,
+                              )}
                             </Typography>
                             <UnderlyingIcon />
                           </Grid>
@@ -715,7 +726,7 @@ const ProVault: React.FC = () => {
                             >
                               100
                             </Typography>
-                            <BaseIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -861,10 +872,10 @@ const ProVault: React.FC = () => {
                         }
                         width={260}
                         height={260}
-                        data={[67]}
+                        data={[putPoolUtilization]}
                       >
                         <UnderlyingIcon />
-                        Pool size in Uni
+                        Pool size in {callPool?.base.symbol}
                         <Typography
                           component='h5'
                           variant='body2'
@@ -910,7 +921,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatBigNumber(
+                                userOwnedPutPool?.totalDeposited,
+                              )}
                             </Typography>
                             <UnderlyingIcon />
                           </Grid>
@@ -939,7 +952,7 @@ const ProVault: React.FC = () => {
                             >
                               100
                             </Typography>
-                            <BaseIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>

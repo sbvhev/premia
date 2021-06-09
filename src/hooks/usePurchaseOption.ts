@@ -3,27 +3,40 @@ import { useCallback } from 'react';
 import {
   useOnChainOptionData,
   useOptionsPoolContract,
+  useUnderlying,
+  useSize,
+  useOptionType,
 } from 'state/options/hooks';
 import { useTransact } from 'hooks';
 
 export function usePurchaseOption() {
   const poolContract = useOptionsPoolContract();
+  const { size } = useSize();
+  const { underlying } = useUnderlying();
+  const { optionType } = useOptionType();
   const { maturity, strike64x64, optionSize, maxCost } = useOnChainOptionData();
   const transact = useTransact();
 
   const onPurchaseOption = useCallback(async () => {
     if (!poolContract) return;
 
-    console.log('maturity', maturity);
-    console.log('strike64x64', strike64x64);
-    console.log('optionSize', optionSize);
-    console.log('maxCost', maxCost);
-
     return transact(
       poolContract.purchase(maturity, strike64x64, optionSize, maxCost),
-      { description: `Purchase ${optionSize} options` },
+      {
+        description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
+      },
     );
-  }, [transact, poolContract, maturity, strike64x64, optionSize, maxCost]);
+  }, [
+    transact,
+    poolContract,
+    maturity,
+    strike64x64,
+    underlying,
+    size,
+    optionSize,
+    optionType,
+    maxCost,
+  ]);
 
   return onPurchaseOption;
 }

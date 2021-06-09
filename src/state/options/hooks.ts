@@ -20,6 +20,7 @@ import {
   updateSize,
   updatePricePerUnit,
   updateTotalCost,
+  updateFee,
   updateCallPool,
   updatePutPool,
   updateCallPoolContract,
@@ -126,7 +127,7 @@ export function useSize() {
 
 export function useOnChainOptionData() {
   const underlyingPrice = useUnderlyingPrice();
-  const { underlying, strikePrice, size, maturityDate, totalCost } =
+  const { underlying, strikePrice, size, optionType, maturityDate, totalCost } =
     useSelector<AppState, AppState['options']>(
       (state: AppState) => state.options,
     );
@@ -141,7 +142,9 @@ export function useOnChainOptionData() {
 
   const daysToMaturity = moment(maturityDate).diff(moment(), 'days');
   const maturity = getMaturity(daysToMaturity).toHexString();
-  const strike64x64 = fixedFromFloat(strikePrice || 1).toHexString();
+  const strike64x64 = fixedFromFloat(
+    (optionType === OptionType.Call ? strikePrice : 1 / strikePrice) || 1,
+  ).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
   const maxCost = floatToBigNumber(totalCost, underlying.decimals);
@@ -181,6 +184,20 @@ export function useTotalCost() {
   );
 
   return { totalCost, setTotalCost };
+}
+
+export function useFee() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { fee } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setFee = useCallback(
+    (fee: number) => dispatch(updateFee(fee)),
+    [dispatch],
+  );
+
+  return { fee, setFee };
 }
 
 export function useCallPool() {
