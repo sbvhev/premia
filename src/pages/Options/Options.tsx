@@ -348,7 +348,7 @@ const Options: React.FC = () => {
           {tablet && (
             <Grid item xs={12}>
               <Box mb={3}>
-                <OptionsPrice />
+                <OptionsPrice tokenIndex={tokenIndex} />
               </Box>
               <Divider />
             </Grid>
@@ -389,7 +389,7 @@ const Options: React.FC = () => {
         </Grid>
 
         <Grid item container lg={3}>
-          {!tablet && <OptionsPrice />}
+          {!tablet && <OptionsPrice tokenIndex={tokenIndex} />}
         </Grid>
       </Grid>
     </>
