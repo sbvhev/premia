@@ -75,6 +75,11 @@ export function useTransact() {
               toggleTxStartNotification(true);
 
               await tx.wait();
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: true,
+              });
 
               toggleTxSuccessNotification(true);
               toggleTxSuccessModal(true);
@@ -84,6 +89,11 @@ export function useTransact() {
                 setTimeout(closeModals, 2000);
               }
             } catch (e) {
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: false,
+              });
               toggleTxFailedNotification(true);
               toggleTxFailedModal(true);
               setTimeout(closeNotifications, 2000);

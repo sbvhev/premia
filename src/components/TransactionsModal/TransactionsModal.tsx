@@ -505,13 +505,15 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                     </Typography>
                   </Box>
                 )}
-                <Box className={classes.noRecentTransaction}>
-                  <Typography className={classes.greyText}>
-                    No recent transactions
-                  </Typography>
-                </Box>
+                {!txHistory.length && (
+                  <Box className={classes.noRecentTransaction}>
+                    <Typography className={classes.greyText}>
+                      No recent transactions
+                    </Typography>
+                  </Box>
+                )}
               </Box>
-              {!txHistory.length && (
+              {!!txHistory.length && (
                 <Box
                   className={classes.transactionListContainer}
                   style={!moreThanFiveTXs ? { marginRight: '14px' } : {}}
