@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'react-apollo';
+import { useLocation } from 'react-router-dom';
 import { get } from 'lodash';
 
 import { getPool } from 'graphql/queries';
@@ -8,6 +9,8 @@ import { getPoolId } from 'graphql/utils';
 import { Pool } from 'web3/pools';
 import {
   useUnderlyingPrice,
+  useCallPool,
+  usePutPool,
   useCallPoolContract,
   usePutPoolContract,
   useOnChainOptionData,
@@ -22,6 +25,8 @@ export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
   const { setCallPoolContract } = useCallPoolContract();
   const { setPutPoolContract } = usePutPoolContract();
+  const { setCallPool } = useCallPool();
+  const { setPutPool } = usePutPool();
   const onChainOptionData = useOnChainOptionData();
   const { maturity, strike64x64, spot64x64, optionSize } = useDebounce(
     onChainOptionData,
@@ -32,47 +37,64 @@ export default function Updater(): null {
     underlying,
     optionType,
     size,
+    callPool,
+    putPool,
     callPoolContract,
     putPoolContract,
   } = useSelector<AppState, AppState['options']>((state) => state.options);
   const underlyingPrice = useUnderlyingPrice();
+  const location = useLocation();
 
   const { data: callPoolData } = useQuery(getPool, {
+    pollInterval: 5000,
     variables: {
       id: getPoolId(base, underlying, OptionType.Call),
     },
   });
 
   const { data: putPoolData } = useQuery(getPool, {
+    pollInterval: 5000,
     variables: {
       id: getPoolId(base, underlying, OptionType.Put),
     },
   });
 
-  const callPool: Pool | null = useMemo(
+  const callP: Pool | null = useMemo(
     () => get(callPoolData, 'pool') || null,
     [callPoolData],
   );
 
-  const putPool: Pool | null = useMemo(
+  const putP: Pool | null = useMemo(
     () => get(putPoolData, 'pool') || null,
     [putPoolData],
   );
 
-  const callContract = usePoolContractHook(callPool?.address);
-  const putContract = usePoolContractHook(putPool?.address);
+  const callContract = usePoolContractHook(callP?.address);
+  const putContract = usePoolContractHook(putP?.address);
+
+  useEffect(() => {
+    if (!callPool && callP) {
+      dispatch(setCallPool(callP));
+    }
+  }, [dispatch, callPool, callP, setCallPool]);
+
+  useEffect(() => {
+    if (!putPool && putP) {
+      dispatch(setPutPool(putP));
+    }
+  }, [dispatch, putP, putPool, setPutPool]);
 
   useEffect(() => {
     if (!callPoolContract && callContract) {
-      setCallPoolContract(callContract);
+      dispatch(setCallPoolContract(callContract));
     }
-  }, [callPoolContract, callContract, setCallPoolContract]);
+  }, [dispatch, callPoolContract, callContract, setCallPoolContract]);
 
   useEffect(() => {
     if (!putPoolContract && putContract) {
-      setPutPoolContract(putContract);
+      dispatch(setPutPoolContract(putContract));
     }
-  }, [putContract, putPoolContract, setPutPoolContract]);
+  }, [dispatch, putContract, putPoolContract, setPutPoolContract]);
 
   useEffect(() => {
     const poolContract =
@@ -80,6 +102,8 @@ export default function Updater(): null {
 
     if (!poolContract || !maturity || !strike64x64 || !spot64x64 || !optionSize)
       return;
+
+    if (!location.pathname.startsWith('/options')) return;
 
     async function fetchPricePerUnit() {
       try {
@@ -116,6 +140,7 @@ export default function Updater(): null {
     spot64x64,
     optionSize,
     size,
+    location.pathname,
     underlying,
     underlyingPrice,
     optionType,

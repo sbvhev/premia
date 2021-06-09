@@ -9,10 +9,8 @@ import { PremiaContracts } from 'web3/contracts';
 
 import {
   ApplicationModal,
-  ApplicationNotification,
   setWeb3Settings,
   setActiveModal,
-  setActiveNotification,
   updateBlockNumber,
   updateTokenPrices,
   updateTokenPriceChanges,
@@ -34,7 +32,6 @@ export interface ApplicationState {
   multicallProvider?: Provider | null;
   wallet?: Wallet | null;
   activeModal?: ApplicationModal | null;
-  activeNotification?: ApplicationNotification | null;
   contracts?: PremiaContracts;
   prices: { [symbol: string]: number };
   priceChanges: { [symbol: string]: number };
@@ -58,7 +55,6 @@ export const initialState: ApplicationState = {
   web3: undefined,
   wallet: undefined,
   activeModal: undefined,
-  activeNotification: undefined,
   contracts: undefined,
   prices: {},
   priceChanges: {},
@@ -117,9 +113,6 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setActiveModal, (state, { payload }) => {
       state.activeModal = payload;
-    })
-    .addCase(setActiveNotification, (state, { payload }) => {
-      state.activeNotification = payload;
     })
     .addCase(setApprovalType, (state, { payload }) => {
       state.approvalType = payload;

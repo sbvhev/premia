@@ -2,13 +2,8 @@ import { Currency } from '@uniswap/sdk';
 import { BigNumber } from 'ethers';
 import { isObject } from 'lodash';
 
-export enum TokenDenominator {
-  DAI = 'DAI',
-  BUSD = 'BUSD',
-}
-
 export interface Token extends Currency {
-  id: string
+  id: string;
   name: string;
   symbol: string;
   decimals: number;
@@ -20,7 +15,7 @@ export function isToken(object: any): object is Token {
 }
 
 export interface TokenPair {
-  id: string
+  id: string;
   name: string;
   base: Token;
   underlying: Token;

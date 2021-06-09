@@ -10,16 +10,8 @@ import {
 
 import 'react-calendar/dist/Calendar.css';
 
-import {
-  useModalOpen,
-  useCloseModals,
-  useNotificationOpen,
-  useCloseNotifications,
-} from './state/application/hooks';
-import {
-  ApplicationModal,
-  ApplicationNotification,
-} from './state/application/actions';
+import { useModalOpen, useCloseModals } from './state/application/hooks';
+import { ApplicationModal } from './state/application/actions';
 import ApplicationUpdater from './state/application/updater';
 import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
@@ -43,10 +35,6 @@ import {
   TransactionSuccessModal,
   TransactionCancelledModal,
   TransactionFailedModal,
-  TransactionFailedNotification,
-  TransactionSentNotification,
-  TransactionStartNotification,
-  TransactionSuccessNotification,
 } from 'components';
 
 const graphUrls: { [chainId: number]: string } = {
@@ -54,44 +42,6 @@ const graphUrls: { [chainId: number]: string } = {
   4: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
   42: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
   56: 'https://api.thegraph.com/subgraphs/name/premiafinance/dev',
-};
-
-const TransactionNotifications: React.FC = () => {
-  const transactionStartOpen = useNotificationOpen(
-    ApplicationNotification.TransactionStarted,
-  );
-  const transactionSuccessOpen = useNotificationOpen(
-    ApplicationNotification.TransactionSuccess,
-  );
-  const transactionSentOpen = useNotificationOpen(
-    ApplicationNotification.TransactionSent,
-  );
-  const transactionFailedOpen = useNotificationOpen(
-    ApplicationNotification.TransactionFailed,
-  );
-
-  const closeNotifications = useCloseNotifications();
-
-  return (
-    <>
-      <TransactionStartNotification
-        open={transactionStartOpen}
-        onClose={closeNotifications}
-      />
-      <TransactionSentNotification
-        open={transactionSentOpen}
-        onClose={closeNotifications}
-      />
-      <TransactionFailedNotification
-        open={transactionFailedOpen}
-        onClose={closeNotifications}
-      />
-      <TransactionSuccessNotification
-        open={transactionSuccessOpen}
-        onClose={closeNotifications}
-      />
-    </>
-  );
 };
 
 const TopLevelModals: React.FC = () => {
@@ -150,7 +100,7 @@ const ThemeProvider: React.FC = ({ children }) => {
   let theme = darkMode ? darkTheme : lightTheme;
 
   if (location.pathname.replace('/', '') === '') {
-    theme = darkTheme
+    theme = darkTheme;
   }
 
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
@@ -174,7 +124,6 @@ const Providers: React.FC = ({ children }) => {
             <ThemeProvider>
               <CssBaseline />
               <TopLevelModals />
-              <TransactionNotifications />
               {children}
             </ThemeProvider>
           </StateProvider>

@@ -29,9 +29,5 @@ export { default as TransactionCancelledModal } from './TransactionCancelledModa
 export { default as TransactionFailedModal } from './TransactionFailedModal';
 export { default as TransactionLoadingModal } from './TransactionLoadingModal';
 export { default as TransactionSuccessModal } from './TransactionSuccessModal';
-export { default as TransactionFailedNotification } from './TransactionFailedNotification';
-export { default as TransactionStartNotification } from './TransactionStartNotification';
-export { default as TransactionSentNotification } from './TransactionSentNotification';
-export { default as TransactionSuccessNotification } from './TransactionSuccessNotification';
 export { default as ChainModal } from './ChainModal';
 export { default as PositionModal } from './PositionModal';

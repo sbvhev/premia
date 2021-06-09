@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -13,7 +13,15 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
+
+import { useIsDarkMode } from 'state/user/hooks';
+import { useCallPool, usePutPool } from 'state/options/hooks';
+import { getPoolSize } from 'utils/getPoolSize';
+import { getPoolUtilization } from 'utils/getPoolUtilization';
+import { formatNumber, formatCompact } from 'utils/formatNumber';
+
 import {
   LineChart,
   RadialChart,
@@ -22,21 +30,19 @@ import {
   WithdrawDepositModal,
   SwitchWithGlider,
 } from 'components';
-import { ExpandMore } from '@material-ui/icons';
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
-import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
-import { useIsDarkMode } from 'state/user/hooks';
 import BasicVault from './BasicVault';
+import { getTokenIcon } from 'utils/getTokenIcon';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -306,6 +312,7 @@ const ProVault: React.FC = () => {
   const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
   const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ dark, mediumWindow });
+  const history = useHistory();
   const location = useLocation();
   const { palette } = theme;
 
@@ -318,10 +325,38 @@ const ProVault: React.FC = () => {
   );
   const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { callPool } = useCallPool();
+  const { putPool } = usePutPool();
 
-  React.useEffect(() => {
+  const callPoolSize = useMemo(() => getPoolSize(callPool), [callPool]);
+  const putPoolSize = useMemo(() => getPoolSize(putPool), [putPool]);
+
+  console.log('callPool', callPool?.totalAvailable);
+
+  const callPoolUtilization = useMemo(
+    () => getPoolUtilization(callPool),
+    [callPool],
+  );
+  const putPoolUtilization = useMemo(
+    () => getPoolUtilization(putPool),
+    [putPool],
+  );
+
+  const UnderlyingIcon = useMemo(
+    () => getTokenIcon(callPool?.underlying.symbol),
+    [callPool],
+  );
+
+  const BaseIcon = useMemo(
+    () => getTokenIcon(callPool?.base.symbol),
+    [callPool],
+  );
+
+  console.log('callPoolSize', callPoolSize);
+
+  useEffect(() => {
     const handleResize = () => {
       setDeviceWidth(window.innerWidth);
     };
@@ -347,10 +382,12 @@ const ProVault: React.FC = () => {
 
   const handleBasicVaultSwitch = () => {
     setVaultIndex(0);
+    history.push('/vaults?tab=basic');
   };
 
   const handleProVaultSwitch = () => {
     setVaultIndex(1);
+    history.push('/vaults?tab=pro');
   };
 
   const BasicVaultButton = () => (
@@ -585,7 +622,7 @@ const ProVault: React.FC = () => {
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(callPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
@@ -602,14 +639,14 @@ const ProVault: React.FC = () => {
                         height={260}
                         data={[67]}
                       >
-                        <UniswapIcon />
+                        <UnderlyingIcon />
                         Pool size in Uni
                         <Typography
                           component='h5'
                           variant='body2'
                           color='textSecondary'
                         >
-                          211305
+                          {formatNumber(callPoolSize)}
                         </Typography>
                       </RadialChart>
                     </Box>
@@ -651,7 +688,7 @@ const ProVault: React.FC = () => {
                             >
                               10000
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -678,7 +715,7 @@ const ProVault: React.FC = () => {
                             >
                               100
                             </Typography>
-                            <DaiIcon />
+                            <BaseIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -806,7 +843,7 @@ const ProVault: React.FC = () => {
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(putPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
@@ -826,14 +863,14 @@ const ProVault: React.FC = () => {
                         height={260}
                         data={[67]}
                       >
-                        <UniswapIcon />
+                        <UnderlyingIcon />
                         Pool size in Uni
                         <Typography
                           component='h5'
                           variant='body2'
                           color='textSecondary'
                         >
-                          211305
+                          {formatNumber(putPoolSize)}
                         </Typography>
                       </RadialChart>
                     </Box>
@@ -875,7 +912,7 @@ const ProVault: React.FC = () => {
                             >
                               10000
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -902,7 +939,7 @@ const ProVault: React.FC = () => {
                             >
                               100
                             </Typography>
-                            <DaiIcon />
+                            <BaseIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>

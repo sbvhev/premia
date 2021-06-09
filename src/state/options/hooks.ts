@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 import moment from 'moment';
 
 import { Pool as PoolContract } from 'contracts';
+import { Pool } from 'web3/pools';
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
 import { fixedFromFloat } from 'utils/fixedFromFloat';
@@ -19,6 +20,8 @@ import {
   updateSize,
   updatePricePerUnit,
   updateTotalCost,
+  updateCallPool,
+  updatePutPool,
   updateCallPoolContract,
   updatePutPoolContract,
 } from './actions';
@@ -178,6 +181,34 @@ export function useTotalCost() {
   );
 
   return { totalCost, setTotalCost };
+}
+
+export function useCallPool() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { callPool } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setCallPool = useCallback(
+    (poolContract: Pool) => dispatch(updateCallPool(poolContract)),
+    [dispatch],
+  );
+
+  return { callPool, setCallPool };
+}
+
+export function usePutPool() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { putPool } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPutPool = useCallback(
+    (poolContract: Pool) => dispatch(updatePutPool(poolContract)),
+    [dispatch],
+  );
+
+  return { putPool, setPutPool };
 }
 
 export function useCallPoolContract() {
