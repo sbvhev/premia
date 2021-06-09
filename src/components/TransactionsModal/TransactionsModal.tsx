@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Modal, Box, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 
 import { shortenAddress } from 'utils';
 import { ModalContainer } from 'components';
+import { useTxHistory } from 'state/transactions/hooks';
 
 import SuccessIcon from 'assets/images/SuccessSubtract.png';
 import CancelIcon from 'assets/images/CancelSubtract.png';
 import XOut from 'assets/svg/XOutGrey.svg';
+import { Check as CheckIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -116,6 +118,11 @@ const useStyles = makeStyles(({ palette }) => ({
       minWidth: '40px',
       width: '40px',
     },
+
+    '& svg': {
+      width: 13,
+      height: 15,
+    },
   },
   borderedBoxLarge: {
     boxSizing: 'border-box',
@@ -221,40 +228,15 @@ const useStyles = makeStyles(({ palette }) => ({
   accountLink: {
     textDecoration: 'none',
   },
-}));
+  noRecentTransaction: {
+    display: 'flex',
+    margin: 'auto',
 
-const fakeRecentTxs = [
-  {
-    hash: '0xeac6ef04d3ea00240ed91f8f1a121e63767edb1f286c4dfbf9659a942573dde6',
-    link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-    status: 'complete',
+    '& p': {
+      fontWeight: 400,
+    },
   },
-  {
-    hash: '0x8dbed2422509b5177190c0bb59c524539055111058c41cd05e4515a3ab7d2918',
-    link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-    status: 'failed',
-  },
-  {
-    hash: '0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-    link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-    status: 'complete',
-  },
-  // {
-  //   hash: '0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   status: 'complete',
-  // },
-  // {
-  //   hash: '0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   status: 'failed',
-  // },
-  // {
-  //   hash: '0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   link: 'https://etherscan.io/tx/0x1916eb94f1766cdb28e0347939c36c3baed22718cccfd8d6aa15b758047892b3',
-  //   status: 'failed',
-  // },
-];
+}));
 
 export interface TransactionsModalProps {
   open: boolean;
@@ -270,10 +252,10 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const web3 = useWeb3();
   const account = web3.account;
+  const [check, setCheck] = useState(false);
   const disconnect = useDisconnect();
+  const { txHistory = [], clearTxHistory } = useTxHistory();
   const { palette } = theme;
-
-  console.log('--------web3--------', web3);
 
   const shortenTx = (tx: string) => {
     if (tx.length) {
@@ -292,11 +274,12 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
 
   const onCopy = () => {
     navigator.clipboard.writeText(`https://etherscan.io/address/${account}`);
+    setCheck(true);
   };
 
-  const moreThanFiveTXs = fakeRecentTxs.length > 5;
+  const moreThanFiveTXs = txHistory.length > 5;
 
-  const mappedRecentTransactions = fakeRecentTxs.map((item, index) => (
+  const mappedRecentTransactions = txHistory.map((item, index) => (
     <Box
       display='flex'
       key={`${index}${item.hash}`}
@@ -306,7 +289,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
     >
       <a
         className={classes.anchor}
-        href={item.link}
+        href={`https://etherscan.io/tx/${item.hash}`}
         target='_blank'
         rel='noreferrer'
       >
@@ -337,7 +320,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
         </Box>
       </a>
       {/* {item.status === 'complete' ? (<SuccessTxIcon />) : (<ErrorTxIcon />)} */}
-      {item.status === 'complete' ? (
+      {item.complete ? (
         <img
           src={SuccessIcon}
           alt='Complete'
@@ -444,18 +427,22 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                     onClick={onCopy}
                     startIcon={
                       <Box margin='2px 0 0 8px'>
-                        <svg
-                          width='13'
-                          height='15'
-                          viewBox='0 0 13 15'
-                          fill='none'
-                          xmlns='http://www.w3.org/2000/svg'
-                        >
-                          <path
-                            d='M10.7201 0H4.4183C3.50291 0 2.75815 0.74476 2.75815 1.66015V1.8639H1.66015C0.74476 1.8639 0 2.60866 0 3.52404V13.3399C0 14.2552 0.74476 15 1.66015 15H7.96198C8.87736 15 9.62205 14.2552 9.62205 13.3399V13.1361H10.7201C11.6354 13.1361 12.3802 12.3913 12.3802 11.476V1.66015C12.3803 0.74476 11.6355 0 10.7201 0ZM8.55124 13.3399C8.55124 13.6648 8.28688 13.9291 7.96205 13.9291H1.66015C1.33524 13.9291 1.07088 13.6648 1.07088 13.3399V3.52397C1.07088 3.19907 1.33524 2.93471 1.66015 2.93471H7.96198C8.28688 2.93471 8.55117 3.19907 8.55117 3.52397V13.3399H8.55124ZM11.3094 11.476C11.3094 11.8009 11.045 12.0652 10.7201 12.0652H9.62212V3.52397C9.62212 2.60859 8.87736 1.86383 7.96205 1.86383H3.82903V1.66007C3.82903 1.33517 4.09339 1.07081 4.4183 1.07081H10.7201C11.045 1.07081 11.3094 1.33517 11.3094 1.66007V11.476Z'
-                            fill={palette.secondary.main}
-                          />
-                        </svg>
+                        {check ? (
+                          <CheckIcon />
+                        ) : (
+                          <svg
+                            width='13'
+                            height='15'
+                            viewBox='0 0 13 15'
+                            fill='none'
+                            xmlns='http://www.w3.org/2000/svg'
+                          >
+                            <path
+                              d='M10.7201 0H4.4183C3.50291 0 2.75815 0.74476 2.75815 1.66015V1.8639H1.66015C0.74476 1.8639 0 2.60866 0 3.52404V13.3399C0 14.2552 0.74476 15 1.66015 15H7.96198C8.87736 15 9.62205 14.2552 9.62205 13.3399V13.1361H10.7201C11.6354 13.1361 12.3802 12.3913 12.3802 11.476V1.66015C12.3803 0.74476 11.6355 0 10.7201 0ZM8.55124 13.3399C8.55124 13.6648 8.28688 13.9291 7.96205 13.9291H1.66015C1.33524 13.9291 1.07088 13.6648 1.07088 13.3399V3.52397C1.07088 3.19907 1.33524 2.93471 1.66015 2.93471H7.96198C8.28688 2.93471 8.55117 3.19907 8.55117 3.52397V13.3399H8.55124ZM11.3094 11.476C11.3094 11.8009 11.045 12.0652 10.7201 12.0652H9.62212V3.52397C9.62212 2.60859 8.87736 1.86383 7.96205 1.86383H3.82903V1.66007C3.82903 1.33517 4.09339 1.07081 4.4183 1.07081H10.7201C11.045 1.07081 11.3094 1.33517 11.3094 1.66007V11.476Z'
+                              fill={palette.secondary.main}
+                            />
+                          </svg>
+                        )}
                       </Box>
                     }
                   ></Button>
@@ -506,21 +493,32 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                 alignItems='center'
                 marginRight='8px'
               >
-                <Typography className={classes.sectionHeader}>
-                  Recent transactions
-                </Typography>
-                <Box className={classes.clear}>
+                {!!txHistory.length && (
+                  <Typography className={classes.sectionHeader}>
+                    Recent transactions
+                  </Typography>
+                )}
+                {!!txHistory.length && (
+                  <Box className={classes.clear} onClick={clearTxHistory}>
+                    <Typography className={classes.greyText}>
+                      Clear all
+                    </Typography>
+                  </Box>
+                )}
+                <Box className={classes.noRecentTransaction}>
                   <Typography className={classes.greyText}>
-                    Clear all
+                    No recent transactions
                   </Typography>
                 </Box>
               </Box>
-              <Box
-                className={classes.transactionListContainer}
-                style={!moreThanFiveTXs ? { marginRight: '14px' } : {}}
-              >
-                {mappedRecentTransactions}
-              </Box>
+              {!txHistory.length && (
+                <Box
+                  className={classes.transactionListContainer}
+                  style={!moreThanFiveTXs ? { marginRight: '14px' } : {}}
+                >
+                  {mappedRecentTransactions}
+                </Box>
+              )}
             </Box>
           </Box>
 

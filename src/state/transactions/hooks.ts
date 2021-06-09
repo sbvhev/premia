@@ -5,12 +5,14 @@ import { useWeb3 } from 'state/application/hooks';
 import { AppState, AppDispatch } from 'state';
 import {
   setCurrentTx as _setCurrentTx,
+  setTxHistory as _setTxHistory,
+  clearTxHistory as _clearTxHistory,
   setTxStateMsg as _setTxStateMsg,
   setTxOption as _setTxOption,
   setGasType as _setGasType,
-  setGasPrices as _setGasPrices
+  setGasPrices as _setGasPrices,
 } from './actions';
-import { GasNowData, SetCurrentTransaction } from './reducer';
+import { GasNowData, SetCurrentTransaction, Transaction } from './reducer';
 
 export const useCurrentTx = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +26,21 @@ export const useCurrentTx = () => {
     dispatch(_setCurrentTx(currentTx));
 
   return { ...currentTx, txLink, setCurrentTx };
+};
+
+export const useTxHistory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const txHistory = useSelector<
+    AppState,
+    AppState['transactions']['txHistory']
+  >((state) => state.transactions.txHistory);
+
+  const setTxHistory = (currentTx: Transaction) =>
+    dispatch(_setTxHistory(currentTx));
+
+  const clearTxHistory = () => dispatch(_clearTxHistory(undefined));
+
+  return { txHistory, setTxHistory, clearTxHistory };
 };
 
 export const useTxStateMsg = () => {
@@ -41,10 +58,9 @@ export const useTxStateMsg = () => {
 
 export const useGasType = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const gasType = useSelector<
-    AppState,
-    AppState['transactions']['gasType']
-  >((state) => state.transactions.gasType);
+  const gasType = useSelector<AppState, AppState['transactions']['gasType']>(
+    (state) => state.transactions.gasType,
+  );
 
   const setGasType = (gasType: keyof GasNowData) =>
     dispatch(_setGasType(gasType));
@@ -53,10 +69,9 @@ export const useGasType = () => {
 };
 
 export const useGasValue = () => {
-  const gasValue = useSelector<
-    AppState,
-    AppState['transactions']['gasValue']
-  >((state) => state.transactions.gasValue);
+  const gasValue = useSelector<AppState, AppState['transactions']['gasValue']>(
+    (state) => state.transactions.gasValue,
+  );
 
   return gasValue;
 };

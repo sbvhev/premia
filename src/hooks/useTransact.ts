@@ -15,6 +15,7 @@ import {
 } from 'state/application/hooks';
 import {
   useCurrentTx,
+  useTxHistory,
   useTxStateMsg,
   useTxOption,
 } from 'state/transactions/hooks';
@@ -28,6 +29,7 @@ export interface TransactProps {
 export function useTransact() {
   const { notify, chainId } = useWeb3();
   const { setCurrentTx } = useCurrentTx();
+  const { setTxHistory } = useTxHistory();
   const { setTxStateMsg } = useTxStateMsg();
   const { setTxOption } = useTxOption();
   const closeModals = useCloseModals();
@@ -39,8 +41,6 @@ export function useTransact() {
   const toggleTxFailedNotification = useToggleTxFailedNotification();
   const toggleTxStartNotification = useToggleTxStartNotification();
   const toggleTxSuccessNotification = useToggleTxSuccessNotification();
-
-  console.log('-------------here---------');
 
   const transact = useCallback(
     async (
@@ -94,12 +94,22 @@ export function useTransact() {
             emitter.on('txPool', (transaction) => {
               toggleTxSuccessNotification(false);
               toggleTxStartNotification(true);
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: true,
+              });
             });
 
             emitter.on('txConfirmed', (transaction) => {
               toggleTxStartNotification(false);
               toggleTxSuccessNotification(true);
               toggleTxSuccessModal(true);
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: true,
+              });
 
               setTimeout(closeNotifications, 2000);
 
@@ -111,10 +121,20 @@ export function useTransact() {
             emitter.on('txFailed', () => {
               toggleTxFailedNotification(true);
               toggleTxFailedModal(true);
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: false,
+              });
 
               setTimeout(closeNotifications, 2000);
             });
             emitter.on('txCancel', (err) => {
+              setTxHistory({
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: false,
+              });
               console.log('Error in transaction: ', err);
               toggleTxCancelledModal(true);
             });
@@ -140,6 +160,7 @@ export function useTransact() {
       toggleTxStartNotification,
       toggleTxSuccessNotification,
       setCurrentTx,
+      setTxHistory,
       setTxStateMsg,
       setTxOption,
       notify,
