@@ -754,22 +754,22 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='primary'
                             variant='contained'
-                            onClick={() => setWithdrawCallOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositCallOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositCallOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawCallOpen(true)}
                           >
                             Remove
                           </Button>
@@ -978,22 +978,22 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='contained'
-                            onClick={() => setWithdrawPutOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositPutOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositPutOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawPutOpen(true)}
                           >
                             Remove
                           </Button>
