@@ -274,14 +274,22 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const handleWithdrawDeposit = useCallback(() => {
     if (!value || !activePoolContract || !activeToken) return;
 
-    const depositWithdraw = call
-      ? activePoolContract!.deposit
-      : activePoolContract!.withdraw;
+    const depositWithdraw =
+      type === 'deposit'
+        ? activePoolContract!.deposit
+        : activePoolContract!.withdraw;
 
-    return transact(
-      depositWithdraw(floatToBigNumber(value, activeToken!.decimals)),
-    );
-  }, [call, value, activeToken, activePoolContract, transact]);
+    const amount = floatToBigNumber(value, activeToken!.decimals);
+
+    transact(depositWithdraw(amount)).then(async (tx) => {
+      try {
+        await tx?.wait();
+        onClose();
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, [type, value, activeToken, activePoolContract, transact, onClose]);
 
   return (
     <Modal open={open} onClose={onClose}>

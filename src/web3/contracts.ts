@@ -5,16 +5,12 @@ import {
   Erc20__factory,
   FeeCalculator,
   FeeCalculator__factory,
-  Premia,
-  Premia__factory,
   PremiaErc20,
   PremiaErc20__factory,
   PremiaFeeDiscount,
   PremiaFeeDiscount__factory,
   PremiaStaking,
   PremiaStaking__factory,
-  ProxyManager,
-  ProxyManager__factory,
   UniswapV2Router02,
   UniswapV2Router02__factory,
   Weth__factory,
@@ -28,11 +24,9 @@ export enum ContractType {
   Busd = 'BUSD',
   SushiswapRouter = 'SushiswapRouter',
   FeeCalculator = 'FeeCalculator',
-  PremiaInstance = 'PremiaInstance',
   PremiaErc20 = 'PremiaErc20',
   PremiaFeeDiscount = 'PremiaFeeDiscount',
   PremiaStaking = 'PremiaStaking',
-  ProxyManager = 'ProxyManager',
 }
 
 export type ContractAddresses = {
@@ -46,11 +40,9 @@ export interface PremiaContracts {
   Busd: Erc20;
   SushiswapRouter: UniswapV2Router02;
   FeeCalculator: FeeCalculator;
-  PremiaInstance: Premia;
   PremiaErc20: PremiaErc20;
   PremiaFeeDiscount: PremiaFeeDiscount;
   PremiaStaking: PremiaStaking;
-  ProxyManager: ProxyManager;
 }
 
 export const contracts: ContractAddresses = {
@@ -82,9 +74,6 @@ export const contracts: ContractAddresses = {
     42: '0x4E831efC11511c6d259b5fd9f4cA6FE732728FAB',
     56: '0x581d114C4058230504F862119D5Bf01393E9e17e',
   },
-  PremiaInstance: {
-    4: '0xeda8F7435148C0e70e35485D75d71A00815Af1e7',
-  },
   PremiaErc20: {
     1: '0x6399C842dD2bE3dE30BF99Bc7D1bBF6Fa3650E70',
     4: '0x7a8864eA3A4B855D0d359F16D38d966ce018aDb9',
@@ -99,9 +88,6 @@ export const contracts: ContractAddresses = {
     1: '0x16f9D564Df80376C61AC914205D3fDfF7057d610',
     4: '0x65191E877AE65ff9c4959b8389Dd7E7881cDAe38',
     42: '0x1f87Beb89e43824C075d82B3a7061b1e50D1615d',
-  },
-  ProxyManager: {
-    4: '0xeda8F7435148C0e70e35485D75d71A00815Af1e7',
   },
 };
 
@@ -162,15 +148,6 @@ export async function getSignerAndContracts(
     signer.connectUnchecked(),
   );
 
-  const premiaInterfaceAddress = getContractAddress(
-    chainId,
-    ContractType.PremiaInstance,
-  );
-  preContracts.PremiaInstance = Premia__factory.connect(
-    premiaInterfaceAddress,
-    signer.connectUnchecked(),
-  );
-
   const premiaErc20Address = getContractAddress(
     chainId,
     ContractType.PremiaErc20,
@@ -195,15 +172,6 @@ export async function getSignerAndContracts(
   );
   preContracts.PremiaStaking = PremiaStaking__factory.connect(
     premiaStakingAddress,
-    signer.connectUnchecked(),
-  );
-
-  const proxyManagerAddress = getContractAddress(
-    chainId,
-    ContractType.ProxyManager,
-  );
-  preContracts.ProxyManager = ProxyManager__factory.connect(
-    proxyManagerAddress,
     signer.connectUnchecked(),
   );
 

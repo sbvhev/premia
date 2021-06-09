@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'react-apollo';
 import { useLocation } from 'react-router-dom';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 
 import { getPool } from 'graphql/queries';
 import { getPoolId } from 'graphql/utils';
@@ -73,25 +73,25 @@ export default function Updater(): null {
   const putContract = usePoolContractHook(putP?.address);
 
   useEffect(() => {
-    if (!callPool && callP) {
+    if (callP && !isEqual(callP, callPool)) {
       dispatch(setCallPool(callP));
     }
   }, [dispatch, callPool, callP, setCallPool]);
 
   useEffect(() => {
-    if (!putPool && putP) {
+    if (putP && !isEqual(putP, putPool)) {
       dispatch(setPutPool(putP));
     }
   }, [dispatch, putP, putPool, setPutPool]);
 
   useEffect(() => {
-    if (!callPoolContract && callContract) {
+    if (callContract && !isEqual(callContract, callPoolContract)) {
       dispatch(setCallPoolContract(callContract));
     }
   }, [dispatch, callPoolContract, callContract, setCallPoolContract]);
 
   useEffect(() => {
-    if (!putPoolContract && putContract) {
+    if (putContract && !isEqual(putContract, putPoolContract)) {
       dispatch(setPutPoolContract(putContract));
     }
   }, [dispatch, putContract, putPoolContract, setPutPoolContract]);

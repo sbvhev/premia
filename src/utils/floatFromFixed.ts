@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers';
 
 export function floatFromFixed(fixed: BigNumber): number {
+  if (!fixed) return 0;
+
   const integer = fixed.shr(64);
   const decimals = fixed.sub(integer.shl(64));
 

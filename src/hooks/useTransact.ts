@@ -93,6 +93,12 @@ export function useTransact() {
           closeModals();
         }
 
+        (async () => {
+          await tx?.wait(1);
+
+          toggleTxSuccessModal(false);
+        })();
+
         return tx;
       } catch (err) {
         console.log('Error in transaction: ', err);
