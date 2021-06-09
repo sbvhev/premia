@@ -112,6 +112,7 @@ const useStyles = makeStyles(({ palette }) => ({
   calendarContainer: {
     position: 'absolute',
     width: '100%',
+    opacity: 0,
     zIndex: 3,
     marginTop: 10,
     background: palette.background.paper,
@@ -119,6 +120,9 @@ const useStyles = makeStyles(({ palette }) => ({
     boxShadow: '0px 2px 5px rgb(0 0 0 / 7%)',
     borderRadius: 12,
     overflow: 'hidden',
+    transform: 'scale(0)',
+    transformOrigin: '0 0',
+    transition: 'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     '& .react-calendar': {
       background: palette.background.paper,
       border: 'none',
@@ -210,6 +214,11 @@ const useStyles = makeStyles(({ palette }) => ({
         },
       },
     },
+  },
+
+  openTransition: {
+    opacity: 1,
+    transform: 'scale(1)'
   },
 
   maturityContainer: {
@@ -322,31 +331,29 @@ const OptionFilter: React.FC = () => {
             </Typography>
             <CalendarIcon />
           </Box>
-          {maturityFocused && (
-            <Box className={classes.calendarContainer}>
-              <Calendar
-                inputRef={calendarRef as any}
-                minDate={new Date()}
-                prevLabel={<ArrowBackIosIcon />}
-                nextLabel={<ArrowForwardIosIcon />}
-                formatShortWeekday={(locale, date) => moment(date).format('dd')}
-                onChange={(date) => {
-                  setMaturityFocused(false);
-                  setMaturityDate(moment(date).toISOString());
-                }}
-                value={new Date(maturityDate)}
-              />
-              <Box className={classes.maturityContainer}>
-                <Typography>Days to maturity</Typography>
-                <Typography component='span'>
-                  {moment(new Date(maturityDate)).diff(
-                    moment(new Date()),
-                    'days',
-                  )}
-                </Typography>
-              </Box>
+          <Box className={cx(classes.calendarContainer, maturityFocused && classes.openTransition)}>
+            <Calendar
+              inputRef={calendarRef as any}
+              minDate={new Date()}
+              prevLabel={<ArrowBackIosIcon />}
+              nextLabel={<ArrowForwardIosIcon />}
+              formatShortWeekday={(locale, date) => moment(date).format('dd')}
+              onChange={(date) => {
+                setMaturityFocused(false);
+                setMaturityDate(moment(date).toISOString());
+              }}
+              value={new Date(maturityDate)}
+            />
+            <Box className={classes.maturityContainer}>
+              <Typography>Days to maturity</Typography>
+              <Typography component='span'>
+                {moment(new Date(maturityDate)).diff(
+                  moment(new Date()),
+                  'days',
+                )}
+              </Typography>
             </Box>
-          )}
+          </Box>
         </Box>
       </Box>
 
