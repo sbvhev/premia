@@ -10,6 +10,8 @@ import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
 import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
+import BarometerBg4 from 'assets/svg/BarometerBg4.svg';
+import BarometerBg4Light from 'assets/svg/BarometerBg4Light.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, Grid, Typography, RootRef } from '@material-ui/core';
 import { useOptionType } from 'state/options/hooks';
@@ -121,6 +123,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       marginLeft: 0,
       top: 8,
+      '& svg': {
+        margin: '0 !important'
+      }
     },
     '& div': {
       position: 'absolute',
@@ -138,6 +143,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       margin: '-2px 0 -2px 4px',
       '& path': {
         fill: palette.text.secondary,
+      },
+    },
+  },
+  possiblePLLeft: {
+    position: 'absolute',
+    zIndex: 1,
+    color: palette.text.secondary,
+    '& div': {
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      top: 8,
+      right: 14,
+      [breakpoints.down('md')]: {
+        position: 'relative',
       },
     },
   },
@@ -372,6 +393,25 @@ const OptionsPrice: React.FC = () => {
                 (hoveredTop || hoveredBottom) && classes.hovered,
               )}
             >
+              <Box
+                className={classes.possiblePLLeft}
+                top={mobile ? -52 : 7}
+                left={mobile ? 54 : -73}
+              >
+                {!mobile &&
+                  <img
+                    src={
+                      darkMode
+                        ? BarometerBg4
+                        : BarometerBg4Light
+                    }
+                    alt="Barometer Bg4"
+                  />              
+                }
+                <Box>
+                  <Typography className={classes.priceFont}>$1,504</Typography>
+                </Box>
+              </Box>
               <Box
                 width={mobile ? 1.1 : 16}
                 height={mobile ? 28 : 1.1}
