@@ -17,7 +17,7 @@ export interface OptionsState {
 export const initialState: OptionsState = {
   optionType: 'call',
   maturityDate: '',
-  strikePrice: 50,
+  strikePrice: 0,
   optionSize: 0,
 };
 

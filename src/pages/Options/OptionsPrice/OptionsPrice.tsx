@@ -14,7 +14,7 @@ import BarometerBg4 from 'assets/svg/BarometerBg4.svg';
 import BarometerBg4Light from 'assets/svg/BarometerBg4Light.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, Grid, Typography, RootRef } from '@material-ui/core';
-import { useOptionType } from 'state/options/hooks';
+import { useOptionType, useStrikePrice } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { usePrices } from 'state/application/hooks';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
@@ -86,7 +86,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   currentPrice: {
     position: 'absolute',
     top: 31,
-    left: 36,
+    left: 32,
     [breakpoints.down('md')]: {
       top: 'calc(50% - 8px)',
       left: '50%',
@@ -184,8 +184,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   currentPriceLine: {
-    width: (props: any) => (props.mobile ? 1 : 31),
-    height: (props: any) => (props.mobile ? 31 : 1.47),
+    width: (props: any) => (props.mobile ? 1 : 16),
+    height: (props: any) => (props.mobile ? 16 : 1.47),
     background: (props: any) =>
       props.darkMode
         ? palette.text.primary
@@ -234,9 +234,8 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
   const classes = useStyles({ darkMode, mobile });
 
   const prices = usePrices();
+  const { strikePrice } = useStrikePrice();
   const currentPrice = prices[tokens[tokenIndex]];
-  const callPriceStr = currentPrice ? ((currentPrice * 2).toLocaleString()).substring(0, 8) : '';
-  const putPriceStr = currentPrice ? ((currentPrice / 2).toLocaleString()).substring(0, 8) : '';
   const isCall = optionType === 'call';
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
@@ -245,7 +244,22 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
   const [ plPrice, setPLPrice ] = useState(0);
   const barSize = mobile ? barRef.current?.clientWidth / 3 : barRef.current?.clientHeight / 3;
   const pLBoxPos = barSize / 4 * 5 - 21;
-  const plFirstPrice = currentPrice ? currentPrice * 1.5 : 0;
+  const plFirstPrice = (currentPrice || 0) * 1.5;
+  let callSize, putSize;
+  const callPrice = Math.min(Number(strikePrice) * 1.5, currentPrice * 2);
+  if (callPrice <= currentPrice) {
+    callSize = 1/2 + (currentPrice - callPrice) / currentPrice;
+  } else {
+    callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
+  }
+  if (Number(strikePrice) <= currentPrice) {
+    putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
+  } else {
+    putSize = 1/2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
+  }
+
+  const callPriceStr = callPrice.toLocaleString().substring(0, 8);
+  const putPriceStr = strikePrice.toLocaleString().substring(0, 8);
 
   useEffect(() => {
     const setFirstPrice = () => {
@@ -303,7 +317,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
         </Box>
       </Box>
       <Box
-        zIndex={1}
+        zIndex={2}
         className={cx(
           classes.currentPriceLine,
           classes.transitionItem,
@@ -324,7 +338,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
         >
           <Box
             width={mobile ? 1 / 3 : 1}
-            height={mobile ? 1 : 1 / 3}
+            height={mobile ? 1 : optionType === 'call' ? callSize : putSize}
             className={cx(
               optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
               classes.chartItem,
@@ -363,7 +377,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
           </Box>
           <Box
             width={mobile ? 1 / 3 : 1}
-            height={mobile ? 1 : 1 / 3}
+            height={mobile ? 1 : optionType === 'call' ? putSize : callSize}
             className={cx(
               optionType === 'call'
                 ? classes.chartPutBottom
@@ -425,7 +439,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
               position='absolute'
               left={mobile ? pLBoxPos : 'unset'}
               top={mobile ? 11 : pLBoxPos}
-              zIndex={2}
+              zIndex={1}
               id='possiblePLBox'
               className={cx(
                 classes.draggableItem,
@@ -435,7 +449,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
               <Box
                 className={classes.possiblePLLeft}
                 top={mobile ? -52 : 0}
-                left={mobile ? 54 : -98}
+                left={mobile ? 54 : -100}
               >
                 {!mobile &&
                   <img

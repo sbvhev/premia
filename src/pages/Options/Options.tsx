@@ -23,7 +23,8 @@ import OptionsPrice from './OptionsPrice';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
 import { LineChart } from 'components';
-import { useOptionType } from 'state/options/hooks';
+import { useOptionType, useStrikePrice } from 'state/options/hooks';
+import { usePrices } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -179,6 +180,9 @@ const Options: React.FC = () => {
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
+  const { setStrikePrice } = useStrikePrice();
+  const prices = usePrices();
+  const tokens = ['WBTC', 'UNI', 'LINK', 'YFI', 'WETH'];
   const [tokenIndex, setTokenIndex] = useState(2);
   const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
@@ -208,6 +212,7 @@ const Options: React.FC = () => {
           value={tokenIndex}
           onChange={(ev, index) => {
             setTokenIndex(index);
+            setStrikePrice(parseFloat(prices[tokens[index]].toFixed(2)));
           }}
         />
       </Box>
@@ -281,7 +286,7 @@ const Options: React.FC = () => {
           <Grid item xs={12} sm={6}>
             <Container fixed>
               <Box py={2} px={2}>
-                <OptionsFilter />
+                <OptionsFilter tokenIndex={tokenIndex} />
               </Box>
             </Container>
           </Grid>

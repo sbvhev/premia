@@ -17,6 +17,7 @@ import {
   useStrikePrice,
   useOptionSize,
 } from 'state/options/hooks';
+import { usePrices } from 'state/application/hooks';
 import { useOutsideAlerter } from 'hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -233,7 +234,11 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const OptionFilter: React.FC = () => {
+export interface OptionFilterProps {
+  tokenIndex: number;
+}
+
+const OptionFilter: React.FC<OptionFilterProps> = ({ tokenIndex = 0 }) => {
   const classes = useStyles();
   const theme = useTheme();
   const { optionType, setOptionType } = useOptionType();
@@ -241,6 +246,10 @@ const OptionFilter: React.FC = () => {
   const [maturityFocused, setMaturityFocused] = useState(false);
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { optionSize, setOptionSize } = useOptionSize();
+  const prices = usePrices();
+  const tokens = ['WBTC', 'UNI', 'LINK', 'YFI', 'WETH'];
+  const minPrice = parseFloat(((prices[tokens[tokenIndex]] || 0) * 0.5).toFixed(2));
+  const maxPrice = parseFloat(((prices[tokens[tokenIndex]] || 0) * 2).toFixed(2));
   const calendarRef = useRef<HTMLInputElement | null>(null);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
@@ -289,19 +298,22 @@ const OptionFilter: React.FC = () => {
         <Typography className={classes.titleText}>Strike Price</Typography>
 
         <Box width={1} mt={0.5}>
-          <ColoredSlider
-            min={50}
-            max={1500}
-            marks={[50, 1500].map((value) => ({
-              label: value,
-              value,
-            }))}
-            value={strikePrice}
-            valueLabelDisplay='on'
-            onChange={(event: any, value) => {
-              setStrikePrice(value);
-            }}
-          />
+          {minPrice !== 0 &&
+            <ColoredSlider
+              min={minPrice}
+              max={maxPrice}
+              marks={[minPrice, maxPrice].map((value) => ({
+                label: value,
+                value,
+              }))}
+              step={0.01}
+              value={strikePrice}
+              valueLabelDisplay='on'
+              onChange={(event: any, value) => {
+                setStrikePrice(value);
+              }}
+            />        
+          }
         </Box>
       </Box>
 
