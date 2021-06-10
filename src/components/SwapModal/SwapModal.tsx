@@ -7,34 +7,47 @@ import {
   ButtonBase,
   Input,
   Menu,
-  MenuItem,
   Tooltip,
-  Fade,
-  Backdrop
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { ethers } from 'ethers';
 import cx from 'classnames';
 
-import { ModalContainer } from 'components';
-
 import XOut from 'assets/svg/XOutGrey.svg';
-import AAVE from 'assets/images/AAVE-icon.png';
-import DAI from 'assets/images/DAI-icon.png';
-import ETH from 'assets/images/ETH-icon.png';
-import WBTC from 'assets/images/WBTC-icon.png';
-import LINK from 'assets/svg/LINK-icon.svg';
+
 import { ReactComponent as Down } from 'assets/svg/DropDownArrow.svg';
-import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg'; 
-import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg'; 
-import { ReactComponent as Search } from 'assets/svg/Search.svg'; 
+import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg';
+import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg';
+import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { ReactComponent as SwitchArrows } from 'assets/svg/SwitchTokensArrows.svg';
-import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
-import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
-import { useSwapSettings } from 'state/swap/hooks';
+import {
+  useApproval,
+  useTransact,
+  // useWrapEther,
+  useGasToken,
+  CurrencyWithLogoUri,
+} from 'hooks';
+import { Token, isToken } from 'web3/tokens';
+import { useWeb3 } from 'state/application/hooks';
+import {
+  useSwapSettings,
+  useToggleExchange,
+  getSwapQuote,
+} from 'state/swap/hooks';
+import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useGasPrice } from 'state/transactions/hooks';
 
-import { SwapSettings } from './components';
+import { calculateGasMargin } from 'utils';
+import { formatUnits } from 'ethers/lib/utils';
+import { BigNumber } from 'bignumber.js';
+import TokenList from '../../tokens.json';
+import ROUTE_ICON_LIST from '../../routeIconList.json';
+
+import { ModalContainer } from 'components';
+import { SwapSettings, TokenMenuItem } from './components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -196,21 +209,21 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
-    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
+    borderLeft: `1px solid ${palette.divider}`,
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: palette.primary.dark,
       border: `1px solid ${palette.primary.main}`,
-      borderLeft: '0px',
+      borderLeft: `1px solid ${palette.primary.main}`,
       boxShadow: 'none',
       '& .MuiTypography-root': {
-        color: palette.primary.main
+        color: palette.primary.main,
       },
       '& svg': {
-        stroke: palette.primary.main
+        stroke: palette.primary.main,
       },
     },
     '&:before': {
@@ -222,8 +235,8 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:after': {
       borderColor: palette.background.paper,
       '& .MuiTypography-root': {
-        color: palette.primary.main
-      }
+        color: palette.primary.main,
+      },
     },
     '&:select': {
       paddingRight: '0px',
@@ -239,13 +252,13 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
-    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
-    border: `1px solid ${palette.divider}`,
+    border: `1px solid ${palette.primary.main}`,
+    borderLeft: `1px solid ${palette.primary.main}`,
     cursor: 'pointer',
     '& .MuiTypography-root': {
-      color: palette.primary.main
+      color: palette.primary.main,
     },
   },
   tokenTickerInSelector: {
@@ -444,7 +457,6 @@ const useStyles = makeStyles(({ palette }) => ({
       borderColor: palette.background.paper,
     },
     '&:after': {
-      // 
       display: 'none',
     },
   },
@@ -473,73 +485,84 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const coinsForSwap = [
-  {
-    symbol: 'DAI',
-    name: 'Dai Stablecoin',
-    icon: DAI,
-    balance: 556,
-  },
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    icon: ETH,
-    balance: 3543,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Wrapped Bitcoin',
-    icon: WBTC,
-    balance: 2,
-  },
-  {
-    symbol: 'AAVE',
-    name: 'Aave',
-    icon: AAVE,
-    balance: 0,
-  },
-  {
-    symbol: 'LINK',
-    name: 'Chainlink',
-    icon: LINK,
-    balance: 876,
-  },
-];
-
 export interface SwapModalProps {
   open: boolean;
   onClose: () => void;
+}
+
+export interface SwapQuote {
+  price: string;
+  guaranteedPrice: string;
+  to: string;
+  data: string;
+  value: string;
+  gas: string;
+  estimatedGas: string;
+  gasPrice: string;
+  minimumProtocolFee: string;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  buyAmount: string;
+  sellAmount: string;
+  allowanceTarget: string;
+  orders: any[];
 }
 
 const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
+  const { account, chainId, web3 } = useWeb3();
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
-  const { fromToken, toToken, fromAmount, toAmount, setSwapSettings } =
-    useSwapSettings();
-  const [topInputValue, setTopInputValue] =
-    React.useState<string | number>('0');
-  const [botInputValue, setBotInputValue] =
-    React.useState<string | number>('0');
-  // const [searchValueFrom, setSearchValueFrom] = React.useState(null);
-  // const [searchValueTo, setSearchValueTo] = React.useState(null);
-  // const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  // const [approved, setApproved] = React.useState(true);
+  const transact = useTransact();
+  // const { onWrapEther, onUnwrapEther } = useWrapEther();
+  const {
+    fromToken,
+    toToken,
+    fromAmount,
+    toAmount,
+    slippagePercentage,
+    inputType,
+    setSwapSettings,
+  } = useSwapSettings();
+  const { liquidityProviders } = useToggleExchange();
+  const gasToken = useGasToken();
+  const assetListWithGasToken = [...TokenList.tokens, gasToken];
+  const [tokenListFrom, setTokenListFrom] = React.useState(
+    assetListWithGasToken,
+  );
+  const [tokenListTo, setTokenListTo] = React.useState(assetListWithGasToken);
+  const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
+  const [searchValueTo, setSearchValueTo] = React.useState<string>('');
+  const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
+  const [preSwapButtonGuide, setPreSwapButtonGuide] =
+    React.useState<string>('Select tokens');
   const [fromAssetOpen, setFromAssetOpen] =
     React.useState<null | HTMLElement>(null);
   const [toAssetOpen, setToAssetOpen] =
     React.useState<null | HTMLElement>(null);
+  const [zeroXQuote, setZeroXQuote] =
+    useState<SwapQuote | undefined>(undefined);
+  const [swapValid, setSwapValid] = React.useState(false);
+  const [swapReady, setSwapReady] = React.useState(false);
 
-  const swapReady =
-    fromToken &&
-    toToken &&
-    fromAmount &&
-    fromAmount !== '0' &&
-    toAmount &&
-    toAmount !== '0';
+  const gasPriceinGwei = useGasPrice() * 1000000000;
+
+  const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
+  const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
+  const excludedLiquidityProviders = liquidityProviders.filter(
+    (item) => !item.enabled,
+  );
+  const simpleExclusionList = excludedLiquidityProviders.map(
+    (item) => item.name,
+  );
+
+  const { allowance, onApprove } = useApproval(
+    isToken(fromToken) ? fromToken.address : undefined,
+    zeroXQuote?.allowanceTarget as string,
+  );
 
   const handleSwapTokenPositions = () => {
     setSwitched(!switched);
@@ -552,26 +575,57 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const handleMax = () => {
-    // if (fromToken) {
-    //   setSwapSettings({ fromAmount: fromTokenBalance });
-    // }
+    if (fromToken) {
+      setSwapSettings({ fromAmount: fromTokenBalance, inputType: false });
+    }
   };
 
   const handleChangeFromAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const numberValue = value.replace(/[^0-9.]/g, '');
-    // if (fromTokenBalance && parseFloat(numberValue) <= parseFloat(fromTokenBalance)) {
-    //   setSwapSettings({ fromAmount: numberValue });
-    // }
-    setTopInputValue(numberValue);
-    setSwapSettings({ fromAmount: numberValue });
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ fromAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ fromAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ fromAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ fromAmount: paddedValue, inputType: false });
+    }
   };
 
   const handleChangeToAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const numberValue = value.replace(/[^0-9.]/g, '');
-    setBotInputValue(numberValue);
-    setSwapSettings({ toAmount: numberValue });
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ toAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ toAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ toAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ toAmount: paddedValue, inputType: true });
+    }
   };
 
   const handleChangeFromAsset = (
@@ -594,211 +648,520 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     setToAssetOpen(null);
   };
 
-  const handleSelectFromToken = (index: number) => {
-    setSwapSettings({ fromToken: coinsForSwap[index] });
+  const handleSelectFromToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ fromToken: token });
+    setTokenListFrom(TokenList.tokens);
     handleClosefromAsset();
+    setSearchValueFrom('');
   };
 
-  const handleSelectToToken = (index: number) => {
-    setSwapSettings({ toToken: coinsForSwap[index] });
+  const handleSelectToToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ toToken: token });
+    setTokenListTo(TokenList.tokens);
     handleCloseToAsset();
+    setSearchValueTo('');
   };
 
-  const mappedItemsFrom = coinsForSwap.map((item, index) => (
-    <MenuItem
-      className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.symbol}
-      onClick={() => handleSelectFromToken(index)}
-    >
-      <Box display='flex' alignItems='center'>
-        <img
-          src={item.icon}
-          alt={item.symbol}
-          style={{ width: '28px', height: '28px' }}
-        />
-        <Box
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          marginLeft='6px'
-          height='28px'
-        >
-          <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.symbol}
-          </Typography>
-          <Typography className={classes.menuItemAssetName}>
-            {item.name}
-          </Typography>
-        </Box>
-      </Box>
-      <Typography color='textSecondary'>{item.balance}</Typography>
-    </MenuItem>
-  ));
+  const handleSearchFromAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueFrom(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenListFrom(filteredList);
+  };
 
-  const mappedItemsTo = coinsForSwap.map((item, index) => (
-    <MenuItem
-      className={!mobile ? classes.menuItem : classes.menuItemMobile}
-      key={item.symbol}
-      onClick={() => handleSelectToToken(index)}
-    >
-      <Box display='flex' alignItems='center'>
-        <img
-          src={item.icon}
-          alt={item.symbol}
-          style={{ width: '28px', height: '28px' }}
-        />
-        <Box
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          marginLeft='6px'
-          height='28px'
-        >
-          <Typography className={classes.elementHeader} color='textPrimary'>
-            {item.symbol}
-          </Typography>
-          <Typography className={classes.menuItemAssetName}>
-            {item.name}
-          </Typography>
-        </Box>
-      </Box>
-      <Typography color='textSecondary'>{item.balance}</Typography>
-    </MenuItem>
-  ));
+  const handleSearchToAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueTo(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenListTo(filteredList);
+  };
+
+  React.useEffect(() => {
+    (async () => {
+      setSwapValid(false);
+      setSwapReady(false);
+      if (!web3 || !account || !chainId) {
+        return;
+      }
+
+      if (!fromToken || !toToken) {
+        setPreSwapButtonGuide('Select tokens');
+        return;
+      }
+      if (!fromAmount && !toAmount) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+
+      if (!inputType && (!fromAmount || parseFloat(fromAmount) === 0)) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+      if (inputType && (!toAmount || parseFloat(toAmount) === 0)) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+
+      if (
+        !inputType &&
+        parseFloat(fromAmount ?? '0') > parseFloat(fromTokenBalance ?? '0')
+      ) {
+        setPreSwapButtonGuide('Insufficient balance');
+        return;
+      }
+      setPreSwapButtonGuide('Swap');
+
+      const swapSlippage = slippagePercentage
+        ? slippagePercentage / 100
+        : 0.005;
+
+      const _zeroXQuote = await getSwapQuote(
+        fromToken,
+        toToken,
+        fromAmount ?? '0',
+        toAmount ?? '0',
+        gasPriceinGwei,
+        inputType,
+        chainId,
+        swapSlippage,
+        simpleExclusionList.join(','),
+      );
+
+      console.log('quote', _zeroXQuote);
+      if (_zeroXQuote.validationErrors) {
+        setPreSwapButtonGuide(_zeroXQuote.reason);
+        return;
+      }
+      setZeroXQuote(_zeroXQuote);
+
+      if (inputType) {
+        setSwapSettings({
+          fromAmount: formatUnits(_zeroXQuote.sellAmount, fromToken?.decimals),
+        });
+      } else {
+        setSwapSettings({
+          toAmount: formatUnits(_zeroXQuote.buyAmount, toToken?.decimals),
+        });
+      }
+
+      if (inputType) {
+        const calculatedSendAmount = formatUnits(
+          _zeroXQuote.sellAmount,
+          fromToken?.decimals,
+        );
+        if (
+          parseFloat(calculatedSendAmount ?? '0') >
+          parseFloat(fromTokenBalance ?? '0')
+        ) {
+          setPreSwapButtonGuide('Insufficient balance');
+          setSwapValid(false);
+          return;
+        }
+      }
+      setSwapValid(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromAmount, fromToken, toAmount, toToken, inputType, fromTokenBalance]);
+
+  React.useEffect(() => {
+    if (fromToken?.symbol === 'ETH') {
+      setTokenNeedsapproval(false);
+      return;
+    }
+    if (fromAmount && allowance >= parseFloat(fromAmount)) {
+      setTokenNeedsapproval(false);
+    } else {
+      setTokenNeedsapproval(true);
+    }
+  }, [allowance, fromAmount, fromToken]);
+
+  React.useEffect(() => {
+    if (swapValid && !tokenNeedsapproval && fromAmount) {
+      if (
+        parseFloat(fromAmount ?? '0') <= parseFloat(fromTokenBalance ?? '0')
+      ) {
+        setSwapReady(true);
+        return;
+      }
+      setSwapReady(false);
+    }
+  }, [
+    tokenNeedsapproval,
+    swapValid,
+    fromTokenBalance,
+    fromAmount,
+    fromToken,
+    toToken,
+  ]);
+
+  const mappedItemsFrom = tokenListFrom
+    .filter((item, index) => item.symbol !== toToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`from${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectFromToken(item)}
+      />
+    ));
+
+  const mappedItemsTo = tokenListTo
+    .filter((item) => item.symbol !== fromToken?.symbol)
+    .map((item, index) => (
+      <TokenMenuItem
+        key={`to${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectToToken(item)}
+      />
+    ));
+
+  const handleSwap = async () => {
+    if (zeroXQuote && swapReady) {
+      transact(
+        web3?.getSigner(account).sendTransaction({
+          to: zeroXQuote.to,
+          data: zeroXQuote.data,
+          gasPrice: ethers.BigNumber.from(zeroXQuote.gasPrice),
+          value: ethers.BigNumber.from(zeroXQuote.value),
+          gasLimit: calculateGasMargin(ethers.BigNumber.from(zeroXQuote.gas)),
+        }),
+        {
+          closeOnSuccess: true,
+          description: `Swaping ${fromToken?.symbol} for ${toToken?.symbol}`,
+        },
+      );
+    }
+  };
+
+  const getMinimumReceive = () => {
+    if (!zeroXQuote) return '???';
+    return formatUnits(
+      new BigNumber(zeroXQuote?.buyAmount ?? '0')
+        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
+        .toFixed(0),
+      toToken?.decimals,
+    );
+  };
+
+  const getSymbolWithAddress = (address: string) => {
+    return TokenList.tokens.find(
+      (e) => e.address.toLowerCase() === address.toLowerCase(),
+    )?.symbol;
+  };
+
+  const getSwapRoute = () => {
+    if (!zeroXQuote) return '???';
+    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
+      (e: string) => getSymbolWithAddress(e),
+    );
+    return routes ? routes.join(' > ') : '???';
+  };
+
+  const getSwapRouter = () => {
+    if (!zeroXQuote) return;
+
+    const routeIconList = ROUTE_ICON_LIST.routeIconList;
+
+    const icon = routeIconList.find(
+      (r) => r.routerName === zeroXQuote.orders[0].source,
+    )?.logoUrl;
+    return icon ? (
+      <img
+        style={{ height: '18px', marginRight: '8px' }}
+        src={icon}
+        alt='router'
+      />
+    ) : (
+      <Typography style={{ margin: '5px' }} color='primary'>
+        ?
+      </Typography>
+    );
+  };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500
-      }}
-    >
-      <Fade in={open}>
-        <ModalContainer>
-          {!editSettings ? (
-            <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
+    <Modal open={open} onClose={onClose}>
+      <ModalContainer>
+        {!editSettings ? (
+          <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
+            <Box
+              width={1}
+              className={!mobile ? classes.mainCard : classes.mainCardMobile}
+            >
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Typography color='primary' className={classes.title}>
+                  Swap
+                </Typography>
+              </Box>
+
               <Box
-                width={1}
-                className={!mobile ? classes.mainCard : classes.mainCardMobile}
+                className={
+                  !mobile ? classes.topSection : classes.topSectionMobile
+                }
               >
-                <Box display='flex' justifyContent='center' alignItems='center'>
-                  <Typography color='primary' className={classes.title}>
-                    Swap
-                  </Typography>
-                </Box>
+                <Typography className={classes.elementHeader}>From</Typography>
 
                 <Box
-                  className={
-                    !mobile ? classes.topSection : classes.topSectionMobile
-                  }
+                  style={{
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    height: '46px',
+                    display: 'flex',
+                    margin: '7px 2px 2px',
+                  }}
+                  id='topTarget'
                 >
-                  <Typography className={classes.elementHeader}>From</Typography>
+                  <Box width='65%' height='46px' maxWidth='250px'>
+                    <input
+                      value={fromAmount || fromAmount === '' ? fromAmount : ''}
+                      onChange={handleChangeFromAmount}
+                      className={classes.borderedInput}
+                    />
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.maxButtonContainer
+                          : classes.maxButtonContainerMobile
+                      }
+                    >
+                      <Button
+                        color='primary'
+                        variant='outlined'
+                        size='small'
+                        onClick={handleMax}
+                        style={{ margin: '0px', width: '74px', height: '35px' }}
+                        className={classes.maxButton}
+                      >
+                        MAX
+                      </Button>
+                    </Box>
+                  </Box>
 
+                  {!fromToken ? (
+                    <ButtonBase
+                      className={classes.coloredSelector}
+                      onClick={handleChangeFromAsset}
+                      style={
+                        fromAssetOpen
+                          ? {
+                              background: 'none',
+                              backgroundColor: palette.primary.main,
+                            }
+                          : {}
+                      }
+                    >
+                      <Typography
+                        className={classes.selectorText}
+                        style={mobile ? { marginLeft: '8px' } : {}}
+                      >
+                        Select token
+                      </Typography>
+                      <Box marginRight={!mobile ? '20px' : '16px'}>
+                        {!fromAssetOpen ? (
+                          <Down stroke={palette.background.paper} />
+                        ) : (
+                          <Up stroke={palette.background.paper} />
+                        )}
+                      </Box>
+                    </ButtonBase>
+                  ) : (
+                    <ButtonBase
+                      className={
+                        !fromAssetOpen
+                          ? classes.borderedSelector
+                          : classes.borderedSelectorActive
+                      }
+                      onClick={handleChangeFromAsset}
+                      style={
+                        fromAssetOpen
+                          ? { borderColor: palette.primary.main }
+                          : {}
+                      }
+                    >
+                      <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        marginLeft='12px'
+                        alignItems='center'
+                      >
+                        <img
+                          src={fromToken.logoURI}
+                          alt={fromToken.symbol}
+                          style={{ height: '18px' }}
+                        />
+                        <Typography
+                          className={classes.tokenTickerInSelector}
+                          style={{ marginLeft: '7px' }}
+                        >
+                          {fromToken.symbol}
+                        </Typography>
+                      </Box>
+                      <Box marginRight='20px'>
+                        {!fromAssetOpen ? (
+                          <Down stroke={palette.secondary.main} />
+                        ) : (
+                          <Up stroke={palette.primary.main} />
+                        )}
+                      </Box>
+                    </ButtonBase>
+                  )}
+
+                  <Menu
+                    id='simple-menu'
+                    anchorEl={fromAssetOpen}
+                    keepMounted
+                    open={Boolean(fromAssetOpen)}
+                    onClose={handleClosefromAsset}
+                    style={{ marginTop: '85px' }}
+                  >
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.searchAssetMenuContainer
+                          : classes.searchAssetMenuContainerMobile
+                      }
+                    >
+                      <Input
+                        className={classes.assetSearchInput}
+                        value={searchValueFrom}
+                        onChange={handleSearchFromAsset}
+                        placeholder='Search...'
+                        endAdornment={
+                          <Box>
+                            <Search fill={palette.secondary.main} />
+                          </Box>
+                        }
+                      />
+                    </Box>
+                    <Box style={{ maxHeight: '22vh', overflowX: 'auto' }}>
+                      {mappedItemsFrom}
+                    </Box>
+                  </Menu>
+                </Box>
+
+                {fromToken && (
+                  <Typography className={classes.smallInfoText}>
+                    Balance: {fromTokenBalance} {fromToken?.symbol}
+                  </Typography>
+                )}
+              </Box>
+
+              <Box
+                className={
+                  !mobile ? classes.botSection : classes.botSectionMobile
+                }
+                style={true ? { paddingBottom: '0' } : {}}
+              >
+                <Typography className={classes.elementHeader}>To</Typography>
+
+                <Box marginBottom={2}>
                   <Box
                     style={{
                       boxSizing: 'border-box',
                       width: '100%',
                       height: '46px',
                       display: 'flex',
-                      margin: '7px 2px 2px',
+                      marginTop: '7px',
+                      maxWidth: '390px',
                     }}
-                    id='topTarget'
                   >
                     <Box width='65%' height='46px' maxWidth='250px'>
                       <input
-                        value={topInputValue}
-                        onChange={handleChangeFromAmount}
+                        value={toAmount || ''}
+                        onChange={handleChangeToAmount}
                         className={classes.borderedInput}
+                        style={{ paddingRight: '8px' }}
                       />
-                    <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
-                      <Button
-                        color='primary'
-                        variant='outlined'
-                        size='small'
-                        onClick={handleMax}
-                        style={{ margin: '0px', width: '74px', height: '35px'}}
-                        className={classes.maxButton}
-                      >
-                        MAX
-                      </Button>
                     </Box>
-                    </Box>
-
-                    {!fromToken ? (
-                      <ButtonBase
-                        className={classes.coloredSelector}
-                        onClick={handleChangeFromAsset}
-                        style={
-                          fromAssetOpen
-                            ? {
-                                background: 'none',
-                                backgroundColor: palette.primary.main,
-                              }
-                            : {}
-                        }
-                      >
-                        <Typography
-                          className={classes.selectorText}
-                          style={mobile ? { marginLeft: '8px' } : {}}
+                    <>
+                      {!toToken ? (
+                        <ButtonBase
+                          className={classes.coloredSelector}
+                          onClick={handleChangeToAsset}
+                          style={
+                            toAssetOpen
+                              ? {
+                                  background: 'none',
+                                  backgroundColor: palette.primary.main,
+                                }
+                              : {}
+                          }
                         >
-                          Select token
-                        </Typography>
-                        <Box marginRight={!mobile ? '20px' : '16px'}>
-                          {!fromAssetOpen ? (
-                            <Down stroke={palette.background.paper}/>
-                          ) : (
-                            <Up stroke={palette.background.paper}/>
-                          )}
-                        </Box>
-                      </ButtonBase>
-                    ) : (
-                      <ButtonBase
-                        className={!fromAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
-                        onClick={handleChangeFromAsset}
-                        style={
-                          fromAssetOpen
-                            ? { borderColor: palette.primary.main }
-                            : {}
-                        }
-                      >
-                        <Box
-                          display='flex'
-                          justifyContent='space-between'
-                          marginLeft='12px'
-                          alignItems='center'
-                        >
-                          <img
-                            src={fromToken.icon}
-                            alt={fromToken.symbol}
-                            style={{ height: '18px' }}
-                          />
                           <Typography
-                            className={classes.tokenTickerInSelector}
-                            style={{ marginLeft: '7px' }}
+                            className={classes.selectorText}
+                            style={mobile ? { marginLeft: '8px' } : {}}
                           >
-                            {fromToken.symbol}
+                            Select token
                           </Typography>
-                        </Box>
-                        <Box marginRight='20px'>
-                          {!fromAssetOpen ? (
-                            <Down stroke={palette.secondary.main} />
+                          <Box marginRight={!mobile ? '20px' : '16px'}>
+                            {!toAssetOpen ? (
+                              <Down stroke={palette.background.paper} />
                             ) : (
-                            <Up stroke={palette.primary.main}/>
-                          )}
-                        </Box>
-                      </ButtonBase>
-                    )}
-
+                              <Up stroke={palette.background.paper} />
+                            )}
+                          </Box>
+                        </ButtonBase>
+                      ) : (
+                        <ButtonBase
+                          className={
+                            !toAssetOpen
+                              ? classes.borderedSelector
+                              : classes.borderedSelectorActive
+                          }
+                          onClick={handleChangeToAsset}
+                          style={
+                            toAssetOpen
+                              ? { borderColor: palette.primary.main }
+                              : {}
+                          }
+                        >
+                          <Box
+                            display='flex'
+                            justifyContent='space-between'
+                            marginLeft='12px'
+                            alignItems='center'
+                          >
+                            <img
+                              src={toToken.logoURI}
+                              alt={toToken.symbol}
+                              style={{ height: '18px' }}
+                            />
+                            <Typography
+                              className={classes.tokenTickerInSelector}
+                              style={{ marginLeft: '7px' }}
+                            >
+                              {toToken.symbol}
+                            </Typography>
+                          </Box>
+                          <Box marginRight='20px'>
+                            {!toAssetOpen ? (
+                              <Down stroke={palette.secondary.main} />
+                            ) : (
+                              <Up stroke={palette.primary.main} />
+                            )}
+                          </Box>
+                        </ButtonBase>
+                      )}
+                    </>
                     <Menu
-                      id='simple-menu'
-                      anchorEl={fromAssetOpen}
+                      id='simple-menu2'
+                      anchorEl={toAssetOpen}
                       keepMounted
-                      open={Boolean(fromAssetOpen)}
-                      onClose={handleClosefromAsset}
-                      style={{ marginTop: '85px' }}
+                      open={Boolean(toAssetOpen)}
+                      onClose={handleCloseToAsset}
+                      style={{ marginTop: '21px' }}
                     >
                       <Box
                         className={
@@ -809,8 +1172,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       >
                         <Input
                           className={classes.assetSearchInput}
-                          // value={searchValueFrom}
+                          value={searchValueTo}
                           placeholder='Search...'
+                          onChange={handleSearchToAsset}
                           endAdornment={
                             <Box>
                               <Search fill={palette.secondary.main} />
@@ -818,336 +1182,206 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           }
                         />
                       </Box>
-                      <Box style={{ maxHeight: '22vh', overflowX: 'auto' }}>
-                        {mappedItemsFrom}
+                      <Box
+                        style={{
+                          maxHeight: '20vh',
+                          overflowX: 'auto',
+                          borderBottomLeftRadius: '12px',
+                          WebkitBorderBottomRightRadius: '12px',
+                        }}
+                      >
+                        {mappedItemsTo}
                       </Box>
                     </Menu>
                   </Box>
 
-                  {fromToken && (
-                    <Typography className={classes.smallInfoText}>
-                      Balance: {fromToken?.balance} {fromToken?.symbol}
-                    </Typography>
+                  {toToken && (
+                    <Box marginTop='2px'>
+                      <Typography className={classes.smallInfoText}>
+                        Balance: {toTokenBalance} {toToken?.symbol}
+                      </Typography>
+                    </Box>
                   )}
                 </Box>
 
-                <Box
-                  className={
-                    !mobile ? classes.botSection : classes.botSectionMobile
-                  }
-                  style={true ? { paddingBottom: '0' } : {}}
-                >
-                  <Typography className={classes.elementHeader}>To</Typography>
-
-                  <Box marginBottom={2}>
-                    <Box
-                      style={{
-                        boxSizing: 'border-box',
-                        width: '100%',
-                        height: '46px',
-                        display: 'flex',
-                        marginTop: '7px',
-                        maxWidth: '390px',
-                      }}
-                    >
-                      <Box width='65%' height='46px' maxWidth='250px'>
-                        <input
-                          value={botInputValue}
-                          onChange={handleChangeToAmount}
-                          className={classes.borderedInput}
-                        />
-                      <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
+                <>
+                  {swapValid && (
+                    <>
+                      {tokenNeedsapproval ? (
                         <Button
                           color='primary'
-                          variant='outlined'
-                          size='small'
-                          onClick={handleMax}
-                          style={{ margin: '0px', width: '74px', height: '35px'}}
-                          className={classes.maxButton}
-                        >
-                          MAX
-                        </Button>
-                      </Box>
-                      </Box>
-                      <>
-                        {!toToken ? (
-                          <ButtonBase
-                            className={classes.coloredSelector}
-                            onClick={handleChangeToAsset}
-                            style={
-                              toAssetOpen
-                                ? {
-                                    background: 'none',
-                                    backgroundColor: palette.primary.main,
-                                  }
-                                : {}
-                            }
-                          >
-                            <Typography
-                              className={classes.selectorText}
-                              style={mobile ? { marginLeft: '8px' } : {}}
+                          variant='contained'
+                          id='bottomTarget'
+                          size='large'
+                          onClick={() => onApprove()}
+                          endIcon={
+                            <Tooltip
+                              arrow
+                              leaveTouchDelay={1500}
+                              title={`You must give Premia permission to use your ${
+                                fromToken ? fromToken.symbol : ''
+                              } You only have to do this once per token.`}
                             >
-                              Select token
-                            </Typography>
-                            <Box marginRight={!mobile ? '20px' : '16px'}>
-                              {!toAssetOpen ? (
-                                <Down stroke={palette.background.paper} />
-                                ) : (
-                                <Up stroke={palette.background.paper}/>
-                              )}
-                            </Box>
-                          </ButtonBase>
-                        ) : (
-                          <ButtonBase
-                          className={!toAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
-                          onClick={handleChangeToAsset}
-                            style={
-                              toAssetOpen
-                                ? { borderColor: palette.primary.main }
-                                : {}
-                            }
-                          >
-                            <Box
-                              display='flex'
-                              justifyContent='space-between'
-                              marginLeft='12px'
-                              alignItems='center'
-                            >
-                              <img
-                                src={toToken.icon}
-                                alt={toToken.symbol}
-                                style={{ height: '18px' }}
-                              />
-                              <Typography
-                                className={classes.tokenTickerInSelector}
-                                style={{ marginLeft: '7px' }}
-                              >
-                                {toToken.symbol}
-                              </Typography>
-                            </Box>
-                            <Box marginRight='20px'>
-                              {!toAssetOpen ? (
-                                <Down stroke={palette.secondary.main} />
-                              ) : (
-                                <Up stroke={palette.primary.main}/>
-                              )}
-                            </Box>
-                          </ButtonBase>
-                        )}
-                      </>
-                      <Menu
-                        id='simple-menu2'
-                        anchorEl={toAssetOpen}
-                        keepMounted
-                        open={Boolean(toAssetOpen)}
-                        onClose={handleCloseToAsset}
-                        style={{ marginTop: '21px' }}
-                      >
-                        <Box
-                          className={
-                            !mobile
-                              ? classes.searchAssetMenuContainer
-                              : classes.searchAssetMenuContainerMobile
+                              <InfoIcon fill={palette.background.paper} />
+                            </Tooltip>
                           }
+                          style={{ marginBottom: '10px' }}
                         >
-                          <Input
-                            className={classes.assetSearchInput}
-                            // value={searchValueFrom}
-                            placeholder='Search...'
-                            endAdornment={
-                              <Box>
-                                <Search fill={palette.secondary.main} />
-                              </Box>
-                            }
-                          />
-                        </Box>
-                        <Box
-                          style={{
-                            maxHeight: '20vh',
-                            overflowX: 'auto',
-                            borderBottomLeftRadius: '12px',
-                            WebkitBorderBottomRightRadius: '12px',
-                          }}
+                          {`Approve ${fromToken?.symbol}`}
+                        </Button>
+                      ) : (
+                        <Button
+                          color='primary'
+                          variant='contained'
+                          id='bottomTarget'
+                          disabled
+                          size='large'
+                          startIcon={
+                            <ApprovedIcon fill={palette.background.paper} />
+                          }
+                          style={{ marginBottom: '10px' }}
                         >
-                          {mappedItemsTo}
-                        </Box>
-                      </Menu>
-                    </Box>
-
-                    {toToken && (
-                      <Box marginTop='2px'>
-                        <Typography className={classes.smallInfoText}>
-                          Balance: {toToken?.balance} {toToken?.symbol}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-
-                  <>
-                    {true && (
-                      <>
-                        {!true ? (
-                          <Button
-                            color='primary'
-                            variant='contained'
-                            id='bottomTarget'
-                            size='large'
-                            endIcon={
-                              <Tooltip
-                                arrow
-                                leaveTouchDelay={1500}
-                                title={`You must give Premia permission to use your ${
-                                  fromToken ? fromToken.symbol : ''
-                                } You only have to do this once per token.`}
-                              >
-                                <InfoIcon fill={palette.background.paper} />
-                              </Tooltip>
-                            }
-                            style={{ marginBottom: '10px' }}
-                          >
-                            {`Approve ${`Link`}`}
-                          </Button>
-                        ) : (
-                          <Button
-                            color='primary'
-                            variant='contained'
-                            id='bottomTarget'
-                            disabled
-                            size='large'
-                            startIcon={(<ApprovedIcon fill={palette.background.paper} />)}
-                            style={{ marginBottom: '10px' }}
-                          >
-                            Approved
-                          </Button>
-                        )}
-                      </>
-                    )}
+                          Approved
+                        </Button>
+                      )}
+                    </>
+                  )}
+                  {swapValid && swapReady ? (
                     <Button
                       color='primary'
                       variant='contained'
-                      disabled={false}
                       id='bottomTarget'
                       size='large'
                       style={{ marginBottom: '20px' }}
+                      onClick={handleSwap}
                     >
                       Swap
                     </Button>
-                  </>
-                </Box>
+                  ) : (
+                    <Button
+                      color='primary'
+                      variant='contained'
+                      id='bottomTarget'
+                      size='large'
+                      disabled={true}
+                      style={{ marginBottom: '20px' }}
+                    >
+                      {preSwapButtonGuide}
+                    </Button>
+                  )}
+                </>
+              </Box>
 
-                {!swapReady && (
+              {swapValid && (
+                <Box
+                  className={
+                    !mobile
+                      ? classes.swapDetailsSection
+                      : classes.swapDetailsSectionMobile
+                  }
+                >
                   <Box
-                    className={
-                      !mobile
-                        ? classes.swapDetailsSection
-                        : classes.swapDetailsSectionMobile
-                    }
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
-                    <Box
-                      display='flex'
-                      justifyContent='space-between'
-                      alignItems='center'
+                    <Typography
+                      className={classes.swapDetailsText}
+                      color='textSecondary'
                     >
-                      <Typography
-                        className={classes.swapDetailsText}
-                        color='textSecondary'
-                      >
-                        Minimum Receive
-                      </Typography>
+                      Minimum Receive
+                    </Typography>
+                    <Typography
+                      className={classes.swapDetailsText}
+                      color='textPrimary'
+                    >
+                      {getMinimumReceive()}
+                    </Typography>
+                  </Box>
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
+                  >
+                    <Typography
+                      className={classes.swapDetailsText}
+                      color='textSecondary'
+                    >
+                      Price Slippage
+                    </Typography>
+                    <Typography
+                      className={classes.swapDetailsText}
+                      color='textPrimary'
+                    >
+                      {`${slippagePercentage}%`}
+                    </Typography>
+                  </Box>
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
+                  >
+                    <Typography
+                      className={classes.swapDetailsText}
+                      color='textSecondary'
+                    >
+                      Route
+                    </Typography>
+                    <Box display='flex' alignItems='center' height='18px'>
+                      {getSwapRouter()}
                       <Typography
                         className={classes.swapDetailsText}
                         color='textPrimary'
                       >
-                        {4.474}
+                        {getSwapRoute()}
                       </Typography>
-                    </Box>
-                    <Box
-                      display='flex'
-                      justifyContent='space-between'
-                      alignItems='center'
-                    >
-                      <Typography
-                        className={classes.swapDetailsText}
-                        color='textSecondary'
-                      >
-                        Price Slippage
-                      </Typography>
-                      <Typography
-                        className={classes.swapDetailsText}
-                        color='textPrimary'
-                      >
-                        {`${0.5}%`}
-                      </Typography>
-                    </Box>
-                    <Box
-                      display='flex'
-                      justifyContent='space-between'
-                      alignItems='center'
-                    >
-                      <Typography
-                        className={classes.swapDetailsText}
-                        color='textSecondary'
-                      >
-                        Route
-                      </Typography>
-                      <Box display='flex' alignItems='center' height='18px'>
-                        <Box style={{ margin: '2px 6px 0px 0px' }}>
-                          <UniSwap fill={palette.secondary.main} />
-                        </Box>
-                        <Typography
-                          className={classes.swapDetailsText}
-                          color='textPrimary'
-                        >
-                          {`${'LINK'} > ${'USDC'} > ${'ETH'}`}
-                        </Typography>
-                      </Box>
                     </Box>
                   </Box>
-                )}
-              </Box>
-
-              <Button
-                variant='outlined'
-                color='secondary'
-                className={cx(
-                  classes.swapTokenButton,
-                  !mobile
-                    ? classes.swapButtonWrapper
-                    : classes.swapButtonWrapperMobile,
-                  {
-                    switched: switched,
-                  },
-                )}
-                onClick={handleSwapTokenPositions}
-              >
-                <SwitchArrows />
-              </Button>
-
-              <Box
-                id='exitId'
-                className={
-                  !mobile ? classes.exitContainer : classes.exitContainerMobile
-                }
-                onClick={onClose}
-              >
-                <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
-              </Box>
-              <Box
-                className={
-                  !mobile
-                    ? classes.settingsContainer
-                    : classes.settingsContainerMobile
-                }
-                onClick={() => setEdditSettings(true)}
-              >
-                <SettingsIcon />
-              </Box>
+                </Box>
+              )}
             </Box>
-          ) : (
-            <SwapSettings goBack={() => setEdditSettings(false)} />
-          )}
-        </ModalContainer>
-      </Fade>
+
+            <Button
+              variant='outlined'
+              color='secondary'
+              className={cx(
+                classes.swapTokenButton,
+                !mobile
+                  ? classes.swapButtonWrapper
+                  : classes.swapButtonWrapperMobile,
+                {
+                  switched: switched,
+                },
+              )}
+              onClick={handleSwapTokenPositions}
+            >
+              <SwitchArrows />
+            </Button>
+
+            <Box
+              id='exitId'
+              className={
+                !mobile ? classes.exitContainer : classes.exitContainerMobile
+              }
+              onClick={onClose}
+            >
+              <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
+            </Box>
+            <Box
+              className={
+                !mobile
+                  ? classes.settingsContainer
+                  : classes.settingsContainerMobile
+              }
+              onClick={() => setEdditSettings(true)}
+            >
+              <SettingsIcon />
+            </Box>
+          </Box>
+        ) : (
+          <SwapSettings goBack={() => setEdditSettings(false)} />
+        )}
+      </ModalContainer>
     </Modal>
   );
 };
