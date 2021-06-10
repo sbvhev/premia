@@ -6,8 +6,9 @@ import cn from 'classnames';
 import { StakePremiaCard, LockPremiaCard } from './components';
 
 import { useWeb3 } from 'state/application/hooks';
-import { Token } from 'web3/tokens';
+import { Currency } from '@uniswap/sdk';
 import { contracts } from 'web3/contracts';
+import { isToken, Token } from 'web3/tokens';
 import { useTokenBalance } from 'state/wallet/hooks';
 import { formatNumber } from 'utils/formatNumber';
 
@@ -123,17 +124,35 @@ const Stake: React.FC = () => {
   const { account, chainId } = useWeb3();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  console.log('chainid', chainId);
+  const chain = chainId ? chainId.toString() : '';
+  const premiaAddress = chain ? contracts?.PremiaErc20[+chain] : false;
+  const xPremiaAddress = chain ? contracts?.PremiaStaking[+chain] : false;
 
-  // const premiaAddress = contracts?.PremiaErc20[chainId ?? 1];
-  // const xPremiaAddress = contracts?.PremiaStaking[chainId ?? 1];
+  const PremiaToken: Token = {
+    id: chain ? chain : '1',
+    address: premiaAddress ? premiaAddress : contracts?.PremiaErc20[1],
+    symbol: chain ? (chain === '1' ? 'PREMIA' : 'TEST') : 'PREMIA',
+    name: 'Premia',
+    decimals: 18,
+  };
 
-  // const premiaBalance = useTokenBalance(account ?? undefined, premiaAddress);
+  const xPremiaToken: Token = {
+    id: chain ? chain : '1',
+    address: xPremiaAddress ? xPremiaAddress : contracts?.PremiaStaking[1],
+    symbol: 'xPREMIA',
+    name: 'PremiaStaking',
+    decimals: 18,
+  };
 
-  const premiaBalance = 1;
-  const xPremiaBalance = 2;
+  const premiaBalance = useTokenBalance(
+    account ?? undefined,
+    chain && account ? PremiaToken : undefined,
+  );
 
-  // React.useEffect(() => {}, [account]);
+  const xPremiaBalance = useTokenBalance(
+    account ?? undefined,
+    chain && account ? xPremiaToken : undefined,
+  );
 
   return (
     <Box
@@ -253,7 +272,10 @@ const Stake: React.FC = () => {
             : { alignItems: 'center' }
         }
       >
-        <StakePremiaCard />
+        <StakePremiaCard
+          premiaBalance={premiaBalance}
+          xPremiaBalance={xPremiaBalance}
+        />
         <LockPremiaCard />
       </Box>
     </Box>

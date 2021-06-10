@@ -2,7 +2,8 @@ import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { Box, Typography, Button } from '@material-ui/core';
+import { Box, Typography, Button, CircularProgress } from '@material-ui/core';
+import { formatNumber } from 'utils/formatNumber';
 
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
@@ -233,10 +234,49 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const StakePremiaCard: React.FC = () => {
+interface StakePremiaCardProps {
+  premiaBalance: string | undefined;
+  xPremiaBalance: string | undefined;
+}
+
+const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
+  premiaBalance,
+  xPremiaBalance,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [stakeAmount, setStakeAmount] = React.useState('');
+
+  const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setStakeAmount('');
+      return;
+    }
+    if (value === '.') {
+      setStakeAmount('0.');
+      return;
+    }
+    if (value === '0') {
+      setStakeAmount('0');
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setStakeAmount(paddedValue);
+    }
+  };
+
+  const handleMax = () => {
+    if (premiaBalance) {
+      setStakeAmount(premiaBalance);
+    }
+  };
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -310,8 +350,8 @@ const StakePremiaCard: React.FC = () => {
 
             <Box width='100%' height='46px'>
               <input
-                value={'100'}
-                onChange={() => {}}
+                value={stakeAmount}
+                onChange={handleChangeStakeAmount}
                 className={classes.borderedInput}
               />
               <img
@@ -323,6 +363,7 @@ const StakePremiaCard: React.FC = () => {
                 color='primary'
                 variant='outlined'
                 size='small'
+                onClick={handleMax}
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile
                 }
@@ -375,13 +416,17 @@ const StakePremiaCard: React.FC = () => {
             >
               xPremia Unlocked
             </Typography>
-            <Typography
-              component='p'
-              color='textPrimary'
-              className={classes.elementHeader}
-            >
-              {`1000`}
-            </Typography>
+            {xPremiaBalance ? (
+              <Typography
+                component='p'
+                color='textPrimary'
+                className={classes.elementHeader}
+              >
+                {formatNumber(xPremiaBalance)}
+              </Typography>
+            ) : (
+              <CircularProgress size={16} />
+            )}
           </Box>
           <Box className={classes.horizontalBox}>
             <Typography
