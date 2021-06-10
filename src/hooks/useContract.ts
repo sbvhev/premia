@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Contract } from '@ethersproject/contracts';
-import { ChainId, WETH } from '@uniswap/sdk';
+import { ChainId } from '@uniswap/sdk';
 
+import { WETH } from '../constants';
 import {
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
   MULTICALL_NETWORKS,
@@ -14,7 +15,9 @@ import {
   Erc20Bytes32Abi,
   Erc20Abi,
   WethAbi,
+  PoolAbi,
 } from 'constants/abi';
+import { Pool as PoolContract, Erc20 as Erc20Contract } from 'contracts';
 import { useWeb3 } from 'state/application/hooks';
 import { getContract } from 'utils';
 
@@ -42,15 +45,19 @@ function useContract(
   }, [address, ABI, web3, withSignerIfPossible, account]);
 }
 
+export function usePoolContract(poolAddress?: string, withSignerIfPossible: boolean = true): PoolContract | null {
+  return useContract(poolAddress, PoolAbi, withSignerIfPossible) as PoolContract;
+}
+
 export function useTokenContract(
   tokenAddress?: string,
-  withSignerIfPossible?: boolean,
-): Contract | null {
-  return useContract(tokenAddress, Erc20Abi, withSignerIfPossible);
+  withSignerIfPossible: boolean = true,
+): Erc20Contract | null {
+  return useContract(tokenAddress, Erc20Abi, withSignerIfPossible) as Erc20Contract;
 }
 
 export function useWETHContract(
-  withSignerIfPossible?: boolean,
+  withSignerIfPossible: boolean = true,
 ): Contract | null {
   const { chainId } = useWeb3();
   return useContract(
@@ -72,7 +79,7 @@ export function useArgentWalletDetectorContract(): Contract | null {
 }
 
 export function useENSRegistrarContract(
-  withSignerIfPossible?: boolean,
+  withSignerIfPossible: boolean = true,
 ): Contract | null {
   const { chainId } = useWeb3();
   let address: string | undefined;
@@ -91,14 +98,14 @@ export function useENSRegistrarContract(
 
 export function useENSResolverContract(
   address: string | undefined,
-  withSignerIfPossible?: boolean,
+  withSignerIfPossible: boolean = true,
 ): Contract | null {
   return useContract(address, EnsPublicResolverAbi, withSignerIfPossible);
 }
 
 export function useBytes32TokenContract(
   tokenAddress?: string,
-  withSignerIfPossible?: boolean,
+  withSignerIfPossible: boolean = true,
 ): Contract | null {
   return useContract(tokenAddress, Erc20Bytes32Abi, withSignerIfPossible);
 }

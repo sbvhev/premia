@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Button, Typography, Modal, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
-
+import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import {
+  useCallPool,
+  usePutPool,
+  useCallPoolContract,
+  usePutPoolContract,
+} from 'state/options/hooks';
+import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useApproval, useTransact } from 'hooks';
+import { getTokenIcon } from 'utils/getTokenIcon';
+import { formatCompact } from 'utils/formatNumber';
+
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
+import floatToBigNumber from 'utils/floatToBigNumber';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   borderedCard: {
@@ -148,13 +159,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       position: 'relative',
       top: -4,
       marginRight: 5,
-
-      '& path': {
-        fill: (props: any) =>
-          props.call
-            ? 'url(#paint_linear_gradient_call_uniswap)'
-            : 'url(#paint_linear_gradient_put_uniswap)',
-      },
     },
   },
   col: {
@@ -183,7 +187,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: -38,
+    top: '-40px',
     left: 14,
     width: 20,
     zIndex: 1,
@@ -224,9 +228,68 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   open,
   onClose,
 }) => {
+  const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const [value, setValue] = useState(100);
+  const { account } = useWeb3();
+  const { callPool } = useCallPool();
+  const { callPoolContract } = useCallPoolContract();
+  const { putPool } = usePutPool();
+  const { putPoolContract } = usePutPoolContract();
+  const transact = useTransact();
+
+  const activePool = useMemo(
+    () => (call ? callPool : putPool),
+    [call, callPool, putPool],
+  );
+  const activePoolContract = useMemo(
+    () => (call ? callPoolContract : putPoolContract),
+    [call, callPoolContract, putPoolContract],
+  );
+  const activeToken = useMemo(
+    () => (call ? activePool?.underlying : activePool?.base),
+    [activePool, call],
+  );
+  const activeBalance = useCurrencyBalance(account, activeToken);
+  const { allowance, onApprove } = useApproval(
+    activeToken?.address,
+    activePoolContract?.address,
+  );
+
+  const isAmountAllowed = useMemo(
+    () => allowance > 0 && allowance > (value ?? 0),
+    [allowance, value],
+  );
+
+  const UnderlyingIcon = useMemo(
+    () => getTokenIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
+  const BaseIcon = useMemo(
+    () => getTokenIcon(activePool?.base.symbol),
+    [activePool],
+  );
+
+  const handleWithdrawDeposit = useCallback(() => {
+    if (!value || !activePoolContract || !activeToken) return;
+
+    const depositWithdraw =
+      type === 'deposit'
+        ? activePoolContract!.deposit
+        : activePoolContract!.withdraw;
+
+    const amount = floatToBigNumber(value, activeToken!.decimals);
+
+    transact(depositWithdraw(amount)).then(async (tx) => {
+      try {
+        await tx?.wait();
+        onClose();
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, [type, value, activeToken, activePoolContract, transact, onClose]);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -234,13 +297,17 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
         <Box className={classes.wrapper}>
           <Box className={classes.borderedCard}>
             <Box className={classes.titleBox}>
-              <UniswapIcon />
+              <Box height={16}>
+                <UnderlyingIcon />
+              </Box>
               <Typography
                 component='h2'
                 color='textPrimary'
                 className={classes.title}
               >
-                {call ? `Uni Call pool ${type}` : `Uni Put pool ${type}`}
+                {call
+                  ? `${activePool?.underlying.symbol} Call pool ${type}`
+                  : `${activePool?.underlying.symbol} Put pool ${type}`}
               </Typography>
             </Box>
             <Box className={classes.topSection}>
@@ -254,7 +321,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                     color='textPrimary'
                     className={classes.elementHeader}
                   >
-                    {type === 'withdraw' ? 'Amount' : 'Uni Amount'}
+                    {activeToken?.symbol} Amount
                   </Typography>
                   <Typography
                     component='p'
@@ -262,7 +329,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                     className={classes.smallInfoText}
                   >
                     Max size available:
-                    <b>40012</b>
+                    <b>{formatCompact(activeBalance)}</b>
                   </Typography>
                 </Box>
 
@@ -273,18 +340,22 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                 >
                   <input
                     value={value}
-                    onChange={() => {}}
+                    onChange={(event: any) => setValue(event.target.value)}
                     className={classes.borderedInput}
                   />
-                  <UniswapIcon className={classes.inputIcon} />
+
+                  {call ? (
+                    <UnderlyingIcon className={classes.inputIcon} />
+                  ) : (
+                    <BaseIcon className={classes.inputIcon} />
+                  )}
+
                   <Button
                     color='primary'
                     variant='outlined'
                     size='small'
                     className={classes.maxButton}
-                    onClick={() => {
-                      setValue(40012);
-                    }}
+                    onClick={() => setValue(Number(activeBalance || 0))}
                   >
                     MAX
                   </Button>
@@ -296,12 +367,18 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                 style={{ marginTop: '16px' }}
               >
                 <Button
+                  fullWidth
+                  disabled={Number(value) <= 0}
                   color={call ? 'primary' : 'secondary'}
                   variant='contained'
                   size='large'
-                  fullWidth
+                  onClick={() =>
+                    isAmountAllowed ? handleWithdrawDeposit() : onApprove()
+                  }
                 >
-                  Confirm
+                  {isAmountAllowed
+                    ? `Confirm`
+                    : `Approve ${activeToken?.symbol}`}
                 </Button>
               </Box>
             </Box>

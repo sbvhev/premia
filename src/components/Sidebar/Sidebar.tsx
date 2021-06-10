@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     },
     {
       title: 'Vaults',
-      link: '/vaults',
+      link: '/vaults?tab=pro',
       Icon: <VaultsIcon />,
     },
     {

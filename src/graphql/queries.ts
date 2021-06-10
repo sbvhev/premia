@@ -1,6 +1,12 @@
 import gql from 'graphql-tag';
 
-import { Token, TokenPair } from './fragments';
+import {
+  Token,
+  TokenPair,
+  Pool,
+  UserOwnedOption,
+  UserOwnedPool,
+} from './fragments';
 
 export const getToken = gql`
   ${Token}
@@ -25,17 +31,48 @@ export const getTokenPair = gql`
 export const getTokenPairs = gql`
   ${TokenPair}
 
-  query TokenPairs(
-    $denominatorAddress: String!
+  query TokenPairs($baseAddress: String!, $first: Int = 100, $skip: Int = 0) {
+    tokenPairs(where: { base: $baseAddress }, first: $first, skip: $skip) {
+      ...TokenPair
+    }
+  }
+`;
+
+export const getPool = gql`
+  ${Pool}
+
+  query Pool($id: String!) {
+    pool(id: $id) {
+      ...Pool
+    }
+  }
+`;
+
+export const getUserOwnedOptions = gql`
+  ${UserOwnedOption}
+
+  query UserOwnedOptions($account: String!, $first: Int = 100, $skip: Int = 0) {
+    userOwnedOptions(first: $first, skip: $skip, where: { user: $account }) {
+      ...UserOwnedOption
+    }
+  }
+`;
+
+export const getUserOwnedPools = gql`
+  ${UserOwnedPool}
+
+  query UserOwnedPools(
+    $account: String!
+    $pairId: String!
     $first: Int = 100
     $skip: Int = 0
   ) {
-    tokenPairs(
-      where: { denominator: $denominatorAddress }
+    userOwnedPools(
       first: $first
       skip: $skip
+      where: { user: $account, pair: $pairId }
     ) {
-      ...TokenPair
+      ...UserOwnedPool
     }
   }
 `;

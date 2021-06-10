@@ -12,15 +12,7 @@ export enum ApplicationModal {
   TransactionCancelled = 'TransactionCancelled',
 }
 
-export enum ApplicationNotification {
-  TransactionStarted = 'TransactionStarted',
-  TransactionSent = 'TransactionSent',
-  TransactionFailed = 'TransactionFailed',
-  TransactionSuccess = 'TransactionSuccess',
-}
-
-export type TokenPrice = { key: string; value: number };
-
+export type TokenPriceUpdate = { key: string; value: number };
 export interface SetWeb3Settings {
   onboard?: API;
   ethereum?: any;
@@ -37,8 +29,12 @@ export const updateBlockNumber = createAction<number>(
   'application/updateBlockNumber',
 );
 
-export const updateTokenPrices = createAction<TokenPrice[]>(
+export const updateTokenPrices = createAction<TokenPriceUpdate[]>(
   'application/updateTokenPrice',
+);
+
+export const updateTokenPriceChanges = createAction<TokenPriceUpdate[]>(
+  'application/updateTokenPriceChange',
 );
 
 export const setWeb3Settings = createAction<SetWeb3Settings>(
@@ -48,11 +44,6 @@ export const setWeb3Settings = createAction<SetWeb3Settings>(
 export const setActiveModal = createAction<ApplicationModal | null>(
   'application/setActiveModal',
 );
-
-export const setActiveNotification =
-  createAction<ApplicationNotification | null>(
-    'application/setActiveNotification',
-  );
 
 export const setApprovalType = createAction<string | null>(
   'application/setApprovalType',

@@ -36,7 +36,7 @@ import { getSwapQuote, useWeb3 } from 'state/application/hooks';
 import { useSwapSettings, useToggleExchange } from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 
-// import { calculateGasMargin } from 'utils';
+import { calculateGasMargin } from 'utils';
 import { formatUnits } from 'ethers/lib/utils';
 import { BigNumber } from 'bignumber.js';
 import TokenList from '../../tokens.json';
@@ -832,7 +832,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
           data: zeroXQuote.data,
           gasPrice: ethers.BigNumber.from(zeroXQuote.gasPrice),
           value: ethers.BigNumber.from(zeroXQuote.value),
-          gasLimit: ethers.BigNumber.from(zeroXQuote.gas),
+          gasLimit: calculateGasMargin(ethers.BigNumber.from(zeroXQuote.gas)),
         }),
         {
           closeOnSuccess: true,
@@ -872,9 +872,10 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
 
     const routeIconList = ROUTE_ICON_LIST.routeIconList;
 
-    return routeIconList.find(
+    const icon = routeIconList.find(
       (r) => r.routerName === zeroXQuote.orders[0].source,
     )?.logoUrl;
+    return icon;
   };
 
   return (

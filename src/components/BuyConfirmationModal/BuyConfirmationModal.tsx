@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { useIsDarkMode } from 'state/user/hooks';
+import { usePurchaseOption } from 'hooks';
+
+import { ModalContainer } from 'components';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
-
-import { useIsDarkMode } from 'state/user/hooks';
-import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -170,14 +171,25 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
 }) => {
+  const [shouldTransact, setShouldTransact] = useState(localStorage.getItem('BuyConfirmationModal_skip') === 'true');
+  const [checkIsOn, setCheckIsOn] = useState(false);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const [checkIsOn, setCheckIsOn] = useState(false);
+  const purchase = usePurchaseOption();
 
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onClose();
+    localStorage.setItem('BuyConfirmationModal_skip', 'true');
+    setShouldTransact(true);
   };
+
+  const onTransact = useCallback(() => purchase().then(onClose), [purchase, onClose]);
+
+  useEffect(() => {
+    if (shouldTransact) {
+      onTransact();
+    }
+  }, [shouldTransact, onTransact]);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -337,7 +349,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     </svg>
                   }
                 />
-                <Typography className={classes.smallInfoText}>
+                <Typography className={classes.smallInfoText} onClick={handleChangeAgree}>
                   Do not show confirmation again
                 </Typography>
               </Box>
@@ -346,7 +358,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                 color='primary'
                 variant='contained'
                 size='large'
-                onClick={handleChangeAgree}
+                onClick={onTransact}
               >
                 Buy for $1,749.37
               </Button>

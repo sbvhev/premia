@@ -1,5 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Box, Grid, Typography, RootRef } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Draggable from 'react-draggable';
+import cx from 'classnames';
+
+import {
+  useOptionType,
+  useUnderlyingPrice,
+  useBreakEvenPrice,
+  useStrikePrice,
+} from 'state/options/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { OptionType } from 'web3/options';
+import { formatCompact } from 'utils/formatNumber';
+
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
@@ -10,13 +26,6 @@ import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
 import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, Grid, Typography, RootRef } from '@material-ui/core';
-import { useOptionType } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
-import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
-import Draggable from 'react-draggable';
-import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartCallTop: {
@@ -196,13 +205,16 @@ const OptionsPrice: React.FC = () => {
 
   const theme = useTheme();
   const { optionType } = useOptionType();
+  const { strikePrice } = useStrikePrice();
+  const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const underlyingPrice = useUnderlyingPrice();
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
-  const isCall = optionType === 'call';
+  const isCall = optionType === OptionType.Call;
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
@@ -241,7 +253,7 @@ const OptionsPrice: React.FC = () => {
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current price</p>
           <p>
-            <b>$1,749.37</b>
+            <b>${formatCompact(underlyingPrice)}</b>
           </p>
         </Box>
       </Box>
@@ -268,7 +280,9 @@ const OptionsPrice: React.FC = () => {
           width={mobile ? 1 / 3 : 1}
           height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
+            optionType === OptionType.Call
+              ? classes.chartCallTop
+              : classes.chartPutTop,
             classes.chartItem,
             hoveredBottom && classes.hovered,
           )}
@@ -298,7 +312,9 @@ const OptionsPrice: React.FC = () => {
             )}
             <Box>
               {mobile && <HelpIcon />}
-              <Typography className={classes.priceFont}>$1,843</Typography>
+              <Typography className={classes.priceFont}>
+                ${formatCompact(isCall ? breakEvenPrice : strikePrice)}
+              </Typography>
               {!mobile && <HelpIcon />}
             </Box>
           </Box>
@@ -307,7 +323,7 @@ const OptionsPrice: React.FC = () => {
           width={mobile ? 1 / 3 : 1}
           height={mobile ? 1 : 1 / 3}
           className={cx(
-            optionType === 'call'
+            optionType === OptionType.Call
               ? classes.chartPutBottom
               : classes.chartCallBottom,
             classes.chartItem,
@@ -338,7 +354,9 @@ const OptionsPrice: React.FC = () => {
               />
             )}
             <Box>
-              <Typography className={classes.priceFont}>$1,504</Typography>
+              <Typography className={classes.priceFont}>
+                ${formatCompact(isCall ? strikePrice : breakEvenPrice)}
+              </Typography>
               <HelpIcon />
             </Box>
           </Box>
@@ -405,7 +423,7 @@ const OptionsPrice: React.FC = () => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>$1,749.37</b>
+                  <b>${formatCompact(underlyingPrice)}</b>
                 </Typography>
               </Box>
             </Box>

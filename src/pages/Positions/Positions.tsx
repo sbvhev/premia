@@ -9,14 +9,22 @@ import {
   TableRow,
   TableCell,
   Button,
+  useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import DoneIcon from '@material-ui/icons/Done';
+import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import Moment from 'moment';
+import cx from 'classnames';
+
+import { useDarkModeManager } from 'state/user/hooks';
+import { formatNumber } from 'utils/formatNumber';
+import { OptionType } from 'web3/options';
+
+import { DataTable, LineChart, DonutChart, PositionModal, SwitchWithGlider } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
-import CapitalIcon from 'assets/svg/CapitalIcon.svg';
-import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
@@ -26,17 +34,11 @@ import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
 import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
 import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
+import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
 import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
-import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import Moment from 'moment';
-import cx from 'classnames';
-import { formatNumber } from 'utils/formatNumber';
-import CallMadeIcon from '@material-ui/icons/CallMade';
-import { DataTable, LineChart, DonutChart, SwitchWithGlider } from 'components';
-import PositionModal from 'components/PositionModal';
-import { useDarkModeManager } from 'state/user/hooks';
+import CapitalIcon from 'assets/svg/CapitalIcon.svg';
+import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 
 const getYieldHeadCells = () => [
   {
@@ -929,7 +931,7 @@ const Positions: React.FC = () => {
       tokenIcon: <LinkIcon />,
       symbol: 'Link',
       capital: 15002,
-      option: 'call',
+      option: OptionType.Call,
       type: 'pool',
       name: 'Link Call Pool',
       earned: 100,
@@ -939,7 +941,7 @@ const Positions: React.FC = () => {
       tokenIcon: <YFIIcon />,
       symbol: 'YFI',
       capital: 15002,
-      option: 'put',
+      option: 'PUT',
       type: 'pool',
       name: 'Uni Put Pool',
       earned: 100,
@@ -961,7 +963,7 @@ const Positions: React.FC = () => {
       tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
-      type: 'call',
+      type: OptionType.Call,
       strike: 100,
       value: 100,
       expiration: Moment.now(),
@@ -970,7 +972,7 @@ const Positions: React.FC = () => {
       tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
-      type: 'call',
+      type: OptionType.Call,
       strike: 100,
       value: 100,
       expiration: Moment.now(),
@@ -979,7 +981,7 @@ const Positions: React.FC = () => {
       tokenIcon: <UniIcon />,
       symbol: 'Uni',
       size: 15002,
-      type: 'put',
+      type: 'PUT',
       strike: 100,
       value: 100,
       exercised: true,
@@ -1398,13 +1400,13 @@ const Positions: React.FC = () => {
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'call'
+                                item.type === OptionType.Call
                                   ? classes.call
                                   : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === 'call' ? (
+                              {item.type === OptionType.Call ? (
                                 <CallIcon />
                               ) : (
                                 <PutIcon />
@@ -1490,13 +1492,13 @@ const Positions: React.FC = () => {
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === 'call'
+                                item.type === OptionType.Call
                                   ? classes.call
                                   : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === 'call' ? (
+                              {item.type === OptionType.Call ? (
                                 <CallIcon />
                               ) : (
                                 <PutIcon />
@@ -1586,7 +1588,7 @@ const Positions: React.FC = () => {
                                     classes.typeBox,
                                     item.type === 'vault'
                                       ? classes.vault
-                                      : item.option === 'call'
+                                      : item.option === OptionType.Call
                                       ? classes.call
                                       : classes.put,
                                   )}
@@ -1594,7 +1596,7 @@ const Positions: React.FC = () => {
                                   <Box />
                                   {item.type === 'vault' ? (
                                     <VaultIcon />
-                                  ) : item.option === 'call' ? (
+                                  ) : item.option === OptionType.Call ? (
                                     <CallIcon />
                                   ) : (
                                     <PutIcon />
@@ -1683,7 +1685,7 @@ const Positions: React.FC = () => {
                                   classes.typeBox,
                                   item.type === 'vault'
                                     ? classes.vault
-                                    : item.option === 'call'
+                                    : item.option === OptionType.Call
                                     ? classes.call
                                     : classes.put,
                                 )}
@@ -1691,7 +1693,7 @@ const Positions: React.FC = () => {
                                 <Box />
                                 {item.type === 'vault' ? (
                                   <VaultIcon />
-                                ) : item.option === 'call' ? (
+                                ) : item.option === OptionType.Call ? (
                                   <CallIcon />
                                 ) : (
                                   <PutIcon />
