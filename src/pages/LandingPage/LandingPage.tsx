@@ -1246,16 +1246,28 @@ const LandingPage: React.FC = () => {
                   </Typography>
                 </AnchorLink>
                 <Box className={classes.headerIcons}>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://twitter.com/PremiaFinance'
+                    onClick={preventDefault}
+                  >
                     <TwitterIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://discord.com/invite/6MhRmzmdHN'
+                    onClick={preventDefault}
+                  >
                     <DiscordIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://github.com/PremiaFinance'
+                    onClick={preventDefault}
+                  >
                     <GithubIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://premia.medium.com/'
+                    onClick={preventDefault}
+                  >
                     <MediumIcon />
                   </AnchorLink>
                 </Box>
