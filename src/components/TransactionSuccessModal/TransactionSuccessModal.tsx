@@ -239,7 +239,7 @@ const TransactionSuccessModal: React.FC<TransactionSuccessModalProps> = ({
                 </Box>
                 {txLink && (
                   <a
-                    href={'test.com'}
+                    href={txLink}
                     target='_blank'
                     rel='noreferrer'
                     className={classes.anchor}

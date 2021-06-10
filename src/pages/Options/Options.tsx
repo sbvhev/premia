@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Box,
   Container,
@@ -8,23 +8,32 @@ import {
   Divider,
   Popover,
   Link,
+  useMediaQuery,
 } from '@material-ui/core';
-import { SearchTabs, BuyConfirmationModal } from 'components';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
-import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import moment from 'moment';
 import cx from 'classnames';
+
+import {
+  useOptionType,
+  useUnderlyingPrice,
+  useBreakEvenPrice,
+  useTotalCost,
+  useBase,
+  useUnderlying,
+  useMaturityDate,
+} from 'state/options/hooks';
+import { usePriceChanges, useWeb3 } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { useApproval, usePools } from 'hooks';
+import { formatNumber } from 'utils/formatNumber';
+import { OptionType } from 'web3/options';
+
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
+import { SelectTokenTabs, BuyConfirmationModal, LineChart } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
-import { LineChart } from 'components';
-import { useOptionType } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -37,7 +46,13 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 18,
   },
   priceIcon: {
-    color: palette.success.dark,
+    marginTop: (props: any) => (props.priceChange < 0 ? '-5px' : ''),
+    transform: (props: any) => (props.priceChange < 0 ? 'rotate(180deg)' : ''),
+
+    '& path': {
+      fill: (props: any) =>
+        props.priceChange < 0 ? palette.error.light : palette.success.dark,
+    },
   },
   helpIcon: {
     color: palette.text.secondary,
@@ -76,7 +91,10 @@ const useStyles = makeStyles(({ palette }) => ({
   currentPricePercent: {
     marginLeft: 6,
     '& div': {
-      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      background: (props: any) =>
+        props.priceChange < 0
+          ? `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.light} 118.78%)`
+          : `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
       position: 'absolute',
       top: 0,
       left: 0,
@@ -145,45 +163,47 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const tabItems = [
-  {
-    image: WBTCIcon,
-    label: 'wBTC',
-  },
-  {
-    marginLeft: -2,
-    image: UniIcon,
-    label: 'Uni',
-    highlight: true,
-  },
-  {
-    image: LinkIcon,
-    label: 'Link',
-  },
-  {
-    image: YFIIcon,
-    label: 'YFI',
-    highlight: true,
-  },
-  {
-    image: EthIcon,
-    label: 'ETH',
-  },
-];
-
 const Options: React.FC = () => {
-  const classes = useStyles();
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<any>(null);
+  const [popoverType, setPopoverType] = useState('');
   const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
     useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
-  const [tokenIndex, setTokenIndex] = useState(2);
-  const { optionType } = useOptionType();
   const darkMode = useIsDarkMode();
-  const [anchorEl, setAnchorEl] = useState<any>(null);
-  const [popoverType, setPopoverType] = useState('');
+
+  const { base } = useBase();
+  const { underlying } = useUnderlying();
+  const { optionType } = useOptionType();
+  const { maturityDate } = useMaturityDate();
+  const { totalCost } = useTotalCost();
+  const { account } = useWeb3();
+  const { optionPoolContract } = usePools();
+
+  const activeToken = useMemo(
+    () => (optionType === OptionType.Call ? underlying : base),
+    [optionType, base, underlying],
+  );
+
+  const priceChanges = usePriceChanges();
+  const underlyingPrice = useUnderlyingPrice();
+  const breakEvenPrice = useBreakEvenPrice();
+  const { allowance, onApprove } = useApproval(
+    activeToken.address,
+    optionPoolContract?.address || account,
+  );
+
+  const handleBuyOption = useCallback(
+    () => setBuyConfirmationModalOpen(true),
+    [setBuyConfirmationModalOpen],
+  );
+  const priceChange = useMemo(
+    () => priceChanges[underlying.symbol],
+    [priceChanges, underlying],
+  );
+  const classes = useStyles({ priceChange });
 
   return (
     <>
@@ -203,13 +223,7 @@ const Options: React.FC = () => {
         </Typography>
       )}
       <Box mt={2} mb={4} ml={!mobile ? '6px' : '0'}>
-        <SearchTabs
-          items={tabItems}
-          value={tokenIndex}
-          onChange={(ev, index) => {
-            setTokenIndex(index);
-          }}
-        />
+        <SelectTokenTabs />
       </Box>
 
       <Popover
@@ -250,8 +264,13 @@ const Options: React.FC = () => {
             }}
           >
             <p>
-              This option can be exercised for a profit if the price of AAVE:{' '}
-              <b>Exceeds 500 DAI by June 11, 2021</b>
+              This option can be exercised for a profit if the price of{' '}
+              {underlying.symbol}:{' '}
+              <b>
+                {optionType === OptionType.Call ? 'Exceeds' : 'Goes below'}{' '}
+                {formatNumber(breakEvenPrice)} {base.symbol} by{' '}
+                {moment(new Date(maturityDate)).format('MMMM DD, YYYY')}
+              </b>
             </p>
           </Box>
         )}
@@ -290,7 +309,10 @@ const Options: React.FC = () => {
               <Typography color='textSecondary'>Current price</Typography>
               <Box display='flex' alignItems='center' mt={-0.5625}>
                 <Typography color='textPrimary' component='h2'>
-                  $1,222
+                  $
+                  {formatNumber(underlyingPrice, true, {
+                    maximumFractionDigits: 6,
+                  })}
                 </Typography>
                 <Box
                   position='relative'
@@ -307,7 +329,10 @@ const Options: React.FC = () => {
                     height={1}
                     style={{ opacity: darkMode ? 0.1 : 0.2 }}
                   ></Box>
-                  <Typography color='textPrimary'>+13%</Typography>
+                  <Typography color='textPrimary'>
+                    {priceChange < 0 ? '' : '+'}
+                    {formatNumber(priceChange)}%
+                  </Typography>
                   <PriceTriangle className={classes.priceIcon} />
                 </Box>
               </Box>
@@ -324,13 +349,16 @@ const Options: React.FC = () => {
                 />
               </Grid>
               <Typography color='textPrimary' component='h2'>
-                $1,749.37
+                $
+                {formatNumber(breakEvenPrice, true, {
+                  maximumFractionDigits: 6,
+                })}
               </Typography>
             </Box>
             <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Total cost</Typography>
               <Typography color='textPrimary' component='h2'>
-                $1,749.37
+                ${formatNumber(totalCost, true, { maximumFractionDigits: 6 })}
               </Typography>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
@@ -338,10 +366,16 @@ const Options: React.FC = () => {
                 fullWidth
                 variant='contained'
                 size='large'
-                color={optionType === 'call' ? 'primary' : 'secondary'}
-                onClick={() => setBuyConfirmationModalOpen(true)}
+                color={optionType === OptionType.Call ? 'primary' : 'secondary'}
+                onClick={() =>
+                  Number(allowance) > 0 && Number(allowance) >= totalCost
+                    ? handleBuyOption()
+                    : onApprove()
+                }
               >
-                Deposit
+                {Number(allowance) > 0 && Number(allowance) >= totalCost
+                  ? 'Buy Option'
+                  : `Approve ${underlying.symbol}`}
               </Button>
             </Box>
           </Grid>
@@ -369,7 +403,7 @@ const Options: React.FC = () => {
                 />
               </Grid>
               <LineChart
-                isCall={optionType === 'call'}
+                isCall={optionType === OptionType.Call}
                 backgroundColor={theme.palette.background.default}
                 data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                 categories={[
