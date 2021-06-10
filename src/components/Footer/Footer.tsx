@@ -301,12 +301,10 @@ const Footer: React.FC = () => {
         alignItems='center'
         className={classes.footer}
       >
-        {chainModalOpen && (
-          <ChainModal
-            open={chainModalOpen}
-            onClose={() => setChainModalOpen(false)}
-          />
-        )}
+        <ChainModal
+          open={chainModalOpen}
+          onClose={() => setChainModalOpen(false)}
+        />
         <Box
           display='flex'
           width={mobile ? '100%' : 'auto'}

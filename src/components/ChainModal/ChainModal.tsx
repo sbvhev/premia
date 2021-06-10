@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box, Button, Grid } from '@material-ui/core';
+import { Typography, Modal, Box, Button, Grid, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 import { chainIds, chainLabels, PARAMS } from 'utils';
@@ -142,50 +142,60 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer size='sm'>
-        <Box width={1} className={classes.wrapper}>
-          <Box className={classes.coloredBorderBackgroundForCard}>
-            <Typography variant='h2' className={classes.title}>
-              Select network
-            </Typography>
-            <Grid container direction='row'>
-              { chainIds.map((val, ind) => (
-                <Grid item key={ind} xs={3} className={classes.chain}>
-                  <Box
-                    component='div'
-                    className={cx({
-                      [classes.selected]: chainId === val,
-                    })}
-                    onClick={() => {
-                      const params = PARAMS[val];
-                      web3?.send('wallet_addEthereumChain', [
-                        params,
-                        account,
-                      ]);
-                    }}
-                  >
-                    { ind === 0 && <EthIcon /> }
-                    { ind === 1 && <BSCIcon /> }
-                    { ind === 2 && <PolygonIcon /> }
-                    { ind === 3 && <FantomIcon /> }
-                    { chainLabels[ind] }
-                    {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
-                      <Box component='div' className={classes.selected}>
-                        Current
-                      </Box>
-                    )}
-                    {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            <Button className={classes.exitContainer} onClick={onClose}>
-              <img src={XOut} alt='Exit' />
-            </Button>
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer size='sm'>
+          <Box width={1} className={classes.wrapper}>
+            <Box className={classes.coloredBorderBackgroundForCard}>
+              <Typography variant='h2' className={classes.title}>
+                Select network
+              </Typography>
+              <Grid container direction='row'>
+                { chainIds.map((val, ind) => (
+                  <Grid item key={ind} xs={3} className={classes.chain}>
+                    <Box
+                      component='div'
+                      className={cx({
+                        [classes.selected]: chainId === val,
+                      })}
+                      onClick={() => {
+                        const params = PARAMS[val];
+                        web3?.send('wallet_addEthereumChain', [
+                          params,
+                          account,
+                        ]);
+                      }}
+                    >
+                      { ind === 0 && <EthIcon /> }
+                      { ind === 1 && <BSCIcon /> }
+                      { ind === 2 && <PolygonIcon /> }
+                      { ind === 3 && <FantomIcon /> }
+                      { chainLabels[ind] }
+                      {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
+                        <Box component='div' className={classes.selected}>
+                          Current
+                        </Box>
+                      )}
+                      {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+              <Button className={classes.exitContainer} onClick={onClose}>
+                <img src={XOut} alt='Exit' />
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };

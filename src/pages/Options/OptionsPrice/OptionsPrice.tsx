@@ -11,6 +11,8 @@ import {
   useBreakEvenPrice,
   useStrikePrice,
   useUnderlying,
+  useSize,
+  usePricePerUnit,
 } from 'state/options/hooks';
 import { usePrices } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -170,6 +172,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       top: 14,
       [breakpoints.down('md')]: {
         position: 'relative',
+        top: 4,
+        left: -20,
       },
     },
     '& img': {
@@ -234,6 +238,8 @@ const OptionsPrice: React.FC = () => {
   const { optionType } = useOptionType();
   const { strikePrice } = useStrikePrice();
   const { underlying } = useUnderlying();
+  const { size } = useSize();
+  const { pricePerUnit } = usePricePerUnit();
   const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -248,24 +254,45 @@ const OptionsPrice: React.FC = () => {
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
-  const [plMove, setPLMove] = useState(0);
   const [plPrice, setPLPrice] = useState(0);
   const barSize = mobile
-    ? barRef.current?.clientWidth / 3
-    : barRef.current?.clientHeight / 3;
-  const pLBoxPos = (barSize / 4) * 5 - 21;
-  const plFirstPrice = (currentPrice || 0) * 1.5;
+    ? barRef.current?.clientWidth
+    : barRef.current?.clientHeight;
+  const pLBoxPos = (barSize / 2) * 0.8 - (mobile ? 58 : 22);
+  const plFirstPrice = (currentPrice || 0) * 1.2;
+  const callPrice = Math.min(breakEvenPrice, currentPrice * 2);
+  const putPrice = Math.max(breakEvenPrice, currentPrice * 0.5);
+  const potentialProfit = Math.max(
+    0,
+    (plPrice - strikePrice - pricePerUnit) * size,
+  );
+
   let callSize, putSize;
-  const callPrice = Math.min(Number(strikePrice) * 1.5, currentPrice * 2);
-  if (callPrice <= currentPrice) {
-    callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
+
+  if (isCall) {
+    if (callPrice <= currentPrice) {
+      callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
+    } else {
+      callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
+    }
+
+    if (Number(strikePrice) <= currentPrice) {
+      putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
+    } else {
+      putSize = 1 / 2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
+    }
   } else {
-    callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
-  }
-  if (Number(strikePrice) <= currentPrice) {
-    putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
-  } else {
-    putSize = 1 / 2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
+    if (Number(strikePrice) <= currentPrice) {
+      putSize = 1 / 2 + (currentPrice - Number(strikePrice)) / currentPrice;
+    } else {
+      putSize = (currentPrice * 2 - Number(strikePrice)) / currentPrice / 2;
+    }
+
+    if (putPrice <= currentPrice) {
+      callSize = (putPrice - currentPrice / 2) / currentPrice;
+    } else {
+      callSize = 1 / 2 + (putPrice - currentPrice) / currentPrice / 2;
+    }
   }
 
   useEffect(() => {
@@ -275,17 +302,20 @@ const OptionsPrice: React.FC = () => {
     setFirstPrice();
   }, [plFirstPrice]);
 
-  const onDragPL = (event: any) => {
-    if (mobile) {
-    } else {
-      if (
-        plMove * -1 <= (barSize * 5) / 4 - 70 &&
-        plMove >= (barSize * 7) / 4
-      ) {
-        setPLMove(plMove + event.movementY);
-      }
+  const onDragPL = () => {
+    let plPrice1 =
+      plFirstPrice -
+      ((mobile
+        ? possiblePLBox.current.state.x
+        : possiblePLBox.current.state.y) /
+        barSize) *
+        2 *
+        currentPrice;
+
+    if (plPrice1 <= currentPrice) {
+      plPrice1 += (currentPrice - plPrice1) / 2;
     }
-    let plPrice1 = plFirstPrice - (plMove / barSize) * 2 * currentPrice;
+
     setPLPrice(plPrice1);
   };
 
@@ -334,7 +364,7 @@ const OptionsPrice: React.FC = () => {
           (hoveredTop || hoveredBottom) && classes.hovered,
         )}
       />
-      <div ref={barRef}>
+      <div ref={barRef} style={{ width: mobile ? '100%' : 'auto' }}>
         <Box
           display='flex'
           flexDirection={mobile ? 'row' : 'column'}
@@ -347,7 +377,9 @@ const OptionsPrice: React.FC = () => {
           borderRadius={12}
         >
           <Box
-            width={mobile ? 1 / 3 : 1}
+            width={
+              mobile ? (optionType === OptionType.Call ? callSize : putSize) : 1
+            }
             height={
               mobile ? 1 : optionType === OptionType.Call ? callSize : putSize
             }
@@ -374,7 +406,7 @@ const OptionsPrice: React.FC = () => {
             <Box
               className={classes.limitBox}
               bottom={mobile ? 'unset' : -24}
-              right={mobile ? 20 : 'unset'}
+              right={mobile ? -20 : 'unset'}
             >
               {!mobile && (
                 <img
@@ -392,7 +424,9 @@ const OptionsPrice: React.FC = () => {
             </Box>
           </Box>
           <Box
-            width={mobile ? 1 / 3 : 1}
+            width={
+              mobile ? (optionType === OptionType.Call ? putSize : callSize) : 1
+            }
             height={
               mobile ? 1 : optionType === OptionType.Call ? putSize : callSize
             }
@@ -446,10 +480,10 @@ const OptionsPrice: React.FC = () => {
           <Draggable
             axis={mobile ? 'x' : 'y'}
             bounds={{
-              left: -1 * pLBoxPos - 55,
-              right: possiblePLBoxDimensions.width - pLBoxPos - 65,
-              top: -1 * pLBoxPos - 15,
-              bottom: possiblePLBoxDimensions.height - pLBoxPos - 30,
+              left: -1 * pLBoxPos - 58,
+              right: possiblePLBoxDimensions.width - pLBoxPos - 58,
+              top: -1 * pLBoxPos - 22,
+              bottom: possiblePLBoxDimensions.height - pLBoxPos - 22,
             }}
             onDrag={onDragPL}
             scale={1}
@@ -479,7 +513,7 @@ const OptionsPrice: React.FC = () => {
                 )}
                 <Box>
                   <Typography className={classes.priceFont}>
-                    ${plFirstPrice.toLocaleString()}
+                    ${formatCompact(plPrice)}
                   </Typography>
                 </Box>
               </Box>
@@ -516,7 +550,7 @@ const OptionsPrice: React.FC = () => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>${formatCompact(plPrice)}</b>
+                  <b>${formatCompact(potentialProfit)}</b>
                 </Typography>
               </Box>
             </Box>
