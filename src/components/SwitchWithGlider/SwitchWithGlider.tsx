@@ -9,7 +9,6 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   glider: {
     transition: 'all 0.4s ease-out',
@@ -17,99 +16,72 @@ const useStyles = makeStyles(({ palette }) => ({
     borderRadius: '10px',
     backgroundColor: palette.primary.dark,
   },
-  elementFront: {
-    transition: 'border 0.4s ease-in-out',
-    boxSizing: 'border-box',
-    position: 'absolute',
-    border: '1px solid transparent',
-    backgroundColor: 'transparent',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    '&:hover': {
-      border: `1px solid ${palette.divider}`,
-    },
-    '&:active': {
-      borderRadius: '10px',
-    },
-  },
 }));
 
-export interface GliderDimentions {
-  width: String;
-  height: String;
-}
-
 export interface SwitchWithGliderProps {
-  elements: Array<React.FC>;
-  positions: Array<Number>;
-  clickFuncs: Array<() => void>;
-  start: Number;
-  gliderHeight: Number;
-  gliderWidth: Number;
-  alignedRight?: boolean;
+  elements: any;
+  defaultIndex: number;
+  gliderHeight: number;
+  gliderWidth: number;
+  marginBetweenSwitches: number;
+  verticalGlider?: boolean;
 }
 
 const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
   elements,
-  positions,
-  clickFuncs,
-  start,
   gliderHeight,
   gliderWidth,
-  alignedRight,
+  defaultIndex,
+  marginBetweenSwitches,
+  verticalGlider,
 }) => {
   const classes = useStyles();
-  const [gliderPosition, setGliderPosition] = React.useState<any>(start);
+  const [gliderPosition, setGliderPosition] = React.useState<any>(0);
 
   React.useEffect(() => {
-      setGliderPosition(start);
-  }, [start]);
+    if (!verticalGlider) {
+      const incrementalDistance = gliderWidth + marginBetweenSwitches;
+      const newPosition = defaultIndex * incrementalDistance;
+      setGliderPosition(newPosition);
+    } else {
+      const incrementalDistance = gliderHeight + marginBetweenSwitches;
+      const newPosition = defaultIndex * incrementalDistance;
+      setGliderPosition(newPosition);
+    }
+  }, [
+    defaultIndex,
+    gliderHeight,
+    gliderWidth,
+    marginBetweenSwitches,
+    verticalGlider,
+  ]);
 
-  const mappedClickFuncs = [
-    () => {
-      setGliderPosition(positions[0]);
-      clickFuncs[0]();
-    },
-    () => {
-      setGliderPosition(positions[1]);
-      clickFuncs[1]();
-    },
-    () => {
-      setGliderPosition(positions[2]);
-      clickFuncs[2]();
-    },
-  ];
+  const wrappedElements = elements.map((item: React.FC, index: number) => (
+    <Box key={index}>{item}</Box>
+  ));
 
-  const mappedElements = elements.map((item, index) => (
-    <Box>
+  return (
+    <Box width='100%' height='100%'>
       <Box
-        className={classes.elementFront}
+        className={classes.glider}
         width={gliderWidth}
         height={gliderHeight}
-        onClick={mappedClickFuncs[index]}
+        style={
+          !verticalGlider
+            ? { transform: `translateX(${gliderPosition}px)` }
+            : {
+                transform: `translateY(${gliderPosition}px)`,
+                borderRadius: '12px',
+              }
+        }
       />
-      <Box>{item}</Box>
-    </Box>
-  ));
-  
-  return (
-    <Box className={classes.container}>
-      {mappedElements}
-      {!alignedRight ? (
-        <Box
-          className={classes.glider}
-          left={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      ) : (
-        <Box
-          className={classes.glider}
-          right={gliderPosition}
-          width={gliderWidth}
-          height={gliderHeight}
-        />
-      )}
+      <Box
+        className={classes.container}
+        flexDirection={!verticalGlider ? 'row' : 'column'}
+        alignItems={!verticalGlider ? 'center' : 'flex-start'}
+      >
+        {wrappedElements}
+      </Box>
     </Box>
   );
 };

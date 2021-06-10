@@ -1,74 +1,77 @@
 import Onboard from 'bnc-onboard';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ChainId } from '@uniswap/sdk';
 import { Wallet } from 'bnc-onboard/dist/src/interfaces';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
-import { Contract, ContractCall } from 'ethers-multicall';
+// import { formatEther, formatUnits } from 'ethers/lib/utils';
+// import { Contract, ContractCall } from 'ethers-multicall';
 import { ethers } from 'ethers';
 import { get } from 'lodash';
 
-import { getPrice, useBlockNumber, usePrices } from 'state/application/hooks';
+import {
+  /* UNISWAP_FACTORY, */ wallets,
+  WETH,
+  WBNB,
+  DAI,
+} from '../../constants';
+// import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
+// import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
+import {
+  getPrice,
+  get24HourPriceChange,
+  // useBlockNumber,
+  usePrices,
+  usePriceChanges,
+} from 'state/application/hooks';
+import { /* useAllTokens, */ useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
+import { Token } from 'web3/tokens';
+import { updateBase, updateUnderlying } from 'state/options/actions';
+import { AppState } from 'state';
 import {
   updateBlockNumber,
   updateTokenPrices,
+  updateTokenPriceChanges,
   setWeb3Settings,
-  TokenPrice,
+  // TokenPriceUpdate,
 } from './actions';
-import { AppState } from 'state';
-import {
-  useAllTokens,
-  useDebounce,
-  useIsWindowVisible,
-  useReferrer,
-  useDenominatorAddress,
-  useDenominatorDecimals,
-} from 'hooks';
-import { UNISWAP_FACTORY, wallets, WETH, WBNB } from '../../constants';
-import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
-import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
 
 const assetList = [
-  { key: 'WBNB', coinGeckoId: 'wbnb' },
-  { key: 'BNB', coinGeckoId: 'binance-coin' },
-  { key: 'AAVE', coinGeckoId: 'aave' },
-  { key: 'BADGER', coinGeckoId: 'badger-dao' },
-  { key: 'COMP', coinGeckoId: 'compound-governance-token' },
-  { key: 'COVER', coinGeckoId: 'cover-protocol' },
-  { key: 'CRV', coinGeckoId: 'curve-dao-token' },
-  { key: 'DPI', coinGeckoId: 'defipulse-index' },
-  { key: 'LINK', coinGeckoId: 'chainlink' },
-  { key: 'MKR', coinGeckoId: 'maker' },
-  { key: 'PREMIA', coinGeckoId: 'premia' },
-  { key: 'REN', coinGeckoId: 'republic-protocol' },
-  { key: 'SNX', coinGeckoId: 'havven' },
+  // { key: 'WBNB', coinGeckoId: 'wbnb' },
+  // { key: 'BNB', coinGeckoId: 'binance-coin' },
+  // { key: 'AAVE', coinGeckoId: 'aave' },
+  // { key: 'BADGER', coinGeckoId: 'badger-dao' },
+  // { key: 'COMP', coinGeckoId: 'compound-governance-token' },
+  // { key: 'COVER', coinGeckoId: 'cover-protocol' },
+  // { key: 'CRV', coinGeckoId: 'curve-dao-token' },
+  // { key: 'DPI', coinGeckoId: 'defipulse-index' },
+  // { key: 'REN', coinGeckoId: 'republic-protocol' },
+  // { key: 'SNX', coinGeckoId: 'havven' },
+  // { key: 'ALCX', coinGeckoId: 'alchemix' },
+  // { key: 'MKR', coinGeckoId: 'maker' },
   { key: 'SUSHI', coinGeckoId: 'sushi' },
+  { key: 'LINK', coinGeckoId: 'chainlink' },
+  { key: 'PREMIA', coinGeckoId: 'premia' },
   { key: 'UNI', coinGeckoId: 'uniswap' },
+  { key: 'wBTC', coinGeckoId: 'wrapped-bitcoin' },
   { key: 'WBTC', coinGeckoId: 'wrapped-bitcoin' },
   { key: 'YFI', coinGeckoId: 'yearn-finance' },
   { key: 'DAI', coinGeckoId: 'dai' },
   { key: 'WETH', coinGeckoId: 'weth' },
-  { key: 'ALCX', coinGeckoId: 'alchemix' },
 ];
 
 export default function Updater(): null {
-  // Save referrer to localStorage
-  useReferrer();
-
   const dispatch = useDispatch();
   const location = useLocation();
   const windowVisible = useIsWindowVisible();
-  const latestBlockNumber = useBlockNumber();
-  const denominatorAddress = useDenominatorAddress();
-  const denominatorDecimals = useDenominatorDecimals();
+  // const latestBlockNumber = useBlockNumber();
+  const priceChanges = usePriceChanges();
   const prices = usePrices();
-  const tokens = useAllTokens();
+  // const tokens = useAllTokens();
   const dark = useIsDarkMode();
 
-  // const { denominator } = useOptionSettings();
   const {
     onboard: _onboard,
     chainId,
@@ -78,9 +81,25 @@ export default function Updater(): null {
     account,
     wallet,
     blockNumber,
-    multicallProvider,
+    // multicallProvider,
   } = useSelector<AppState, AppState['application']>(
     (state) => state.application,
+  );
+
+  const comparisonToken: Token = useMemo(
+    () => (chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any)),
+    [chainId],
+  );
+
+  const baseToken: Token = useMemo(
+    () => ({
+      id: DAI[chainId || ChainId.MAINNET].address,
+      address: DAI[chainId || ChainId.MAINNET].address,
+      symbol: DAI[chainId || ChainId.MAINNET].symbol,
+      name: DAI[chainId || ChainId.MAINNET].name,
+      decimals: DAI[chainId || ChainId.MAINNET].decimals,
+    }),
+    [chainId],
   );
 
   const [state, setState] = useState<{
@@ -176,95 +195,6 @@ export default function Updater(): null {
   }, [web3, location, signer, contracts, state.hasRequestedAccounts, dispatch]);
 
   useEffect(() => {
-    if (!signer || !web3 || !tokens.length || !chainId || !multicallProvider)
-      return;
-
-    // Update price every 10 blocks
-    if ((!latestBlockNumber || latestBlockNumber % 20 !== 0) && prices['WETH'])
-      return;
-
-    (async () => {
-      const uniswapFactory = new Contract(
-        UNISWAP_FACTORY[chainId],
-        UniswapV2FactoryAbi.abi,
-      );
-
-      const comparisonToken =
-        chainId === 56
-          ? WBNB.address
-          : (WETH[chainId ?? ChainId.MAINNET] as any).address;
-
-      const tokenList = [
-        ...tokens.filter(
-          (el) => el.address.toLowerCase() !== comparisonToken.toLowerCase(),
-        ),
-        // ...(denominatorAddress
-        //   ? [
-        //       {
-        //         address: denominatorAddress,
-        //         symbol: chainId === 56 ? 'BUSD' : String(denominator),
-        //         decimals: denominatorDecimals,
-        //       },
-        //     ]
-        //   : []),
-      ];
-
-      const comparisonTokenName = 'BNB';
-      const comparisonTokenUsdPrice = await getPrice(
-        chainId === 56 ? 'wbnb' : 'ethereum',
-      );
-      const tokenPrices: TokenPrice[] = [
-        { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
-        { key: comparisonTokenName, value: comparisonTokenUsdPrice },
-      ];
-
-      const lpAddresses = await multicallProvider.all(
-        tokenList.map((el) =>
-          uniswapFactory.getPair(comparisonToken, el.address),
-        ),
-      );
-
-      const calls: ContractCall[] = lpAddresses.map((address: string) => {
-        const lpContract = new Contract(address, UniswapV2PairAbi.abi);
-        return lpContract.getReserves();
-      });
-
-      const results = await multicallProvider.all(calls);
-
-      for (let i = 0; i < tokenList.length; i++) {
-        const tokensPerComparisonToken =
-          parseInt(comparisonToken) < parseInt(tokenList[i].address)
-            ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
-              Number(formatEther(results[i][0]))
-            : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
-              Number(formatEther(results[i][1]));
-
-        const tokenUsdPrice =
-          comparisonTokenUsdPrice / tokensPerComparisonToken;
-
-        tokenPrices.push({
-          key: tokenList[i].symbol,
-          value: tokenUsdPrice,
-        });
-      }
-      dispatch(updateTokenPrices(tokenPrices));
-    })();
-  }, [
-    latestBlockNumber,
-    prices,
-    dispatch,
-    tokens,
-    account,
-    web3,
-    chainId,
-    signer,
-    multicallProvider,
-    // denominator,
-    denominatorAddress,
-    denominatorDecimals,
-  ]);
-
-  useEffect(() => {
     if (_onboard) return;
 
     const chain = Number(localStorage.getItem('chainId') || 1);
@@ -272,14 +202,20 @@ export default function Updater(): null {
     const onboard = Onboard({
       subscriptions: {
         address: (account: string) => dispatch(setWeb3Settings({ account })),
-        network: (chainId: ChainId) => {
+        network: (chainId: ChainId | 56) => {
+          const underlying: Token =
+            chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
+          const base: Token = {
+            id: DAI[chainId || ChainId.MAINNET].address,
+            address: DAI[chainId || ChainId.MAINNET].address,
+            symbol: DAI[chainId || ChainId.MAINNET].symbol,
+            name: DAI[chainId || ChainId.MAINNET].name,
+            decimals: DAI[chainId || ChainId.MAINNET].decimals,
+          };
+
           dispatch(setWeb3Settings({ chainId }));
-          // dispatch(
-          //   setOptionSettings({
-          //     denominator:
-          //       chainId === 56 ? TokenDenominator.BUSD : TokenDenominator.DAI,
-          //   }),
-          // );
+          dispatch(updateBase(base));
+          dispatch(updateUnderlying(underlying));
           localStorage.setItem('chainId', String(chainId));
         },
         balance: (balance: string) => dispatch(setWeb3Settings({ balance })),
@@ -319,7 +255,7 @@ export default function Updater(): null {
     });
 
     dispatch(setWeb3Settings({ onboard }));
-  }, [dispatch, _onboard, chainId, signer, dark]);
+  }, [dispatch, _onboard, chainId, signer, dark, baseToken, comparisonToken]);
 
   useEffect(() => {
     const previouslySelectedWallet = window.localStorage
@@ -334,6 +270,87 @@ export default function Updater(): null {
       _onboard.walletSelect(previouslySelectedWallet);
     }
   }, [_onboard, dispatch, web3]);
+
+  // useEffect(() => {
+  //   if (!signer || !web3 || !tokens.length || !chainId || !multicallProvider)
+  //     return;
+
+  //   // Update price every 20 blocks
+  //   if (
+  //     (!latestBlockNumber || latestBlockNumber % 20 !== 0) &&
+  //     prices[comparisonToken.symbol]
+  //   )
+  //     return;
+
+  //   (async () => {
+  //     const uniswapFactory = new Contract(
+  //       UNISWAP_FACTORY[chainId],
+  //       UniswapV2FactoryAbi.abi,
+  //     );
+
+  //     const tokenList = [
+  //       ...tokens.filter(
+  //         (el) =>
+  //           el.address.toLowerCase() !== comparisonToken.address.toLowerCase(),
+  //       ),
+  //       baseToken,
+  //     ];
+
+  //     const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH';
+  //     const comparisonTokenUsdPrice = await getPrice(
+  //       chainId === 56 ? 'wbnb' : 'ethereum',
+  //     );
+  //     const tokenPrices: TokenPriceUpdate[] = [
+  //       { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
+  //       { key: comparisonTokenName, value: comparisonTokenUsdPrice },
+  //     ];
+
+  //     const lpAddresses = await multicallProvider.all(
+  //       tokenList.map((el) =>
+  //         uniswapFactory.getPair(comparisonToken.address, el.address),
+  //       ),
+  //     );
+
+  //     const calls: ContractCall[] = lpAddresses.map((address: string) => {
+  //       const lpContract = new Contract(address, UniswapV2PairAbi.abi);
+  //       return lpContract.getReserves();
+  //     });
+
+  //     const results = await multicallProvider.all(calls);
+
+  //     for (let i = 0; i < tokenList.length; i++) {
+  //       const tokensPerComparisonToken =
+  //         parseInt(comparisonToken.address) < parseInt(tokenList[i].address)
+  //           ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
+  //             Number(formatEther(results[i][0]))
+  //           : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
+  //             Number(formatEther(results[i][1]));
+
+  //       const tokenUsdPrice =
+  //         comparisonTokenUsdPrice / tokensPerComparisonToken;
+
+  //       tokenPrices.push({
+  //         key: tokenList[i].symbol,
+  //         value: tokenUsdPrice,
+  //       });
+  //     }
+
+  //     dispatch(updateTokenPrices(tokenPrices));
+  //   })();
+  // }, [
+  //   baseToken,
+  //   comparisonToken,
+  //   latestBlockNumber,
+  //   prices,
+  //   dispatch,
+  //   tokens,
+  //   account,
+  //   web3,
+  //   chainId,
+  //   signer,
+  //   multicallProvider,
+  //   contracts,
+  // ]);
 
   useEffect(() => {
     let geckoFetch: any;
@@ -365,6 +382,40 @@ export default function Updater(): null {
 
     return () => clearInterval(geckoFetch);
   }, [wallet, account, web3, prices, dispatch]);
+
+  useEffect(() => {
+    let geckoFetch: any;
+
+    if (
+      (!wallet || !web3 || !account) &&
+      Object.keys(priceChanges).length < 1
+    ) {
+      const fetchFromGecko = async () => {
+        const geckoPriceChangesPromises = assetList.map((asset) =>
+          get24HourPriceChange(asset.coinGeckoId),
+        );
+        const priceChanges = await Promise.all(geckoPriceChangesPromises);
+        const tokenPriceChanges = [];
+
+        for (const [index, asset] of assetList.entries()) {
+          tokenPriceChanges.push({
+            key: asset.key,
+            value: priceChanges[index],
+          });
+        }
+
+        dispatch(updateTokenPriceChanges(tokenPriceChanges));
+      };
+
+      fetchFromGecko();
+
+      geckoFetch = setInterval(() => {
+        fetchFromGecko();
+      }, 130000);
+    }
+
+    return () => clearInterval(geckoFetch);
+  }, [wallet, account, web3, priceChanges, dispatch]);
 
   return null;
 }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -12,45 +12,55 @@ import {
   MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { ExpandMore } from '@material-ui/icons';
+import cx from 'classnames';
+
+import { useIsDarkMode } from 'state/user/hooks';
+import { UserOwnedPool } from 'web3/pools';
+import { usePools } from 'hooks';
+import { getPoolSize } from 'utils/getPoolSize';
+import { getPoolUtilization } from 'utils/getPoolUtilization';
+import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
+import { formatNumber, formatCompact } from 'utils/formatNumber';
+import { getTokenIcon } from 'utils/getTokenIcon';
+
 import {
   LineChart,
   RadialChart,
-  SearchTabs,
+  SelectTokenTabs,
   TooltipPan,
   WithdrawDepositModal,
   SwitchWithGlider,
 } from 'components';
-import { ExpandMore } from '@material-ui/icons';
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
-import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
-import { useIsDarkMode } from 'state/user/hooks';
+import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
     fontWeight: 700,
     fontSize: '28px',
     lineHeight: '27.5px',
     marginBottom: 36,
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       display: 'none',
     },
   },
   topTab: {
     margin: '20px 0 20px 6px',
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       margin: '20px 0 12px',
     },
   },
@@ -61,11 +71,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
 
     '& svg': {
-      width: 18,
-      height: 18,
+      width: 14,
+      height: 14,
 
       '& path': {
-        fill: (props: any) => (props.dark ? 'white' : 'black'),
+        fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
       },
     },
   },
@@ -75,23 +85,44 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
 
     '& h1': {
-      marginRight: 8,
+      fontWeight: 700,
+      marginRight: 4,
     },
 
     '& h2': {
       top: 1,
       position: 'relative',
+      fontSize: 14,
     },
 
     '& svg': {
-      marginRight: 8,
-      top: -1,
-      position: 'relative',
+      '&:first-of-type': {
+        marginRight: 8,
+        top: -1,
+        position: 'relative',
+      },
+
+      '&:last-of-type': {
+        marginRight: 4,
+        top: 1,
+        width: 14,
+        height: 14,
+        position: 'relative',
+
+        '& path': {
+          fill: (props: any) => (props.dark ? '#646464' : '#8D97A0'),
+        },
+      },
+    },
+  },
+  helpIcon: {
+    '&> path': {
+      fill: '#7D7D7D',
     },
   },
   topSector: {
     padding: 28,
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${palette.divider}`,
   },
   bottomSector: {
     padding: '28px 28px 0 28px',
@@ -103,9 +134,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   content: {
     display: 'flex',
   },
+  leftPanel: {
+    width: 210,
+    height: 210,
+    position: 'relative',
+
+    '& > div': {
+      position: 'absolute',
+      left: -36,
+      top: -34,
+    },
+  },
   rightPanel: {
     display: 'flex',
-    width: 'calc(100% - 200px)',
+    width: 'calc(100% - 210px)',
 
     '& svg': {
       position: 'relative',
@@ -130,7 +172,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       lineHeight: '24px',
     },
 
-    [theme.breakpoints.down('md')]: {
+    [breakpoints.down('md')]: {
       width: '100%',
     },
   },
@@ -162,14 +204,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
   },
   readMore: {
-    color: theme.palette.primary.main,
+    color: palette.primary.main,
     fontSize: 14,
     lineHeight: '18px',
     marginTop: 6,
   },
   vaultSwitchContainer: {
     border: `1px solid`,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: palette.background.paper,
     borderRadius: '12px',
     width: '206px',
     height: '55px',
@@ -178,94 +220,103 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   vaultSwitchContainerMobile: {
     border: `1px solid`,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: palette.background.paper,
+    justifyContent: 'space-evenly',
     borderRadius: '12px',
     width: '100%',
-    height: '42px',
+    height: '43px',
     padding: '5px',
   },
-  modeItem: {
-    border: `1px solid ${theme.palette.background.paper}`,
-    borderRadius: 10,
+  vaultSwitchButton: {
     cursor: 'pointer',
-    '& svg': {
-      marginRight: 8,
-    },
-    '& svg path': {
-      fill: theme.palette.text.secondary,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-    },
-  },
-  inactiveMode: {
-    border: `1px solid transparent`,
-    backgroundColor: 'transparent',
     '& svg': {
       marginRight: 9,
     },
     '& svg path': {
-      fill: theme.palette.primary.main,
+      fill: palette.secondary.main,
     },
-    '& span': {
-      color: theme.palette.primary.main,
+    '& .MuiTypography-root': {
+      fontWeight: 400,
+      lineHeight: '14px',
+      fontSize: '14px',
+      color: palette.secondary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.primary,
+      },
+      '& .MuiTypography-root': {
+        fontWeight: 400,
+        fontSize: '14px',
+        color: palette.text.primary,
+      },
     },
   },
-  textSelected: {
-    fontWeight: 700,
-    fontSize: '14px',
-    color: theme.palette.primary.main,
-  },
-  textIdle: {
-    fontWeight: 400,
-    fontSize: '14px',
-    color: theme.palette.secondary.main,
+  activeVaultswitch: {
+    cursor: 'default',
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      color: palette.primary.main,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
+    },
   },
   expandMore: {
     marginRight: 8,
     position: 'absolute',
     right: 0,
     cursor: 'pointer',
-
     '& path': {
-      fill: theme.palette.secondary.main,
+      fill: palette.secondary.main,
+    },
+  },
+  basicVault: {
+    opacity: (props: any) => (props.dark ? 0.8 : 0.9),
+    height: (props: any) => (props.mediumWindow ? 'calc(100% - 75px)' : '100%'),
+    display: 'flex',
+    position: 'absolute',
+    width: '100%',
+    background: (props: any) => (props.dark ? '#000000' : '#F2F4F5'),
+    zIndex: 33,
+
+    '& div': {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 350,
+      fontSize: 18,
+      lineHeight: '18px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+
+      '& p': {
+        marginTop: 12,
+        fontWeight: 700,
+      },
     },
   },
 }));
 
-const tabItems = [
-  {
-    image: WBTCIcon,
-    label: 'wBTC',
-  },
-  {
-    image: UniswapIcon,
-    label: 'Uni',
-    highlight: true,
-  },
-  {
-    image: LinkIcon,
-    label: 'Link',
-  },
-  {
-    image: YFIIcon,
-    label: 'YFI',
-    highlight: true,
-  },
-  {
-    image: ETHIcon,
-    label: 'ETH',
-  },
-];
-
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
-  const history = useHistory();
-  const location = useLocation();
-  const classes = useStyles({ dark });
   const theme = useTheme();
   const { palette } = theme;
+  const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
+  const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
+  const classes = useStyles({ dark, mediumWindow });
+  const history = useHistory();
+  const location = useLocation();
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
   const [depositCallOpen, setDepositCallOpen] = useState(false);
@@ -274,16 +325,69 @@ const ProVault: React.FC = () => {
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
-  const [tabIndex, setTabIndex] = useState(0);
   const [coin, setCoin] = useState<any>(null);
-  const thinDesktop = useMediaQuery(theme.breakpoints.down('sm'));
-  const ultraThinWindow = useMediaQuery(theme.breakpoints.down('xs'));
-  const phoneDevice = (/Mobi|Android/i.test(navigator.userAgent));
-  const extraLargeDesktop = window.innerWidth > 1526;
-  const deviceWidth = window.innerWidth;
-  const extraMargin = extraLargeDesktop ? ((deviceWidth - 1526) / 2) - 6 : 0;
-  const largeMobileDeviceAdjustment = (!ultraThinWindow && thinDesktop) ? 8 : 0;
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+  const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
+    usePools(true);
+  const { callPool, putPool } = usePools();
+
+  const callPoolSize = useMemo(() => getPoolSize(callPool), [callPool]);
+  const putPoolSize = useMemo(() => getPoolSize(putPool), [putPool]);
+  const userOwnedCallPoolSize = useMemo(
+    () => getPoolSize(userOwnedCallPool),
+    [userOwnedCallPool],
+  );
+  const userOwnedPutPoolSize = useMemo(
+    () => getPoolSize(userOwnedPutPool),
+    [userOwnedPutPool],
+  );
+
+  const callPoolFeesEarned = useMemo(
+    () => getPoolFeesEarned(userOwnedCallPool as UserOwnedPool | undefined),
+    [userOwnedCallPool],
+  );
+  const putPoolFeesEarned = useMemo(
+    () => getPoolFeesEarned(userOwnedPutPool as UserOwnedPool | undefined),
+    [userOwnedPutPool],
+  );
+
+  const callPoolUtilization = useMemo(
+    () => getPoolUtilization(callPool),
+    [callPool],
+  );
+  const putPoolUtilization = useMemo(
+    () => getPoolUtilization(putPool),
+    [putPool],
+  );
+  const userOwnedCallPoolUtilization = useMemo(
+    () => getPoolUtilization(userOwnedCallPool),
+    [userOwnedCallPool],
+  );
+  const userOwnedPutPoolUtilization = useMemo(
+    () => getPoolUtilization(userOwnedPutPool),
+    [userOwnedPutPool],
+  );
+
+  const BaseIcon = useMemo(
+    () => getTokenIcon(callPool?.base.symbol),
+    [callPool],
+  );
+
+  const UnderlyingIcon = useMemo(
+    () => getTokenIcon(callPool?.underlying.symbol),
+    [callPool],
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -300,21 +404,31 @@ const ProVault: React.FC = () => {
     setCoin(coin);
   };
 
+  const handleBasicVaultSwitch = () => {
+    setVaultIndex(0);
+    history.push('/vaults?tab=basic');
+  };
+
+  const handleProVaultSwitch = () => {
+    setVaultIndex(1);
+    history.push('/vaults?tab=pro');
+  };
+
   const BasicVaultButton = () => (
     <Box
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
-      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
-      className={vaultIndex === 1 ? classes.modeItem : classes.inactiveMode}
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
+      className={cx(
+        classes.vaultSwitchButton,
+        vaultIndex === 0 && classes.activeVaultswitch,
+      )}
+      onClick={handleBasicVaultSwitch}
     >
       <BasicIcon />
-      <Typography
-        className={vaultIndex === 0 ? classes.textSelected : classes.textIdle}
-      >
-        Basic
-      </Typography>
+      <Typography>Basic</Typography>
     </Box>
   );
 
@@ -323,83 +437,59 @@ const ProVault: React.FC = () => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      width={(phoneDevice || thinDesktop) ? '160px' : '94px'}
-      height={(phoneDevice || thinDesktop) ? '32px' : '42px'}
-      className={vaultIndex === 0 ? classes.modeItem : classes.inactiveMode}
+      width={mobileDevice || mediumWindow ? '50%' : '94px'}
+      height={mobileDevice || mediumWindow ? '32px' : '42px'}
+      className={cx(
+        classes.vaultSwitchButton,
+        vaultIndex === 1 && classes.activeVaultswitch,
+      )}
+      onClick={handleProVaultSwitch}
     >
       <ProIcon />
-      <Typography
-        className={vaultIndex === 1 ? classes.textSelected : classes.textIdle}
-      >
-        Pro
-      </Typography>
+      <Typography>Pro</Typography>
     </Box>
   );
 
-  const handleBasicVaultSwitch = () => {
-    setVaultIndex(0);
-    history.push({
-      pathname: '/vaults',
-      search: '?tab="basic"',
-    });
-  };
-
-  const handleProVaultSwitch = () => {
-    setVaultIndex(1);
-    history.push({
-      pathname: '/vaults',
-      search: '?tab="pro"',
-    });
-  };
-
   return (
-    <Grid container direction='column'>
-      {withdrawCallOpen && (
-        <WithdrawDepositModal
-          open={withdrawCallOpen}
-          call={true}
-          type='withdraw'
-          onClose={() => setWithdrawCallOpen(false)}
-        />
-      )}
-      {depositCallOpen && (
-        <WithdrawDepositModal
-          open={depositCallOpen}
-          call={true}
-          type='deposit'
-          onClose={() => setDepositCallOpen(false)}
-        />
-      )}
-      {withdrawPutOpen && (
-        <WithdrawDepositModal
-          open={withdrawPutOpen}
-          call={false}
-          type='withdraw'
-          onClose={() => setWithdrawPutOpen(false)}
-        />
-      )}
-      {depositPutOpen && (
-        <WithdrawDepositModal
-          open={depositPutOpen}
-          call={false}
-          type='deposit'
-          onClose={() => setDepositPutOpen(false)}
-        />
-      )}
+    <Grid container direction='column' style={{ position: 'relative' }}>
+      <WithdrawDepositModal
+        open={withdrawCallOpen}
+        call={true}
+        type='withdraw'
+        onClose={() => setWithdrawCallOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={depositCallOpen}
+        call={true}
+        type='deposit'
+        onClose={() => setDepositCallOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={withdrawPutOpen}
+        call={false}
+        type='withdraw'
+        onClose={() => setWithdrawPutOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={depositPutOpen}
+        call={false}
+        type='deposit'
+        onClose={() => setDepositPutOpen(false)}
+      />
       <Box width={1}>
         <Typography
           component='h1'
           variant='h3'
           color='textPrimary'
           className={classes.title}
-          style={!phoneDevice ? { margin: '42px 0 0 20px' } : {}}
+          style={!mobileDevice ? { margin: '20px 0 0 20px' } : {}}
         >
           Vaults
         </Typography>
         <Grid container direction='row' className={classes.topTab}>
           <Box
             className={
-              phoneDevice || thinDesktop
+              mobileDevice || mediumWindow
                 ? classes.vaultSwitchContainerMobile
                 : classes.vaultSwitchContainer
             }
@@ -412,47 +502,46 @@ const ProVault: React.FC = () => {
                   }
             }
           >
-            {!phoneDevice && !thinDesktop ? (
+            {!mobileDevice && !mediumWindow ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[61 + extraMargin, 160 + extraMargin]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={61 + extraMargin}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={4}
                 gliderWidth={94}
                 gliderHeight={42}
               />
-            ) : phoneDevice ? (
+            ) : mobileDevice ? (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21, deviceWidth - 182 + largeMobileDeviceAdjustment]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={21}
-                gliderWidth={160}
-                gliderHeight={32}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
+                }
+                gliderHeight={31}
               />
             ) : (
               <SwitchWithGlider
                 elements={[BasicVaultButton, ProVaultButton]}
-                positions={[21 + largeMobileDeviceAdjustment, deviceWidth - 193 - largeMobileDeviceAdjustment]}
-                clickFuncs={[handleBasicVaultSwitch, handleProVaultSwitch]}
-                start={21 + largeMobileDeviceAdjustment}
-                gliderWidth={160}
-                gliderHeight={32}
+                defaultIndex={vaultIndex}
+                marginBetweenSwitches={-2}
+                gliderWidth={
+                  !smallWindow
+                    ? (deviceWidth - 316) / 2
+                    : (deviceWidth - 50) / 2
+                }
+                gliderHeight={31}
               />
             )}
           </Box>
-          {!thinDesktop && vaultIndex === 1 && (
+          {!mediumWindow && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
-              <SearchTabs
-                items={tabItems}
-                value={tabIndex}
-                onChange={(ev, index) => {
-                  setTabIndex(index);
-                }}
-              />
+              <SelectTokenTabs />
             </Box>
           )}
-          {thinDesktop && vaultIndex === 1 && (
+          {mediumWindow && vaultIndex === 1 && (
             <>
               <Box className={classes.col}>
                 <Box
@@ -519,7 +608,20 @@ const ProVault: React.FC = () => {
             </>
           )}
         </Grid>
-        {vaultIndex === 0 && <BasicVault />}
+        {vaultIndex === 0 && (
+          <>
+            <Box className={classes.basicVault}>
+              <Box>
+                <AttentionIcon />
+                <Typography>
+                  Basic vaults will be enabled after the trading competition is
+                  complete
+                </Typography>
+              </Box>
+            </Box>
+            <BasicVault />
+          </>
+        )}
         {vaultIndex === 1 && (
           <Grid container direction='row' spacing={3}>
             <Grid item xs={12} sm={12} md={6}>
@@ -530,37 +632,40 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Call pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(callPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
+                    style={{ marginTop: '2rem' }}
                   >
-                    <RadialChart
-                      color='#5294FF'
-                      secondaryColor='#1EFF78'
-                      width={200}
-                      height={200}
-                      data={[67]}
-                    >
-                      <UniswapIcon />
-                      Pool size in Uni
-                      <Typography
-                        component='h5'
-                        variant='body2'
-                        color='textSecondary'
+                    <Box className={classes.leftPanel}>
+                      <RadialChart
+                        color='#2DDEA0'
+                        secondaryColor='#4D9EF2'
+                        width={260}
+                        height={260}
+                        data={[callPoolUtilization]}
                       >
-                        211305
-                      </Typography>
-                    </RadialChart>
+                        <UnderlyingIcon height={18} />
+                        Pool size in {callPool?.underlying.symbol}
+                        <Typography
+                          component='h5'
+                          variant='body2'
+                          color='textSecondary'
+                        >
+                          {formatNumber(callPoolSize)}
+                        </Typography>
+                      </RadialChart>
+                    </Box>
                     <Grid
                       item
                       direction='column'
@@ -597,9 +702,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatNumber(userOwnedCallPoolSize)}
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -624,9 +729,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              100
+                              {formatNumber(callPoolFeesEarned)}
                             </Typography>
-                            <DaiIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -635,8 +740,9 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid
@@ -651,30 +757,35 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              46%
+                              {userOwnedCallPoolUtilization}%
                             </Typography>
                           </Grid>
                         </Grid>
                       </Grid>
-                      <Grid container direction='row' spacing={2}>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={2}
+                        style={{ marginTop: '1rem' }}
+                      >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='primary'
                             variant='contained'
-                            onClick={() => setWithdrawCallOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositCallOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositCallOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawCallOpen(true)}
                           >
                             Remove
                           </Button>
@@ -717,7 +828,7 @@ const ProVault: React.FC = () => {
                     </TooltipPan>
                   </Box>
                   <LineChart
-                    color='#14A887'
+                    isCall
                     data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                     categories={[
                       '2021/5/24',
@@ -742,37 +853,43 @@ const ProVault: React.FC = () => {
                     <Typography variant='h6' component='h1' color='textPrimary'>
                       Put pool
                     </Typography>
-                    <Help />
+                    <Help className={classes.helpIcon} />
                     <Typography
                       variant='body1'
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(putPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
                     container
-                    direction={!thinDesktop ? 'row' : 'column'}
-                    alignItems={!thinDesktop ? 'flex-start' : 'center'}
+                    direction={!mediumWindow ? 'row' : 'column'}
+                    alignItems={!mediumWindow ? 'flex-start' : 'center'}
+                    style={{ marginTop: '2rem' }}
                   >
-                    <RadialChart
-                      color='#EB4A97'
-                      secondaryColor='#8C43F6'
-                      width={200}
-                      height={200}
-                      data={[67]}
-                    >
-                      <UniswapIcon />
-                      Pool size in Uni
-                      <Typography
-                        component='h5'
-                        variant='body2'
-                        color='textSecondary'
+                    <Box className={classes.leftPanel}>
+                      <RadialChart
+                        color='#EB4A97'
+                        secondaryColor='#A745DD'
+                        trackColor={
+                          dark ? 'rgba(77,13,44,0.44)' : 'rgba(77,13,44,0.047)'
+                        }
+                        width={260}
+                        height={260}
+                        data={[putPoolUtilization]}
                       >
-                        211305
-                      </Typography>
-                    </RadialChart>
+                        <BaseIcon height={16} />
+                        Pool size in {callPool?.base.symbol}
+                        <Typography
+                          component='h5'
+                          variant='body2'
+                          color='textSecondary'
+                        >
+                          {formatNumber(putPoolSize)}
+                        </Typography>
+                      </RadialChart>
+                    </Box>
                     <Grid
                       item
                       direction='column'
@@ -809,9 +926,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatNumber(userOwnedPutPoolSize)}
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -836,9 +953,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              100
+                              {formatNumber(putPoolFeesEarned)}
                             </Typography>
-                            <DaiIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -847,8 +964,9 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid
@@ -863,30 +981,35 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              46%
+                              {userOwnedPutPoolUtilization}%
                             </Typography>
                           </Grid>
                         </Grid>
                       </Grid>
-                      <Grid container direction='row' spacing={2}>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={2}
+                        style={{ marginTop: '1rem' }}
+                      >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='contained'
-                            onClick={() => setWithdrawPutOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositPutOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositPutOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawPutOpen(true)}
                           >
                             Remove
                           </Button>
@@ -929,7 +1052,7 @@ const ProVault: React.FC = () => {
                     </TooltipPan>
                   </Box>
                   <LineChart
-                    color='#BF47C3'
+                    isCall={false}
                     data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
                     categories={[
                       '2021/5/24',

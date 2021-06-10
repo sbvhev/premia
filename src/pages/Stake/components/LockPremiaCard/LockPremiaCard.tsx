@@ -295,7 +295,7 @@ const LockPremiaCard: React.FC = () => {
       {!mobile && (
         <img
           src={LockPremiaIcon}
-          alt='Lock premia'
+          alt='Lock xPremia'
           className={classes.lockImg}
         />
       )}
@@ -314,7 +314,7 @@ const LockPremiaCard: React.FC = () => {
           {mobile && (
             <img
               src={LockPremiaMobile}
-              alt='Stake premia'
+              alt='Lock xPremia'
               style={{ height: '80px', width: '58.24px' }}
             />
           )}
@@ -324,7 +324,7 @@ const LockPremiaCard: React.FC = () => {
               color='textPrimary'
               className={classes.title}
             >
-              Lock premia
+              Lock xPremia
             </Typography>
             <Typography
               component='p'

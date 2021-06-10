@@ -21,14 +21,32 @@ const useStyles = makeStyles(({ palette }) => ({
     marginLeft: 210,
   },
   pageMobile: {
-    backgroundColor: palette.background.paper,
     width: '100vw',
     marginLeft: 0,
     height: '100vh',
   },
   border: {
-    borderBottom: `1px solid ${palette.divider}`,
+    borderBottom: (props: any) =>
+      (props.darkMode || !props.mobileSidebarHidden) &&
+      `1px solid ${palette.divider}`,
+    boxShadow: (props: any) =>
+      props.darkMode
+        ? 'none'
+        : !props.mobileSidebarHidden
+        ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)'
+        : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
   },
+  transitionItem: {
+    opacity: 0,
+    transform: 'scale(0)',
+    transformOrigin: 'center 0',
+    position: 'absolute',
+    transition: 'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+  },
+  transitionOpen: {
+    opacity: 1,
+    transform: 'scale(1)',
+  }
 }));
 
 export interface PageWithSidebarProps {
@@ -45,7 +63,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const classes = useStyles();
+  const classes = useStyles({ darkMode, mobileSidebarHidden });
 
   const hideMobileMenu = () => {
     setMobileSidebarHidden(true);
@@ -66,43 +84,46 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
           </Box>
         )}
 
-        <Box
-          className={cx(classes.page, mobile && classes.pageMobile)}
-        >
+        <Box className={cx(classes.page, mobile && classes.pageMobile)}>
           <Box
             position='fixed'
             width={mobile ? 1 : 'calc(100vw - 210px)'}
             zIndex={10}
-            bgcolor={
-              !mobile ? 'transparent' : palette.background.paper
-            }
+            bgcolor={!mobile ? 'transparent' : palette.background.paper}
             pt={mobile ? 1 : 3}
             px={mobile ? 0 : 3}
             className={cx(mobile && classes.border)}
             height={mobile ? '60px' : '72px'}
           >
-            <Box width="100%" display="flex" justifyContent="center">
+            <Box width='100%' display='flex' justifyContent='center'>
               <Box
-                display="flex"
-                width="100%"
-                maxWidth="1280px"
+                display='flex'
+                width='100%'
+                maxWidth='1280px'
                 justifyContent={!mobile ? 'flex-end' : 'space-between'}
                 alignItems='center'
                 pr={!mobile ? 3 : 0}
               >
                 {mobile && (
-                  <Box display='flex' alignItems='center' justifyContent="space-between" width="100%">
-                    <Box marginLeft="22px" marginTop="2px">
+                  <Box
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    width='100%'
+                  >
+                    <Box marginLeft='22px' marginTop='2px'>
                       <img
                         src={darkMode ? MainLogo : MainLogoBlack}
                         alt='main logo'
-                        style={{ height: '28px'}}
+                        style={{ height: '28px' }}
                       />
                     </Box>
-                    <Grid style={{ height: '48px', marginRight: '6px'}}>
+                    <Grid style={{ height: '48px', marginRight: '6px' }}>
                       <IconButton
                         style={{ height: '48px', padding: 0 }}
-                        onClick={() => setMobileSidebarHidden(!mobileSidebarHidden)}
+                        onClick={() =>
+                          setMobileSidebarHidden(!mobileSidebarHidden)
+                        }
                       >
                         <Hamburger
                           size={20}
@@ -115,7 +136,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   </Box>
                 )}
                 {!mobile && (
-                  <Box display="flex" justifySelf="flex-end" id="test" style={{ backgroundColor: 'transparent'}}>
+                  <Box
+                    display='flex'
+                    justifySelf='flex-end'
+                    style={{ backgroundColor: 'transparent' }}
+                  >
                     <AccountButtons />
                   </Box>
                 )}
@@ -123,13 +148,14 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           </Box>
 
-          {mobile && !mobileSidebarHidden && (
+          {mobile && (
             <Box
+              className={cx(classes.transitionItem, !mobileSidebarHidden && classes.transitionOpen)}
               width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'
               mb={mobile ? 0 : 7}
-              height='555px'
+              height={1}
               maxHeight='calc(100vh - 160px)'
               style={{ backgroundColor: palette.background.paper }}
             >
@@ -157,12 +183,13 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             <>
               <Box
                 px={mobile ? 0 : 3}
-                width={mobile ? 1 : 'calc(100vw - 210px)'}
-                // mx='auto'
+                width={mobile ? '100vw' : 'calc(100vw - 210px)'}
                 mt={!mobile ? 11 : 10}
-                mb={mobile ? 0 : 6}
+                mb={mobile ? 0 : 16}
               >
-                <Container>{children}</Container>
+                <Container style={!mobile ? {} : { padding: '0 20px' }}>
+                  {children}
+                </Container>
                 {mobile && (
                   <Box width='100%' zIndex={14}>
                     <Footer />

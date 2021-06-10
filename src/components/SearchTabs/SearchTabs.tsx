@@ -15,6 +15,7 @@ import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 export interface SwitchProps {
   items: any[];
   value: number;
+  hideSearch?: boolean;
   onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
 }
 
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .MuiIconButton-root': {
-      padding: '12px 6px 12px 0',
+      padding: '12px 12px 12px 0',
       '&:hover': {
         background: 'transparent',
       },
@@ -68,12 +69,25 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tab: {
     position: 'relative',
-    '& svg:first-child path': {
-      fill: theme.palette.secondary.main,
+    opacity: 1,
+    color: theme.palette.text.secondary,
+
+    '&:hover:not(:active)': {
+      color: theme.palette.primary.main,
+
+      '& svg:first-child path': {
+        fill: theme.palette.primary.main,
+      },
     },
+
+    '& svg:first-child path': {
+      fill: theme.palette.text.secondary,
+    },
+
     '&.Mui-selected svg:first-child path': {
       fill: theme.palette.primary.main,
     },
+
     '& svg:nth-child(2)': {
       position: 'absolute',
       top: 6,
@@ -88,15 +102,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     borderRadius: 12,
     background: theme.palette.background.paper,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.07)',
+    border: (props: any) => props.dark && `1px solid ${theme.palette.divider}`,
+    boxShadow: (props: any) =>
+      props.dark ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.07)',
   },
   fireIcon: {
     position: 'absolute',
     right: '-2px !important',
     top: '-8px !important',
-    width: '25px !important',
-    height: '26px !important',
 
     [theme.breakpoints.down('xs')]: {
       flexWrap: 'wrap',
@@ -104,7 +117,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
+const SearchTabs: React.FC<SwitchProps> = ({
+  items,
+  value,
+  hideSearch = false,
+  onChange,
+}) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
 
@@ -112,14 +130,15 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
     <Box component='div' className={classes.box}>
       <Tabs variant='scrollable' value={value} onChange={onChange}>
         {items.map((val, index) => {
-          const Icon = val.image;
+          const Icon = val.icon;
+
           return (
             <Tab
               key={index}
               className={classes.tab}
               icon={
                 <>
-                  <Icon />
+                  <Icon height={18} style={{ marginLeft: val.marginLeft }} />
                   {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
@@ -128,23 +147,26 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
           );
         })}
       </Tabs>
-      <TextField
-        placeholder='Search...'
-        variant='outlined'
-        className={classes.searchField}
-        InputLabelProps={{
-          shrink: false,
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment component='div' position='end'>
-              <IconButton>
-                <Search />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      
+      {!hideSearch && (
+        <TextField
+          placeholder='Search...'
+          variant='outlined'
+          className={classes.searchField}
+          InputLabelProps={{
+            shrink: false,
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment component='div' position='end'>
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
     </Box>
   );
 };

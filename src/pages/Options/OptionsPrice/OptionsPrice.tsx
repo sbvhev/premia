@@ -1,5 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Box, Grid, Typography, RootRef } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Draggable from 'react-draggable';
+import cx from 'classnames';
+
+import {
+  useOptionType,
+  useUnderlyingPrice,
+  useBreakEvenPrice,
+  useStrikePrice,
+  useUnderlying,
+  useSize,
+  usePricePerUnit,
+} from 'state/options/hooks';
+import { usePrices } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { OptionType } from 'web3/options';
+import { formatCompact } from 'utils/formatNumber';
+
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
@@ -10,13 +30,8 @@ import BarometerBg2 from 'assets/svg/BarometerBg2.svg';
 import BarometerBg2Light from 'assets/svg/BarometerBg2Light.svg';
 import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, Grid, Typography, RootRef } from '@material-ui/core';
-import { useOptionType } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
-import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
-import Draggable from 'react-draggable';
-import cx from 'classnames';
+import BarometerBg4 from 'assets/svg/BarometerBg4.svg';
+import BarometerBg4Light from 'assets/svg/BarometerBg4Light.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartCallTop: {
@@ -83,7 +98,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   currentPrice: {
     position: 'absolute',
     top: 31,
-    left: 36,
+    left: 32,
     [breakpoints.down('md')]: {
       top: 'calc(50% - 8px)',
       left: '50%',
@@ -121,6 +136,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       marginLeft: 0,
       top: 8,
+      '& svg': {
+        margin: '0 !important',
+      },
     },
     '& div': {
       position: 'absolute',
@@ -128,14 +146,38 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       alignItems: 'center',
       justifyContent: 'center',
       top: 8,
-      right: 10,
+      right: 8,
       [breakpoints.down('md')]: {
         position: 'relative',
       },
     },
     '& svg': {
       width: 14,
-      margin: '-2px 0 -2px 4px',
+      margin: '-2px 0 -2px 2px',
+      '& path': {
+        fill: palette.text.secondary,
+      },
+    },
+  },
+  possiblePLLeft: {
+    position: 'absolute',
+    zIndex: 1,
+    color: palette.text.secondary,
+    '& div': {
+      position: 'absolute',
+      display: 'flex',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+      top: 14,
+      [breakpoints.down('md')]: {
+        position: 'relative',
+        top: 4,
+        left: -20,
+      },
+    },
+    '& img': {
+      height: 48,
     },
   },
   priceFont: {
@@ -151,10 +193,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   draggableItem: {
     cursor: 'pointer',
     transition: 'opacity 0.5s',
+    '& img': {
+      marginLeft: -1,
+    },
   },
   currentPriceLine: {
-    width: (props: any) => (props.mobile ? 1 : 31),
-    height: (props: any) => (props.mobile ? 31 : 1.47),
+    width: (props: any) => (props.mobile ? 1 : 16),
+    height: (props: any) => (props.mobile ? 16 : 1.47),
     background: (props: any) =>
       props.darkMode
         ? palette.text.primary
@@ -171,6 +216,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 const OptionsPrice: React.FC = () => {
   const possiblePLBox = useRef<any>(null);
   const possiblePLBoxContainer = useRef<any>(null);
+  const barRef = useRef<any>(null);
   const [possiblePLBoxDimensions, setPossiblePLBoxDimensions] = useState({
     width: 0,
     height: 0,
@@ -190,16 +236,88 @@ const OptionsPrice: React.FC = () => {
 
   const theme = useTheme();
   const { optionType } = useOptionType();
+  const { strikePrice } = useStrikePrice();
+  const { underlying } = useUnderlying();
+  const { size } = useSize();
+  const { pricePerUnit } = usePricePerUnit();
+  const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const underlyingPrice = useUnderlyingPrice();
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
+  const prices = usePrices();
+  const currentPrice = prices[underlying.symbol];
+  const isCall = optionType === OptionType.Call;
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
-  const pLBoxPos = 250;
+  const [plPrice, setPLPrice] = useState(0);
+  const barSize = mobile
+    ? barRef.current?.clientWidth
+    : barRef.current?.clientHeight;
+  const pLBoxPos = (barSize / 2) * 0.8 - (mobile ? 58 : 22);
+  const plFirstPrice = (currentPrice || 0) * 1.2;
+  const callPrice = Math.min(breakEvenPrice, currentPrice * 2);
+  const putPrice = Math.max(breakEvenPrice, currentPrice * 0.5);
+  const potentialProfit = Math.max(
+    0,
+    (plPrice - strikePrice - pricePerUnit) * size,
+  );
+
+  let callSize, putSize;
+
+  if (isCall) {
+    if (callPrice <= currentPrice) {
+      callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
+    } else {
+      callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
+    }
+
+    if (Number(strikePrice) <= currentPrice) {
+      putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
+    } else {
+      putSize = 1 / 2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
+    }
+  } else {
+    if (Number(strikePrice) <= currentPrice) {
+      putSize = 1 / 2 + (currentPrice - Number(strikePrice)) / currentPrice;
+    } else {
+      putSize = (currentPrice * 2 - Number(strikePrice)) / currentPrice / 2;
+    }
+
+    if (putPrice <= currentPrice) {
+      callSize = (putPrice - currentPrice / 2) / currentPrice;
+    } else {
+      callSize = 1 / 2 + (putPrice - currentPrice) / currentPrice / 2;
+    }
+  }
+
+  useEffect(() => {
+    const setFirstPrice = () => {
+      setPLPrice(plFirstPrice);
+    };
+    setFirstPrice();
+  }, [plFirstPrice]);
+
+  const onDragPL = () => {
+    let plPrice1 =
+      plFirstPrice -
+      ((mobile
+        ? possiblePLBox.current.state.x
+        : possiblePLBox.current.state.y) /
+        barSize) *
+        2 *
+        currentPrice;
+
+    if (plPrice1 <= currentPrice) {
+      plPrice1 += (currentPrice - plPrice1) / 2;
+    }
+
+    setPLPrice(plPrice1);
+  };
 
   return (
     <Grid
@@ -210,7 +328,7 @@ const OptionsPrice: React.FC = () => {
     >
       <Box
         position='relative'
-        mt={mobile ? 0 : 0.75}
+        mt={mobile ? 0 : 0.7}
         mb={mobile ? -4 : 0}
         mr={mobile ? 0 : -3.25}
         zIndex={2}
@@ -234,109 +352,125 @@ const OptionsPrice: React.FC = () => {
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current price</p>
           <p>
-            <b>$1,749.37</b>
+            <b>${formatCompact(underlyingPrice)}</b>
           </p>
         </Box>
       </Box>
       <Box
-        zIndex={1}
+        zIndex={2}
         className={cx(
           classes.currentPriceLine,
           classes.transitionItem,
           (hoveredTop || hoveredBottom) && classes.hovered,
         )}
       />
-      <Box
-        display='flex'
-        flexDirection={mobile ? 'row' : 'column'}
-        justifyContent='space-between'
-        width={barWidth}
-        height={barHeight}
-        border={1}
-        bgcolor={theme.palette.background.paper}
-        borderColor={theme.palette.divider}
-        borderRadius={12}
-      >
+      <div ref={barRef} style={{ width: mobile ? '100%' : 'auto' }}>
         <Box
-          width={mobile ? 1 / 3 : 1}
-          height={mobile ? 1 : 1 / 3}
-          className={cx(
-            optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
-            classes.chartItem,
-            hoveredBottom && classes.hovered,
-          )}
-          onMouseEnter={() => {
-            setHoveredTop(true);
-          }}
-          onMouseLeave={() => {
-            setHoveredTop(false);
-          }}
-          position='relative'
+          display='flex'
+          flexDirection={mobile ? 'row' : 'column'}
+          justifyContent='space-between'
+          width={barWidth}
+          height={barHeight}
+          border={1}
+          bgcolor={theme.palette.background.paper}
+          borderColor={theme.palette.divider}
+          borderRadius={12}
         >
-          <Box className={classes.unlimitedText}>
-            <Typography className={classes.priceFont}>
-              Unlimited upside
-            </Typography>
+          <Box
+            width={
+              mobile ? (optionType === OptionType.Call ? callSize : putSize) : 1
+            }
+            height={
+              mobile ? 1 : optionType === OptionType.Call ? callSize : putSize
+            }
+            className={cx(
+              optionType === OptionType.Call
+                ? classes.chartCallTop
+                : classes.chartPutTop,
+              classes.chartItem,
+              hoveredBottom && classes.hovered,
+            )}
+            onMouseEnter={() => {
+              setHoveredTop(true);
+            }}
+            onMouseLeave={() => {
+              setHoveredTop(false);
+            }}
+            position='relative'
+          >
+            <Box className={classes.unlimitedText}>
+              <Typography className={classes.priceFont}>
+                {isCall ? 'Unlimited upside' : 'Worthless expiration'}
+              </Typography>
+            </Box>
+            <Box
+              className={classes.limitBox}
+              bottom={mobile ? 'unset' : -24}
+              right={mobile ? -20 : 'unset'}
+            >
+              {!mobile && (
+                <img
+                  src={darkMode ? BarometerBg2 : BarometerBg2Light}
+                  alt='Barometer Bg2'
+                />
+              )}
+              <Box>
+                {mobile && <HelpIcon />}
+                <Typography className={classes.priceFont}>
+                  ${formatCompact(isCall ? breakEvenPrice : strikePrice)}
+                </Typography>
+                {!mobile && <HelpIcon />}
+              </Box>
+            </Box>
           </Box>
           <Box
-            className={classes.limitBox}
-            bottom={mobile ? 'unset' : -24}
-            right={mobile ? 20 : 'unset'}
-          >
-            {!mobile && (
-              <img
-                src={darkMode ? BarometerBg2 : BarometerBg2Light}
-                alt='Barometer Bg2'
-              />
+            width={
+              mobile ? (optionType === OptionType.Call ? putSize : callSize) : 1
+            }
+            height={
+              mobile ? 1 : optionType === OptionType.Call ? putSize : callSize
+            }
+            className={cx(
+              optionType === OptionType.Call
+                ? classes.chartPutBottom
+                : classes.chartCallBottom,
+              classes.chartItem,
+              hoveredTop && classes.hovered,
             )}
-            <Box>
-              {mobile && <HelpIcon />}
-              <Typography className={classes.priceFont}>$1,843</Typography>
-              {!mobile && <HelpIcon />}
+            onMouseEnter={() => {
+              setHoveredBottom(true);
+            }}
+            onMouseLeave={() => {
+              setHoveredBottom(false);
+            }}
+            position='relative'
+          >
+            <Box className={classes.unlimitedText}>
+              <Typography className={classes.priceFont}>
+                {isCall ? 'Worthless expiration' : 'Unlimited upside'}
+              </Typography>
+            </Box>
+            <Box
+              className={classes.limitBox}
+              top={mobile ? 'unset' : -14.6}
+              left={mobile ? -20 : 'unset'}
+            >
+              {!mobile && (
+                <img
+                  src={darkMode ? BarometerBg2 : BarometerBg2Light}
+                  alt='Barometer Bg2'
+                />
+              )}
+              <Box>
+                <Typography className={classes.priceFont}>
+                  ${formatCompact(isCall ? strikePrice : breakEvenPrice)}
+                </Typography>
+                <HelpIcon />
+              </Box>
             </Box>
           </Box>
         </Box>
-        <Box
-          width={mobile ? 1 / 3 : 1}
-          height={mobile ? 1 : 1 / 3}
-          className={cx(
-            optionType === 'call'
-              ? classes.chartPutBottom
-              : classes.chartCallBottom,
-            classes.chartItem,
-            hoveredTop && classes.hovered,
-          )}
-          onMouseEnter={() => {
-            setHoveredBottom(true);
-          }}
-          onMouseLeave={() => {
-            setHoveredBottom(false);
-          }}
-          position='relative'
-        >
-          <Box className={classes.unlimitedText}>
-            <Typography className={classes.priceFont}>
-              Unlimited upside
-            </Typography>
-          </Box>
-          <Box
-            className={classes.limitBox}
-            top={mobile ? 'unset' : -16}
-            left={mobile ? -20 : 'unset'}
-          >
-            {!mobile && (
-              <img
-                src={darkMode ? BarometerBg2 : BarometerBg2Light}
-                alt='Barometer Bg2'
-              />
-            )}
-            <Box>
-              <Typography className={classes.priceFont}>$1,504</Typography>
-              <HelpIcon />
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+      </div>
       <RootRef rootRef={possiblePLBoxContainer}>
         <Box
           position='relative'
@@ -346,11 +480,12 @@ const OptionsPrice: React.FC = () => {
           <Draggable
             axis={mobile ? 'x' : 'y'}
             bounds={{
-              left: -1 * pLBoxPos - 55,
-              right: possiblePLBoxDimensions.width - pLBoxPos - 65,
-              top: -1 * pLBoxPos - 15,
-              bottom: possiblePLBoxDimensions.height - pLBoxPos - 30,
+              left: -1 * pLBoxPos - 58,
+              right: possiblePLBoxDimensions.width - pLBoxPos - 58,
+              top: -1 * pLBoxPos - 22,
+              bottom: possiblePLBoxDimensions.height - pLBoxPos - 22,
             }}
+            onDrag={onDragPL}
             scale={1}
             ref={possiblePLBox}
           >
@@ -358,13 +493,30 @@ const OptionsPrice: React.FC = () => {
               position='absolute'
               left={mobile ? pLBoxPos : 'unset'}
               top={mobile ? 11 : pLBoxPos}
-              zIndex={2}
+              zIndex={1}
               id='possiblePLBox'
               className={cx(
                 classes.draggableItem,
                 (hoveredTop || hoveredBottom) && classes.hovered,
               )}
             >
+              <Box
+                className={classes.possiblePLLeft}
+                top={mobile ? -52 : 0}
+                left={mobile ? 54 : -100}
+              >
+                {!mobile && (
+                  <img
+                    src={darkMode ? BarometerBg4 : BarometerBg4Light}
+                    alt='Barometer Bg4'
+                  />
+                )}
+                <Box>
+                  <Typography className={classes.priceFont}>
+                    ${formatCompact(plPrice)}
+                  </Typography>
+                </Box>
+              </Box>
               <Box
                 width={mobile ? 1.1 : 16}
                 height={mobile ? 28 : 1.1}
@@ -398,7 +550,7 @@ const OptionsPrice: React.FC = () => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>$1,749.37</b>
+                  <b>${formatCompact(potentialProfit)}</b>
                 </Typography>
               </Box>
             </Box>

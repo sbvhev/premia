@@ -65,6 +65,28 @@ const useStyles = makeStyles(({ palette }) => ({
       fill: palette.success.dark,
     },
   },
+  hoverGradientText: {
+    fontWeight: 700,
+    fontSize: '16px',
+    lineHeight: '18px',
+    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+    backgroundClip: 'text',
+    '-webkit-background-clip': 'text',
+    '-moz-background-clip': 'text',
+    '-moz-text-fill-color': 'transparent',
+    '-webkit-text-fill-color': 'transparent',
+  },
+  hoverGradientTextSecondary: {
+    fontWeight: 700,
+    fontSize: '16px',
+    lineHeight: '18px',
+    background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.main} 118.78%)`,
+    backgroundClip: 'text',
+    '-webkit-background-clip': 'text',
+    '-moz-background-clip': 'text',
+    '-moz-text-fill-color': 'transparent',
+    '-webkit-text-fill-color': 'transparent',
+  },
 }));
 
 interface ContainedButtonProps {
@@ -129,7 +151,9 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
           ) : (
             <h2
               className={
-                !color ? 'custom-contained' : 'custom-contained-secondary'
+                !color
+                  ? classes.hoverGradientText
+                  : classes.hoverGradientTextSecondary
               }
               style={textStyling}
             >

@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export interface RadialChartProps {
   color?: string;
   secondaryColor?: string;
+  trackColor?: string;
   data?: Array<number>;
   width?: number;
   height?: number;
@@ -54,6 +55,7 @@ export interface RadialChartProps {
 const RadialChart: React.FC<RadialChartProps> = ({
   color = '#1EFF78',
   secondaryColor = '#5294FF',
+  trackColor = 'rgba(31, 162, 109, 0.11773)',
   data = [],
   width = 300,
   height = 300,
@@ -76,22 +78,14 @@ const RadialChart: React.FC<RadialChartProps> = ({
           imageHeight: height,
 
           dropShadow: {
-            enabled: true,
-            top: 0,
-            left: 0,
-            blur: 25,
-            opacity: 0.25,
+            enabled: false,
           },
         },
         track: {
-          background: 'rgba(31, 162, 109, 0.11773)',
-          strokeWidth: '75%',
+          background: trackColor,
+          strokeWidth: '90%',
           dropShadow: {
-            enabled: true,
-            top: -3,
-            left: 0,
-            blur: 4,
-            opacity: 0.35,
+            enabled: false,
           },
         },
         dataLabels: {

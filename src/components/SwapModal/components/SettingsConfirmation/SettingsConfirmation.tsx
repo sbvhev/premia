@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  Typography,
-  Modal,
-  Box,
-  Button,
-} from '@material-ui/core';
+import { Typography, Modal, Box, Button, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as Attention } from 'assets/svg/AttentionIcon.svg';
-
-
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -119,56 +112,80 @@ export interface SwapModalProps {
   disagree: () => void;
 }
 
-const SettingsConfirmation: React.FC<SwapModalProps> = ({ open, onClose, agree, disagree }) => {
+const SettingsConfirmation: React.FC<SwapModalProps> = ({
+  open,
+  onClose,
+  agree,
+  disagree,
+}) => {
   const classes = useStyles();
-  const mobile = (/Mobi|Android/i.test(navigator.userAgent));
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer>
-        <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-          <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
-            <Box className={!mobile ? classes.topSection : classes.topSectionMobile}>
-              <Attention />
-              <Typography className={classes.title}>Are you sure?</Typography>
-              <Typography className={classes.smallInfoText}>
-                High slippage trades can often result in bad rates and lost funds. Only use this mode if you know what you are doing.
-              </Typography>
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer>
+          <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
+            <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
+              <Box
+                className={
+                  !mobile ? classes.topSection : classes.topSectionMobile
+                }
+              >
+                <Attention />
+                <Typography className={classes.title}>Are you sure?</Typography>
+                <Typography className={classes.smallInfoText}>
+                  High slippage trades can often result in bad rates and lost
+                  funds. Only use this mode if you know what you are doing.
+                </Typography>
+              </Box>
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+                padding={!mobile ? '13px 24px 20px' : '13px 16px 20px'}
+              >
+                <Button
+                  color='primary'
+                  variant='contained'
+                  size='large'
+                  style={{ width: '150px' }}
+                  onClick={agree}
+                >
+                  Agree
+                </Button>
+                <Button
+                  color='secondary'
+                  variant='outlined'
+                  size='large'
+                  style={{ width: '150px' }}
+                  onClick={disagree}
+                >
+                  Disagree
+                </Button>
+              </Box>
             </Box>
-            <Box display="flex" justifyContent="space-between" alignItems="center" padding={!mobile ? '13px 24px 20px' : '13px 16px 20px'} >
-              <Button
-                color="primary"
-                variant="contained"
-                size="large"
-                style={{ width: '150px' }}
-                onClick={agree}
-              >
-                Agree
-              </Button>
-              <Button
-                color="secondary"
-                variant="outlined"
-                size="large"
-                style={{ width: '150px' }}
-                onClick={disagree}
-              >
-                Disagree
-              </Button>
+
+            <Box
+              id='exitId'
+              className={
+                !mobile ? classes.exitContainer : classes.exitContainerMobile
+              }
+              onClick={onClose}
+            >
+              <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
             </Box>
           </Box>
-          
-          <Box
-            id='exitId'
-            className={
-              !mobile ? classes.exitContainer : classes.exitContainerMobile
-            }
-            onClick={onClose}
-          >
-            <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
-          </Box>
-      
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };
