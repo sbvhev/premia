@@ -60,17 +60,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     borderRadius: 12,
     cursor: 'pointer',
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '&> $disconnect': {
-        borderColor: palette.primary.main,
-      },
-    },
-
     '&> div:hover:not(:active)': {
-      borderColor: palette.primary.main,
-
       '&> svg path': {
         fill: palette.text.primary,
       },
@@ -98,10 +88,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: 43,
       flex: 'none',
     },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
-    },
   },
 
   connect: {
@@ -122,10 +108,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& svg path': {
       fill: palette.text.secondary,
-    },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
     },
 
     '&:hover:not(:active)': {

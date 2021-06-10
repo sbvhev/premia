@@ -15,6 +15,7 @@ import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 export interface SwitchProps {
   items: any[];
   value: number;
+  hideSearch?: boolean;
   onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
 }
 
@@ -116,7 +117,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
+const SearchTabs: React.FC<SwitchProps> = ({
+  items,
+  value,
+  hideSearch = false,
+  onChange,
+}) => {
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
 
@@ -124,14 +130,15 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
     <Box component='div' className={classes.box}>
       <Tabs variant='scrollable' value={value} onChange={onChange}>
         {items.map((val, index) => {
-          const Icon = val.image;
+          const Icon = val.icon;
+
           return (
             <Tab
               key={index}
               className={classes.tab}
               icon={
                 <>
-                  <Icon style={{ marginLeft: val.marginLeft }} />
+                  <Icon height={18} style={{ marginLeft: val.marginLeft }} />
                   {val.highlight && <FireIcon className={classes.fireIcon} />}
                 </>
               }
@@ -140,23 +147,26 @@ const SearchTabs: React.FC<SwitchProps> = ({ items, value, onChange }) => {
           );
         })}
       </Tabs>
-      <TextField
-        placeholder='Search...'
-        variant='outlined'
-        className={classes.searchField}
-        InputLabelProps={{
-          shrink: false,
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment component='div' position='end'>
-              <IconButton>
-                <Search />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      
+      {!hideSearch && (
+        <TextField
+          placeholder='Search...'
+          variant='outlined'
+          className={classes.searchField}
+          InputLabelProps={{
+            shrink: false,
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment component='div' position='end'>
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
     </Box>
   );
 };

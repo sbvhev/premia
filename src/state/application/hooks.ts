@@ -5,8 +5,6 @@ import { get } from 'lodash';
 
 import { AppState, AppDispatch } from 'state';
 import {
-  ApplicationNotification,
-  setActiveNotification,
   ApplicationModal,
   setActiveModal,
   setWeb3Settings,
@@ -62,6 +60,14 @@ export function usePrices() {
   return prices;
 }
 
+export function usePriceChanges() {
+  const { priceChanges } = useSelector<AppState, AppState['application']>(
+    (state) => state.application,
+  );
+
+  return priceChanges;
+}
+
 export async function getPrice(coinName: string) {
   const geckoUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinName}`;
   try {
@@ -71,6 +77,20 @@ export async function getPrice(coinName: string) {
     return Number(get(priceJson, '0.current_price'));
   } catch (err) {
     console.log(`Error fetching price for ${coinName}:`, err);
+
+    return 0;
+  }
+}
+
+export async function get24HourPriceChange(coinName: string) {
+  const geckoUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinName}&include_24hr_change=true`;
+  try {
+    const result = await fetch(geckoUrl);
+    const priceJson = await result.json();
+
+    return Number(get(priceJson, '0.price_change_percentage_24h'));
+  } catch (err) {
+    console.log(`Error fetching 24 hour price change for ${coinName}:`, err);
 
     return 0;
   }
@@ -102,30 +122,6 @@ export function useCloseModals() {
   return useCallback(() => dispatch(setActiveModal(null)), [dispatch]);
 }
 
-export function useNotificationOpen(
-  notification: ApplicationNotification,
-): boolean {
-  const activeNotification = useSelector(
-    (state: AppState) => state.application.activeNotification,
-  );
-  return activeNotification === notification;
-}
-
-export function useToggleNotification(notification: ApplicationNotification) {
-  const open = useNotificationOpen(notification);
-  const dispatch = useDispatch<AppDispatch>();
-  return useCallback(
-    (toState = !open) =>
-      dispatch(setActiveNotification(toState ? notification : null)),
-    [dispatch, notification, open],
-  );
-}
-
-export function useCloseNotifications() {
-  const dispatch = useDispatch<AppDispatch>();
-  return useCallback(() => dispatch(setActiveNotification(null)), [dispatch]);
-}
-
 export function useToggleTxLoadingModal() {
   return useToggleModal(ApplicationModal.TransactionLoading);
 }
@@ -140,22 +136,6 @@ export function useToggleTxCancelledModal() {
 
 export function useToggleTxFailedModal() {
   return useToggleModal(ApplicationModal.TransactionFailed);
-}
-
-export function useToggleTxSentNotification() {
-  return useToggleNotification(ApplicationNotification.TransactionSent);
-}
-
-export function useToggleTxSuccessNotification() {
-  return useToggleNotification(ApplicationNotification.TransactionSuccess);
-}
-
-export function useToggleTxFailedNotification() {
-  return useToggleNotification(ApplicationNotification.TransactionFailed);
-}
-
-export function useToggleTxStartNotification() {
-  return useToggleNotification(ApplicationNotification.TransactionStarted);
 }
 
 export const useToggleWrapEthModal = () => {

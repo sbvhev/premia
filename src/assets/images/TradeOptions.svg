@@ -1,10 +1,10 @@
 <svg width="482" height="403" viewBox="0 0 482 403" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<path d="M84.0549 30.3919L470 0.786621L411.866 352.282L29.9581 290.38L84.0549 30.3919Z" fill="url(#paint_trade_options_linear)"/>
-<g filter="url(#filter_trade_options_d)">
+<path d="M84.0549 30.3919L470 0.786621L411.866 352.282L29.9581 290.38L84.0549 30.3919Z" fill="url(#paint0_trade_options_linear)"/>
+<g filter="url(#filter0_trade_options_d)">
 <rect x="20" y="17.4735" width="431.25" height="347.963" fill="url(#pattern_trade_options_0)"/>
 </g>
 <defs>
-<filter id="filter_trade_options_d" x="0" y="4.47351" width="481.25" height="397.963" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_trade_options_d" x="0" y="4.47351" width="481.25" height="397.963" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
 <feOffset dx="5" dy="12"/>
@@ -16,7 +16,7 @@
 <pattern id="pattern_trade_options_0" patternContentUnits="objectBoundingBox" width="1" height="1">
 <use xlink:href="#image_trade_options_0" transform="scale(0.000928505 0.00115075)"/>
 </pattern>
-<linearGradient id="paint_trade_options_linear" x1="385.913" y1="-106.062" x2="576.042" y2="90.5801" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_trade_options_linear" x1="385.913" y1="-106.062" x2="576.042" y2="90.5801" gradientUnits="userSpaceOnUse">
 <stop stop-color="#5294FF"/>
 <stop offset="1" stop-color="#EB4A97" stop-opacity="0.75"/>
 </linearGradient>

@@ -1,5 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Box, Grid, Typography, RootRef } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Draggable from 'react-draggable';
+import cx from 'classnames';
+
+import {
+  useOptionType,
+  useUnderlyingPrice,
+  useBreakEvenPrice,
+  useStrikePrice,
+} from 'state/options/hooks';
+import { usePrices } from 'state/application/hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { OptionType } from 'web3/options';
+import { formatCompact } from 'utils/formatNumber';
+
+import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import PriceRectangle from 'assets/svg/PriceRectangle.svg';
 import PriceRectangleLight from 'assets/svg/PriceRectangleLight.svg';
 import PriceRectangleMobile from 'assets/svg/PriceRectangleMobile.svg';
@@ -12,14 +29,6 @@ import BarometerBg3 from 'assets/svg/BarometerBg3.svg';
 import BarometerBg3Light from 'assets/svg/BarometerBg3Light.svg';
 import BarometerBg4 from 'assets/svg/BarometerBg4.svg';
 import BarometerBg4Light from 'assets/svg/BarometerBg4Light.svg';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, Grid, Typography, RootRef } from '@material-ui/core';
-import { useOptionType, useStrikePrice } from 'state/options/hooks';
-import { useIsDarkMode } from 'state/user/hooks';
-import { usePrices } from 'state/application/hooks';
-import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
-import Draggable from 'react-draggable';
-import cx from 'classnames';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   chartCallTop: {
@@ -125,8 +134,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginLeft: 0,
       top: 8,
       '& svg': {
-        margin: '0 !important'
-      }
+        margin: '0 !important',
+      },
     },
     '& div': {
       position: 'absolute',
@@ -163,8 +172,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
     '& img': {
-      height: 48
-    }
+      height: 48,
+    },
   },
   priceFont: {
     fontSize: 12,
@@ -203,7 +212,7 @@ export interface OptionsPriceProps {
   tokenIndex: number;
 }
 
-const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
+const OptionsPrice: React.FC<OptionsPriceProps> = ({ tokenIndex = 0 }) => {
   const possiblePLBox = useRef<any>(null);
   const possiblePLBoxContainer = useRef<any>(null);
   const barRef = useRef<any>(null);
@@ -227,57 +236,61 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
 
   const theme = useTheme();
   const { optionType } = useOptionType();
+  const { strikePrice } = useStrikePrice();
+  const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
+  const underlyingPrice = useUnderlyingPrice();
   const [hoveredTop, setHoveredTop] = useState(false);
   const [hoveredBottom, setHoveredBottom] = useState(false);
   const classes = useStyles({ darkMode, mobile });
 
   const prices = usePrices();
-  const { strikePrice } = useStrikePrice();
   const currentPrice = prices[tokens[tokenIndex]];
-  const isCall = optionType === 'call';
+  const isCall = optionType === OptionType.Call;
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
-  const [ plMove, setPLMove ] = useState(0);
-  const [ plPrice, setPLPrice ] = useState(0);
-  const barSize = mobile ? barRef.current?.clientWidth / 3 : barRef.current?.clientHeight / 3;
-  const pLBoxPos = barSize / 4 * 5 - 21;
+  const [plMove, setPLMove] = useState(0);
+  const [plPrice, setPLPrice] = useState(0);
+  const barSize = mobile
+    ? barRef.current?.clientWidth / 3
+    : barRef.current?.clientHeight / 3;
+  const pLBoxPos = (barSize / 4) * 5 - 21;
   const plFirstPrice = (currentPrice || 0) * 1.5;
   let callSize, putSize;
   const callPrice = Math.min(Number(strikePrice) * 1.5, currentPrice * 2);
   if (callPrice <= currentPrice) {
-    callSize = 1/2 + (currentPrice - callPrice) / currentPrice;
+    callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
   } else {
     callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
   }
   if (Number(strikePrice) <= currentPrice) {
     putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
   } else {
-    putSize = 1/2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
+    putSize = 1 / 2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
   }
-
-  const callPriceStr = callPrice.toLocaleString().substring(0, 8);
-  const putPriceStr = strikePrice.toLocaleString().substring(0, 8);
 
   useEffect(() => {
     const setFirstPrice = () => {
       setPLPrice(plFirstPrice);
-    }
+    };
     setFirstPrice();
-  }, [plFirstPrice])
+  }, [plFirstPrice]);
 
-  const onDragPL = (event:any) => {
+  const onDragPL = (event: any) => {
     if (mobile) {
     } else {
-      if (plMove * -1 <= barSize * 5 / 4 - 70 && plMove >= barSize * 7 / 4) {
+      if (
+        plMove * -1 <= (barSize * 5) / 4 - 70 &&
+        plMove >= (barSize * 7) / 4
+      ) {
         setPLMove(plMove + event.movementY);
       }
     }
-    let plPrice1 = plFirstPrice - (plMove / barSize * 2) * currentPrice;
+    let plPrice1 = plFirstPrice - (plMove / barSize) * 2 * currentPrice;
     setPLPrice(plPrice1);
-  }
+  };
 
   return (
     <Grid
@@ -312,7 +325,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
         <Box zIndex={2} className={classes.currentPrice}>
           <p>Current price</p>
           <p>
-            <b>${ currentPrice?.toLocaleString() }</b>
+            <b>${formatCompact(underlyingPrice)}</b>
           </p>
         </Box>
       </Box>
@@ -338,9 +351,13 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
         >
           <Box
             width={mobile ? 1 / 3 : 1}
-            height={mobile ? 1 : optionType === 'call' ? callSize : putSize}
+            height={
+              mobile ? 1 : optionType === OptionType.Call ? callSize : putSize
+            }
             className={cx(
-              optionType === 'call' ? classes.chartCallTop : classes.chartPutTop,
+              optionType === OptionType.Call
+                ? classes.chartCallTop
+                : classes.chartPutTop,
               classes.chartItem,
               hoveredBottom && classes.hovered,
             )}
@@ -370,16 +387,20 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
               )}
               <Box>
                 {mobile && <HelpIcon />}
-                <Typography className={classes.priceFont}>${optionType === 'call' ? callPriceStr : putPriceStr}</Typography>
+                <Typography className={classes.priceFont}>
+                  ${formatCompact(isCall ? breakEvenPrice : strikePrice)}
+                </Typography>
                 {!mobile && <HelpIcon />}
               </Box>
             </Box>
           </Box>
           <Box
             width={mobile ? 1 / 3 : 1}
-            height={mobile ? 1 : optionType === 'call' ? putSize : callSize}
+            height={
+              mobile ? 1 : optionType === OptionType.Call ? putSize : callSize
+            }
             className={cx(
-              optionType === 'call'
+              optionType === OptionType.Call
                 ? classes.chartPutBottom
                 : classes.chartCallBottom,
               classes.chartItem,
@@ -410,7 +431,9 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
                 />
               )}
               <Box>
-                <Typography className={classes.priceFont}>${optionType === 'call' ? putPriceStr : callPriceStr}</Typography>
+                <Typography className={classes.priceFont}>
+                  ${formatCompact(isCall ? strikePrice : breakEvenPrice)}
+                </Typography>
                 <HelpIcon />
               </Box>
             </Box>
@@ -451,18 +474,16 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
                 top={mobile ? -52 : 0}
                 left={mobile ? 54 : -100}
               >
-                {!mobile &&
+                {!mobile && (
                   <img
-                    src={
-                      darkMode
-                        ? BarometerBg4
-                        : BarometerBg4Light
-                    }
-                    alt="Barometer Bg4"
-                  />              
-                }
+                    src={darkMode ? BarometerBg4 : BarometerBg4Light}
+                    alt='Barometer Bg4'
+                  />
+                )}
                 <Box>
-                  <Typography className={classes.priceFont}>${plFirstPrice.toLocaleString()}</Typography>
+                  <Typography className={classes.priceFont}>
+                    ${plFirstPrice.toLocaleString()}
+                  </Typography>
                 </Box>
               </Box>
               <Box
@@ -498,7 +519,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({tokenIndex = 0}) => {
                   Possible P&L
                 </Typography>
                 <Typography className={classes.priceFont}>
-                  <b>${plPrice.toLocaleString()}</b>
+                  <b>${formatCompact(plPrice)}</b>
                 </Typography>
               </Box>
             </Box>
