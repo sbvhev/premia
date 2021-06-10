@@ -1825,19 +1825,34 @@ const LandingPage: React.FC = () => {
             <Box className={classes.footerLines}>
               {!mobile && (
                 <Box className={classes.footerLine}>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='mailto:dev@premia.finance'
+                    onClick={preventDefault}
+                  >
                     <Typography variant='h1'>Misc</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='mailto:dev@premia.finance'
+                    onClick={preventDefault}
+                  >
                     <Typography>Contact Us</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='mailto:careers@premia.finance'
+                    onClick={preventDefault}
+                  >
                     <Typography>Careers</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://docs.premia.finance/'
+                    onClick={preventDefault}
+                  >
                     <Typography>Documentation</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='mailto:dev@premia.finance'
+                    onClick={preventDefault}
+                  >
                     <Typography>Bug Bounty</Typography>
                   </AnchorLink>
                 </Box>
@@ -1847,16 +1862,28 @@ const LandingPage: React.FC = () => {
                   <AnchorLink href='#' onClick={preventDefault}>
                     <Typography variant='h1'>Legal</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://files.premia.finance/$/Sfhhw'
+                    onClick={preventDefault}
+                  >
                     <Typography>Privacy Policy</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://files.premia.finance/$/a4dmU'
+                    onClick={preventDefault}
+                  >
                     <Typography>Cookie Policy</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://files.premia.finance/$/hijbM'
+                    onClick={preventDefault}
+                  >
                     <Typography>Risk Policy</Typography>
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://files.premia.finance/$/SNZrK'
+                    onClick={preventDefault}
+                  >
                     <Typography>Terms of Service</Typography>
                   </AnchorLink>
                 </Box>
@@ -1864,16 +1891,28 @@ const LandingPage: React.FC = () => {
               <Box className={classes.footerLine}>
                 {!mobile && <Typography variant='h1'>Social</Typography>}
                 <Box>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://twitter.com/PremiaFinance'
+                    onClick={preventDefault}
+                  >
                     <TwitterIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://discord.com/invite/6MhRmzmdHN'
+                    onClick={preventDefault}
+                  >
                     <DiscordIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://github.com/PremiaFinance'
+                    onClick={preventDefault}
+                  >
                     <GithubIcon />
                   </AnchorLink>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <AnchorLink
+                    href='https://premia.medium.com/'
+                    onClick={preventDefault}
+                  >
                     <MediumIcon />
                   </AnchorLink>
                 </Box>
