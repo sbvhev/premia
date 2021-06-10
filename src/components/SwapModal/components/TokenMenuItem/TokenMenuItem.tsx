@@ -1,10 +1,9 @@
 import React, { CSSProperties } from 'react';
-import { Typography, Box, MenuItem } from '@material-ui/core';
+import { Typography, Box, MenuItem, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useWeb3 } from 'state/application/hooks';
 import { useCurrencyBalance, useTokenBalance } from 'state/wallet/hooks';
 import { formatCompact } from 'utils/formatNumber';
-import { Loader } from 'components';
 import { Currency } from '@uniswap/sdk';
 import { Token, isToken } from 'web3/tokens';
 import { CurrencyWithLogoUri } from 'hooks/useGasToken';
@@ -85,13 +84,14 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
   const classes = useStyles({ isSelected });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { account } = useWeb3();
+
   const tokenBalance = useTokenBalance(
     account,
     isToken(token) ? token : undefined,
   );
   const currencyBalance = useCurrencyBalance(
     account,
-    !isToken(token) ? (token as unknown as Currency) : undefined,
+    !isToken(token) ? (token as Currency) : undefined,
   );
 
   if (currencyBalance) {
@@ -131,14 +131,12 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
             <Typography color='textSecondary'>
               {formatCompact(tokenBalance || currencyBalance)}
             </Typography>
-          ) : account ? (
-            <Loader />
           ) : (
-            <Loader />
+            <CircularProgress size={14} />
           )}
         </MenuItem>
       ) : (
-        <Loader />
+        <CircularProgress size={14} />
       )}
     </>
   );

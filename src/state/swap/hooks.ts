@@ -39,6 +39,7 @@ export async function getSwapQuote(
   buyToken: Token | CurrencyWithLogoUri | undefined,
   sellAmount: string,
   buyAmount: string,
+  gasPrice: number | undefined,
   inputType: boolean | undefined,
   chainId: number,
   slippagePercentage: number,
@@ -47,7 +48,8 @@ export async function getSwapQuote(
   let params: any = {
     buyToken: isToken(buyToken) ? buyToken.address : buyToken?.symbol,
     sellToken: isToken(sellToken) ? sellToken.address : sellToken?.symbol,
-    slippagePercentage: slippagePercentage,
+    gasPrice,
+    slippagePercentage,
   };
 
   if (inputType) {
@@ -78,6 +80,8 @@ export async function getSwapQuote(
       encode: false,
     })}`,
   );
+  const json = await response.json();
+  console.log('resp', json);
 
-  return await response.json();
+  return json;
 }

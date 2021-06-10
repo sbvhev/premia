@@ -38,6 +38,7 @@ import {
   getSwapQuote,
 } from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useGasPrice } from 'state/transactions/hooks';
 
 import { calculateGasMargin } from 'utils';
 import { formatUnits } from 'ethers/lib/utils';
@@ -547,6 +548,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [swapValid, setSwapValid] = React.useState(false);
   const [swapReady, setSwapReady] = React.useState(false);
 
+  const gasPriceinGwei = useGasPrice() * 1000000000;
+
   const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
   const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
   const excludedLiquidityProviders = liquidityProviders.filter(
@@ -737,6 +740,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         toToken,
         fromAmount ?? '0',
         toAmount ?? '0',
+        gasPriceinGwei,
         inputType,
         chainId,
         swapSlippage,
@@ -744,7 +748,10 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
       );
 
       console.log('quote', _zeroXQuote);
-
+      if (_zeroXQuote.validationErrors) {
+        setPreSwapButtonGuide(_zeroXQuote.reason);
+        return;
+      }
       setZeroXQuote(_zeroXQuote);
 
       if (inputType) {
@@ -846,6 +853,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const getMinimumReceive = () => {
+    if (!zeroXQuote) return '???';
     return formatUnits(
       new BigNumber(zeroXQuote?.buyAmount ?? '0')
         .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
@@ -861,12 +869,11 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const getSwapRoute = () => {
-    if (!zeroXQuote) return;
-
-    const routes = zeroXQuote.orders[0].fillData.tokenAddressPath.map(
+    if (!zeroXQuote) return '???';
+    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
       (e: string) => getSymbolWithAddress(e),
     );
-    return routes.join(' > ');
+    return routes ? routes.join(' > ') : '???';
   };
 
   const getSwapRouter = () => {
