@@ -2,15 +2,19 @@
   "routeIconList": [
     {
       "routerName": "0x",
-      "logoUrl": "https://assets.coingecko.com/coins/images/863/thumb/0x.png?1547034672"
+      "logoUrl": "https://assets.coingecko.com/markets/images/565/small/0x-protocol.png?1596623034"
     },
     {
       "routerName": "Uniswap",
-      "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+      "logoUrl": "https://assets.coingecko.com/markets/images/349/small/uniswap.jpg?1579489532"
     },
     {
       "routerName": "Uniswap_V2",
-      "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+      "logoUrl": "https://assets.coingecko.com/markets/images/535/small/256x256_Black-1.png?1590893262"
+    },
+    {
+      "routerName": "Uniswap_V3",
+      "logoUrl": "https://assets.coingecko.com/markets/images/665/small/uniswap-v3.png?1620241698"
     },
     {
       "routerName": "Eth2Dai",
@@ -22,7 +26,7 @@
     },
     {
       "routerName": "Curve",
-      "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+      "logoUrl": "https://assets.coingecko.com/markets/images/538/small/Curve.png?1591605481"
     },
     {
       "routerName": "LiquidityProvider",
@@ -42,7 +46,7 @@
     },
     {
       "routerName": "Bancor",
-      "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+      "logoUrl": "https://assets.coingecko.com/markets/images/108/small/Bancor.jpg?1520913420"
     },
     {
       "routerName": "mStable",
@@ -70,6 +74,14 @@
     },
     {
       "routerName": "SushiSwap",
+      "logoUrl": "https://assets.coingecko.com/markets/images/576/small/2048x2048_Logo.png?1609208464"
+    },
+    {
+      "routerName": "SushiSwap_V2",
+      "logoUrl": "https://assets.coingecko.com/markets/images/576/small/2048x2048_Logo.png?1609208464"
+    },
+    {
+      "routerName": "DODO",
       "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
     },
     {

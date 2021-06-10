@@ -10,69 +10,6 @@ import { Token, isToken } from 'web3/tokens';
 import { CurrencyWithLogoUri } from 'hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
-  item: {
-    display: 'flex',
-    border: ({ isSelected }: any) =>
-      isSelected
-        ? `1px solid ${palette.primary.main}`
-        : '1px solid transparent',
-    borderRadius: 12,
-    padding: '6px 8px',
-    margin: '2px 0',
-    cursor: 'pointer',
-
-    '&:hover': {
-      border: `1px solid ${palette.primary.main}`,
-
-      '& $icon': {
-        color: palette.text.primary,
-      },
-
-      '& $title': {
-        color: palette.text.primary,
-      },
-    },
-  },
-  itemMobile: {
-    display: 'flex',
-    border: ({ isSelected }: any) =>
-      isSelected
-        ? `1px solid ${palette.primary.main}`
-        : '1px solid transparent',
-    borderRadius: 12,
-    padding: '12px 6px',
-    margin: '2px 0',
-    cursor: 'pointer',
-
-    '&:hover': {
-      border: `1px solid ${palette.primary.main}`,
-
-      '& $icon': {
-        color: palette.text.primary,
-      },
-
-      '& $title': {
-        color: palette.text.primary,
-      },
-    },
-  },
-
-  icon: {
-    minWidth: 32,
-    color: ({ isSelected }: any) =>
-      isSelected ? palette.text.primary : palette.text.secondary,
-  },
-
-  title: {
-    marginLeft: '1rem',
-    color: ({ isSelected }: any) =>
-      isSelected ? palette.text.primary : palette.text.primary,
-
-    '&> span': {
-      fontSize: 12,
-    },
-  },
-
   balance: {
     justifySelf: 'flex-end',
     textAlign: 'right',

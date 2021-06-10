@@ -22,7 +22,6 @@ import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { ReactComponent as SwitchArrows } from 'assets/svg/SwitchTokensArrows.svg';
 import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
-import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
 import {
   useApproval,
@@ -863,7 +862,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     const routes = zeroXQuote.orders[0].fillData.tokenAddressPath.map(
       (e: string) => getSymbolWithAddress(e),
     );
-    console.log('routes', routes.join(' > '));
     return routes.join(' > ');
   };
 
@@ -875,7 +873,17 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     const icon = routeIconList.find(
       (r) => r.routerName === zeroXQuote.orders[0].source,
     )?.logoUrl;
-    return icon;
+    return icon ? (
+      <img
+        style={{ height: '18px', marginRight: '8px' }}
+        src={icon}
+        alt='router'
+      />
+    ) : (
+      <Typography style={{ margin: '5px' }} color='primary'>
+        ?
+      </Typography>
+    );
   };
 
   return (
@@ -1315,9 +1323,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       Route
                     </Typography>
                     <Box display='flex' alignItems='center' height='18px'>
-                      <Box style={{ margin: '2px 6px 0px 0px' }}>
-                        <UniSwap fill={palette.secondary.main} />
-                      </Box>
+                      {getSwapRouter()}
                       <Typography
                         className={classes.swapDetailsText}
                         color='textPrimary'
