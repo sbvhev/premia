@@ -243,11 +243,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-export interface OptionFilterProps {
-  tokenIndex: number;
-}
-
-const OptionFilter: React.FC<OptionFilterProps> = ({ tokenIndex = 0 }) => {
+const OptionFilter: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const { underlying } = useUnderlying();

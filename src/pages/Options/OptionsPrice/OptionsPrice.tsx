@@ -10,6 +10,7 @@ import {
   useUnderlyingPrice,
   useBreakEvenPrice,
   useStrikePrice,
+  useUnderlying,
 } from 'state/options/hooks';
 import { usePrices } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -208,11 +209,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-export interface OptionsPriceProps {
-  tokenIndex: number;
-}
-
-const OptionsPrice: React.FC<OptionsPriceProps> = ({ tokenIndex = 0 }) => {
+const OptionsPrice: React.FC = () => {
   const possiblePLBox = useRef<any>(null);
   const possiblePLBoxContainer = useRef<any>(null);
   const barRef = useRef<any>(null);
@@ -220,7 +217,6 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({ tokenIndex = 0 }) => {
     width: 0,
     height: 0,
   });
-  const tokens = ['WBTC', 'UNI', 'LINK', 'YFI', 'WETH'];
 
   useEffect(() => {
     const handleResize = () => {
@@ -237,6 +233,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({ tokenIndex = 0 }) => {
   const theme = useTheme();
   const { optionType } = useOptionType();
   const { strikePrice } = useStrikePrice();
+  const { underlying } = useUnderlying();
   const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -246,7 +243,7 @@ const OptionsPrice: React.FC<OptionsPriceProps> = ({ tokenIndex = 0 }) => {
   const classes = useStyles({ darkMode, mobile });
 
   const prices = usePrices();
-  const currentPrice = prices[tokens[tokenIndex]];
+  const currentPrice = prices[underlying.symbol];
   const isCall = optionType === OptionType.Call;
   const standardWidth = 16;
   const barHeight = mobile ? standardWidth : '70vh';

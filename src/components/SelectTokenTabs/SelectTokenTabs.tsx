@@ -1,14 +1,17 @@
 import React, { useMemo } from 'react';
 
-import { useBase, useUnderlying } from 'state/options/hooks';
+import { useBase, useUnderlying, useStrikePrice } from 'state/options/hooks';
+import { usePrices } from 'state/application/hooks';
 import { useAllTokens } from 'hooks';
 import { tokenIcons } from 'constants/tokenIcons';
 
 import { SearchTabs } from 'components';
 
 const SelectTokenTabs: React.FC = () => {
+  const { setStrikePrice } = useStrikePrice();
   const { underlying, setUnderlying } = useUnderlying();
   const { base } = useBase();
+  const prices = usePrices();
   const tokens = useAllTokens();
 
   const tabs = useMemo(
@@ -34,9 +37,11 @@ const SelectTokenTabs: React.FC = () => {
       hideSearch
       items={tabs}
       value={activeTabIndex === -1 ? 0 : activeTabIndex}
-      onChange={(event: React.ChangeEvent<{}>, newValue: number) =>
-        setUnderlying(tabs[newValue].token)
-      }
+      onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
+        const newToken = tabs[newValue].token;
+        setUnderlying(newToken);
+        setStrikePrice(prices[newToken.symbol]);
+      }}
     />
   );
 };
