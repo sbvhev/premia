@@ -10,8 +10,8 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import cx from 'classnames';
 import { ethers } from 'ethers';
+import cx from 'classnames';
 
 import XOut from 'assets/svg/XOutGrey.svg';
 
@@ -26,7 +26,7 @@ import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import {
   useApproval,
   useTransact,
-  useWrapEther,
+  // useWrapEther,
   useGasToken,
   CurrencyWithLogoUri,
 } from 'hooks';
@@ -517,7 +517,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
   const transact = useTransact();
-  const { onWrapEther, onUnwrapEther } = useWrapEther();
+  // const { onWrapEther, onUnwrapEther } = useWrapEther();
   const {
     fromToken,
     toToken,
@@ -729,12 +729,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         ? slippagePercentage / 100
         : 0.005;
 
-      const sources = simpleExclusionList;
-      let excludedSources: string[] | null = sources;
-      if (!excludedSources.length) {
-        excludedSources = null;
-      }
-
       const _zeroXQuote = await getSwapQuote(
         fromToken,
         toToken,
@@ -744,7 +738,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         inputType,
         chainId,
         swapSlippage,
-        excludedSources,
+        simpleExclusionList.join(','),
       );
 
       console.log('quote', _zeroXQuote);

@@ -43,7 +43,7 @@ export async function getSwapQuote(
   inputType: boolean | undefined,
   chainId: number,
   slippagePercentage: number,
-  excludedSources?: string[] | null,
+  excludedSources?: string,
 ) {
   let params: any = {
     buyToken: isToken(buyToken) ? buyToken.address : buyToken?.symbol,
@@ -81,7 +81,6 @@ export async function getSwapQuote(
     })}`,
   );
   const json = await response.json();
-  console.log('resp', json);
 
   return json;
 }
