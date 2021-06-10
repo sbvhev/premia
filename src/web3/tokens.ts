@@ -2,18 +2,6 @@ import { Currency } from '@uniswap/sdk';
 import { BigNumber } from 'ethers';
 import { isObject } from 'lodash';
 
-export const ETH: Currency = {
-  decimals: 18,
-  symbol: 'ETH',
-  name: 'Ether',
-};
-
-export const BNB: Currency = {
-  decimals: 18,
-  symbol: 'BNB',
-  name: 'Binance Coin',
-};
-
 export interface Token extends Currency {
   id: string;
   name: string;

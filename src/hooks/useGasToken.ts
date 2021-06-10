@@ -1,8 +1,7 @@
 import { useWeb3 } from 'state/application/hooks';
-import { Currency } from '@uniswap/sdk';
-import { BNB } from 'web3/tokens';
-import { ETHER } from '@uniswap/sdk';
+import { Currency, ETHER } from '@uniswap/sdk';
 
+import { BNB } from '../constants';
 export interface CurrencyWithLogoUri extends Currency {
   logoURI: string;
 }
