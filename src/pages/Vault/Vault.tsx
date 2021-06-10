@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -12,29 +13,37 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
+
+import { useIsDarkMode } from 'state/user/hooks';
+import { UserOwnedPool } from 'web3/pools';
+import { usePools } from 'hooks';
+import { getPoolSize } from 'utils/getPoolSize';
+import { getPoolUtilization } from 'utils/getPoolUtilization';
+import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
+import { formatNumber, formatCompact } from 'utils/formatNumber';
+import { getTokenIcon } from 'utils/getTokenIcon';
+
 import {
   LineChart,
   RadialChart,
-  SearchTabs,
+  SelectTokenTabs,
   TooltipPan,
   WithdrawDepositModal,
   SwitchWithGlider,
 } from 'components';
-import { ExpandMore } from '@material-ui/icons';
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
-import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
-import { useIsDarkMode } from 'state/user/hooks';
 import BasicVault from './BasicVault';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -271,7 +280,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   basicVault: {
     opacity: (props: any) => (props.dark ? 0.8 : 0.9),
-    height: (props: any) => props.mediumWindow ? 'calc(100% - 75px)' : '100%',
+    height: (props: any) => (props.mediumWindow ? 'calc(100% - 75px)' : '100%'),
     display: 'flex',
     position: 'absolute',
     width: '100%',
@@ -299,51 +308,79 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-const tabItems = [
-  {
-    image: WBTCIcon,
-    label: 'wBTC',
-  },
-  {
-    image: UniswapIcon,
-    label: 'Uni',
-    highlight: true,
-  },
-  {
-    image: LinkIcon,
-    label: 'Link',
-  },
-  {
-    image: YFIIcon,
-    label: 'YFI',
-    highlight: true,
-  },
-  {
-    image: ETHIcon,
-    label: 'ETH',
-  },
-];
-
 const ProVault: React.FC = () => {
   const dark = useIsDarkMode();
   const theme = useTheme();
+  const { palette } = theme;
   const mediumWindow = useMediaQuery(theme.breakpoints.down('md'));
   const smallWindow = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ dark, mediumWindow });
-  const { palette } = theme;
+  const history = useHistory();
+  const location = useLocation();
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
   const [depositCallOpen, setDepositCallOpen] = useState(false);
   const [withdrawPutOpen, setWithdrawPutOpen] = useState(false);
   const [depositPutOpen, setDepositPutOpen] = useState(false);
-  const [vaultIndex, setVaultIndex] = useState(1);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [vaultIndex, setVaultIndex] = useState(
+    new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
+  );
   const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
+    usePools(true);
+  const { callPool, putPool } = usePools();
 
-  React.useEffect(() => {
+  const callPoolSize = useMemo(() => getPoolSize(callPool), [callPool]);
+  const putPoolSize = useMemo(() => getPoolSize(putPool), [putPool]);
+  const userOwnedCallPoolSize = useMemo(
+    () => getPoolSize(userOwnedCallPool),
+    [userOwnedCallPool],
+  );
+  const userOwnedPutPoolSize = useMemo(
+    () => getPoolSize(userOwnedPutPool),
+    [userOwnedPutPool],
+  );
+
+  const callPoolFeesEarned = useMemo(
+    () => getPoolFeesEarned(userOwnedCallPool as UserOwnedPool | undefined),
+    [userOwnedCallPool],
+  );
+  const putPoolFeesEarned = useMemo(
+    () => getPoolFeesEarned(userOwnedPutPool as UserOwnedPool | undefined),
+    [userOwnedPutPool],
+  );
+
+  const callPoolUtilization = useMemo(
+    () => getPoolUtilization(callPool),
+    [callPool],
+  );
+  const putPoolUtilization = useMemo(
+    () => getPoolUtilization(putPool),
+    [putPool],
+  );
+  const userOwnedCallPoolUtilization = useMemo(
+    () => getPoolUtilization(userOwnedCallPool),
+    [userOwnedCallPool],
+  );
+  const userOwnedPutPoolUtilization = useMemo(
+    () => getPoolUtilization(userOwnedPutPool),
+    [userOwnedPutPool],
+  );
+
+  const BaseIcon = useMemo(
+    () => getTokenIcon(callPool?.base.symbol),
+    [callPool],
+  );
+
+  const UnderlyingIcon = useMemo(
+    () => getTokenIcon(callPool?.underlying.symbol),
+    [callPool],
+  );
+
+  useEffect(() => {
     const handleResize = () => {
       setDeviceWidth(window.innerWidth);
     };
@@ -369,10 +406,12 @@ const ProVault: React.FC = () => {
 
   const handleBasicVaultSwitch = () => {
     setVaultIndex(0);
+    history.push('/vaults?tab=basic');
   };
 
   const handleProVaultSwitch = () => {
     setVaultIndex(1);
+    history.push('/vaults?tab=pro');
   };
 
   const BasicVaultButton = () => (
@@ -507,13 +546,7 @@ const ProVault: React.FC = () => {
           </Box>
           {!mediumWindow && vaultIndex === 1 && (
             <Box component='div' className={classes.box}>
-              <SearchTabs
-                items={tabItems}
-                value={tabIndex}
-                onChange={(ev, index) => {
-                  setTabIndex(index);
-                }}
-              />
+              <SelectTokenTabs />
             </Box>
           )}
           {mediumWindow && vaultIndex === 1 && (
@@ -613,7 +646,7 @@ const ProVault: React.FC = () => {
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(callPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
@@ -628,16 +661,16 @@ const ProVault: React.FC = () => {
                         secondaryColor='#4D9EF2'
                         width={260}
                         height={260}
-                        data={[67]}
+                        data={[callPoolUtilization]}
                       >
-                        <UniswapIcon />
-                        Pool size in Uni
+                        <UnderlyingIcon height={18} />
+                        Pool size in {callPool?.underlying.symbol}
                         <Typography
                           component='h5'
                           variant='body2'
                           color='textSecondary'
                         >
-                          211305
+                          {formatNumber(callPoolSize)}
                         </Typography>
                       </RadialChart>
                     </Box>
@@ -677,9 +710,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatNumber(userOwnedCallPoolSize)}
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -704,9 +737,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              100
+                              {formatNumber(callPoolFeesEarned)}
                             </Typography>
-                            <DaiIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -715,8 +748,9 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid
@@ -731,7 +765,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              46%
+                              {userOwnedCallPoolUtilization}%
                             </Typography>
                           </Grid>
                         </Grid>
@@ -744,22 +778,22 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='primary'
                             variant='contained'
-                            onClick={() => setWithdrawCallOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositCallOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositCallOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawCallOpen(true)}
                           >
                             Remove
                           </Button>
@@ -833,7 +867,7 @@ const ProVault: React.FC = () => {
                       component='h2'
                       color='textSecondary'
                     >
-                      78% Utilization
+                      {formatCompact(putPoolUtilization)}% Utilization
                     </Typography>
                   </Box>
                   <Grid
@@ -851,16 +885,16 @@ const ProVault: React.FC = () => {
                         }
                         width={260}
                         height={260}
-                        data={[67]}
+                        data={[putPoolUtilization]}
                       >
-                        <UniswapIcon />
-                        Pool size in Uni
+                        <BaseIcon height={16} />
+                        Pool size in {callPool?.base.symbol}
                         <Typography
                           component='h5'
                           variant='body2'
                           color='textSecondary'
                         >
-                          211305
+                          {formatNumber(putPoolSize)}
                         </Typography>
                       </RadialChart>
                     </Box>
@@ -900,9 +934,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              10000
+                              {formatNumber(userOwnedPutPoolSize)}
                             </Typography>
-                            <UniswapIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -927,9 +961,9 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              100
+                              {formatNumber(putPoolFeesEarned)}
                             </Typography>
-                            <DaiIcon />
+                            <UnderlyingIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -938,8 +972,9 @@ const ProVault: React.FC = () => {
                               variant='body2'
                               component='h2'
                               color='textSecondary'
+                              style={{ whiteSpace: 'nowrap' }}
                             >
-                              % of capital active
+                              % of my capital active
                             </Typography>
                           </Grid>
                           <Grid
@@ -954,7 +989,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              46%
+                              {userOwnedPutPoolUtilization}%
                             </Typography>
                           </Grid>
                         </Grid>
@@ -967,22 +1002,22 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='contained'
-                            onClick={() => setWithdrawPutOpen(true)}
-                            fullWidth
+                            onClick={() => setDepositPutOpen(true)}
                           >
                             Add
                           </Button>
                         </Grid>
                         <Grid item xs={6}>
                           <Button
+                            fullWidth
                             size='large'
                             color='secondary'
                             variant='outlined'
-                            onClick={() => setDepositPutOpen(true)}
-                            fullWidth
+                            onClick={() => setWithdrawPutOpen(true)}
                           >
                             Remove
                           </Button>
