@@ -452,38 +452,30 @@ const ProVault: React.FC = () => {
 
   return (
     <Grid container direction='column' style={{ position: 'relative' }}>
-      {withdrawCallOpen && (
-        <WithdrawDepositModal
-          open={withdrawCallOpen}
-          call={true}
-          type='withdraw'
-          onClose={() => setWithdrawCallOpen(false)}
-        />
-      )}
-      {depositCallOpen && (
-        <WithdrawDepositModal
-          open={depositCallOpen}
-          call={true}
-          type='deposit'
-          onClose={() => setDepositCallOpen(false)}
-        />
-      )}
-      {withdrawPutOpen && (
-        <WithdrawDepositModal
-          open={withdrawPutOpen}
-          call={false}
-          type='withdraw'
-          onClose={() => setWithdrawPutOpen(false)}
-        />
-      )}
-      {depositPutOpen && (
-        <WithdrawDepositModal
-          open={depositPutOpen}
-          call={false}
-          type='deposit'
-          onClose={() => setDepositPutOpen(false)}
-        />
-      )}
+      <WithdrawDepositModal
+        open={withdrawCallOpen}
+        call={true}
+        type='withdraw'
+        onClose={() => setWithdrawCallOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={depositCallOpen}
+        call={true}
+        type='deposit'
+        onClose={() => setDepositCallOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={withdrawPutOpen}
+        call={false}
+        type='withdraw'
+        onClose={() => setWithdrawPutOpen(false)}
+      />
+      <WithdrawDepositModal
+        open={depositPutOpen}
+        call={false}
+        type='deposit'
+        onClose={() => setDepositPutOpen(false)}
+      />
       <Box width={1}>
         <Typography
           component='h1'
