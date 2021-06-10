@@ -22,11 +22,11 @@ import ETH from 'assets/images/ETH-icon.png';
 import WBTC from 'assets/images/WBTC-icon.png';
 import LINK from 'assets/svg/LINK-icon.svg';
 import { ReactComponent as Down } from 'assets/svg/DropDownArrow.svg';
-import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg'; 
-import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg'; 
-import { ReactComponent as Search } from 'assets/svg/Search.svg'; 
+import { ReactComponent as Up } from 'assets/svg/DropDownUpArrow.svg';
+import { ReactComponent as SettingsIcon } from 'assets/svg/SettingsGear.svg';
+import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { ReactComponent as SwitchArrows } from 'assets/svg/SwitchTokensArrows.svg';
-import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg'; 
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
@@ -205,10 +205,10 @@ const useStyles = makeStyles(({ palette }) => ({
       borderLeft: '0px',
       boxShadow: 'none',
       '& .MuiTypography-root': {
-        color: palette.primary.main
+        color: palette.primary.main,
       },
       '& svg': {
-        stroke: palette.primary.main
+        stroke: palette.primary.main,
       },
     },
     '&:before': {
@@ -220,8 +220,8 @@ const useStyles = makeStyles(({ palette }) => ({
     '&:after': {
       borderColor: palette.background.paper,
       '& .MuiTypography-root': {
-        color: palette.primary.main
-      }
+        color: palette.primary.main,
+      },
     },
     '&:select': {
       paddingRight: '0px',
@@ -243,7 +243,7 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     cursor: 'pointer',
     '& .MuiTypography-root': {
-      color: palette.primary.main
+      color: palette.primary.main,
     },
   },
   tokenTickerInSelector: {
@@ -442,7 +442,7 @@ const useStyles = makeStyles(({ palette }) => ({
       borderColor: palette.background.paper,
     },
     '&:after': {
-      // 
+      //
       display: 'none',
     },
   },
@@ -702,18 +702,24 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       onChange={handleChangeFromAmount}
                       className={classes.borderedInput}
                     />
-                   <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
-                    <Button
-                      color='primary'
-                      variant='outlined'
-                      size='small'
-                      onClick={handleMax}
-                      style={{ margin: '0px', width: '74px', height: '35px'}}
-                      className={classes.maxButton}
+                    <Box
+                      className={
+                        !mobile
+                          ? classes.maxButtonContainer
+                          : classes.maxButtonContainerMobile
+                      }
                     >
-                      MAX
-                    </Button>
-                  </Box>
+                      <Button
+                        color='primary'
+                        variant='outlined'
+                        size='small'
+                        onClick={handleMax}
+                        style={{ margin: '0px', width: '74px', height: '35px' }}
+                        className={classes.maxButton}
+                      >
+                        MAX
+                      </Button>
+                    </Box>
                   </Box>
 
                   {!fromToken ? (
@@ -737,15 +743,19 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       </Typography>
                       <Box marginRight={!mobile ? '20px' : '16px'}>
                         {!fromAssetOpen ? (
-                          <Down stroke={palette.background.paper}/>
+                          <Down stroke={palette.background.paper} />
                         ) : (
-                          <Up stroke={palette.background.paper}/>
+                          <Up stroke={palette.background.paper} />
                         )}
                       </Box>
                     </ButtonBase>
                   ) : (
                     <ButtonBase
-                      className={!fromAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
+                      className={
+                        !fromAssetOpen
+                          ? classes.borderedSelector
+                          : classes.borderedSelectorActive
+                      }
                       onClick={handleChangeFromAsset}
                       style={
                         fromAssetOpen
@@ -774,8 +784,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       <Box marginRight='20px'>
                         {!fromAssetOpen ? (
                           <Down stroke={palette.secondary.main} />
-                          ) : (
-                          <Up stroke={palette.primary.main}/>
+                        ) : (
+                          <Up stroke={palette.primary.main} />
                         )}
                       </Box>
                     </ButtonBase>
@@ -845,18 +855,28 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         onChange={handleChangeToAmount}
                         className={classes.borderedInput}
                       />
-                     <Box className={!mobile ? classes.maxButtonContainer : classes.maxButtonContainerMobile}>
-                      <Button
-                        color='primary'
-                        variant='outlined'
-                        size='small'
-                        onClick={handleMax}
-                        style={{ margin: '0px', width: '74px', height: '35px'}}
-                        className={classes.maxButton}
+                      <Box
+                        className={
+                          !mobile
+                            ? classes.maxButtonContainer
+                            : classes.maxButtonContainerMobile
+                        }
                       >
-                        MAX
-                      </Button>
-                    </Box>
+                        <Button
+                          color='primary'
+                          variant='outlined'
+                          size='small'
+                          onClick={handleMax}
+                          style={{
+                            margin: '0px',
+                            width: '74px',
+                            height: '35px',
+                          }}
+                          className={classes.maxButton}
+                        >
+                          MAX
+                        </Button>
+                      </Box>
                     </Box>
                     <>
                       {!toToken ? (
@@ -880,16 +900,20 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           </Typography>
                           <Box marginRight={!mobile ? '20px' : '16px'}>
                             {!toAssetOpen ? (
-                               <Down stroke={palette.background.paper} />
-                               ) : (
-                               <Up stroke={palette.background.paper}/>
+                              <Down stroke={palette.background.paper} />
+                            ) : (
+                              <Up stroke={palette.background.paper} />
                             )}
                           </Box>
                         </ButtonBase>
                       ) : (
                         <ButtonBase
-                        className={!toAssetOpen ? classes.borderedSelector : classes.borderedSelectorActive}
-                        onClick={handleChangeToAsset}
+                          className={
+                            !toAssetOpen
+                              ? classes.borderedSelector
+                              : classes.borderedSelectorActive
+                          }
+                          onClick={handleChangeToAsset}
                           style={
                             toAssetOpen
                               ? { borderColor: palette.primary.main }
@@ -918,7 +942,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                             {!toAssetOpen ? (
                               <Down stroke={palette.secondary.main} />
                             ) : (
-                              <Up stroke={palette.primary.main}/>
+                              <Up stroke={palette.primary.main} />
                             )}
                           </Box>
                         </ButtonBase>
@@ -1003,7 +1027,9 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                           id='bottomTarget'
                           disabled
                           size='large'
-                          startIcon={(<ApprovedIcon fill={palette.background.paper} />)}
+                          startIcon={
+                            <ApprovedIcon fill={palette.background.paper} />
+                          }
                           style={{ marginBottom: '10px' }}
                         >
                           Approved
