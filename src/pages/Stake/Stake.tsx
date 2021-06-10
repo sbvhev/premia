@@ -7,6 +7,7 @@ import { StakePremiaCard, LockPremiaCard } from './components';
 
 import { useWeb3 } from 'state/application/hooks';
 import { Token } from 'web3/tokens';
+import { contracts } from 'web3/contracts';
 import { useTokenBalance } from 'state/wallet/hooks';
 import { formatNumber } from 'utils/formatNumber';
 
@@ -116,24 +117,23 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const PremiaToken: Token = {
-  id: '1',
-  name: 'Premia',
-  symbol: 'PREMIA',
-  decimals: 18,
-  address: '0x6399C842dD2bE3dE30BF99Bc7D1bBF6Fa3650E70',
-};
-
 const Stake: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const { account } = useWeb3();
+  const { account, chainId } = useWeb3();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [premiaBalance, setPreamiaBalance] = React.useState(
-    useTokenBalance(account, PremiaToken),
-  );
 
-  React.useEffect(() => {}, [account]);
+  console.log('chainid', chainId);
+
+  // const premiaAddress = contracts?.PremiaErc20[chainId ?? 1];
+  // const xPremiaAddress = contracts?.PremiaStaking[chainId ?? 1];
+
+  // const premiaBalance = useTokenBalance(account ?? undefined, premiaAddress);
+
+  const premiaBalance = 1;
+  const xPremiaBalance = 2;
+
+  // React.useEffect(() => {}, [account]);
 
   return (
     <Box
@@ -204,7 +204,9 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {formatNumber(premiaBalance)}
+                {account && xPremiaBalance
+                  ? formatNumber(premiaBalance)
+                  : '???'}
               </Typography>
             </Box>
           </Box>
@@ -232,7 +234,9 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {`128,912`}
+                {account && xPremiaBalance
+                  ? formatNumber(xPremiaBalance)
+                  : '???'}
               </Typography>
             </Box>
           </Box>
