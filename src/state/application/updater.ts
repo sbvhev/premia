@@ -4,22 +4,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ChainId } from '@uniswap/sdk';
 import { Wallet } from 'bnc-onboard/dist/src/interfaces';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
-import { Contract, ContractCall } from 'ethers-multicall';
+// import { formatEther, formatUnits } from 'ethers/lib/utils';
+// import { Contract, ContractCall } from 'ethers-multicall';
 import { ethers } from 'ethers';
 import { get } from 'lodash';
 
-import { UNISWAP_FACTORY, wallets, WETH, WBNB, DAI } from '../../constants';
-import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
-import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
+import {
+  /* UNISWAP_FACTORY, */ wallets,
+  WETH,
+  WBNB,
+  DAI,
+} from '../../constants';
+// import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
+// import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
 import {
   getPrice,
   get24HourPriceChange,
-  useBlockNumber,
+  // useBlockNumber,
   usePrices,
   usePriceChanges,
 } from 'state/application/hooks';
-import { useAllTokens, useDebounce, useIsWindowVisible } from 'hooks';
+import { /* useAllTokens, */ useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
 import { Token } from 'web3/tokens';
@@ -30,7 +35,7 @@ import {
   updateTokenPrices,
   updateTokenPriceChanges,
   setWeb3Settings,
-  TokenPriceUpdate,
+  // TokenPriceUpdate,
 } from './actions';
 
 const assetList = [
@@ -61,10 +66,10 @@ export default function Updater(): null {
   const dispatch = useDispatch();
   const location = useLocation();
   const windowVisible = useIsWindowVisible();
-  const latestBlockNumber = useBlockNumber();
+  // const latestBlockNumber = useBlockNumber();
   const priceChanges = usePriceChanges();
   const prices = usePrices();
-  const tokens = useAllTokens();
+  // const tokens = useAllTokens();
   const dark = useIsDarkMode();
 
   const {
@@ -76,7 +81,7 @@ export default function Updater(): null {
     account,
     wallet,
     blockNumber,
-    multicallProvider,
+    // multicallProvider,
   } = useSelector<AppState, AppState['application']>(
     (state) => state.application,
   );
