@@ -7,7 +7,7 @@ import { formatCompact } from 'utils/formatNumber';
 import { Loader } from 'components';
 import { Currency } from '@uniswap/sdk';
 import { Token, isToken } from 'web3/tokens';
-import { CurrencyWithLogoUri } from 'hooks';
+import { CurrencyWithLogoUri } from 'hooks/useGasToken';
 
 const useStyles = makeStyles(({ palette }) => ({
   balance: {

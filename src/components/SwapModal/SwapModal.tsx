@@ -31,8 +31,12 @@ import {
   CurrencyWithLogoUri,
 } from 'hooks';
 import { Token, isToken } from 'web3/tokens';
-import { getSwapQuote, useWeb3 } from 'state/application/hooks';
-import { useSwapSettings, useToggleExchange } from 'state/swap/hooks';
+import { useWeb3 } from 'state/application/hooks';
+import {
+  useSwapSettings,
+  useToggleExchange,
+  getSwapQuote,
+} from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 
 import { calculateGasMargin } from 'utils';
