@@ -370,6 +370,11 @@ const ProVault: React.FC = () => {
     [userOwnedPutPool],
   );
 
+  const BaseIcon = useMemo(
+    () => getTokenIcon(callPool?.base.symbol),
+    [callPool],
+  );
+
   const UnderlyingIcon = useMemo(
     () => getTokenIcon(callPool?.underlying.symbol),
     [callPool],
@@ -658,7 +663,7 @@ const ProVault: React.FC = () => {
                         height={260}
                         data={[callPoolUtilization]}
                       >
-                        <UnderlyingIcon />
+                        <UnderlyingIcon height={18} />
                         Pool size in {callPool?.underlying.symbol}
                         <Typography
                           component='h5'
@@ -882,7 +887,7 @@ const ProVault: React.FC = () => {
                         height={260}
                         data={[putPoolUtilization]}
                       >
-                        <UnderlyingIcon />
+                        <BaseIcon height={16} />
                         Pool size in {callPool?.base.symbol}
                         <Typography
                           component='h5'

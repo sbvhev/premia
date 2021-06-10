@@ -9,8 +9,10 @@ import { ReactComponent as QuestionMarkIcon } from 'assets/svg/TooltipQuestionma
 export const tokenIcons = {
   DAI: DaiIcon,
   BTC: WBTCIcon,
+  wBTC: WBTCIcon,
   WBTC: WBTCIcon,
   UNI: UniIcon,
+  SUSHI: UniIcon,
   LINK: LinkIcon,
   YFI: YFIIcon,
   ETH: EthIcon,

@@ -234,12 +234,6 @@
       },
       {
         "indexed": false,
-        "internalType": "int128",
-        "name": "cLevel64x64",
-        "type": "int128"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -255,6 +249,12 @@
         "internalType": "uint256",
         "name": "feeCost",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "slippageCoefficient64x64",
+        "type": "int128"
       }
     ],
     "name": "Purchase",
@@ -924,6 +924,11 @@
       {
         "internalType": "int128",
         "name": "cLevel64x64",
+        "type": "int128"
+      },
+      {
+        "internalType": "int128",
+        "name": "slippageCoefficient64x64",
         "type": "int128"
       }
     ],

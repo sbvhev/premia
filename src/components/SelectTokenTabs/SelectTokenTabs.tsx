@@ -11,14 +11,23 @@ const SelectTokenTabs: React.FC = () => {
   const { base } = useBase();
   const tokens = useAllTokens();
 
-  const tabs = useMemo(() => tokens.filter(token => token.address !== base.address).map((token) => ({
-    token,
-    label: token.symbol,
-    icon: tokenIcons[token.symbol as keyof typeof tokenIcons],
-    highlight: ["ETH", "YFI"].includes(token.symbol),
-  })), [tokens, base]);
+  const tabs = useMemo(
+    () =>
+      tokens
+        .filter((token) => token.address !== base.address)
+        .map((token) => ({
+          token,
+          label: token.symbol,
+          icon: tokenIcons[token.symbol as keyof typeof tokenIcons],
+          highlight: ['WETH', 'SUSHI'].includes(token.symbol),
+        })),
+    [tokens, base],
+  );
 
-  const activeTabIndex = useMemo(() => tabs.findIndex((tab) => tab.token.address === underlying.address), [tabs, underlying]);
+  const activeTabIndex = useMemo(
+    () => tabs.findIndex((tab) => tab.token.symbol === underlying.symbol),
+    [tabs, underlying],
+  );
 
   return (
     <SearchTabs

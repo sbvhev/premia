@@ -282,14 +282,16 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 
     const amount = floatToBigNumber(value, activeToken!.decimals);
 
-    transact(depositWithdraw(amount, call)).then(async (tx) => {
-      try {
-        await tx?.wait();
-        onClose();
-      } catch (e) {
-        console.error(e);
-      }
-    });
+    transact(depositWithdraw(amount, call))
+      .then(async (tx) => {
+        try {
+          await tx?.wait();
+          onClose();
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .then(onClose);
   }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
 
   return (
