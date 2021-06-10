@@ -134,7 +134,7 @@ const TransactionLoadingModal: React.FC<TransactionLoadingModalProps> = ({
               </Box>
               {txLink && (
                 <a
-                  href={'test.com'}
+                  href={txLink}
                   target='_blank'
                   rel='noreferrer'
                   className={classes.anchor}

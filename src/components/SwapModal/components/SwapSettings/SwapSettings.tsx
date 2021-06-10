@@ -16,7 +16,7 @@ import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg'
 import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
 import { SwitchWithGlider } from 'components';
-import { useSwapSettings } from 'state/swap/hooks';
+import { useSwapSettings, useToggleExchange } from 'state/swap/hooks';
 
 import { SettingsConfirmation } from '../../components';
 
@@ -307,43 +307,8 @@ const MySwitch = withStyles((theme: Theme) =>
   );
 });
 
-const exchanges = [
-  {
-    name: 'Uniswap',
-    enabled: false,
-  },
-  {
-    name: 'UniswapV2',
-    enabled: true,
-  },
-  {
-    name: 'Eth2Dai',
-    enabled: false,
-  },
-  {
-    name: 'Kyber',
-    enabled: true,
-  },
-  {
-    name: 'Curve',
-    enabled: false,
-  },
-  {
-    name: 'LiquidityProvider',
-    enabled: false,
-  },
-  {
-    name: 'MultiBridge',
-    enabled: false,
-  },
-];
-
 export interface SwapModalProps {
   goBack: () => void;
-}
-
-interface enabledExchanges {
-  [key: string]: boolean;
 }
 
 const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
@@ -351,6 +316,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const { palette } = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { setSwapSettings, slippagePercentage } = useSwapSettings();
+  const { setToggleExchange, liquidityProviders } = useToggleExchange();
+
   const [slippage, setSlippage] = React.useState<number>(0.5);
   const [customSlippage, setCustomSlippage] =
     React.useState<string | number>('');
@@ -358,15 +325,6 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
   const [showExchanges, setShowExchanges] = React.useState(false);
   const [showHighSlippageWarning, setShowHighSlippageWarning] =
     React.useState(true);
-  const [checkedState, setCheckedState] = React.useState<enabledExchanges>({
-    Uniswap: false,
-    UniswapV2: true,
-    Eth2Dai: false,
-    Kyber: true,
-    Curve: false,
-    LiquidityProvider: false,
-    MultiBridge: false,
-  });
 
   React.useEffect(() => {
     const defaultSlippageOptions = [0.1, 0.5, 1];
@@ -374,6 +332,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       const isCustom = !defaultSlippageOptions.includes(slippagePercentage);
       if (isCustom) {
         setCustomSlippage(slippagePercentage);
+      } else {
+        setSlippage(slippagePercentage);
       }
     }
   }, [slippagePercentage]);
@@ -482,14 +442,17 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
     setMinutes(numberValue);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedState({
-      ...checkedState,
-      [event.target.name]: event.target.checked,
-    });
-  };
+  const enabledExchangesCount = liquidityProviders.reduce(
+    (sum, { enabled }) => {
+      if (enabled) {
+        return sum + 1;
+      }
+      return sum;
+    },
+    0,
+  );
 
-  const mappedExchanges = exchanges.map((item) => {
+  const mappedExchanges = liquidityProviders.map((item, index) => {
     return (
       <Box
         key={item.name}
@@ -500,8 +463,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       >
         <Typography className={classes.elementHeader}>{item.name}</Typography>
         <MySwitch
-          checked={checkedState[item.name]}
-          onChange={handleChange}
+          checked={item.enabled}
+          onChange={() => setToggleExchange({ index })}
           name={item.name}
         />
       </Box>
@@ -533,7 +496,10 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 <Typography className={classes.elementHeader}>
                   Slippage tolerance
                 </Typography>
-                <Tooltip title='Lorem ipsum text' arrow>
+                <Tooltip
+                  title='The expected slippage percent you stand to incur due to the size of this trade.'
+                  arrow
+                >
                   <InfoIcon
                     fill={palette.secondary.main}
                     style={{ marginLeft: '6px' }}
@@ -593,7 +559,10 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 <Typography className={classes.elementHeader}>
                   Transaction deadline
                 </Typography>
-                <Tooltip title='Lorem ipsum text2' arrow>
+                <Tooltip
+                  title='Maximum allowed time for a transaction to complete.'
+                  arrow
+                >
                   <InfoIcon
                     fill={palette.secondary.main}
                     style={{ marginLeft: '6px' }}
@@ -637,7 +606,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 </Typography>
                 <Box display='flex' justifyContent='center' alignItems='center'>
                   <Typography className={classes.swapDetailsText}>
-                    {'11'}
+                    {enabledExchangesCount}
                   </Typography>
                   <Box
                     className={classes.expandContainer}
@@ -659,14 +628,17 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
                 Enabled Exchanges
               </Typography>
             </Box>
-            <Box width='100%' padding='6px 30px'>
+            <Box
+              width='100%'
+              padding='6px 18px 6px 30px'
+              style={{ maxHeight: '60vh', overflowY: 'auto' }}
+            >
               {mappedExchanges}
             </Box>
           </>
         )}
       </Box>
       <Box
-        id='back'
         className={
           !mobile ? classes.goBackContainer : classes.goBackContainerMobile
         }
@@ -676,9 +648,9 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       </Box>
       <SettingsConfirmation
         open={customSlippage > 1 && showHighSlippageWarning}
-        onClose={() => setCustomSlippage(1)}
+        onClose={() => setCustomSlippage('')}
         agree={handleSetExtraHighSlippage}
-        disagree={() => setCustomSlippage(1)}
+        disagree={() => setCustomSlippage('')}
       />
     </Box>
   );

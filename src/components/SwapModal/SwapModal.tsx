@@ -24,16 +24,23 @@ import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import { ReactComponent as UniSwap } from 'assets/svg/UNI-icon.svg';
 
-import { useApproval } from 'hooks';
-// import { Token, BNB } from 'web3/tokens';
+import {
+  useApproval,
+  useTransact,
+  useWrapEther,
+  useGasToken,
+  CurrencyWithLogoUri,
+} from 'hooks';
+import { Token, isToken } from 'web3/tokens';
 import { getSwapQuote, useWeb3 } from 'state/application/hooks';
-import { useSwapSettings } from 'state/swap/hooks';
+import { useSwapSettings, useToggleExchange } from 'state/swap/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 
-import { calculateGasMargin } from 'utils';
-import { formatUnits, parseEther } from 'ethers/lib/utils';
+// import { calculateGasMargin } from 'utils';
+import { formatUnits } from 'ethers/lib/utils';
+import { BigNumber } from 'bignumber.js';
 import TokenList from '../../tokens.json';
-// import ROUTE_ICON_LIST from '../../routeIconList.json';
+import ROUTE_ICON_LIST from '../../routeIconList.json';
 
 import { ModalContainer } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
@@ -198,15 +205,15 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
-    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
     border: `1px solid ${palette.divider}`,
+    borderLeft: `1px solid ${palette.divider}`,
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: palette.primary.dark,
       border: `1px solid ${palette.primary.main}`,
-      borderLeft: '0px',
+      borderLeft: `1px solid ${palette.primary.main}`,
       boxShadow: 'none',
       '& .MuiTypography-root': {
         color: palette.primary.main,
@@ -241,10 +248,10 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0',
-    borderLeft: 'none',
     borderTopRightRadius: '12px',
     borderBottomRightRadius: '12px',
-    border: `1px solid ${palette.divider}`,
+    border: `1px solid ${palette.primary.main}`,
+    borderLeft: `1px solid ${palette.primary.main}`,
     cursor: 'pointer',
     '& .MuiTypography-root': {
       color: palette.primary.main,
@@ -446,7 +453,6 @@ const useStyles = makeStyles(({ palette }) => ({
       borderColor: palette.background.paper,
     },
     '&:after': {
-      //
       display: 'none',
     },
   },
@@ -506,6 +512,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [editSettings, setEdditSettings] = React.useState(false);
   const [switched, setSwitched] = useState(false);
   const { palette } = theme;
+  const transact = useTransact();
+  const { onWrapEther, onUnwrapEther } = useWrapEther();
   const {
     fromToken,
     toToken,
@@ -515,7 +523,13 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     inputType,
     setSwapSettings,
   } = useSwapSettings();
-  const [tokenList, setTokenList] = React.useState(TokenList.tokens);
+  const { liquidityProviders } = useToggleExchange();
+  const gasToken = useGasToken();
+  const assetListWithGasToken = [...TokenList.tokens, gasToken];
+  const [tokenListFrom, setTokenListFrom] = React.useState(
+    assetListWithGasToken,
+  );
+  const [tokenListTo, setTokenListTo] = React.useState(assetListWithGasToken);
   const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
   const [searchValueTo, setSearchValueTo] = React.useState<string>('');
   const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
@@ -530,16 +544,17 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const [swapValid, setSwapValid] = React.useState(false);
   const [swapReady, setSwapReady] = React.useState(false);
 
-  // const allTokens = [
-  //   ...TokenList.tokens,
-  //   chainId === 56 ? (BNB as Token) : (ETHER as Token),
-  // ];
-
   const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
   const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
+  const excludedLiquidityProviders = liquidityProviders.filter(
+    (item) => !item.enabled,
+  );
+  const simpleExclusionList = excludedLiquidityProviders.map(
+    (item) => item.name,
+  );
 
   const { allowance, onApprove } = useApproval(
-    fromToken?.address as string,
+    isToken(fromToken) ? fromToken.address : undefined,
     zeroXQuote?.allowanceTarget as string,
   );
 
@@ -627,16 +642,16 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     setToAssetOpen(null);
   };
 
-  const handleSelectFromToken = (index: number) => {
-    setSwapSettings({ fromToken: tokenList[index] });
-    setTokenList(TokenList.tokens);
+  const handleSelectFromToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ fromToken: token });
+    setTokenListFrom(TokenList.tokens);
     handleClosefromAsset();
     setSearchValueFrom('');
   };
 
-  const handleSelectToToken = (index: number) => {
-    setSwapSettings({ toToken: tokenList[index] });
-    setTokenList(TokenList.tokens);
+  const handleSelectToToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ toToken: token });
+    setTokenListTo(TokenList.tokens);
     handleCloseToAsset();
     setSearchValueTo('');
   };
@@ -652,7 +667,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         name.includes(searchValueLower) || ticker.includes(searchValueLower)
       );
     });
-    setTokenList(filteredList);
+    setTokenListFrom(filteredList);
   };
 
   const handleSearchToAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -666,7 +681,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         name.includes(searchValueLower) || ticker.includes(searchValueLower)
       );
     });
-    setTokenList(filteredList);
+    setTokenListTo(filteredList);
   };
 
   React.useEffect(() => {
@@ -694,7 +709,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         setPreSwapButtonGuide('Enter amount');
         return;
       }
-      console.log(fromAmount, fromTokenBalance);
 
       if (
         !inputType &&
@@ -705,6 +719,16 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
       }
       setPreSwapButtonGuide('Swap');
 
+      const swapSlippage = slippagePercentage
+        ? slippagePercentage / 100
+        : 0.005;
+
+      const sources = simpleExclusionList;
+      let excludedSources: string[] | null = sources;
+      if (!excludedSources.length) {
+        excludedSources = null;
+      }
+
       const _zeroXQuote = await getSwapQuote(
         fromToken,
         toToken,
@@ -712,7 +736,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         toAmount ?? '0',
         inputType,
         chainId,
-        slippagePercentage ?? 1,
+        swapSlippage,
+        excludedSources,
       );
 
       console.log('quote', _zeroXQuote);
@@ -749,15 +774,16 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   }, [fromAmount, fromToken, toAmount, toToken, inputType, fromTokenBalance]);
 
   React.useEffect(() => {
-    if (fromAmount) {
-      const sendingAmount = parseEther(fromAmount ?? '0');
-      if (allowance.gte(sendingAmount)) {
-        setTokenNeedsapproval(false);
-      } else {
-        setTokenNeedsapproval(true);
-      }
+    if (fromToken?.symbol === 'ETH') {
+      setTokenNeedsapproval(false);
+      return;
     }
-  }, [allowance, fromAmount]);
+    if (fromAmount && allowance >= parseFloat(fromAmount)) {
+      setTokenNeedsapproval(false);
+    } else {
+      setTokenNeedsapproval(true);
+    }
+  }, [allowance, fromAmount, fromToken]);
 
   React.useEffect(() => {
     if (swapValid && !tokenNeedsapproval && fromAmount) {
@@ -769,36 +795,86 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
       }
       setSwapReady(false);
     }
-  }, [tokenNeedsapproval, swapValid, fromTokenBalance, fromAmount]);
+  }, [
+    tokenNeedsapproval,
+    swapValid,
+    fromTokenBalance,
+    fromAmount,
+    fromToken,
+    toToken,
+  ]);
 
-  const mappedItemsFrom = tokenList.map((item, index) => (
-    <TokenMenuItem
-      key={`from${item.symbol}`}
-      token={item}
-      onSelect={() => handleSelectFromToken(index)}
-    />
-  ));
+  const mappedItemsFrom = tokenListFrom
+    .filter((item, index) => item.symbol !== toToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`from${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectFromToken(item)}
+      />
+    ));
 
-  const mappedItemsTo = tokenList.map((item, index) => (
-    <TokenMenuItem
-      key={`to${item.symbol}`}
-      token={item}
-      onSelect={() => handleSelectToToken(index)}
-    />
-  ));
+  const mappedItemsTo = tokenListTo
+    .filter((item) => item.symbol !== fromToken?.symbol)
+    .map((item, index) => (
+      <TokenMenuItem
+        key={`to${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectToToken(item)}
+      />
+    ));
 
   const handleSwap = async () => {
     if (zeroXQuote && swapReady) {
-      await web3?.getSigner(account).sendTransaction({
-        to: zeroXQuote.to,
-        data: zeroXQuote.data,
-        gasPrice: ethers.BigNumber.from(zeroXQuote.gasPrice),
-        value: ethers.BigNumber.from(zeroXQuote.value),
-        gasLimit: calculateGasMargin(
-          ethers.BigNumber.from(zeroXQuote.estimatedGas),
-        ),
-      });
+      transact(
+        web3?.getSigner(account).sendTransaction({
+          to: zeroXQuote.to,
+          data: zeroXQuote.data,
+          gasPrice: ethers.BigNumber.from(zeroXQuote.gasPrice),
+          value: ethers.BigNumber.from(zeroXQuote.value),
+          gasLimit: ethers.BigNumber.from(zeroXQuote.gas),
+        }),
+        {
+          closeOnSuccess: true,
+          description: `Swaping ${fromToken?.symbol} for ${toToken?.symbol}`,
+        },
+      );
     }
+  };
+
+  const getMinimumReceive = () => {
+    return formatUnits(
+      new BigNumber(zeroXQuote?.buyAmount ?? '0')
+        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
+        .toFixed(0),
+      toToken?.decimals,
+    );
+  };
+
+  const getSymbolWithAddress = (address: string) => {
+    return TokenList.tokens.find(
+      (e) => e.address.toLowerCase() === address.toLowerCase(),
+    )?.symbol;
+  };
+
+  const getSwapRoute = () => {
+    if (!zeroXQuote) return;
+
+    const routes = zeroXQuote.orders[0].fillData.tokenAddressPath.map(
+      (e: string) => getSymbolWithAddress(e),
+    );
+    console.log('routes', routes.join(' > '));
+    return routes.join(' > ');
+  };
+
+  const getSwapRouter = () => {
+    if (!zeroXQuote) return;
+
+    const routeIconList = ROUTE_ICON_LIST.routeIconList;
+
+    return routeIconList.find(
+      (r) => r.routerName === zeroXQuote.orders[0].source,
+    )?.logoUrl;
   };
 
   return (
@@ -1205,7 +1281,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                       className={classes.swapDetailsText}
                       color='textPrimary'
                     >
-                      {4.474}
+                      {getMinimumReceive()}
                     </Typography>
                   </Box>
                   <Box
@@ -1245,7 +1321,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                         className={classes.swapDetailsText}
                         color='textPrimary'
                       >
-                        {`${'LINK'} > ${'USDC'} > ${'ETH'}`}
+                        {getSwapRoute()}
                       </Typography>
                     </Box>
                   </Box>

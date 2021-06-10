@@ -10,7 +10,13 @@ import options from './options/reducer';
 import vaults from './vaults/reducer';
 import swap from './swap/reducer';
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'options', 'vaults'];
+const PERSISTED_KEYS: string[] = [
+  'user',
+  'transactions',
+  'options',
+  'vaults',
+  'swap',
+];
 
 const store = configureStore({
   reducer: {

@@ -1,12 +1,13 @@
 import React, { CSSProperties } from 'react';
 import { Typography, Box, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { useWeb3 } from 'state/application/hooks';
-import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useCurrencyBalance, useTokenBalance } from 'state/wallet/hooks';
 import { formatCompact } from 'utils/formatNumber';
 import { Loader } from 'components';
-import { Token } from 'web3/tokens';
+import { Currency } from '@uniswap/sdk';
+import { Token, isToken } from 'web3/tokens';
+import { CurrencyWithLogoUri } from 'hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   item: {
@@ -132,7 +133,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 export interface TokenWalletItemProps {
-  token: Token;
+  token: Token | CurrencyWithLogoUri;
   isSelected?: boolean;
   style?: CSSProperties;
   onSelect?: () => void;
@@ -147,7 +148,18 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
   const classes = useStyles({ isSelected });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { account } = useWeb3();
-  const balance = useCurrencyBalance(account, token);
+  const tokenBalance = useTokenBalance(
+    account,
+    isToken(token) ? token : undefined,
+  );
+  const currencyBalance = useCurrencyBalance(
+    account,
+    !isToken(token) ? (token as unknown as Currency) : undefined,
+  );
+
+  if (currencyBalance) {
+    console.log('account', currencyBalance);
+  }
 
   return (
     <>
@@ -178,13 +190,15 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
               </Typography>
             </Box>
           </Box>
-          {balance ? (
+          {tokenBalance || currencyBalance ? (
             <Typography color='textSecondary'>
-              {formatCompact(balance)}
+              {formatCompact(tokenBalance || currencyBalance)}
             </Typography>
           ) : account ? (
             <Loader />
-          ) : null}
+          ) : (
+            <Loader />
+          )}
         </MenuItem>
       ) : (
         <Loader />

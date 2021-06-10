@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { API as NotifyAPI } from 'bnc-notify';
 import { get } from 'lodash';
 import { ethers } from 'ethers';
-import { Token } from 'web3/tokens';
+import { Token, isToken } from 'web3/tokens';
+import { CurrencyWithLogoUri } from 'hooks';
 import qs from 'qs';
 
 import { AppState, AppDispatch } from 'state';
@@ -80,17 +81,18 @@ export async function getPrice(coinName: string) {
 }
 
 export async function getSwapQuote(
-  sellToken: Token | null | undefined,
-  buyToken: Token | null | undefined,
+  sellToken: Token | CurrencyWithLogoUri | undefined,
+  buyToken: Token | CurrencyWithLogoUri | undefined,
   sellAmount: string,
   buyAmount: string,
   inputType: boolean | undefined,
   chainId: number,
   slippagePercentage: number,
+  excludedSources?: string[] | null,
 ) {
   let params: any = {
-    buyToken: buyToken?.address ?? buyToken?.symbol,
-    sellToken: sellToken?.address ?? sellToken?.symbol,
+    buyToken: isToken(buyToken) ? buyToken.address : buyToken?.symbol,
+    sellToken: isToken(sellToken) ? sellToken.address : sellToken?.symbol,
     slippagePercentage: slippagePercentage,
   };
 
@@ -109,10 +111,18 @@ export async function getSwapQuote(
         .toString(),
     };
   }
+
+  if (excludedSources) {
+    params.excludedSources = excludedSources;
+  }
+
   const response = await fetch(
     `https://${
       chainId === 56 ? 'bsc.' : ''
-    }api.0x.org/swap/v1/quote?${qs.stringify(params)}`,
+    }api.0x.org/swap/v1/quote?${qs.stringify(params, {
+      arrayFormat: 'comma',
+      encode: false,
+    })}`,
   );
 
   return await response.json();

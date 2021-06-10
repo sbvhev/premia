@@ -1,32 +1,37 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 
 import { useTransact } from 'hooks';
 import { useWeb3 } from 'state/application/hooks';
 import { useTokenContract } from './useContract';
 
-export function useApproval(fromAddress: string, toAddress: string) {
+export function useApproval(fromAddress?: string, toAddress?: string) {
   const { signer, account } = useWeb3();
   const [loading, setLoading] = useState(true);
-  const [allowance, setAllowance] = useState(BigNumber.from(0));
+  const [allowance, setAllowance] = useState(0);
   const tokenContract = useTokenContract(fromAddress);
   const transact = useTransact();
 
   const fetchAllowance = useCallback(async () => {
     if (!tokenContract || !toAddress) return;
 
-    const allowance = await tokenContract?.allowance(account, toAddress);
+    try {
+      const decimals = await tokenContract.connect(signer!).decimals();
+      const allowance = await tokenContract?.allowance(account, toAddress);
 
-    setAllowance(allowance);
-    setLoading(false);
-  }, [tokenContract, account, toAddress]);
+      setAllowance(Number(allowance) / 10 ** decimals);
+      setLoading(false);
+    } catch (e) {
+      return console.error(e);
+    }
+  }, [tokenContract, account, signer, toAddress]);
 
   useEffect(() => {
     if (account && toAddress && tokenContract) {
       fetchAllowance().catch((e) => console.error(e));
     }
 
-    const refreshInterval = setInterval(fetchAllowance, 2000);
+    const refreshInterval = setInterval(fetchAllowance, 1000);
 
     return () => clearInterval(refreshInterval);
   }, [account, tokenContract, toAddress, fetchAllowance]);
@@ -56,6 +61,7 @@ export function useApproval(fromAddress: string, toAddress: string) {
     },
     [signer, transact, toAddress, tokenContract],
   );
+
   return { loading, allowance, onApprove: handleApprove };
 }
 

@@ -1,8 +1,8 @@
 {
   "routeIconList": [
     {
-      "routerName": "Native",
-      "logoUrl": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+      "routerName": "0x",
+      "logoUrl": "https://assets.coingecko.com/coins/images/863/thumb/0x.png?1547034672"
     },
     {
       "routerName": "Uniswap",
