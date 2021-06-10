@@ -1,14 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button, Typography, Modal, Box, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 
+import {
+  useTotalCost,
+  useBreakEvenPrice,
+  useMaturityDate,
+  useSize,
+  useOptionType,
+  useBase,
+  useUnderlying,
+} from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { usePurchaseOption } from 'hooks';
+import { formatNumber } from 'utils/formatNumber';
 
 import { ModalContainer } from 'components';
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
+import { OptionType } from 'web3/options';
+import { getTokenIcon } from 'utils/getTokenIcon';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -171,19 +183,41 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
 }) => {
-  const [shouldTransact, setShouldTransact] = useState(localStorage.getItem('BuyConfirmationModal_skip') === 'true');
+  const [shouldTransact, setShouldTransact] = useState(
+    localStorage.getItem('BuyConfirmationModal_skip') === 'true',
+  );
   const [checkIsOn, setCheckIsOn] = useState(false);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
+  const { optionType } = useOptionType();
+  const { base } = useBase();
+  const { underlying } = useUnderlying();
+  const { maturityDate } = useMaturityDate();
+  const { totalCost } = useTotalCost();
+  const { size } = useSize();
+  const breakEvenPrice = useBreakEvenPrice();
   const purchase = usePurchaseOption();
+
+  const activeToken = useMemo(
+    () => (optionType === OptionType.Call ? underlying : base),
+    [optionType, base, underlying],
+  );
+
+  const TokenIcon = useMemo(
+    () => getTokenIcon(activeToken.symbol),
+    [activeToken],
+  );
 
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
     localStorage.setItem('BuyConfirmationModal_skip', 'true');
     setShouldTransact(true);
   };
 
-  const onTransact = useCallback(() => purchase().then(onClose), [purchase, onClose]);
+  const onTransact = useCallback(
+    () => purchase().then(onClose),
+    [purchase, onClose],
+  );
 
   useEffect(() => {
     if (shouldTransact) {
@@ -218,9 +252,14 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                 >
                   <Typography color='secondary'>Option size</Typography>
                   <Box display='flex' flexDirection='row'>
-                    <Typography component='h2'>321</Typography>
-                    <Typography color='secondary'>Uni</Typography>
-                    <UniswapIcon />
+                    <Typography component='h2'>{formatNumber(size)}</Typography>
+                    <Typography
+                      color='secondary'
+                      style={{ marginRight: '2px' }}
+                    >
+                      {activeToken.symbol}
+                    </Typography>
+                    <TokenIcon style={{ marginTop: '3px' }} />
                   </Box>
                 </Box>
                 <Box
@@ -236,7 +275,11 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     flexDirection='row'
                     justifyContent='flex-end'
                   >
-                    <Typography component='h2'>27 March</Typography>
+                    <Typography component='h2'>
+                      {moment(new Date(maturityDate))
+                        .format('MMMM DD, YYYY')
+                        .replace(`, ${moment().year()}`, '')}
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -248,7 +291,9 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                 >
                   <Typography color='secondary'>Breakeven</Typography>
                   <Box display='flex' flexDirection='row'>
-                    <Typography component='h2'>$1,700</Typography>
+                    <Typography component='h2'>
+                      ${formatNumber(breakEvenPrice)}
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -349,7 +394,10 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     </svg>
                   }
                 />
-                <Typography className={classes.smallInfoText} onClick={handleChangeAgree}>
+                <Typography
+                  className={classes.smallInfoText}
+                  onClick={handleChangeAgree}
+                >
                   Do not show confirmation again
                 </Typography>
               </Box>
@@ -360,7 +408,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                 size='large'
                 onClick={onTransact}
               >
-                Buy for $1,749.37
+                Buy for ${formatNumber(totalCost)}
               </Button>
             </Box>
           </Box>

@@ -22,11 +22,10 @@ import {
   useBase,
   useUnderlying,
   useMaturityDate,
-  useOptionsPoolContract,
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
-import { useApproval } from 'hooks';
+import { useApproval, usePools } from 'hooks';
 import { formatNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 
@@ -181,19 +180,19 @@ const Options: React.FC = () => {
   const { maturityDate } = useMaturityDate();
   const { totalCost } = useTotalCost();
   const { account } = useWeb3();
+  const { optionPoolContract } = usePools();
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),
     [optionType, base, underlying],
   );
 
-  const poolContract = useOptionsPoolContract();
   const priceChanges = usePriceChanges();
   const underlyingPrice = useUnderlyingPrice();
   const breakEvenPrice = useBreakEvenPrice();
   const { allowance, onApprove } = useApproval(
     activeToken.address,
-    poolContract?.address || account,
+    optionPoolContract?.address || account,
   );
 
   const handleBuyOption = useCallback(

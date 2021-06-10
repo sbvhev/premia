@@ -282,7 +282,7 @@ const OptionFilter: React.FC = () => {
 
   useEffect(() => {
     if (!moment(maturityDate).isValid()) {
-      setMaturityDate(initialOptionsState.maturityDate)
+      setMaturityDate(initialOptionsState.maturityDate);
     }
   }, [maturityDate, setMaturityDate]);
 
@@ -338,6 +338,7 @@ const OptionFilter: React.FC = () => {
                 label: value,
                 value,
               }))}
+              step={0.01}
               value={strikePrice}
               valueLabelDisplay='on'
               onChange={(event: any, value) => {

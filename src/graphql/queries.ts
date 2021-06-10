@@ -76,3 +76,13 @@ export const getUserOwnedPools = gql`
     }
   }
 `;
+
+export const getPools = gql`
+  ${Pool}
+
+  query Pools($pairId: String!, $first: Int = 100, $skip: Int = 0) {
+    pools(first: $first, skip: $skip, where: { pair: $pairId }) {
+      ...Pool
+    }
+  }
+`;

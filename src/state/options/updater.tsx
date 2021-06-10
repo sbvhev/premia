@@ -1,118 +1,52 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from 'react-apollo';
 import { useLocation } from 'react-router-dom';
-import { get, isEqual } from 'lodash';
 
-import { getPool } from 'graphql/queries';
-import { getPoolId } from 'graphql/utils';
-import { Pool } from 'web3/pools';
-import {
-  useUnderlyingPrice,
-  useCallPool,
-  usePutPool,
-  useCallPoolContract,
-  usePutPoolContract,
-  useOnChainOptionData,
-} from 'state/options/hooks';
+import { useUnderlyingPrice, useOnChainOptionData } from 'state/options/hooks';
 import { AppDispatch, AppState } from 'state';
 import { updatePricePerUnit, updateTotalCost, updateFee } from './actions';
-import { floatFromFixed } from 'utils/floatFromFixed';
-import { usePoolContract as usePoolContractHook, useDebounce } from 'hooks';
+import { useDebounce, usePools } from 'hooks';
 import { OptionType } from 'web3/options';
+import { floatFromFixed } from 'utils/floatFromFixed';
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
-  const { setCallPoolContract } = useCallPoolContract();
-  const { setPutPoolContract } = usePutPoolContract();
-  const { setCallPool } = useCallPool();
-  const { setPutPool } = usePutPool();
   const onChainOptionData = useOnChainOptionData();
   const { maturity, strike64x64, spot64x64, optionSize } = useDebounce(
     onChainOptionData,
     100,
   );
-  const {
-    base,
-    underlying,
-    optionType,
-    size,
-    callPool,
-    putPool,
-    callPoolContract,
-    putPoolContract,
-  } = useSelector<AppState, AppState['options']>((state) => state.options);
+  const { underlying, optionType, size } = useSelector<
+    AppState,
+    AppState['options']
+  >((state) => state.options);
+  const { optionPoolContract } = usePools();
   const underlyingPrice = useUnderlyingPrice();
   const location = useLocation();
 
-  const { data: callPoolData } = useQuery(getPool, {
-    pollInterval: 5000,
-    variables: {
-      id: getPoolId(base, underlying, OptionType.Call),
-    },
-  });
-
-  const { data: putPoolData } = useQuery(getPool, {
-    pollInterval: 5000,
-    variables: {
-      id: getPoolId(base, underlying, OptionType.Put),
-    },
-  });
-
-  const callP: Pool | null = useMemo(
-    () => get(callPoolData, 'pool') || null,
-    [callPoolData],
-  );
-
-  const putP: Pool | null = useMemo(
-    () => get(putPoolData, 'pool') || null,
-    [putPoolData],
-  );
-
-  const callContract = usePoolContractHook(callP?.address);
-  const putContract = usePoolContractHook(putP?.address);
-
   useEffect(() => {
-    if (callP && !isEqual(callP, callPool)) {
-      dispatch(setCallPool(callP));
-    }
-  }, [dispatch, callPool, callP, setCallPool]);
-
-  useEffect(() => {
-    if (putP && !isEqual(putP, putPool)) {
-      dispatch(setPutPool(putP));
-    }
-  }, [dispatch, putP, putPool, setPutPool]);
-
-  useEffect(() => {
-    if (callContract && !isEqual(callContract, callPoolContract)) {
-      dispatch(setCallPoolContract(callContract));
-    }
-  }, [dispatch, callPoolContract, callContract, setCallPoolContract]);
-
-  useEffect(() => {
-    if (putContract && !isEqual(putContract, putPoolContract)) {
-      dispatch(setPutPoolContract(putContract));
-    }
-  }, [dispatch, putContract, putPoolContract, setPutPoolContract]);
-
-  useEffect(() => {
-    const poolContract =
-      optionType === OptionType.Call ? callPoolContract : putPoolContract;
-
-    if (!poolContract || !maturity || !strike64x64 || !spot64x64 || !optionSize)
+    if (
+      !optionPoolContract ||
+      !maturity ||
+      !strike64x64 ||
+      !spot64x64 ||
+      !optionSize
+    )
       return;
 
     if (!location.pathname.startsWith('/options')) return;
 
     async function fetchPricePerUnit() {
+      const isCall = optionType === OptionType.Call;
+
       try {
-        const response = await poolContract!.quote(
+        const response = await optionPoolContract!.quote({
           maturity,
           strike64x64,
           spot64x64,
-          optionSize,
-        );
+          amount: optionSize,
+          isCall,
+        });
 
         const fee = floatFromFixed(response.feeCost64x64) * underlyingPrice;
         const baseCost =
@@ -148,8 +82,7 @@ export default function Updater(): null {
     underlying,
     underlyingPrice,
     optionType,
-    callPoolContract,
-    putPoolContract,
+    optionPoolContract,
   ]);
 
   return null;

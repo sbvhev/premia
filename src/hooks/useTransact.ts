@@ -22,7 +22,7 @@ export interface TransactProps {
 }
 
 export function useTransact() {
-  const { notify, chainId } = useWeb3();
+  const { notify } = useWeb3();
   const { setCurrentTx } = useCurrentTx();
   const { setTxStateMsg } = useTxStateMsg();
   const { setTxOption } = useTxOption();
@@ -56,39 +56,24 @@ export function useTransact() {
         if (tx) {
           setCurrentTx({ hash: tx.hash });
 
-          // For BSC, as it doesnt support notify
-          if (chainId === 56) {
-            try {
-              await tx.wait();
+          const { emitter } = notify.hash(tx.hash);
 
-              toggleTxSuccessModal(true);
+          emitter.on('txConfirmed', (transaction) => {
+            toggleTxSuccessModal(true);
 
-              if (closeOnSuccess) {
-                setTimeout(closeModals, 2000);
-              }
-            } catch (e) {
-              toggleTxFailedModal(true);
+            if (closeOnSuccess) {
+              setTimeout(closeModals, 2000);
             }
-          } else {
-            const { emitter } = notify.hash(tx.hash);
+          });
 
-            emitter.on('txConfirmed', (transaction) => {
-              toggleTxSuccessModal(true);
+          emitter.on('txFailed', () => {
+            toggleTxFailedModal(true);
+          });
 
-              if (closeOnSuccess) {
-                setTimeout(closeModals, 2000);
-              }
-            });
-
-            emitter.on('txFailed', () => {
-              toggleTxFailedModal(true);
-            });
-
-            emitter.on('txCancel', (err) => {
-              console.log('Error in transaction: ', err);
-              toggleTxCancelledModal(true);
-            });
-          }
+          emitter.on('txCancel', (err) => {
+            console.log('Error in transaction: ', err);
+            toggleTxCancelledModal(true);
+          });
         } else {
           closeModals();
         }
@@ -115,7 +100,6 @@ export function useTransact() {
       setTxStateMsg,
       setTxOption,
       notify,
-      chainId,
     ],
   );
 

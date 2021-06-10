@@ -3,7 +3,6 @@ import { ChainId } from '@uniswap/sdk';
 import moment from 'moment';
 
 import { DAI, WETH } from '../../constants';
-import { Pool as PoolContract } from 'contracts';
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
 import {
@@ -16,12 +15,7 @@ import {
   updatePricePerUnit,
   updateTotalCost,
   updateFee,
-  updateCallPool,
-  updatePutPool,
-  updateCallPoolContract,
-  updatePutPoolContract,
 } from './actions';
-import { Pool } from 'web3/pools';
 
 export interface OptionsState {
   base: Token;
@@ -33,10 +27,6 @@ export interface OptionsState {
   pricePerUnit: number;
   totalCost: number;
   fee: number;
-  callPool?: Pool;
-  putPool?: Pool;
-  callPoolContract?: PoolContract;
-  putPoolContract?: PoolContract;
 }
 
 export const initialState: OptionsState = {
@@ -49,8 +39,6 @@ export const initialState: OptionsState = {
   pricePerUnit: 0,
   totalCost: 0,
   fee: 0,
-  callPoolContract: undefined,
-  putPoolContract: undefined,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -81,17 +69,5 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateFee, (state, { payload }) => {
       state.fee = payload;
-    })
-    .addCase(updateCallPool, (state, { payload }) => {
-      state.callPool = payload;
-    })
-    .addCase(updatePutPool, (state, { payload }) => {
-      state.putPool = payload;
-    })
-    .addCase(updateCallPoolContract, (state, { payload }) => {
-      state.callPoolContract = payload as any;
-    })
-    .addCase(updatePutPoolContract, (state, { payload }) => {
-      state.putPoolContract = payload as any;
     }),
 );

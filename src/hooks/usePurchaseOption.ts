@@ -2,15 +2,15 @@ import { useCallback } from 'react';
 
 import {
   useOnChainOptionData,
-  useOptionsPoolContract,
   useUnderlying,
   useSize,
   useOptionType,
 } from 'state/options/hooks';
-import { useTransact } from 'hooks';
+import { useTransact, usePools } from 'hooks';
+import { OptionType } from 'web3/options';
 
 export function usePurchaseOption() {
-  const poolContract = useOptionsPoolContract();
+  const { optionPoolContract } = usePools();
   const { size } = useSize();
   const { underlying } = useUnderlying();
   const { optionType } = useOptionType();
@@ -18,17 +18,25 @@ export function usePurchaseOption() {
   const transact = useTransact();
 
   const onPurchaseOption = useCallback(async () => {
-    if (!poolContract) return;
+    if (!optionPoolContract) return;
 
-    return transact(
-      poolContract.purchase(maturity, strike64x64, optionSize, maxCost),
+    const tx = await transact(
+      optionPoolContract.purchase({
+        maturity,
+        strike64x64,
+        amount: optionSize,
+        maxCost,
+        isCall: optionType === OptionType.Call,
+      }),
       {
         description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
       },
     );
+
+    console.log('tx', await tx?.wait(1));
   }, [
     transact,
-    poolContract,
+    optionPoolContract,
     maturity,
     strike64x64,
     underlying,

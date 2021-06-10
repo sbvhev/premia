@@ -4,16 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
-import {
-  useCallPool,
-  usePutPool,
-  useCallPoolContract,
-  usePutPoolContract,
-} from 'state/options/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
-import { useApproval, useTransact } from 'hooks';
+import { useApproval, useTransact, usePools } from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
-import { formatCompact } from 'utils/formatNumber';
+import { formatBigNumber, formatCompact } from 'utils/formatNumber';
 
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
@@ -232,10 +226,9 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
   const { account } = useWeb3();
-  const { callPool } = useCallPool();
-  const { callPoolContract } = useCallPoolContract();
-  const { putPool } = usePutPool();
-  const { putPoolContract } = usePutPoolContract();
+  const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
+  const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
+    usePools(true);
   const transact = useTransact();
 
   const activePool = useMemo(
@@ -250,7 +243,15 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     () => (call ? activePool?.underlying : activePool?.base),
     [activePool, call],
   );
-  const activeBalance = useCurrencyBalance(account, activeToken);
+  const activeTokenBalance = useCurrencyBalance(account, activeToken);
+  const activePoolBalance = formatBigNumber(
+    call ? userOwnedCallPool?.totalAvailable : userOwnedPutPool?.totalAvailable,
+  );
+  const activeBalance = useMemo(
+    () => (type === 'deposit' ? activeTokenBalance : activePoolBalance),
+    [type, activeTokenBalance, activePoolBalance],
+  );
+
   const { allowance, onApprove } = useApproval(
     activeToken?.address,
     activePoolContract?.address,
@@ -281,15 +282,17 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 
     const amount = floatToBigNumber(value, activeToken!.decimals);
 
-    transact(depositWithdraw(amount)).then(async (tx) => {
-      try {
-        await tx?.wait();
-        onClose();
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  }, [type, value, activeToken, activePoolContract, transact, onClose]);
+    transact(depositWithdraw(amount, call))
+      .then(async (tx) => {
+        try {
+          await tx?.wait();
+          onClose();
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .then(onClose);
+  }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
 
   return (
     <Modal open={open} onClose={onClose}>

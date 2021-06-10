@@ -12,7 +12,13 @@ import { get } from 'lodash';
 import { UNISWAP_FACTORY, wallets, WETH, WBNB, DAI } from '../../constants';
 import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
 import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
-import { getPrice, get24HourPriceChange, useBlockNumber, usePrices, usePriceChanges } from 'state/application/hooks';
+import {
+  getPrice,
+  get24HourPriceChange,
+  useBlockNumber,
+  usePrices,
+  usePriceChanges,
+} from 'state/application/hooks';
 import { useAllTokens, useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
@@ -38,12 +44,13 @@ const assetList = [
   // { key: 'DPI', coinGeckoId: 'defipulse-index' },
   // { key: 'REN', coinGeckoId: 'republic-protocol' },
   // { key: 'SNX', coinGeckoId: 'havven' },
-  // { key: 'SUSHI', coinGeckoId: 'sushi' },
   // { key: 'ALCX', coinGeckoId: 'alchemix' },
   // { key: 'MKR', coinGeckoId: 'maker' },
+  { key: 'SUSHI', coinGeckoId: 'sushi' },
   { key: 'LINK', coinGeckoId: 'chainlink' },
   { key: 'PREMIA', coinGeckoId: 'premia' },
   { key: 'UNI', coinGeckoId: 'uniswap' },
+  { key: 'wBTC', coinGeckoId: 'wrapped-bitcoin' },
   { key: 'WBTC', coinGeckoId: 'wrapped-bitcoin' },
   { key: 'YFI', coinGeckoId: 'yearn-finance' },
   { key: 'DAI', coinGeckoId: 'dai' },
@@ -197,7 +204,7 @@ export default function Updater(): null {
       const uniswapFactory = new Contract(
         UNISWAP_FACTORY[chainId],
         UniswapV2FactoryAbi.abi,
-      )
+      );
 
       const tokenList = [
         ...tokens.filter(
@@ -205,48 +212,48 @@ export default function Updater(): null {
             el.address.toLowerCase() !== comparisonToken.address.toLowerCase(),
         ),
         baseToken,
-      ]
+      ];
 
-      const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH'
+      const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH';
       const comparisonTokenUsdPrice = await getPrice(
         chainId === 56 ? 'wbnb' : 'ethereum',
-      )
+      );
       const tokenPrices: TokenPriceUpdate[] = [
         { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
         { key: comparisonTokenName, value: comparisonTokenUsdPrice },
-      ]
+      ];
 
       const lpAddresses = await multicallProvider.all(
         tokenList.map((el) =>
           uniswapFactory.getPair(comparisonToken.address, el.address),
         ),
-      )
+      );
 
       const calls: ContractCall[] = lpAddresses.map((address: string) => {
-        const lpContract = new Contract(address, UniswapV2PairAbi.abi)
-        return lpContract.getReserves()
-      })
+        const lpContract = new Contract(address, UniswapV2PairAbi.abi);
+        return lpContract.getReserves();
+      });
 
-      const results = await multicallProvider.all(calls)
+      const results = await multicallProvider.all(calls);
 
       for (let i = 0; i < tokenList.length; i++) {
         const tokensPerComparisonToken =
           parseInt(comparisonToken.address) < parseInt(tokenList[i].address)
             ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
-            Number(formatEther(results[i][0]))
+              Number(formatEther(results[i][0]))
             : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
-            Number(formatEther(results[i][1]))
+              Number(formatEther(results[i][1]));
 
         const tokenUsdPrice =
-          comparisonTokenUsdPrice / tokensPerComparisonToken
+          comparisonTokenUsdPrice / tokensPerComparisonToken;
 
         tokenPrices.push({
           key: tokenList[i].symbol,
           value: tokenUsdPrice,
-        })
+        });
       }
 
-      dispatch(updateTokenPrices(tokenPrices))
+      dispatch(updateTokenPrices(tokenPrices));
     })();
   }, [
     baseToken,
@@ -272,7 +279,8 @@ export default function Updater(): null {
       subscriptions: {
         address: (account: string) => dispatch(setWeb3Settings({ account })),
         network: (chainId: ChainId | 56) => {
-          const underlying: Token = chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
+          const underlying: Token =
+            chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
           const base: Token = {
             id: DAI[chainId || ChainId.MAINNET].address,
             address: DAI[chainId || ChainId.MAINNET].address,
@@ -280,7 +288,7 @@ export default function Updater(): null {
             name: DAI[chainId || ChainId.MAINNET].name,
             decimals: DAI[chainId || ChainId.MAINNET].decimals,
           };
-    
+
           dispatch(setWeb3Settings({ chainId }));
           dispatch(updateBase(base));
           dispatch(updateUnderlying(underlying));
@@ -373,7 +381,10 @@ export default function Updater(): null {
   useEffect(() => {
     let geckoFetch: any;
 
-    if ((!wallet || !web3 || !account) && Object.keys(priceChanges).length < 1) {
+    if (
+      (!wallet || !web3 || !account) &&
+      Object.keys(priceChanges).length < 1
+    ) {
       const fetchFromGecko = async () => {
         const geckoPriceChangesPromises = assetList.map((asset) =>
           get24HourPriceChange(asset.coinGeckoId),

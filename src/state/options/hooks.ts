@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'ethers';
 import moment from 'moment';
 
-import { Pool as PoolContract } from 'contracts';
-import { Pool } from 'web3/pools';
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
 import { fixedFromFloat } from 'utils/fixedFromFloat';
@@ -21,10 +19,6 @@ import {
   updatePricePerUnit,
   updateTotalCost,
   updateFee,
-  updateCallPool,
-  updatePutPool,
-  updateCallPoolContract,
-  updatePutPoolContract,
 } from './actions';
 
 export function useUnderlyingPrice(): number {
@@ -147,7 +141,7 @@ export function useOnChainOptionData() {
   ).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
-  const maxCost = floatToBigNumber(totalCost, underlying.decimals);
+  const maxCost = floatToBigNumber(totalCost * 2, underlying.decimals);
 
   return {
     maturity,
@@ -198,73 +192,6 @@ export function useFee() {
   );
 
   return { fee, setFee };
-}
-
-export function useCallPool() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { callPool } = useSelector<AppState, AppState['options']>(
-    (state: AppState) => state.options,
-  );
-
-  const setCallPool = useCallback(
-    (poolContract: Pool) => dispatch(updateCallPool(poolContract)),
-    [dispatch],
-  );
-
-  return { callPool, setCallPool };
-}
-
-export function usePutPool() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { putPool } = useSelector<AppState, AppState['options']>(
-    (state: AppState) => state.options,
-  );
-
-  const setPutPool = useCallback(
-    (poolContract: Pool) => dispatch(updatePutPool(poolContract)),
-    [dispatch],
-  );
-
-  return { putPool, setPutPool };
-}
-
-export function useCallPoolContract() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { callPoolContract } = useSelector<AppState, AppState['options']>(
-    (state: AppState) => state.options,
-  );
-
-  const setCallPoolContract = useCallback(
-    (poolContract: PoolContract) =>
-      dispatch(updateCallPoolContract(poolContract)),
-    [dispatch],
-  );
-
-  return { callPoolContract, setCallPoolContract };
-}
-
-export function usePutPoolContract() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { putPoolContract } = useSelector<AppState, AppState['options']>(
-    (state: AppState) => state.options,
-  );
-
-  const setPutPoolContract = useCallback(
-    (poolContract: PoolContract) =>
-      dispatch(updatePutPoolContract(poolContract)),
-    [dispatch],
-  );
-
-  return { putPoolContract, setPutPoolContract };
-}
-
-export function useOptionsPoolContract() {
-  const { optionType, callPoolContract, putPoolContract } = useSelector<
-    AppState,
-    AppState['options']
-  >((state: AppState) => state.options);
-
-  return optionType === OptionType.Call ? callPoolContract : putPoolContract;
 }
 
 export function useBreakEvenPrice() {

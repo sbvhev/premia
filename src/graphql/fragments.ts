@@ -24,11 +24,14 @@ export const TokenPair = gql`
     }
 
     totalDeposited
+    totalWithdrawn
     totalLocked
     totalAvailable
-    openInterest
     totalVolume
     totalExercised
+    totalCharged
+    totalFeesEarned
+    openInterest
     uniqueTrades
     uniqueOptions
     uniqueExercises
@@ -59,14 +62,18 @@ export const Pool = gql`
     cLevel64x64
 
     totalDeposited
+    totalWithdrawn
     totalLocked
     totalAvailable
-    openInterest
     totalVolume
     totalExercised
+    totalCharged
+    totalFeesEarned
+    openInterest
     uniqueTrades
     uniqueOptions
     uniqueExercises
+    uniqueReassignments
     uniqueDeposits
     uniqueWithdrawals
   }
@@ -97,11 +104,14 @@ export const Option = gql`
     maturity
 
     lastTradePrice
+    lastTradeFee
     lastTradeSize
     lastTradeTimestamp
-    openInterest
     totalVolume
     totalExercised
+    totalCharged
+    totalFeesEarned
+    openInterest
     uniqueTrades
     uniqueExercises
   }
@@ -119,9 +129,12 @@ export const UserOwnedOption = gql`
     size
 
     lastTradePrice
+    lastTradeFee
     lastTradeSize
     lastTradeTimestamp
     totalExercised
+    totalSpent
+    totalFeesPaid
   }
 `;
 
@@ -155,5 +168,17 @@ export const UserOwnedPool = gql`
     lastWithdrawalTimestamp
     totalDeposited
     totalWithdrawn
+    totalLocked
+    totalAvailable
+    totalVolume
+    totalAssigned
+    totalPremiumsEarned
+    totalReassignmentFees
+    openInterest
+    uniqueUnderwrites
+    uniqueAssignments
+    uniqueReassignments
+    uniqueDeposits
+    uniqueWithdrawals
   }
 `;

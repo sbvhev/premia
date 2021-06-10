@@ -49,8 +49,8 @@ export const DAI: { [chainId in ChainId | 56]: Token } = {
     name: 'Dai Stablecoin',
   },
   [ChainId.RINKEBY]: {
-    id: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
-    address: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
+    id: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
+    address: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
@@ -116,51 +116,6 @@ export const WETH: { [chainId in ChainId | 56]: Token } = {
     name: 'Wrapped Ether',
   },
   56: WBNB,
-};
-
-export const WBTC: { [chainId in ChainId | 56]: Token } = {
-  [ChainId.MAINNET]: {
-    id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    decimals: 8,
-    symbol: 'WBTC',
-    name: 'Wrapped BTC',
-  },
-  [ChainId.RINKEBY]: {
-    id: '0x577d296678535e4903d59a4c929b718e1d575e0a',
-    address: '0x577d296678535e4903d59a4c929b718e1d575e0a',
-    decimals: 8,
-    symbol: 'WBTC',
-    name: 'Wrapped BTC',
-  },
-  [ChainId.ROPSTEN]: {
-    id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    decimals: 8,
-    symbol: 'WBTC',
-    name: 'Wrapped BTC',
-  },
-  [ChainId.GÖRLI]: {
-    id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    decimals: 8,
-    symbol: 'WBTC',
-    name: 'Wrapped BTC',
-  },
-  [ChainId.KOVAN]: {
-    id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    decimals: 8,
-    symbol: 'WBTC',
-    name: 'Wrapped BTC',
-  },
-  56: {
-    id: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
-    address: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
-    decimals: 8,
-    symbol: 'BTCB',
-    name: 'Binance-Peg BTC',
-  },
 };
 
 export const defaultSwapPath = (
