@@ -4,22 +4,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ChainId } from '@uniswap/sdk';
 import { Wallet } from 'bnc-onboard/dist/src/interfaces';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
-import { Contract, ContractCall } from 'ethers-multicall';
+// import { formatEther, formatUnits } from 'ethers/lib/utils';
+// import { Contract, ContractCall } from 'ethers-multicall';
 import { ethers } from 'ethers';
 import { get } from 'lodash';
 
-import { UNISWAP_FACTORY, wallets, WETH, WBNB, DAI } from '../../constants';
-import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
-import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
+import {
+  /* UNISWAP_FACTORY, */ wallets,
+  WETH,
+  WBNB,
+  DAI,
+} from '../../constants';
+// import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
+// import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
 import {
   getPrice,
   get24HourPriceChange,
-  useBlockNumber,
+  // useBlockNumber,
   usePrices,
   usePriceChanges,
 } from 'state/application/hooks';
-import { useAllTokens, useDebounce, useIsWindowVisible } from 'hooks';
+import { /* useAllTokens, */ useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
 import { Token } from 'web3/tokens';
@@ -30,7 +35,7 @@ import {
   updateTokenPrices,
   updateTokenPriceChanges,
   setWeb3Settings,
-  TokenPriceUpdate,
+  // TokenPriceUpdate,
 } from './actions';
 
 const assetList = [
@@ -61,10 +66,10 @@ export default function Updater(): null {
   const dispatch = useDispatch();
   const location = useLocation();
   const windowVisible = useIsWindowVisible();
-  const latestBlockNumber = useBlockNumber();
+  // const latestBlockNumber = useBlockNumber();
   const priceChanges = usePriceChanges();
   const prices = usePrices();
-  const tokens = useAllTokens();
+  // const tokens = useAllTokens();
   const dark = useIsDarkMode();
 
   const {
@@ -76,7 +81,7 @@ export default function Updater(): null {
     account,
     wallet,
     blockNumber,
-    multicallProvider,
+    // multicallProvider,
   } = useSelector<AppState, AppState['application']>(
     (state) => state.application,
   );
@@ -190,87 +195,6 @@ export default function Updater(): null {
   }, [web3, location, signer, contracts, state.hasRequestedAccounts, dispatch]);
 
   useEffect(() => {
-    if (!signer || !web3 || !tokens.length || !chainId || !multicallProvider)
-      return;
-
-    // Update price every 20 blocks
-    if (
-      (!latestBlockNumber || latestBlockNumber % 20 !== 0) &&
-      prices[comparisonToken.symbol]
-    )
-      return;
-
-    (async () => {
-      const uniswapFactory = new Contract(
-        UNISWAP_FACTORY[chainId],
-        UniswapV2FactoryAbi.abi,
-      );
-
-      const tokenList = [
-        ...tokens.filter(
-          (el) =>
-            el.address.toLowerCase() !== comparisonToken.address.toLowerCase(),
-        ),
-        baseToken,
-      ];
-
-      const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH';
-      const comparisonTokenUsdPrice = await getPrice(
-        chainId === 56 ? 'wbnb' : 'ethereum',
-      );
-      const tokenPrices: TokenPriceUpdate[] = [
-        { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
-        { key: comparisonTokenName, value: comparisonTokenUsdPrice },
-      ];
-
-      const lpAddresses = await multicallProvider.all(
-        tokenList.map((el) =>
-          uniswapFactory.getPair(comparisonToken.address, el.address),
-        ),
-      );
-
-      const calls: ContractCall[] = lpAddresses.map((address: string) => {
-        const lpContract = new Contract(address, UniswapV2PairAbi.abi);
-        return lpContract.getReserves();
-      });
-
-      const results = await multicallProvider.all(calls);
-
-      for (let i = 0; i < tokenList.length; i++) {
-        const tokensPerComparisonToken =
-          parseInt(comparisonToken.address) < parseInt(tokenList[i].address)
-            ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
-              Number(formatEther(results[i][0]))
-            : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
-              Number(formatEther(results[i][1]));
-
-        const tokenUsdPrice =
-          comparisonTokenUsdPrice / tokensPerComparisonToken;
-
-        tokenPrices.push({
-          key: tokenList[i].symbol,
-          value: tokenUsdPrice,
-        });
-      }
-
-      dispatch(updateTokenPrices(tokenPrices));
-    })();
-  }, [
-    baseToken,
-    comparisonToken,
-    latestBlockNumber,
-    prices,
-    dispatch,
-    tokens,
-    account,
-    web3,
-    chainId,
-    signer,
-    multicallProvider,
-    contracts,
-  ]);
-
-  useEffect(() => {
     if (_onboard) return;
 
     if (location.pathname === '/') return;
@@ -348,6 +272,87 @@ export default function Updater(): null {
       _onboard.walletSelect(previouslySelectedWallet);
     }
   }, [_onboard, dispatch, web3]);
+
+  // useEffect(() => {
+  //   if (!signer || !web3 || !tokens.length || !chainId || !multicallProvider)
+  //     return;
+
+  //   // Update price every 20 blocks
+  //   if (
+  //     (!latestBlockNumber || latestBlockNumber % 20 !== 0) &&
+  //     prices[comparisonToken.symbol]
+  //   )
+  //     return;
+
+  //   (async () => {
+  //     const uniswapFactory = new Contract(
+  //       UNISWAP_FACTORY[chainId],
+  //       UniswapV2FactoryAbi.abi,
+  //     );
+
+  //     const tokenList = [
+  //       ...tokens.filter(
+  //         (el) =>
+  //           el.address.toLowerCase() !== comparisonToken.address.toLowerCase(),
+  //       ),
+  //       baseToken,
+  //     ];
+
+  //     const comparisonTokenName = chainId === 56 ? 'BNB' : 'ETH';
+  //     const comparisonTokenUsdPrice = await getPrice(
+  //       chainId === 56 ? 'wbnb' : 'ethereum',
+  //     );
+  //     const tokenPrices: TokenPriceUpdate[] = [
+  //       { key: `W${comparisonTokenName}`, value: comparisonTokenUsdPrice },
+  //       { key: comparisonTokenName, value: comparisonTokenUsdPrice },
+  //     ];
+
+  //     const lpAddresses = await multicallProvider.all(
+  //       tokenList.map((el) =>
+  //         uniswapFactory.getPair(comparisonToken.address, el.address),
+  //       ),
+  //     );
+
+  //     const calls: ContractCall[] = lpAddresses.map((address: string) => {
+  //       const lpContract = new Contract(address, UniswapV2PairAbi.abi);
+  //       return lpContract.getReserves();
+  //     });
+
+  //     const results = await multicallProvider.all(calls);
+
+  //     for (let i = 0; i < tokenList.length; i++) {
+  //       const tokensPerComparisonToken =
+  //         parseInt(comparisonToken.address) < parseInt(tokenList[i].address)
+  //           ? Number(formatUnits(results[i][1], tokenList[i].decimals)) /
+  //             Number(formatEther(results[i][0]))
+  //           : Number(formatUnits(results[i][0], tokenList[i].decimals)) /
+  //             Number(formatEther(results[i][1]));
+
+  //       const tokenUsdPrice =
+  //         comparisonTokenUsdPrice / tokensPerComparisonToken;
+
+  //       tokenPrices.push({
+  //         key: tokenList[i].symbol,
+  //         value: tokenUsdPrice,
+  //       });
+  //     }
+
+  //     dispatch(updateTokenPrices(tokenPrices));
+  //   })();
+  // }, [
+  //   baseToken,
+  //   comparisonToken,
+  //   latestBlockNumber,
+  //   prices,
+  //   dispatch,
+  //   tokens,
+  //   account,
+  //   web3,
+  //   chainId,
+  //   signer,
+  //   multicallProvider,
+  //   contracts,
+  // ]);
 
   useEffect(() => {
     let geckoFetch: any;

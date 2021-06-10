@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Button, Typography, Modal, Box } from '@material-ui/core';
+import { Button, Typography, Modal, Box, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useWeb3 } from 'state/application/hooks';
@@ -295,102 +295,112 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer size='md'>
-        <Box className={classes.wrapper}>
-          <Box className={classes.borderedCard}>
-            <Box className={classes.titleBox}>
-              <Box height={16}>
-                <UnderlyingIcon />
-              </Box>
-              <Typography
-                component='h2'
-                color='textPrimary'
-                className={classes.title}
-              >
-                {call
-                  ? `${activePool?.underlying.symbol} Call pool ${type}`
-                  : `${activePool?.underlying.symbol} Put pool ${type}`}
-              </Typography>
-            </Box>
-            <Box className={classes.topSection}>
-              <Box className={classes.col}>
-                <Box
-                  className={classes.horizontalBox}
-                  style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer size='md'>
+          <Box className={classes.wrapper}>
+            <Box className={classes.borderedCard}>
+              <Box className={classes.titleBox}>
+                <Box height={16}>
+                  <UnderlyingIcon />
+                </Box>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.title}
                 >
-                  <Typography
-                    component='p'
-                    color='textPrimary'
-                    className={classes.elementHeader}
+                  {call
+                    ? `${activePool?.underlying.symbol} Call pool ${type}`
+                    : `${activePool?.underlying.symbol} Put pool ${type}`}
+                </Typography>
+              </Box>
+              <Box className={classes.topSection}>
+                <Box className={classes.col}>
+                  <Box
+                    className={classes.horizontalBox}
+                    style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
                   >
-                    {activeToken?.symbol} Amount
-                  </Typography>
-                  <Typography
-                    component='p'
-                    color='textSecondary'
-                    className={classes.smallInfoText}
+                    <Typography
+                      component='p'
+                      color='textPrimary'
+                      className={classes.elementHeader}
+                    >
+                      {activeToken?.symbol} Amount
+                    </Typography>
+                    <Typography
+                      component='p'
+                      color='textSecondary'
+                      className={classes.smallInfoText}
+                    >
+                      Max size available:
+                      <b>{formatCompact(activeBalance)}</b>
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    width='100%'
+                    height='46px'
+                    style={{ position: 'relative' }}
                   >
-                    Max size available:
-                    <b>{formatCompact(activeBalance)}</b>
-                  </Typography>
+                    <input
+                      value={value}
+                      onChange={(event: any) => setValue(event.target.value)}
+                      className={classes.borderedInput}
+                    />
+
+                    {call ? (
+                      <UnderlyingIcon className={classes.inputIcon} />
+                    ) : (
+                      <BaseIcon className={classes.inputIcon} />
+                    )}
+
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      className={classes.maxButton}
+                      onClick={() => setValue(Number(activeBalance || 0))}
+                    >
+                      MAX
+                    </Button>
+                  </Box>
                 </Box>
 
                 <Box
-                  width='100%'
-                  height='46px'
-                  style={{ position: 'relative' }}
+                  className={classes.horizontalBox}
+                  style={{ marginTop: '16px' }}
                 >
-                  <input
-                    value={value}
-                    onChange={(event: any) => setValue(event.target.value)}
-                    className={classes.borderedInput}
-                  />
-
-                  {call ? (
-                    <UnderlyingIcon className={classes.inputIcon} />
-                  ) : (
-                    <BaseIcon className={classes.inputIcon} />
-                  )}
-
                   <Button
-                    color='primary'
-                    variant='outlined'
-                    size='small'
-                    className={classes.maxButton}
-                    onClick={() => setValue(Number(activeBalance || 0))}
+                    fullWidth
+                    disabled={Number(value) <= 0}
+                    color={call ? 'primary' : 'secondary'}
+                    variant='contained'
+                    size='large'
+                    onClick={() =>
+                      isAmountAllowed ? handleWithdrawDeposit() : onApprove()
+                    }
                   >
-                    MAX
+                    {isAmountAllowed
+                      ? `Confirm`
+                      : `Approve ${activeToken?.symbol}`}
                   </Button>
                 </Box>
               </Box>
-
-              <Box
-                className={classes.horizontalBox}
-                style={{ marginTop: '16px' }}
-              >
-                <Button
-                  fullWidth
-                  disabled={Number(value) <= 0}
-                  color={call ? 'primary' : 'secondary'}
-                  variant='contained'
-                  size='large'
-                  onClick={() =>
-                    isAmountAllowed ? handleWithdrawDeposit() : onApprove()
-                  }
-                >
-                  {isAmountAllowed
-                    ? `Confirm`
-                    : `Approve ${activeToken?.symbol}`}
-                </Button>
-              </Box>
+            </Box>
+            <Box onClick={onClose} className={classes.exitContainer}>
+              <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
             </Box>
           </Box>
-          <Box onClick={onClose} className={classes.exitContainer}>
-            <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
-          </Box>
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };
