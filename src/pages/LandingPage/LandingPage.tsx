@@ -345,6 +345,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
+    '& $rightSideImage': {
+      backgroundImage: `url("${TradeOptionsSVGBackground}")`,
+    },
+
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -356,6 +360,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
+    '& $rightSideImage': {
+      backgroundImage: `url("${VaultsBasicSVGBackground}")`,
+    },
+
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -365,6 +373,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 0,
+
+    '& $rightSideImage': {
+      backgroundImage: `url("${VaultsProSVGBackground}")`,
+    },
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
@@ -412,7 +424,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     backgroundRepeat: 'no-repeat',
     backgroundColor: 'black',
     position: 'absolute',
-    top:0,
+    top: 0,
     right: 0,
     transition: 'all 1s ease',
 
@@ -1069,7 +1081,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 'calc(100vh - 400px)',
       top: 200,
       bottom: 200,
-      left: 0
+      left: 0,
     },
 
     '& $rightSideImage': {
@@ -1145,7 +1157,7 @@ const LandingPage: React.FC = () => {
   const theme = useTheme();
   const history = useHistory();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrollPos,setScrollPos] = useState(0);
+  const [scrollPos, setScrollPos] = useState(0);
   const [currentNav, setCurrentNav] = useState('');
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const preventDefault = (event: React.SyntheticEvent) =>
@@ -1504,38 +1516,40 @@ const LandingPage: React.FC = () => {
               </Box>
             </Box>
           </ScrollAnimation>
-          {!mobile && (<Box className={classes.stickyImages}>
-            <Box>
-              <Box
-                style={{
-                  height: '100vh',
-                  position: 'relative',
-                }}
-              >
+          {!mobile && (
+            <Box className={classes.stickyImages}>
+              <Box>
                 <Box
-                  className={classes.rightSideImage}
-                  onClick={() => {
-                    history.push('/options');
+                  style={{
+                    height: '100vh',
+                    position: 'relative',
                   }}
-                  style={{ opacity: scrollPos > 200 ? 1 : 0}}
-                ></Box>
-                <Box
-                  className={classes.rightSideImage}
-                  onClick={() => {
-                    history.push('/vaults?tab=basic');
-                  }}
-                  style={{ opacity: scrollPos > 900 ? 1 : 0}}
-                ></Box>
-                <Box
-                  className={classes.rightSideImage}
-                  onClick={() => {
-                    history.push('/vaults?tab=pro');
-                  }}
-                  style={{ opacity: scrollPos > 1600 ? 1 : 0}}
-                ></Box>
+                >
+                  <Box
+                    className={classes.rightSideImage}
+                    onClick={() => {
+                      history.push('/options');
+                    }}
+                    style={{ opacity: scrollPos > 200 ? 1 : 0 }}
+                  ></Box>
+                  <Box
+                    className={classes.rightSideImage}
+                    onClick={() => {
+                      history.push('/vaults?tab=basic');
+                    }}
+                    style={{ opacity: scrollPos > 900 ? 1 : 0 }}
+                  ></Box>
+                  <Box
+                    className={classes.rightSideImage}
+                    onClick={() => {
+                      history.push('/vaults?tab=pro');
+                    }}
+                    style={{ opacity: scrollPos > 1600 ? 1 : 0 }}
+                  ></Box>
+                </Box>
               </Box>
             </Box>
-          </Box>)}
+          )}
         </Box>
       </Container>
       <Box className={classes.learnMore} id='learn-more'>
