@@ -7,8 +7,10 @@ import {
   ThemeProvider as MuiThemeProvider,
   CssBaseline,
 } from '@material-ui/core';
+import { ParallaxProvider } from 'react-scroll-parallax';
 
 import 'react-calendar/dist/Calendar.css';
+import 'animate.css/animate.css';
 
 import { useModalOpen, useCloseModals } from './state/application/hooks';
 import { ApplicationModal } from './state/application/actions';
@@ -115,21 +117,23 @@ const Providers: React.FC = ({ children }) => {
   });
 
   return (
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Suspense fallback={null}>
-          <StateProvider store={store}>
-            <StateUpdaters />
+    <ParallaxProvider>
+      <ApolloProvider client={client}>
+        <BrowserRouter>
+          <Suspense fallback={null}>
+            <StateProvider store={store}>
+              <StateUpdaters />
 
-            <ThemeProvider>
-              <CssBaseline />
-              <TopLevelModals />
-              {children}
-            </ThemeProvider>
-          </StateProvider>
-        </Suspense>
-      </BrowserRouter>
-    </ApolloProvider>
+              <ThemeProvider>
+                <CssBaseline />
+                <TopLevelModals />
+                {children}
+              </ThemeProvider>
+            </StateProvider>
+          </Suspense>
+        </BrowserRouter>
+      </ApolloProvider>
+    </ParallaxProvider>
   );
 };
 

@@ -12,7 +12,10 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
+import ScrollAnimation from 'react-animate-on-scroll';
+import { Parallax } from 'react-scroll-parallax';
 import cn from 'classnames';
+import { throttle } from 'lodash';
 import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as PremiaLogo } from 'assets/svg/Logo.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
@@ -99,6 +102,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         },
       },
     },
+
+    '& figure': {
+      margin: 'auto 0',
+    },
   },
   container: {
     border: 'none',
@@ -138,7 +145,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   appBar: {
-    background: 'black',
+    background: 'rgba(18, 18, 29, 0.3)',
+    backdropFilter: 'blur(8px)',
     top: 0,
     position: 'fixed',
     width: '100%',
@@ -157,12 +165,32 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('md')]: {
       padding: 0,
     },
+
+    '&$selected': {
+      color: '#5294FF',
+      position: 'relative',
+
+      '&:after': {
+        content: "''",
+        position: 'absolute',
+        width: '100%',
+        height: 2,
+        background: '#5294FF',
+        left: 0,
+        bottom: -24,
+      },
+    },
   },
+  selected: {},
   topSection: {
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
     position: 'relative',
+
+    [breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
   topSectionRight: {
     '& iframe': {
@@ -176,8 +204,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.down('sm')]: {
       width: '100%',
-      position: 'absolute',
-      height: '100%',
+      position: 'relative',
+      height: 260,
       top: 0,
       left: 0,
       opacity: 0.6,
@@ -209,7 +237,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: '51px',
     fontWeight: 700,
     background:
-      '-webkit-linear-gradient(-55deg, #FFFFFF 0%, #5294FF 67%, #EB4A97 88%)',
+      '-webkit-linear-gradient(-61deg, #FFFFFF 0%, #5294FF 59%, #EB4A97 130%)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
     marginBottom: 21,
@@ -309,20 +337,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       position: 'relative',
       padding: '20px 0',
     },
-
-    '& svg': {
-      '&:first-of-type': {
-        left: -20,
-        top: 0,
-        position: 'absolute',
-      },
-
-      '&:last-of-type': {
-        position: 'absolute',
-        right: -20,
-        bottom: -60,
-      },
-    },
   },
   tradeOptions: {
     display: 'flex',
@@ -330,10 +344,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'space-between',
     marginBottom: 180,
     position: 'relative',
-
-    '& $rightSideImage': {
-      backgroundImage: `url("${TradeOptionsSVGBackground}")`,
-    },
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
@@ -346,10 +356,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
-    '& $rightSideImage': {
-      backgroundImage: `url("${VaultsBasicSVGBackground}")`,
-    },
-
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -359,10 +365,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 0,
-
-    '& $rightSideImage': {
-      backgroundImage: `url("${VaultsProSVGBackground}")`,
-    },
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
@@ -403,12 +405,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   rightSideImage: {
-    width: '45%',
-    height: 410,
-    position: 'relative',
-    backgroundSize: 'contain',
+    width: '100%',
+    height: 450,
+    backgroundSize: 'auto 100%',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    backgroundColor: 'black',
+    position: 'absolute',
+    top:0,
+    right: 0,
+    transition: 'all 1s ease',
 
     '& svg:first-of-type': {
       zIndex: 300000,
@@ -417,6 +423,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('sm')]: {
       width: '100%',
       height: 300,
+      position: 'relative',
+      right: 0,
+      backgroundPosition: 'center',
 
       '& svg': {
         width: '100%',
@@ -428,6 +437,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'relative',
     width: '45%',
     paddingLeft: 74,
+    height: 450,
 
     '& > svg': {
       position: 'absolute',
@@ -1003,6 +1013,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'absolute',
     right: 0,
     top: 676,
+    marginRight: 0,
   },
   consetellationFour: {
     position: 'absolute',
@@ -1044,6 +1055,35 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& svg': {
       margin: 'auto 8px',
+    },
+  },
+  stickyImages: {
+    position: 'absolute',
+    width: '55%',
+    top: 0,
+    right: 0,
+    height: '100%',
+
+    '& > div': {
+      position: 'sticky',
+      height: 'calc(100vh - 400px)',
+      top: 200,
+      bottom: 200,
+      left: 0
+    },
+
+    '& $rightSideImage': {
+      '&:first-of-type': {
+        backgroundImage: `url("${TradeOptionsSVGBackground}")`,
+      },
+
+      '&:nth-of-type(2)': {
+        backgroundImage: `url("${VaultsBasicSVGBackground}")`,
+      },
+
+      '&:last-of-type': {
+        backgroundImage: `url("${VaultsProSVGBackground}")`,
+      },
     },
   },
   mobileMenu: {
@@ -1095,6 +1135,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
   },
+  sectionImages: {
+    position: 'relative',
+  },
 }));
 
 const LandingPage: React.FC = () => {
@@ -1102,6 +1145,8 @@ const LandingPage: React.FC = () => {
   const theme = useTheme();
   const history = useHistory();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollPos,setScrollPos] = useState(0);
+  const [currentNav, setCurrentNav] = useState('');
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const preventDefault = (event: React.SyntheticEvent) =>
     event.preventDefault();
@@ -1109,6 +1154,26 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     setMenuOpen(false);
   }, [mobile]);
+
+  const listener = (e: any) => {
+    if (window.scrollY > 400 && window.scrollY < 2000) {
+      setCurrentNav('Explore Premia');
+    } else if (window.scrollY > 2700 && window.scrollY < 3100) {
+      setCurrentNav('Architecture');
+    } else if (window.scrollY > 3600 && window.scrollY < 4300) {
+      setCurrentNav('Our Values');
+    } else {
+      setCurrentNav('');
+    }
+    setScrollPos(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', throttle(listener, 100));
+    return () => {
+      window.removeEventListener('scroll', throttle(listener, 100));
+    };
+  });
 
   return (
     <Grid container className={classes.mainContainer}>
@@ -1131,7 +1196,12 @@ const LandingPage: React.FC = () => {
                   offset='100'
                   onClick={preventDefault}
                 >
-                  <Typography className={classes.menuItem}>
+                  <Typography
+                    className={cn(
+                      currentNav === 'Explore Premia' ? classes.selected : '',
+                      classes.menuItem,
+                    )}
+                  >
                     Explore Premia
                   </Typography>
                 </AnchorLink>
@@ -1140,16 +1210,26 @@ const LandingPage: React.FC = () => {
                   href='#definative-architecture'
                   onClick={preventDefault}
                 >
-                  <Typography className={classes.menuItem}>
+                  <Typography
+                    className={cn(
+                      currentNav === 'Architecture' ? classes.selected : '',
+                      classes.menuItem,
+                    )}
+                  >
                     Architecture
                   </Typography>
                 </AnchorLink>
                 <AnchorLink
                   href='#our-values'
-                  offset='400'
+                  offset='200'
                   onClick={preventDefault}
                 >
-                  <Typography className={classes.menuItem}>
+                  <Typography
+                    className={cn(
+                      currentNav === 'Our Values' ? classes.selected : '',
+                      classes.menuItem,
+                    )}
+                  >
                     Our Values
                   </Typography>
                 </AnchorLink>
@@ -1230,7 +1310,16 @@ const LandingPage: React.FC = () => {
         </Box>
       )}
       <Container className={classes.body}>
-        {!mobile && <Consetellation className={classes.consetellation} />}
+        {!mobile && (
+          <Parallax
+            className={classes.consetellation}
+            y={[0, 0]}
+            x={[-30, 30]}
+            tagOuter='figure'
+          >
+            <Consetellation />
+          </Parallax>
+        )}
         <Box className={classes.topSection} id='hero'>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
@@ -1252,137 +1341,209 @@ const LandingPage: React.FC = () => {
             <iframe src='./iframe.html' title='top right image'></iframe>
           </Box>
         </Box>
-        {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
-        <Box className={classes.explorePremia} id='explore-premia'>
-          {mobile && <ConsetellationMobileOne />}
-          <Typography className={classes.gradientSubTitle}>
-            Explore Premia
-          </Typography>
-          <Typography className={classes.subTitle}>
-            A game changing and intuitive take on decentralized options
-          </Typography>
-          {mobile && <ConsetellationMobileTwo />}
-        </Box>
         {!mobile && (
-          <ConsetellationThree className={classes.consetellationThree} />
+          <Parallax
+            className={classes.consetellationTwo}
+            y={[-50, 50]}
+            x={[0, 0]}
+            tagOuter='figure'
+          >
+            <ConsetellationTwo />
+          </Parallax>
         )}
-        <Box className={classes.tradeOptions}>
-          <Box className={classes.leftSide}>
-            <LandingTradingIcon />
-            <Box className={classes.divider}></Box>
-            <Typography className={classes.white}>Trade Options</Typography>
-            <Typography
-              className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
-            >
-              Buy and sell options using Premia’s state of the art automated
-              peer-to-pool market making algorithm.
+        <ScrollAnimation delay={1} duration={1} animateIn='fadeIn'>
+          <Box className={classes.explorePremia} id='explore-premia'>
+            {mobile && (
+              <Parallax
+                y={[-30, 30]}
+                x={[0, 0]}
+                tagOuter='figure'
+                styleOuter={{ left: -20, top: 0, position: 'absolute' }}
+              >
+                <ConsetellationMobileOne />
+              </Parallax>
+            )}
+            <Typography className={classes.gradientSubTitle}>
+              Explore Premia
             </Typography>
-            {mobile && <Box className={classes.rightSideImage}></Box>}
-            <Button
-              variant='outlined'
-              color='primary'
-              className={classes.outlinedButton}
-              onClick={() => {
-                history.push('/options');
-              }}
-            >
-              Trade Options
-            </Button>
-          </Box>
-          {!mobile && (
-            <Box
-              className={classes.rightSideImage}
-              onClick={() => {
-                history.push('/options');
-              }}
-            ></Box>
-          )}
-          {mobile && (
-            <ConsetellationMobileThree
-              style={{ position: 'absolute', right: -20, bottom: -70 }}
-            />
-          )}
-        </Box>
-        <Box className={classes.earnYield}>
-          <Box className={classes.leftSide}>
-            <LandingYieldIcon />
-            <Box className={classes.divider}></Box>
-            <Typography className={classes.white}>Earn Yield</Typography>
-            <Typography
-              className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
-            >
-              Earn top of the market yield on your favorite DeFi assets by
-              underwriting on-chain options and other baskets of structured
-              finance products.
-            </Typography>
-            {mobile && <Box className={classes.rightSideImage}></Box>}
-            <Button
-              variant='outlined'
-              color='primary'
-              className={classes.outlinedButton}
-              onClick={() => {
-                history.push('/vaults?tab=basic');
-              }}
-            >
-              Earn Yield
-            </Button>
-          </Box>
-          {!mobile && (
-            <Box
-              className={classes.rightSideImage}
-              onClick={() => {
-                history.push('/vaults?tab=basic');
-              }}
-            ></Box>
-          )}
-          {mobile && (
-            <ConsetellationMobileFour
-              style={{ position: 'absolute', left: -20, bottom: -15 }}
-            />
-          )}
-        </Box>
-        <Box className={classes.hedgeRisks}>
-          <Box className={classes.leftSide}>
-            <LandingHedgeIcon />
-            <Box className={classes.divider}></Box>
-            <Typography className={classes.white}>Hedge Risks</Typography>
-            <Typography
-              className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
-            >
-              Protect your assets against market volatility, insure your gains.
+            <Typography className={classes.subTitle}>
+              A game changing and intuitive take on decentralized options
             </Typography>
             {mobile && (
-              <Box className={classes.rightSideImage}>
-                {!mobile && (
-                  <ConsetellationFour className={classes.consetellationFour} />
-                )}
-              </Box>
+              <Parallax
+                y={[-30, 30]}
+                x={[0, 0]}
+                tagOuter='figure'
+                styleOuter={{ position: 'absolute', right: -20, bottom: -60 }}
+              >
+                <ConsetellationMobileTwo />
+              </Parallax>
             )}
-            <Button
-              variant='outlined'
-              color='primary'
-              className={classes.outlinedButton}
-              onClick={() => {
-                history.push('/vaults?tab=pro');
-              }}
-            >
-              Protect Assets
-            </Button>
           </Box>
-          {!mobile && (
-            <Box
-              className={classes.rightSideImage}
-              onClick={() => {
-                history.push('/vaults?tab=pro');
-              }}
-            >
-              <ConsetellationFour className={classes.consetellationFour} />
+        </ScrollAnimation>
+        {!mobile && (
+          <Parallax
+            className={classes.consetellationThree}
+            y={[-50, 50]}
+            x={[0, 0]}
+            tagOuter='figure'
+          >
+            <ConsetellationThree />
+          </Parallax>
+        )}
+        <Box className={classes.sectionImages}>
+          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+            <Box className={classes.tradeOptions}>
+              <Box className={classes.leftSide}>
+                <LandingTradingIcon />
+                <Box className={classes.divider}></Box>
+                <Typography className={classes.white}>Trade Options</Typography>
+                <Typography
+                  className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
+                >
+                  Buy and sell options using Premia’s state of the art automated
+                  peer-to-pool market making algorithm.
+                </Typography>
+                {mobile && <Box className={classes.rightSideImage}></Box>}
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  className={classes.outlinedButton}
+                  onClick={() => {
+                    history.push('/options');
+                  }}
+                >
+                  Trade Options
+                </Button>
+              </Box>
+              {mobile && (
+                <Parallax
+                  y={[-30, 30]}
+                  x={[0, 0]}
+                  tagOuter='figure'
+                  styleOuter={{ position: 'absolute', right: -20, bottom: -70 }}
+                >
+                  <ConsetellationMobileThree />
+                </Parallax>
+              )}
             </Box>
-          )}
+          </ScrollAnimation>
+          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+            <Box className={classes.earnYield}>
+              <Box className={classes.leftSide}>
+                <LandingYieldIcon />
+                <Box className={classes.divider}></Box>
+                <Typography className={classes.white}>Earn Yield</Typography>
+                <Typography
+                  className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
+                >
+                  Earn top of the market yield on your favorite DeFi assets by
+                  underwriting on-chain options and other baskets of structured
+                  finance products.
+                </Typography>
+                {mobile && <Box className={classes.rightSideImage}></Box>}
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  className={classes.outlinedButton}
+                  onClick={() => {
+                    history.push('/vaults?tab=basic');
+                  }}
+                >
+                  Earn Yield
+                </Button>
+              </Box>
+              {mobile && (
+                <Parallax
+                  y={[-50, 50]}
+                  x={[0, 0]}
+                  tagOuter='figure'
+                  styleOuter={{ position: 'absolute', left: -20, bottom: -15 }}
+                >
+                  <ConsetellationMobileFour />
+                </Parallax>
+              )}
+            </Box>
+          </ScrollAnimation>
+          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+            <Box className={classes.hedgeRisks}>
+              <Box className={classes.leftSide}>
+                <LandingHedgeIcon />
+                <Box className={classes.divider}></Box>
+                <Typography className={classes.white}>Hedge Risks</Typography>
+                <Typography
+                  className={cn(classes.subTitle, classes.tradeOptionsSubTitle)}
+                >
+                  Protect your assets against market volatility, insure your
+                  gains.
+                </Typography>
+                {mobile && (
+                  <Box className={classes.rightSideImage}>
+                    {!mobile && (
+                      <Parallax
+                        className={classes.consetellationFour}
+                        y={[-50, 50]}
+                        x={[0, 0]}
+                        tagOuter='figure'
+                      >
+                        <ConsetellationFour />
+                      </Parallax>
+                    )}
+                  </Box>
+                )}
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  className={classes.outlinedButton}
+                  onClick={() => {
+                    history.push('/vaults?tab=pro');
+                  }}
+                >
+                  Protect Assets
+                </Button>
+              </Box>
+            </Box>
+          </ScrollAnimation>
+          {!mobile && (<Box className={classes.stickyImages}>
+            <Box>
+              <Box
+                style={{
+                  height: '100vh',
+                  position: 'relative',
+                }}
+              >
+                <Box
+                  className={classes.rightSideImage}
+                  onClick={() => {
+                    history.push('/options');
+                  }}
+                  style={{ opacity: scrollPos > 200 ? 1 : 0}}
+                ></Box>
+                <Box
+                  className={classes.rightSideImage}
+                  onClick={() => {
+                    history.push('/vaults?tab=basic');
+                  }}
+                  style={{ opacity: scrollPos > 900 ? 1 : 0}}
+                ></Box>
+                <Box
+                  className={classes.rightSideImage}
+                  onClick={() => {
+                    history.push('/vaults?tab=pro');
+                  }}
+                  style={{ opacity: scrollPos > 1600 ? 1 : 0}}
+                ></Box>
+              </Box>
+            </Box>
+          </Box>)}
         </Box>
       </Container>
       <Box className={classes.learnMore} id='learn-more'>
-        {!mobile && <ConsetellationSeven />}
+        {!mobile && (
+          <Parallax y={[-50, 50]} x={[0, 0]} tagOuter='figure'>
+            <ConsetellationSeven />
+          </Parallax>
+        )}
         <Container className={classes.body} style={{ zIndex: 3 }}>
           <Box className={classes.learnMoreBar}>
             <Box>
@@ -1407,52 +1568,68 @@ const LandingPage: React.FC = () => {
             )}
           </Box>
         </Container>
-        {!mobile && <ConsetellationSix />}
+        {!mobile && (
+          <Parallax y={[-50, 50]} x={[0, 0]} tagOuter='figure'>
+            <ConsetellationSix />
+          </Parallax>
+        )}
       </Box>
       <Container className={classes.body} id='definative-architecture'>
-        <Box className={classes.defiNative}>
-          {mobile && (
-            <ConsetellationMobileFive
-              style={{ position: 'absolute', left: -20, top: 14 }}
-            />
-          )}
-          {mobile && (
-            <ConsetellationMobileSix
-              style={{ position: 'absolute', left: -20, top: 600 }}
-            />
-          )}
-          <Typography className={classes.gradientSubTitle}>
-            A defi-native options architecture
-          </Typography>
-          <Box>
-            <Box className={classes.block}>
-              <MarketSensitivePricingIcon />
-              <Typography variant='h1'>Market Sensitive Pricing</Typography>
-              <Typography>
-                Our state of the art pricing model ensures fair pricing for
-                buyers and sellers based on the market's supply and demand
-              </Typography>
-            </Box>
-            <Box className={classes.block}>
-              <CrowdSourcedLearningIcon />
-              <Typography variant='h1'>Crowd-Sourced Learning</Typography>
-              <Typography>
-                We use a continuous on-chain reinforcement learning algorithm to
-                converge to the optimal market price and liquidity utilization
-                rate.
-              </Typography>
-            </Box>
-            <Box className={classes.block}>
-              <CapitalEfficientMarketIcon />
-              <Typography variant='h1'>Capital Efficient Markets</Typography>
-              <Typography>
-                Our highly capital efficient market ensures even less liquid
-                tokens converge to a fair market price, requiring the least
-                amount of capital.
-              </Typography>
+        <ScrollAnimation delay={1} duration={1} animateIn='fadeIn'>
+          <Box className={classes.defiNative}>
+            {mobile && (
+              <Parallax
+                y={[-50, 50]}
+                x={[0, 0]}
+                tagOuter='figure'
+                styleOuter={{ position: 'absolute', left: -20, top: 14 }}
+              >
+                <ConsetellationMobileFive />
+              </Parallax>
+            )}
+            {mobile && (
+              <Parallax
+                y={[-50, 50]}
+                x={[0, 0]}
+                tagOuter='figure'
+                styleOuter={{ position: 'absolute', left: -20, top: 600 }}
+              >
+                <ConsetellationMobileSix />
+              </Parallax>
+            )}
+            <Typography className={classes.gradientSubTitle}>
+              A defi-native options architecture
+            </Typography>
+            <Box>
+              <Box className={classes.block}>
+                <MarketSensitivePricingIcon />
+                <Typography variant='h1'>Market Sensitive Pricing</Typography>
+                <Typography>
+                  Our state of the art pricing model ensures fair pricing for
+                  buyers and sellers based on the market's supply and demand
+                </Typography>
+              </Box>
+              <Box className={classes.block}>
+                <CrowdSourcedLearningIcon />
+                <Typography variant='h1'>Crowd-Sourced Learning</Typography>
+                <Typography>
+                  We use a continuous on-chain reinforcement learning algorithm
+                  to converge to the optimal market price and liquidity
+                  utilization rate.
+                </Typography>
+              </Box>
+              <Box className={classes.block}>
+                <CapitalEfficientMarketIcon />
+                <Typography variant='h1'>Capital Efficient Markets</Typography>
+                <Typography>
+                  Our highly capital efficient market ensures even less liquid
+                  tokens converge to a fair market price, requiring the least
+                  amount of capital.
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </ScrollAnimation>
         <Box
           className={classes.learnMoreBar}
           style={{ marginBottom: !mobile ? 260 : 60 }}
@@ -1476,36 +1653,93 @@ const LandingPage: React.FC = () => {
           )}
         </Box>
         {!mobile && (
-          <ConsetellationEight className={classes.consetellationEight} />
+          <Parallax
+            className={classes.consetellationEight}
+            y={[-50, 50]}
+            x={[0, 0]}
+            tagOuter='figure'
+          >
+            <ConsetellationEight />
+          </Parallax>
         )}
         {!mobile && (
-          <ConsetellationNine className={classes.consetellationNine} />
+          <Parallax
+            className={classes.consetellationNine}
+            y={[-50, 50]}
+            x={[0, 0]}
+            tagOuter='figure'
+          >
+            <ConsetellationNine />
+          </Parallax>
         )}
-        <Box className={classes.decentralized}>
-          {!mobile && (
-            <ConsetellationTen className={classes.consetellationTen} />
-          )}
-          {mobile && (
-            <ConsetellationMobileSeven
-              style={{ position: 'absolute', left: -20, top: 156 }}
-            />
-          )}
-          <Box className={classes.ourValues} id='our-values'>
-            <Typography className={classes.gradientSubTitle}>
-              Our Values
-            </Typography>
-            <Typography className={classes.subTitle}>
-              Take part in discourse with a knowledgable and active network of
-              individuals. Explore open opportunities to take part in building
-              the next generation of decentralized finance
-            </Typography>
-          </Box>
-          <Box className={classes.gridIcon}>
-            <GridIcon className={classes.netIcon} />
-            <SmallLogoIcon className={classes.smallIcon} />
-            <SubtractIcon className={classes.subtractIcon} />
-            <ThreeCirclesIcon className={classes.threeCirclesIcon} />
+        <ScrollAnimation delay={1} duration={1} animateIn='fadeIn'>
+          <Box className={classes.decentralized} id='our-values'>
             {!mobile && (
+              <Parallax
+                className={classes.consetellationTen}
+                y={[-50, 50]}
+                x={[0, 0]}
+                tagOuter='figure'
+              >
+                <ConsetellationTen />
+              </Parallax>
+            )}
+            {mobile && (
+              <Parallax
+                className={classes.consetellationTen}
+                y={[-50, 50]}
+                x={[0, 0]}
+                tagOuter='figure'
+                styleOuter={{ position: 'absolute', left: -20, top: 156 }}
+              >
+                <ConsetellationMobileSeven />
+              </Parallax>
+            )}
+            <Box className={classes.ourValues}>
+              <Typography className={classes.gradientSubTitle}>
+                Our Values
+              </Typography>
+              <Typography className={classes.subTitle}>
+                Take part in discourse with a knowledgable and active network of
+                individuals. Explore open opportunities to take part in building
+                the next generation of decentralized finance
+              </Typography>
+            </Box>
+            <Box className={classes.gridIcon}>
+              <GridIcon className={classes.netIcon} />
+              <SmallLogoIcon className={classes.smallIcon} />
+              <SubtractIcon className={classes.subtractIcon} />
+              <ThreeCirclesIcon className={classes.threeCirclesIcon} />
+              {!mobile && (
+                <>
+                  <Box className={classes.keyIcon}>
+                    <img src={KeyIcon} alt='key' />
+                    <Typography className={classes.subTitle}>
+                      Enable universal access to best in class, decentralized
+                      financial products
+                    </Typography>
+                  </Box>
+                  <Box className={classes.rightTopLine}></Box>
+                  <Box className={classes.labIcon}>
+                    <img src={LabIcon} alt='lab' />
+                    <Typography className={classes.subTitle}>
+                      Build the next generation of financial infrastructure with
+                      permissionless access to everyone
+                    </Typography>
+                  </Box>
+                  <Box className={classes.rightCenterLine}></Box>
+                  <Box className={classes.coinIcon}>
+                    <img src={CoinIcon} alt='coin' />
+                    <Typography className={classes.subTitle}>
+                      Provide open access to state of the art research and
+                      innovation in decentralized finance
+                    </Typography>
+                  </Box>
+                  <Box className={classes.rightBottomLine}></Box>
+                </>
+              )}
+            </Box>
+            {mobile && (
               <>
                 <Box className={classes.keyIcon}>
                   <img src={KeyIcon} alt='key' />
@@ -1514,7 +1748,6 @@ const LandingPage: React.FC = () => {
                     financial products
                   </Typography>
                 </Box>
-                <Box className={classes.rightTopLine}></Box>
                 <Box className={classes.labIcon}>
                   <img src={LabIcon} alt='lab' />
                   <Typography className={classes.subTitle}>
@@ -1522,7 +1755,6 @@ const LandingPage: React.FC = () => {
                     permissionless access to everyone
                   </Typography>
                 </Box>
-                <Box className={classes.rightCenterLine}></Box>
                 <Box className={classes.coinIcon}>
                   <img src={CoinIcon} alt='coin' />
                   <Typography className={classes.subTitle}>
@@ -1530,36 +1762,10 @@ const LandingPage: React.FC = () => {
                     innovation in decentralized finance
                   </Typography>
                 </Box>
-                <Box className={classes.rightBottomLine}></Box>
               </>
             )}
           </Box>
-          {mobile && (
-            <>
-              <Box className={classes.keyIcon}>
-                <img src={KeyIcon} alt='key' />
-                <Typography className={classes.subTitle}>
-                  Enable universal access to best in class, decentralized
-                  financial products
-                </Typography>
-              </Box>
-              <Box className={classes.labIcon}>
-                <img src={LabIcon} alt='lab' />
-                <Typography className={classes.subTitle}>
-                  Build the next generation of financial infrastructure with
-                  permissionless access to everyone
-                </Typography>
-              </Box>
-              <Box className={classes.coinIcon}>
-                <img src={CoinIcon} alt='coin' />
-                <Typography className={classes.subTitle}>
-                  Provide open access to state of the art research and
-                  innovation in decentralized finance
-                </Typography>
-              </Box>
-            </>
-          )}
-        </Box>
+        </ScrollAnimation>
         <Box className={classes.learnMoreBar}>
           <Box>
             <Typography>
