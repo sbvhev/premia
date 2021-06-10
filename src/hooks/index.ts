@@ -14,4 +14,3 @@ export * from './useOutsideAlerter';
 export * from './useReferrer';
 export * from './useTransact';
 export * from './useWrapEther';
-export * from './useScript';

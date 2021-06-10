@@ -3,8 +3,7 @@
     "baseUrl": "./src",
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false,
-    "checkJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -19,6 +18,5 @@
     "jsx": "react-jsx",
     "downlevelIteration": true
   },
-  "include": ["src"],
-  "exclude": ["src/**/**/*.js"]
+  "include": ["src"]
 }
