@@ -21,11 +21,14 @@ export interface TokenPair {
   underlying: Token;
 
   totalDeposited: BigNumber;
+  totalWithdrawn: BigNumber;
   totalLocked: BigNumber;
   totalAvailable: BigNumber;
-  openInterest: BigNumber;
   totalVolume: BigNumber;
   totalExercised: BigNumber;
+  totalCharged: BigNumber;
+  totalFeesEarned: BigNumber;
+  openInterest: BigNumber;
   uniqueTrades: BigNumber;
   uniqueOptions: BigNumber;
   uniqueExercises: BigNumber;

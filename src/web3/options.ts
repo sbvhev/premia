@@ -21,25 +21,31 @@ export interface Option {
   maturity: string;
 
   lastTradePrice: BigNumber;
+  lastTradeFee: BigNumber;
   lastTradeSize: BigNumber;
   lastTradeTimestamp: BigNumber;
-  openInterest: BigNumber;
   totalVolume: BigNumber;
   totalExercised: BigNumber;
+  totalCharged: BigNumber;
+  totalFeesEarned: BigNumber;
+  openInterest: BigNumber;
   uniqueTrades: BigNumber;
   uniqueExercises: BigNumber;
 }
 
-export interface UserOwnedOption {
+export interface UserOwnedOption extends Option {
   id: string;
   user: string;
   option: Option;
   size: BigNumber;
 
   lastTradePrice: BigNumber;
+  lastTradeFee: BigNumber;
   lastTradeSize: BigNumber;
   lastTradeTimestamp: BigNumber;
   totalExercised: BigNumber;
+  totalSpent: BigNumber;
+  totalFeesPaid: BigNumber;
 }
 
 export enum OptionTokenType {

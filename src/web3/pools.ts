@@ -15,19 +15,23 @@ export interface Pool {
   cLevel64x64: BigNumber;
 
   totalDeposited: BigNumber;
+  totalWithdrawn: BigNumber;
   totalLocked: BigNumber;
   totalAvailable: BigNumber;
-  openInterest: BigNumber;
   totalVolume: BigNumber;
   totalExercised: BigNumber;
+  totalCharged: BigNumber;
+  totalFeesEarned: BigNumber;
+  openInterest: BigNumber;
   uniqueTrades: BigNumber;
   uniqueOptions: BigNumber;
   uniqueExercises: BigNumber;
+  uniqueReassignments: BigNumber;
   uniqueDeposits: BigNumber;
   uniqueWithdrawals: BigNumber;
 }
 
-export interface UserOwnedPool {
+export interface UserOwnedPool extends Pool {
   id: string;
   address: string;
   user: string;
@@ -39,8 +43,20 @@ export interface UserOwnedPool {
 
   lastDepositSize: BigNumber;
   lastDepositTimestamp: BigNumber;
-  lastWithdrawalSize: BigNumber;
-  lastWithdrawalTimestamp: BigNumber;
+  lastWithdrawalSize?: BigNumber;
+  lastWithdrawalTimestamp?: BigNumber;
   totalDeposited: BigNumber;
   totalWithdrawn: BigNumber;
+  totalLocked: BigNumber;
+  totalAvailable: BigNumber;
+  totalVolume: BigNumber;
+  totalAssigned: BigNumber;
+  totalPremiumsEarned: BigNumber;
+  totalReassignmentFees: BigNumber;
+  openInterest: BigNumber;
+  uniqueUnderwrites: BigNumber;
+  uniqueAssignments: BigNumber;
+  uniqueReassignments: BigNumber;
+  uniqueDeposits: BigNumber;
+  uniqueWithdrawals: BigNumber;
 }
