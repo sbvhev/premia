@@ -36,6 +36,17 @@ const useStyles = makeStyles(({ palette }) => ({
         ? '0px 1.73333px 25.1333px rgba(0, 0, 0, 0.0103512)'
         : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
   },
+  transitionItem: {
+    opacity: 0,
+    transform: 'scale(0)',
+    transformOrigin: 'center 0',
+    position: 'absolute',
+    transition: 'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+  },
+  transitionOpen: {
+    opacity: 1,
+    transform: 'scale(1)',
+  }
 }));
 
 export interface PageWithSidebarProps {
@@ -137,8 +148,9 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
             </Box>
           </Box>
 
-          {mobile && !mobileSidebarHidden && (
+          {mobile && (
             <Box
+              className={cx(classes.transitionItem, !mobileSidebarHidden && classes.transitionOpen)}
               width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'
