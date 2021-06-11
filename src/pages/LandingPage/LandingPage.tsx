@@ -1279,7 +1279,7 @@ const LandingPage: React.FC = () => {
                     <GithubIcon />
                   </AnchorLink>
                   <AnchorLink
-                    href='https://premia.medium.com/'
+                    href='https://medium.premia.finance/'
                     onClick={preventDefault}
                   >
                     <MediumIcon />
@@ -1365,7 +1365,7 @@ const LandingPage: React.FC = () => {
               <GithubIcon />
             </AnchorLink>
             <AnchorLink
-              href='https://premia.medium.com/'
+              href='https://medium.premia.finance/'
               onClick={preventDefault}
             >
               <MediumIcon />
@@ -1639,7 +1639,7 @@ const LandingPage: React.FC = () => {
             {!mobile && (
               <Button
                 onClick={() =>
-                  window.open('https://premia.medium.com', '_blank')
+                  window.open('https://medium.premia.finance', '_blank')
                 }
               >
                 Learn More
@@ -1648,7 +1648,7 @@ const LandingPage: React.FC = () => {
             {mobile && (
               <ArrowCircleIcon
                 onClick={() =>
-                  window.open('https://premia.medium.com', '_blank')
+                  window.open('https://medium.premia.finance', '_blank')
                 }
               />
             )}
@@ -1989,7 +1989,7 @@ const LandingPage: React.FC = () => {
                         <GithubIcon />
                       </AnchorLink>
                       <AnchorLink
-                        href='https://premia.medium.com/'
+                        href='https://medium.premia.finance/'
                         onClick={preventDefault}
                       >
                         <MediumIcon />
@@ -2091,7 +2091,7 @@ const LandingPage: React.FC = () => {
                       <GithubIcon />
                     </AnchorLink>
                     <AnchorLink
-                      href='https://premia.medium.com/'
+                      href='https://medium.premia.finance/'
                       onClick={preventDefault}
                     >
                       <MediumIcon />
