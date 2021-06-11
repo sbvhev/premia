@@ -10,6 +10,10 @@
   grid-column-gap: 16px;
 }
 
+html {
+  overflow: hidden;
+}
+
 body {
   font-family: Poppins;
   color: #000;
@@ -145,8 +149,8 @@ a {
   position: absolute;
   z-index: 1;
   max-width: 700px;
-  -webkit-transform: translate3d(0px, -40px, 30px);
-  transform: translate3d(0px, -40px, 30px);
+  -webkit-transform: translate3d(0px, -40px, 30px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)
+  transform: translate3d(0px, -40px, 30px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
 }
