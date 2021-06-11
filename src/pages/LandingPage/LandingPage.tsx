@@ -17,7 +17,7 @@ import { Parallax } from 'react-scroll-parallax';
 import cn from 'classnames';
 import { throttle } from 'lodash';
 import CloseIcon from '@material-ui/icons/Close';
-import { ReactComponent as PremiaLogo } from 'assets/svg/Logo.svg';
+import { ReactComponent as PremiaLogo } from 'assets/svg/NewLogoComboDark.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
 import { ReactComponent as GithubIcon } from 'assets/svg/GithubIcon.svg';
@@ -1794,9 +1794,8 @@ const LandingPage: React.FC = () => {
                 Our Values
               </Typography>
               <Typography className={classes.subTitle}>
-                Take part in discourse with a knowledgable and active network of
-                individuals. Explore open opportunities to take part in building
-                the next generation of decentralized finance
+                Explore open opportunities to take part in building the next
+                generation of decentralized finance
               </Typography>
             </Box>
             <Box className={classes.gridIcon}>

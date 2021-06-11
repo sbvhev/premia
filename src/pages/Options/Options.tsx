@@ -408,7 +408,13 @@ const Options: React.FC = () => {
               <LineChart
                 isCall={optionType === OptionType.Call}
                 backgroundColor={theme.palette.background.default}
-                data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
+                data={
+                  optionType === OptionType.Call
+                    ? [2.345, 3.423, 3.323, 2.643, 3.234, 6.432, 1.234]
+                    : [
+                        2.345, 3.423, 3.323, 2.643, 3.234, 6.432, 1.234,
+                      ].reverse()
+                }
                 categories={[
                   '2021/5/24',
                   '2021/5/25',
