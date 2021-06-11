@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -61,6 +62,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     borderRadius: 12,
     cursor: 'pointer',
+
+    '& a': {
+      textDecoration: 'none'
+    },
 
     '&> div:hover:not(:active)': {
       '&> svg path': {
@@ -244,16 +249,18 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       />
 
       <Box display='flex' className={classes.account} mr={1}>
-        <Box
-          height={1}
-          className={classes.accountInfo}
-        >
-          <ClockIcon />
-          <Box height={1} className={classes.tradingContainer}>
-            <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
-            <Typography className={classes.tradinghours}>2d 21h left</Typography>
+        <Link to='trading-competition'>
+          <Box
+            height={1}
+            className={classes.accountInfo}
+          >
+            <ClockIcon />
+            <Box height={1} className={classes.tradingContainer}>
+              <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
+              <Typography className={classes.tradinghours}>2d 21h left</Typography>
+            </Box>
           </Box>
-        </Box>
+        </Link>
         <Box
           height={1}
           borderLeft={1}
