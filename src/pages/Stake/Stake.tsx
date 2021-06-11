@@ -5,14 +5,9 @@ import cn from 'classnames';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
-import { useWeb3 } from 'state/application/hooks';
-// import { Currency } from '@uniswap/sdk';
-import { contracts } from 'web3/contracts';
-import { Token } from 'web3/tokens';
-import { useTokenBalance } from 'state/wallet/hooks';
-// import { formatEther, parseEther } from 'ethers/lib/utils';
+import { formatEther } from 'ethers/lib/utils';
 import { formatNumber } from 'utils/formatNumber';
-// import { useStakingBalances } from 'state/staking/hooks';
+import { useStakingBalances } from 'state/staking/hooks';
 
 import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
 import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
@@ -125,47 +120,9 @@ const useStyles = makeStyles(({ palette }) => ({
 const Stake: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const { account, chainId } = useWeb3();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  // const {
-  //   unclaimedPremia,
-  //   xPremiaLocked,
-  //   xPremiaLockedUntil,
-  //   premiaBalance,
-  //   xPremiaBalance,
-  //   premiaStaked,
-  // } = useStakingBalances();
-
-  const chain = chainId ? chainId.toString() : '';
-  const premiaAddress = chain ? contracts?.PremiaErc20[+chain] : false;
-  const xPremiaAddress = chain ? contracts?.PremiaStaking[+chain] : false;
-
-  const PremiaToken: Token = {
-    id: chain ? chain : '1',
-    address: premiaAddress ? premiaAddress : contracts?.PremiaErc20[1],
-    symbol: chain ? (chain === '1' ? 'PREMIA' : 'TEST') : 'PREMIA',
-    name: 'Premia',
-    decimals: 18,
-  };
-
-  const xPremiaToken: Token = {
-    id: chain ? chain : '1',
-    address: xPremiaAddress ? xPremiaAddress : contracts?.PremiaStaking[1],
-    symbol: 'xPREMIA',
-    name: 'PremiaStaking',
-    decimals: 18,
-  };
-
-  const premiaBalance = useTokenBalance(
-    account ?? undefined,
-    chain && account ? PremiaToken : undefined,
-  );
-
-  const xPremiaBalance = useTokenBalance(
-    account ?? undefined,
-    chain && account ? xPremiaToken : undefined,
-  );
+  const { premiaBalance, xPremiaBalance } = useStakingBalances();
 
   return (
     <Box
@@ -244,9 +201,7 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {account && xPremiaBalance
-                  ? formatNumber(premiaBalance)
-                  : '???'}
+                {formatNumber(formatEther(premiaBalance))}
               </Typography>
             </Box>
           </Box>
@@ -283,7 +238,7 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {account && xPremiaBalance ? xPremiaBalance : '???'}
+                {formatNumber(formatEther(xPremiaBalance))}
               </Typography>
             </Box>
           </Box>
@@ -300,10 +255,7 @@ const Stake: React.FC = () => {
             : { alignItems: 'center' }
         }
       >
-        <StakePremiaCard
-          premiaBalance={premiaBalance}
-          xPremiaBalance={xPremiaBalance}
-        />
+        <StakePremiaCard />
         <LockPremiaCard />
       </Box>
     </Box>

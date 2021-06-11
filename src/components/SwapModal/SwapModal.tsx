@@ -583,21 +583,21 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const handleChangeFromAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (value === '') {
+    if (paddedValue === '') {
       setSwapSettings({ fromAmount: '' });
       return;
     }
-    if (value === '.') {
+    if (paddedValue === '.') {
       setSwapSettings({ fromAmount: '0.' });
       return;
     }
-    if (value === '0') {
+    if (paddedValue === '0') {
       setSwapSettings({ fromAmount: '0' });
       return;
     }
-    if (value.startsWith('0') && value[1] !== '.') {
-      const last = value.length;
-      paddedValue = value.slice(1, last);
+    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+      const last = paddedValue.length;
+      paddedValue = paddedValue.slice(1, last);
     }
     if (paddedValue) {
       setSwapSettings({ fromAmount: paddedValue, inputType: false });
@@ -607,20 +607,20 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const handleChangeToAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (value === '') {
+    if (paddedValue === '') {
       setSwapSettings({ toAmount: '' });
       return;
     }
-    if (value === '.') {
+    if (paddedValue === '.') {
       setSwapSettings({ toAmount: '0.' });
       return;
     }
-    if (value === '0') {
+    if (paddedValue === '0') {
       setSwapSettings({ toAmount: '0' });
       return;
     }
-    if (value.startsWith('0') && value[1] !== '.') {
-      const last = value.length;
+    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+      const last = paddedValue.length;
       paddedValue = value.slice(1, last);
     }
     if (paddedValue) {

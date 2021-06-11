@@ -12,11 +12,12 @@ import {
 import { formatNumber } from 'utils/formatNumber';
 
 import { useWeb3 } from 'state/application/hooks';
-import { useTransact, useIsHardwareWallet } from 'hooks';
-import { parseEther } from 'ethers/lib/utils';
+import { useTransact, useIsHardwareWallet, useApproval } from 'hooks';
 
 import { formatBigNumber } from 'utils/formatNumber';
-// import { BigNumber } from 'ethers';
+import { formatEther, parseEther } from 'ethers/lib/utils';
+import { useStakingBalances } from 'state/staking/hooks';
+
 import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
 import { RSV } from 'eth-permit/rpc';
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
@@ -278,15 +279,8 @@ interface PermitState {
   permit?: ERC2612PermitMessage & RSV;
   permitDeadline?: number;
 }
-interface StakePremiaCardProps {
-  premiaBalance?: string | undefined;
-  xPremiaBalance?: string | undefined;
-}
 
-const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
-  premiaBalance,
-  xPremiaBalance,
-}) => {
+const StakePremiaCard: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const { palette } = theme;
@@ -297,44 +291,100 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
   const [checkIsOn, setCheckIsOn] = React.useState(false);
   const isHardwareWallet = useIsHardwareWallet();
 
-  const [shouldApprove] = React.useState(isHardwareWallet);
+  const [stakingMode, setStakingMode] = React.useState(true);
+  const [shouldApprove, setShouldApprove] = React.useState(isHardwareWallet);
   const [signedAlready, setSignedAlready] = React.useState(false);
   const [approvedAready, setApprovedAready] = React.useState(false);
   const [permitState, setPermitState] = React.useState<PermitState>({});
   const [stakeAmount, setStakeAmount] = React.useState('');
+  const [unstakeAmount, setUnstakeAmount] = React.useState('');
   const transact = useTransact();
+
+  const { xPremiaLocked, premiaBalance, xPremiaBalance, underlyingPremia } =
+    useStakingBalances();
+
+  const { allowance: stakingAllowance, onApprove: onApproveStaking } =
+    useApproval(
+      contracts?.PremiaErc20?.address as string,
+      contracts?.PremiaStaking?.address as string,
+    );
+
+  React.useEffect(() => {
+    if (stakingAllowance) {
+      setShouldApprove(true);
+    }
+    if (!stakeAmount) {
+      setApprovedAready(false);
+    }
+    if (stakeAmount && stakingAllowance >= parseFloat(stakeAmount)) {
+      setApprovedAready(true);
+    }
+  }, [stakingAllowance, stakeAmount]);
 
   const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (value === '') {
+    if (paddedValue === '') {
       setStakeAmount('');
       return;
     }
-    if (value === '.') {
+    if (paddedValue === '.') {
       setStakeAmount('0.');
       return;
     }
-    if (value === '0') {
+    if (paddedValue === '0') {
       setStakeAmount('0');
       return;
     }
-    if (value.startsWith('0') && value[1] !== '.') {
-      const last = value.length;
-      paddedValue = value.slice(1, last);
+    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+      const last = paddedValue.length;
+      paddedValue = paddedValue.slice(1, last);
     }
     if (paddedValue) {
       setStakeAmount(paddedValue);
     }
   };
 
+  // const handleChangeUnstakeAmount = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  // ) => {
+  //   const { value } = e.target;
+  //   let paddedValue = value.replace(/[^0-9.]/g, '');
+  //   console.log('value', paddedValue);
+  //   if (paddedValue === '') {
+  //     setUnstakeAmount('');
+  //     return;
+  //   }
+  //   if (paddedValue === '.') {
+  //     setUnstakeAmount('0.');
+  //     return;
+  //   }
+  //   if (paddedValue === '0') {
+  //     setUnstakeAmount('0');
+  //     return;
+  //   }
+  //   if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+  //     const last = paddedValue.length;
+  //     paddedValue = paddedValue.slice(1, last);
+  //   }
+  //   if (paddedValue) {
+  //     setUnstakeAmount(paddedValue);
+  //   }
+  // };
+
   const handleMax = () => {
-    if (premiaBalance) {
-      setStakeAmount(premiaBalance);
+    if (stakingMode) {
+      if (premiaBalance) {
+        setStakeAmount(formatEther(premiaBalance));
+      }
+    } else {
+      if (xPremiaBalance) {
+        setUnstakeAmount(formatEther(xPremiaBalance));
+      }
     }
   };
 
-  const handleApproveCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckIsOn(!checkIsOn);
   };
 
@@ -359,10 +409,8 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
     }
   };
 
-  const handleApprove = () => {};
-
   const handleStakeWithApproval = async () => {
-    if (!stakeAmount) return;
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
     const amount = parseEther(stakeAmount);
     await transact(contracts?.PremiaStaking?.enter(amount), {
       description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
@@ -370,9 +418,20 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
   };
 
   const handleStakeWithPermit = async () => {
-    if (!permitState.permit || !permitState.permitDeadline || !stakeAmount)
+    if (
+      !permitState.permit ||
+      !permitState.permitDeadline ||
+      !stakeAmount ||
+      parseFloat(stakeAmount) === 0
+    )
       return;
-
+    const dateNow = Date.now();
+    const expirationDate = permitState.permitDeadline * 1000;
+    if (dateNow > expirationDate) {
+      setPermitState({});
+      setSignedAlready(false);
+      return;
+    }
     const amount = parseEther(stakeAmount);
     await transact(
       contracts?.PremiaStaking?.enterWithPermit(
@@ -386,6 +445,16 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
         description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
       },
     );
+  };
+
+  const handleUnstake = async () => {
+    if (!unstakeAmount || parseFloat(unstakeAmount) === 0) return;
+    const amount = parseEther(unstakeAmount);
+    transact(contracts?.PremiaStaking?.leave(amount), {
+      description: `Unstake to withdraw ${formatBigNumber(
+        amount,
+      )} xPREMIA as PREMIA`,
+    });
   };
 
   return (
@@ -462,7 +531,9 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
                 color='textSecondary'
                 className={classes.smallInfoText}
               >
-                {`Max size available: ${formatNumber(premiaBalance)}`}
+                {`Max size available: ${formatNumber(
+                  formatEther(premiaBalance),
+                )}`}
               </Typography>
             </Box>
 
@@ -495,17 +566,41 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
             <Box className={classes.buttonLeft}>
               {checkIsOn || shouldApprove ? (
                 <ContainedButton
-                  label={!approvedAready ? 'Approve 1/2' : 'Stake'}
+                  label={
+                    stakeAmount && parseFloat(stakeAmount) !== 0
+                      ? !approvedAready
+                        ? 'Approve 1/2'
+                        : 'Stake'
+                      : 'Enter amount'
+                  }
                   fullWidth
+                  disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
                   onClick={
-                    approvedAready ? handleApprove : handleStakeWithApproval
+                    stakeAmount && parseFloat(stakeAmount) !== 0
+                      ? !approvedAready
+                        ? onApproveStaking
+                        : handleStakeWithApproval
+                      : () => {}
                   }
                 />
               ) : (
                 <ContainedButton
-                  label={!signedAlready ? 'Sign Permit 1/2' : 'Stake'}
+                  label={
+                    stakeAmount && parseFloat(stakeAmount) === 0
+                      ? !signedAlready
+                        ? 'Sign Permit 1/2'
+                        : 'Stake'
+                      : 'Enter amount'
+                  }
                   fullWidth
-                  onClick={!signedAlready ? signPermit : handleStakeWithPermit}
+                  disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
+                  onClick={
+                    stakeAmount && parseFloat(stakeAmount) !== 0
+                      ? !signedAlready
+                        ? signPermit
+                        : handleStakeWithPermit
+                      : () => {}
+                  }
                 />
               )}
             </Box>
@@ -514,6 +609,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
               variant='outlined'
               size='large'
               className={classes.buttonRight}
+              onClick={handleUnstake}
             >
               Unstake
             </Button>
@@ -522,7 +618,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
           <Box display='flex' width='100%' marginTop='12px'>
             <Checkbox
               checked={checkIsOn}
-              onChange={handleApproveCheck}
+              onChange={handleToggleCheck}
               name='agreeToTerms'
               size='small'
               className={classes.checkbox}
@@ -598,7 +694,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
                 color='textPrimary'
                 className={classes.elementHeader}
               >
-                {formatNumber(xPremiaBalance)}
+                {formatNumber(formatEther(xPremiaBalance))}
               </Typography>
             ) : (
               <CircularProgress size={16} />
@@ -617,7 +713,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`100`}
+              {formatNumber(formatEther(xPremiaLocked))}
             </Typography>
           </Box>
           <Box className={classes.horizontalBox}>
@@ -633,7 +729,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`12`}
+              {formatNumber(formatEther(xPremiaBalance.add(xPremiaLocked)))}
             </Typography>
           </Box>
           <Box className={classes.horizontalBox}>
@@ -649,7 +745,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`11`}
+              {formatNumber(formatEther(underlyingPremia))}
             </Typography>
           </Box>
         </Box>
