@@ -8,11 +8,12 @@ import {
   Backdrop,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { useWeb3, useDisconnect } from 'state/application/hooks';
 
 import { shortenAddress } from 'utils';
 import { ModalContainer } from 'components';
+import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { useTxHistory } from 'state/transactions/hooks';
+import { getTxLink } from 'utils/getTxLink';
 
 import SuccessIcon from 'assets/images/SuccessSubtract.png';
 import CancelIcon from 'assets/images/CancelSubtract.png';
@@ -258,10 +259,9 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const web3 = useWeb3();
-  const account = web3.account;
   const [check, setCheck] = useState(false);
   const disconnect = useDisconnect();
+  const { account, chainId } = useWeb3();
   const { txHistory = [], clearTxHistory } = useTxHistory();
   const { palette } = theme;
 
@@ -269,7 +269,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
     if (tx.length) {
       const txLength = tx.length;
       const first = tx.slice(0, 6);
-      const last = tx.slice(txLength - 5, txLength - 1);
+      const last = tx.slice(txLength - 6, txLength);
       return `${first}...${last}`;
     }
     return '';
@@ -297,7 +297,7 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
     >
       <a
         className={classes.anchor}
-        href={`https://etherscan.io/tx/${item.hash}`}
+        href={getTxLink(item.hash, chainId)}
         target='_blank'
         rel='noreferrer'
       >

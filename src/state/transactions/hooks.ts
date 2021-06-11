@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { ChainId } from '@uniswap/sdk';
 
 import { useWeb3 } from 'state/application/hooks';
+import { getTxLink } from 'utils/getTxLink';
 import { AppState, AppDispatch } from 'state';
 import {
   setCurrentTx as _setCurrentTx,
@@ -103,19 +103,9 @@ export const useTxOption = () => {
 export const useTxLink = (txHash: string | undefined | null) => {
   const { chainId } = useWeb3();
 
-  if (!txHash) {
+  if (!txHash || !chainId) {
     return null;
   }
 
-  switch (chainId) {
-    case 56:
-      return `https://bscscan.com/tx/${txHash}`;
-
-    case ChainId.RINKEBY:
-      return `https://rinkeby.etherscan.io/tx/${txHash}`;
-
-    case ChainId.MAINNET:
-    default:
-      return `https://etherscan.io/tx/${txHash}`;
-  }
+  return getTxLink(txHash, chainId);
 };
