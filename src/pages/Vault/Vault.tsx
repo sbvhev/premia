@@ -17,11 +17,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
 import moment from 'moment';
-import {
-  getUserOwnedPoolsForPair,
-  getPools,
-  getCLevelChartItems,
-} from 'graphql/queries';
+import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
 import { UserOwnedPool } from 'web3/pools';
 import { usePools } from 'hooks';
