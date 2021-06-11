@@ -1287,7 +1287,9 @@ const LandingPage: React.FC = () => {
                 </Box>
                 <Button
                   className={classes.openApp}
-                  onClick={() => history.push('/positions')}
+                  onClick={() =>
+                    window.open('https://v1.premia.finance', '_blank')
+                  }
                 >
                   Open App
                 </Button>
@@ -1313,7 +1315,7 @@ const LandingPage: React.FC = () => {
           <Box>
             <Button
               className={classes.openApp}
-              onClick={() => history.push('/positions')}
+              onClick={() => window.open('https://v1.premia.finance', '_blank')}
             >
               Open App
             </Button>
@@ -1385,16 +1387,16 @@ const LandingPage: React.FC = () => {
         <Box className={classes.topSection} id='hero'>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
-              Permissionless options and metavaults
+              Next-generation options and metavaults
             </Typography>
             <Typography className={classes.subTitle}>
-              Premia's next generation options AMM enables best-in-class pricing
-              based on market volatility, bringing fully-featured peer-to-pool
-              trading and capital efficiency to DeFi options.
+              Premia's automated options market enables best-in-class pricing
+              based on realtime supply and demand, bringing fully-featured
+              peer-to-pool trading and capital efficiency to DeFi options.
             </Typography>
             <Button
               className={classes.openAppBig}
-              onClick={() => history.push('/positions')}
+              onClick={() => window.open('https://v1.premia.finance', '_blank')}
             >
               Open App
             </Button>
@@ -1482,7 +1484,7 @@ const LandingPage: React.FC = () => {
                   color='primary'
                   className={classes.outlinedButton}
                   onClick={() => {
-                    history.push('/options');
+                    history.push('/');
                   }}
                 >
                   Trade Options
@@ -1524,7 +1526,7 @@ const LandingPage: React.FC = () => {
                   color='primary'
                   className={classes.outlinedButton}
                   onClick={() => {
-                    history.push('/vaults?tab=pro');
+                    history.push('/');
                   }}
                 >
                   Earn Yield
@@ -1578,7 +1580,7 @@ const LandingPage: React.FC = () => {
                   color='primary'
                   className={classes.outlinedButton}
                   onClick={() => {
-                    history.push('/vaults?tab=pro');
+                    history.push('/');
                   }}
                 >
                   Protect Assets
@@ -1598,21 +1600,21 @@ const LandingPage: React.FC = () => {
                   <Box
                     className={classes.rightSideImage}
                     onClick={() => {
-                      history.push('/options');
+                      history.push('/');
                     }}
                     style={{ opacity: scrollPos > 200 ? 1 : 0 }}
                   ></Box>
                   <Box
                     className={classes.rightSideImage}
                     onClick={() => {
-                      history.push('/vaults?tab=basic');
+                      history.push('/');
                     }}
                     style={{ opacity: scrollPos > 900 ? 1 : 0 }}
                   ></Box>
                   <Box
                     className={classes.rightSideImage}
                     onClick={() => {
-                      history.push('/vaults?tab=pro');
+                      history.push('/');
                     }}
                     style={{ opacity: scrollPos > 1600 ? 1 : 0 }}
                   ></Box>

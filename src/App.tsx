@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
-import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider as StateProvider } from 'react-redux';
 import {
   ThemeProvider as MuiThemeProvider,
@@ -19,18 +19,17 @@ import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
 import OptionsUpdater from './state/options/updater';
 import TransactionsUpdater from './state/transactions/updater';
-import { useIsDarkMode } from 'state/user/hooks';
-import { darkTheme, lightTheme } from './theme';
+import { darkTheme } from './theme';
 import store from './state';
 
-import { PageWithSidebar } from 'layouts';
+// import { PageWithSidebar } from 'layouts';
 import {
-  Options,
-  Stake,
-  Vault,
-  Positions,
+  // Options,
+  // Stake,
+  // Vault,
+  // Positions,
   LandingPage,
-  PositionGuide,
+  // PositionGuide,
 } from './pages';
 import {
   TransactionLoadingModal,
@@ -97,15 +96,7 @@ const StateUpdaters: React.FC = () => {
 };
 
 const ThemeProvider: React.FC = ({ children }) => {
-  const location = useLocation();
-  const darkMode = useIsDarkMode();
-  let theme = darkMode ? darkTheme : lightTheme;
-
-  if (location.pathname.replace('/', '') === '') {
-    theme = darkTheme;
-  }
-
-  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+  return <MuiThemeProvider theme={darkTheme}>{children}</MuiThemeProvider>;
 };
 
 const Providers: React.FC = ({ children }) => {
@@ -144,8 +135,7 @@ const App: React.FC = () => {
         <Route exact path='/'>
           <LandingPage />
         </Route>
-
-        <Route exact path='/positions'>
+        {/* <Route exact path='/positions'>
           <PageWithSidebar>
             <Positions />
           </PageWithSidebar>
@@ -179,6 +169,9 @@ const App: React.FC = () => {
           <PageWithSidebar>
             <Positions />
           </PageWithSidebar>
+        </Route> */}
+        <Route path='*'>
+          <LandingPage />
         </Route>
       </Switch>
     </Providers>
