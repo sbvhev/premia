@@ -12,7 +12,6 @@ export const tokenIcons = {
   wBTC: WBTCIcon,
   WBTC: WBTCIcon,
   UNI: UniIcon,
-  SUSHI: UniIcon,
   LINK: LinkIcon,
   YFI: YFIIcon,
   ETH: EthIcon,

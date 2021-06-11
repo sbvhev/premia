@@ -58,7 +58,7 @@ export const getUserOwnedOptions = gql`
   }
 `;
 
-export const getUserOwnedPools = gql`
+export const getUserOwnedPoolsForPair = gql`
   ${UserOwnedPool}
 
   query UserOwnedPools(
@@ -72,6 +72,16 @@ export const getUserOwnedPools = gql`
       skip: $skip
       where: { user: $account, pair: $pairId }
     ) {
+      ...UserOwnedPool
+    }
+  }
+`;
+
+export const getUserOwnedPools = gql`
+  ${UserOwnedPool}
+
+  query UserOwnedPools($account: String!, $first: Int = 100, $skip: Int = 0) {
+    userOwnedPools(first: $first, skip: $skip, where: { user: $account }) {
       ...UserOwnedPool
     }
   }

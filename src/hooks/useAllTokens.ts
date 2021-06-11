@@ -12,9 +12,10 @@ export function useAllTokens() {
   const { base } = useBase();
   const { data: tokenPairsData } = useQuery(getTokenPairs, {
     variables: {
-      baseAddress: base
-        ? base.address.toLowerCase()
-        : DAI[ChainId.MAINNET].address.toLowerCase(),
+      baseAddress:
+        base && base.address
+          ? base.address.toLowerCase()
+          : DAI[ChainId.MAINNET].address.toLowerCase(),
     },
   });
 

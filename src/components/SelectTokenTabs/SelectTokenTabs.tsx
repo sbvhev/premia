@@ -22,7 +22,7 @@ const SelectTokenTabs: React.FC = () => {
           token,
           label: token.symbol,
           icon: tokenIcons[token.symbol as keyof typeof tokenIcons],
-          highlight: ['WETH', 'SUSHI'].includes(token.symbol),
+          highlight: ['LINK', 'UNI'].includes(token.symbol),
         })),
     [tokens, base],
   );
@@ -40,7 +40,7 @@ const SelectTokenTabs: React.FC = () => {
       onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
         const newToken = tabs[newValue].token;
         setUnderlying(newToken);
-        setStrikePrice(prices[newToken.symbol]);
+        setStrikePrice(Math.round(prices[newToken.symbol]));
       }}
     />
   );

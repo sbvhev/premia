@@ -99,6 +99,11 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
     .div(BigNumber.from(10000));
 }
 
+// add 10%
+export function calculateFloatGasMargin(value: number): number {
+  return Math.ceil(value * 1.1);
+}
+
 // account is not optional
 export function getSigner(
   library: Web3Provider,

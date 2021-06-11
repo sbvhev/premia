@@ -741,7 +741,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         simpleExclusionList.join(','),
       );
 
-      console.log('quote', _zeroXQuote);
       if (_zeroXQuote.validationErrors) {
         setPreSwapButtonGuide(_zeroXQuote.reason);
         return;

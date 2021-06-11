@@ -22,7 +22,7 @@ import { useOutsideAlerter } from 'hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
 
-import { ColoredSlider } from 'components';
+import { ColoredSlider, Loader } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -132,7 +132,8 @@ const useStyles = makeStyles(({ palette }) => ({
     overflow: 'hidden',
     transform: 'scale(0)',
     transformOrigin: '0 0',
-    transition: 'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    transition:
+      'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     '& .react-calendar': {
       background: palette.background.paper,
       border: 'none',
@@ -228,7 +229,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
   openTransition: {
     opacity: 1,
-    transform: 'scale(1)'
+    transform: 'scale(1)',
   },
 
   maturityContainer: {
@@ -296,7 +297,10 @@ const OptionFilter: React.FC = () => {
   }, [maturityDate, setMaturityDate]);
 
   useEffect(() => {
-    if (strikePrice === 0 && underlyingPrice) {
+    if (
+      Number(strikePrice) < underlyingPrice / 2 ||
+      Number(strikePrice) > underlyingPrice * 2
+    ) {
       setStrikePrice(roundedPrice);
     }
   }, [underlyingPrice, roundedPrice, strikePrice, setStrikePrice]);
@@ -339,7 +343,10 @@ const OptionFilter: React.FC = () => {
         <Typography className={classes.titleText}>Strike Price</Typography>
 
         <Box width={1} mt={0.5}>
-          {strikePrice !== 0 && (
+          {strikePrice !== 0 &&
+          !isNaN(Number(strikePrice)) &&
+          !isNaN(Number(minPrice)) &&
+          !isNaN(Number(maxPrice)) ? (
             <ColoredSlider
               min={minPrice}
               max={maxPrice}
@@ -347,13 +354,17 @@ const OptionFilter: React.FC = () => {
                 label: value,
                 value,
               }))}
-              step={0.01}
-              value={strikePrice}
+              step={10 ** -underlying.decimals}
+              value={strikePrice === 0 ? 1 : Math.round(strikePrice)}
               valueLabelDisplay='on'
               onChange={(event: any, value) => {
-                setStrikePrice(value as number);
+                setStrikePrice(Math.round(value as number));
               }}
             />
+          ) : (
+            <Box width={20} marginX='auto'>
+              <Loader stroke={theme.palette.primary.main} />
+            </Box>
           )}
         </Box>
       </Box>
@@ -375,7 +386,12 @@ const OptionFilter: React.FC = () => {
             </Typography>
             <CalendarIcon />
           </Box>
-          <Box className={cx(classes.calendarContainer, maturityFocused && classes.openTransition)}>
+          <Box
+            className={cx(
+              classes.calendarContainer,
+              maturityFocused && classes.openTransition,
+            )}
+          >
             <Calendar
               inputRef={calendarRef as any}
               minDate={new Date()}

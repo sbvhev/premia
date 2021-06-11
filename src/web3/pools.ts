@@ -31,7 +31,7 @@ export interface Pool {
   uniqueWithdrawals: BigNumber;
 }
 
-export interface UserOwnedPool extends Pool {
+export interface UserOwnedPool {
   id: string;
   address: string;
   user: string;

@@ -1,7 +1,7 @@
-import { Pool } from 'web3/pools';
+import { Pool, UserOwnedPool } from 'web3/pools';
 import { getPoolSize } from './getPoolSize';
 
-export function getPoolUtilization(pool?: Pool): number {
+export function getPoolUtilization(pool?: Pool | UserOwnedPool): number {
   if (!pool) return 0;
 
   const totalCapital = getPoolSize(pool);

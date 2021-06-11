@@ -28,7 +28,11 @@ import { /* useAllTokens, */ useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
 import { Token } from 'web3/tokens';
-import { updateBase, updateUnderlying } from 'state/options/actions';
+import {
+  updateBase,
+  updateUnderlying,
+  updateStrikePrice,
+} from 'state/options/actions';
 import { AppState } from 'state';
 import {
   updateBlockNumber,
@@ -51,7 +55,7 @@ const assetList = [
   // { key: 'SNX', coinGeckoId: 'havven' },
   // { key: 'ALCX', coinGeckoId: 'alchemix' },
   // { key: 'MKR', coinGeckoId: 'maker' },
-  { key: 'SUSHI', coinGeckoId: 'sushi' },
+  // { key: 'SUSHI', coinGeckoId: 'sushi' },
   { key: 'LINK', coinGeckoId: 'chainlink' },
   { key: 'PREMIA', coinGeckoId: 'premia' },
   { key: 'UNI', coinGeckoId: 'uniswap' },
@@ -86,21 +90,16 @@ export default function Updater(): null {
     (state) => state.application,
   );
 
+  const { underlying, strikePrice } = useSelector<
+    AppState,
+    AppState['options']
+  >((state) => state.options);
+
   const comparisonToken: Token = useMemo(
     () => (chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any)),
     [chainId],
   );
-
-  const baseToken: Token = useMemo(
-    () => ({
-      id: DAI[chainId || ChainId.MAINNET].address,
-      address: DAI[chainId || ChainId.MAINNET].address,
-      symbol: DAI[chainId || ChainId.MAINNET].symbol,
-      name: DAI[chainId || ChainId.MAINNET].name,
-      decimals: DAI[chainId || ChainId.MAINNET].decimals,
-    }),
-    [chainId],
-  );
+  const baseToken: Token = DAI[chainId || ChainId.MAINNET];
 
   const [state, setState] = useState<{
     blockNumber: number | null;
@@ -197,6 +196,8 @@ export default function Updater(): null {
   useEffect(() => {
     if (_onboard) return;
 
+    if (location.pathname === '/') return;
+
     const chain = Number(localStorage.getItem('chainId') || 1);
 
     const onboard = Onboard({
@@ -205,17 +206,12 @@ export default function Updater(): null {
         network: (chainId: ChainId | 56) => {
           const underlying: Token =
             chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
-          const base: Token = {
-            id: DAI[chainId || ChainId.MAINNET].address,
-            address: DAI[chainId || ChainId.MAINNET].address,
-            symbol: DAI[chainId || ChainId.MAINNET].symbol,
-            name: DAI[chainId || ChainId.MAINNET].name,
-            decimals: DAI[chainId || ChainId.MAINNET].decimals,
-          };
+          const base: Token = DAI[chainId || ChainId.MAINNET];
 
           dispatch(setWeb3Settings({ chainId }));
           dispatch(updateBase(base));
           dispatch(updateUnderlying(underlying));
+          dispatch(updateStrikePrice(prices[underlying.symbol]));
           localStorage.setItem('chainId', String(chainId));
         },
         balance: (balance: string) => dispatch(setWeb3Settings({ balance })),
@@ -255,7 +251,17 @@ export default function Updater(): null {
     });
 
     dispatch(setWeb3Settings({ onboard }));
-  }, [dispatch, _onboard, chainId, signer, dark, baseToken, comparisonToken]);
+  }, [
+    dispatch,
+    _onboard,
+    location,
+    chainId,
+    signer,
+    dark,
+    prices,
+    baseToken,
+    comparisonToken,
+  ]);
 
   useEffect(() => {
     const previouslySelectedWallet = window.localStorage
@@ -368,6 +374,10 @@ export default function Updater(): null {
             key: asset.key,
             value: pricesArray[index],
           });
+
+          if (asset.key === underlying.symbol && !strikePrice) {
+            dispatch(updateStrikePrice(pricesArray[index]));
+          }
         }
 
         dispatch(updateTokenPrices(tokenPrices));
@@ -381,7 +391,7 @@ export default function Updater(): null {
     }
 
     return () => clearInterval(geckoFetch);
-  }, [wallet, account, web3, prices, dispatch]);
+  }, [wallet, account, web3, prices, strikePrice, underlying, dispatch]);
 
   useEffect(() => {
     let geckoFetch: any;

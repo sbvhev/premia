@@ -33,7 +33,7 @@ export interface Option {
   uniqueExercises: BigNumber;
 }
 
-export interface UserOwnedOption extends Option {
+export interface UserOwnedOption {
   id: string;
   user: string;
   option: Option;

@@ -24,13 +24,13 @@ import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 const insights = [
   {
     title: 'Documentation',
-    link: 'https://premia.medium.com',
+    link: 'https://docs.premia.finance/',
     Icon: <DocumentationIcon />,
     href: true,
   },
   {
     title: 'Careers',
-    link: 'https://solidity.finance/audits/Premia/',
+    link: 'https://discord.com/invite/6MhRmzmdHN', // 'https://careers.premia.finance/',
     Icon: <CareerIcon />,
     href: true,
   },
