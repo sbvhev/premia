@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ClaimTokensModal } from 'components';
 
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
@@ -199,11 +199,13 @@ const useStyles = makeStyles(({ palette }) => ({
 export interface EligibleTradingModalProps {
   open: boolean;
   onClose: () => void;
+  showClaimToken: () => void;
 }
 
 const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
   open,
-  onClose
+  onClose,
+  showClaimToken
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -269,7 +271,11 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   <Typography color='secondary'>
                     Now, you can claim your tokens for the competition and start trading when the competitions start
                   </Typography>
-                  <Button variant='contained' color='primary'>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={showClaimToken}
+                  >
                     Claim Tokens
                   </Button>
                   <Divider />

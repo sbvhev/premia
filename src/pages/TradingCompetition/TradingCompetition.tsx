@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { useDarkModeManager } from 'state/user/hooks';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { EligibleTradingModal, InEligibleTradingModal } from 'components';
+import { EligibleTradingModal, InEligibleTradingModal, ClaimTokensModal } from 'components';
 import TradingCompetitionBanner from 'assets/images/TradingCompetitionBanner.png';
 import PrizeFirst from 'assets/svg/PrizeFirst.svg';
 import PrizeSecond from 'assets/svg/PrizeSecond.svg';
@@ -190,13 +190,24 @@ const TradingCompetition: React.FC = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ darkMode, mobile });
+  const [ claimTokensModalOpen, setClaimTokensModalOpen ] = useState(false);
   const [ eligibleTradingModalOpen, setEligibleTradingModalOpen ] = useState(false);
   const [ inEligibleTradingModalOpen, setInEligibleTradingModalOpen ] = useState(false);
 
   return (
     <>
+      <ClaimTokensModal
+        open={claimTokensModalOpen}
+        onClose={() => {
+          setClaimTokensModalOpen(false)
+        }}
+      />
       <EligibleTradingModal
         open={eligibleTradingModalOpen}
+        showClaimToken={() => {
+          setClaimTokensModalOpen(true)
+          setEligibleTradingModalOpen(false)
+        }}
         onClose={() => {
           setEligibleTradingModalOpen(false)
         }}
@@ -249,12 +260,19 @@ const TradingCompetition: React.FC = () => {
             variant='contained'
             color='primary'
             onClick={() => {
-              setInEligibleTradingModalOpen(true);
+              setEligibleTradingModalOpen(true);
             }}
           >
             Check if I am eligible
           </Button>
-          <Button variant='outlined'>Claim tokens</Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setClaimTokensModalOpen(true);
+            }}
+          >
+            Claim tokens
+          </Button>
           <Button variant='outlined'>Switch to Rinkeby testnet</Button>
           <Container fixed className={classes.competitionPrize}>
             <Box>
