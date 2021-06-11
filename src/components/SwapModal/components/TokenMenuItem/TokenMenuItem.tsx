@@ -94,10 +94,6 @@ const TokenMenuItem: React.FC<TokenWalletItemProps> = ({
     !isToken(token) ? (token as Currency) : undefined,
   );
 
-  if (currencyBalance) {
-    console.log('account', currencyBalance);
-  }
-
   return (
     <>
       {token ? (

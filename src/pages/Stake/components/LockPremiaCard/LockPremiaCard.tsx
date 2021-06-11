@@ -289,7 +289,6 @@ const LockPremiaCard: React.FC = () => {
     setAnchorEl(null);
   };
 
-  console.log(theme);
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
       {!mobile && (
