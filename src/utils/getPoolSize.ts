@@ -1,6 +1,6 @@
-import { Pool } from 'web3/pools';
+import { Pool, UserOwnedPool } from 'web3/pools';
 
-export function getPoolSize(pool?: Pool): number {
+export function getPoolSize(pool?: Pool | UserOwnedPool): number {
   if (!pool) return 0;
 
   return (

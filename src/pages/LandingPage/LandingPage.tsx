@@ -1503,7 +1503,7 @@ const LandingPage: React.FC = () => {
                   color='primary'
                   className={classes.outlinedButton}
                   onClick={() => {
-                    history.push('/vaults?tab=basic');
+                    history.push('/vaults?tab=pro');
                   }}
                 >
                   Earn Yield
