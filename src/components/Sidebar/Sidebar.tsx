@@ -96,20 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 3,
   };
   const [showSwapModal, setShowSwapModal] = useState(false);
-  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
   const state = location.state ? location.state.previous : false;
   const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
   const [pageNavigationIndex, setPageNavigationIndex] =
     React.useState(startIndex);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   React.useEffect(() => {
     const currentPage = pageIndexes[pathname];
