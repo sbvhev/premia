@@ -8,10 +8,6 @@ import {
   useToggleTxSuccessModal,
   useToggleTxCancelledModal,
   useToggleTxFailedModal,
-  useToggleTxFailedNotification,
-  useToggleTxStartNotification,
-  useToggleTxSuccessNotification,
-  useCloseNotifications,
 } from 'state/application/hooks';
 import {
   useCurrentTx,
@@ -27,20 +23,16 @@ export interface TransactProps {
 }
 
 export function useTransact() {
-  const { notify, chainId } = useWeb3();
+  const { notify } = useWeb3();
   const { setCurrentTx } = useCurrentTx();
   const { setTxHistory } = useTxHistory();
   const { setTxStateMsg } = useTxStateMsg();
   const { setTxOption } = useTxOption();
   const closeModals = useCloseModals();
-  const closeNotifications = useCloseNotifications();
   const toggleTxLoadingModal = useToggleTxLoadingModal();
   const toggleTxSuccessModal = useToggleTxSuccessModal();
   const toggleTxCancelledModal = useToggleTxCancelledModal();
   const toggleTxFailedModal = useToggleTxFailedModal();
-  const toggleTxFailedNotification = useToggleTxFailedNotification();
-  const toggleTxStartNotification = useToggleTxStartNotification();
-  const toggleTxSuccessNotification = useToggleTxSuccessNotification();
 
   const transact = useCallback(
     async (
@@ -66,92 +58,48 @@ export function useTransact() {
         if (tx) {
           setCurrentTx({ hash: tx.hash });
 
-          console.log(chainId);
+          const { emitter } = notify.hash(tx.hash);
 
-          // For BSC, as it doesnt support notify
-          if (chainId === 56) {
-            try {
-              toggleTxSuccessNotification(false);
-              toggleTxStartNotification(true);
+          emitter.on('txConfirmed', (transaction) => {
+            toggleTxSuccessModal(true);
+            setTxHistory({
+              hash: tx.hash,
+              timestamp: tx.timestamp,
+              complete: true,
+            });
 
-              await tx.wait();
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: true,
-              });
-
-              toggleTxSuccessNotification(true);
-              toggleTxSuccessModal(true);
-              setTimeout(closeNotifications, 2000);
-
-              if (closeOnSuccess) {
-                setTimeout(closeModals, 2000);
-              }
-            } catch (e) {
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: false,
-              });
-              toggleTxFailedNotification(true);
-              toggleTxFailedModal(true);
-              setTimeout(closeNotifications, 2000);
+            if (closeOnSuccess) {
+              setTimeout(closeModals, 2000);
             }
-          } else {
-            const { emitter } = notify.hash(tx.hash);
+          });
 
-            emitter.on('txPool', (transaction) => {
-              toggleTxSuccessNotification(false);
-              toggleTxStartNotification(true);
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: true,
-              });
+          emitter.on('txFailed', () => {
+            setTxHistory({
+              hash: tx.hash,
+              timestamp: tx.timestamp,
+              complete: false,
             });
+            toggleTxFailedModal(true);
+          });
 
-            emitter.on('txConfirmed', (transaction) => {
-              toggleTxStartNotification(false);
-              toggleTxSuccessNotification(true);
-              toggleTxSuccessModal(true);
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: true,
-              });
-
-              setTimeout(closeNotifications, 2000);
-
-              if (closeOnSuccess) {
-                setTimeout(closeModals, 2000);
-              }
+          emitter.on('txCancel', (err) => {
+            console.log('Error in transaction: ', err);
+            setTxHistory({
+              hash: tx.hash,
+              timestamp: tx.timestamp,
+              complete: false,
             });
-
-            emitter.on('txFailed', () => {
-              toggleTxFailedNotification(true);
-              toggleTxFailedModal(true);
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: false,
-              });
-
-              setTimeout(closeNotifications, 2000);
-            });
-            emitter.on('txCancel', (err) => {
-              setTxHistory({
-                hash: tx.hash,
-                timestamp: tx.timestamp,
-                complete: false,
-              });
-              console.log('Error in transaction: ', err);
-              toggleTxCancelledModal(true);
-            });
-          }
+            toggleTxCancelledModal(true);
+          });
         } else {
           closeModals();
         }
+
+        (async () => {
+          await tx?.wait(1);
+
+          toggleTxSuccessModal(false);
+        })();
 
         return tx;
       } catch (err) {
@@ -161,20 +109,15 @@ export function useTransact() {
     },
     [
       closeModals,
-      closeNotifications,
       toggleTxLoadingModal,
       toggleTxSuccessModal,
       toggleTxCancelledModal,
       toggleTxFailedModal,
-      toggleTxFailedNotification,
-      toggleTxStartNotification,
-      toggleTxSuccessNotification,
       setCurrentTx,
       setTxHistory,
       setTxStateMsg,
       setTxOption,
       notify,
-      chainId,
     ],
   );
 

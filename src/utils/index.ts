@@ -3,7 +3,7 @@ import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId } from '@uniswap/sdk';
+import { ChainId } from '@sushiswap/sdk';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -14,38 +14,72 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const ETHERSCAN_URLS: { [chainId in ChainId | 56]: string } = {
-  1: 'https://etherscan.io',
-  3: 'https://ropsten.etherscan.io',
-  4: 'https://rinkeby.etherscan.io',
-  5: 'https://goerli.etherscan.io',
-  42: 'https://kovan.etherscan.io',
-  56: 'https://bscscan.com',
+export const chainIds = [
+  ChainId.MAINNET,
+  ChainId.BSC,
+  ChainId.MATIC,
+  ChainId.FANTOM,
+];
+export const chainLabels = ['Ethereum', 'BSC', 'Polygon', 'Fantom'];
+
+export const PARAMS: {
+  [chainId in ChainId]?: {
+    chainId: string;
+    chainName: string;
+    nativeCurrency: {
+      name: string;
+      symbol: string;
+      decimals: number;
+    };
+    rpcUrls: string[];
+    blockExplorerUrls: string[];
+  };
+} = {
+  [ChainId.MAINNET]: {
+    chainId: '0x1',
+    chainName: 'Ethereum',
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrls: ['https://mainnet.infura.io/v3'],
+    blockExplorerUrls: ['https://etherscan.com'],
+  },
+  [ChainId.FANTOM]: {
+    chainId: '0xfa',
+    chainName: 'Fantom',
+    nativeCurrency: {
+      name: 'Fantom',
+      symbol: 'FTM',
+      decimals: 18,
+    },
+    rpcUrls: ['https://rpcapi.fantom.network'],
+    blockExplorerUrls: ['https://ftmscan.com'],
+  },
+  [ChainId.BSC]: {
+    chainId: '0x38',
+    chainName: 'Binance Smart Chain',
+    nativeCurrency: {
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
+  },
+  [ChainId.MATIC]: {
+    chainId: '0x89',
+    chainName: 'Matic',
+    nativeCurrency: {
+      name: 'Matic',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+    blockExplorerUrls: ['https://explorer-mainnet.maticvigil.com'],
+  },
 };
-
-export function getEtherscanLink(
-  chainId: ChainId | 56,
-  data: string,
-  type: 'transaction' | 'token' | 'address' | 'block',
-): string {
-  const prefix = ETHERSCAN_URLS[chainId] || ETHERSCAN_URLS[1];
-
-  switch (type) {
-    case 'transaction': {
-      return `${prefix}/tx/${data}`;
-    }
-    case 'token': {
-      return `${prefix}/token/${data}`;
-    }
-    case 'block': {
-      return `${prefix}/block/${data}`;
-    }
-    case 'address':
-    default: {
-      return `${prefix}/address/${data}`;
-    }
-  }
-}
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address?: string, chars = 4): string {
@@ -61,7 +95,7 @@ export function shortenAddress(address?: string, chars = 4): string {
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
   return value
-    .mul(BigNumber.from(10000).add(BigNumber.from(1000)))
+    .mul(BigNumber.from(10000).add(BigNumber.from(5000)))
     .div(BigNumber.from(10000));
 }
 

@@ -40,6 +40,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   walletIcon: {
     marginRight: '8px',
+
+    '& path': {
+      fill: palette.text.hint,
+    }
   },
 
   divider: {
@@ -49,24 +53,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   account: {
     padding: 0,
     height: 45,
-    border: (props: any) => props.darkMode && `1px solid ${palette.divider}`,
+    border: `1px solid ${palette.divider}`,
     backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
     boxShadow: (props: any) =>
       props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
     borderRadius: 12,
     cursor: 'pointer',
 
-    '&:hover': {
-      borderColor: palette.primary.main,
-
-      '&> $disconnect': {
-        borderColor: palette.primary.main,
-      },
-    },
-
     '&> div:hover:not(:active)': {
-      borderColor: palette.primary.main,
-
       '&> svg path': {
         fill: palette.text.primary,
       },
@@ -94,10 +88,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: 43,
       flex: 'none',
     },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
-    },
   },
 
   connect: {
@@ -118,10 +108,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& svg path': {
       fill: palette.text.secondary,
-    },
-
-    '&:hover': {
-      borderColor: palette.primary.main,
     },
 
     '&:hover:not(:active)': {
@@ -184,7 +170,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   connectWalletButton: {
     fontSize: 14,
-    color: 'black',
   },
 }));
 

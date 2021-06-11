@@ -5,7 +5,8 @@ import cx from 'classnames';
 
 import { useIsDarkMode } from 'state/user/hooks';
 import { useGasType, useGasPrices } from 'state/transactions/hooks';
-
+import { chainIds, chainLabels } from 'utils';
+import { useWeb3 } from 'state/application/hooks';
 import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
@@ -16,6 +17,9 @@ import { ReactComponent as GasStandardIcon } from 'assets/svg/GasStandardIcon.sv
 import { ReactComponent as GasFastIcon } from 'assets/svg/GasFastIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
 import { ReactComponent as EthHeadIcon } from 'assets/svg/EthHeadIcon.svg';
+import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
+import { ReactComponent as FantomIcon } from 'assets/svg/FantomIcon.svg';
+import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -201,6 +205,24 @@ const Footer: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const { gasType, setGasType } = useGasType();
   const { gasPrices } = useGasPrices();
+  const { chainId } = useWeb3();
+  const chainIndex = chainIds.findIndex(val => val === chainId);
+
+  let testnetLabel = '';
+  switch(chainId) {
+    case 3:
+      testnetLabel = 'Ropsten Testnet';
+      break;
+    case 42:
+      testnetLabel = 'Kovan Testnet';
+      break;
+    case 4:
+      testnetLabel = 'Rinkeby Testnet';
+      break;
+    case 5:
+      testnetLabel = 'Goerli Testnet';
+      break;    
+  }
 
   const handleSelectStandardGas = () => {
     setGasType('standard');
@@ -279,12 +301,10 @@ const Footer: React.FC = () => {
         alignItems='center'
         className={classes.footer}
       >
-        {chainModalOpen && (
-          <ChainModal
-            open={chainModalOpen}
-            onClose={() => setChainModalOpen(false)}
-          />
-        )}
+        <ChainModal
+          open={chainModalOpen}
+          onClose={() => setChainModalOpen(false)}
+        />
         <Box
           display='flex'
           width={mobile ? '100%' : 'auto'}
@@ -332,9 +352,12 @@ const Footer: React.FC = () => {
             onClick={() => {
               setChainModalOpen(true);
             }}>
-            <EthHeadIcon />
+            { (chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon /> }
+            { chainIndex === 1 && <BSCIcon /> }
+            { chainIndex === 2 && <PolygonIcon /> }
+            { chainIndex === 3 && <FantomIcon /> }
             <Typography component='span'>
-              Ethereum
+              { chainIndex === -1 ? testnetLabel : chainLabels[chainIndex] }
             </Typography>
             <UpArrow className={classes.upArrow} />
           </Box>

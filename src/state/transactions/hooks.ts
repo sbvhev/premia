@@ -68,11 +68,10 @@ export const useGasType = () => {
   return { gasType, setGasType };
 };
 
-export const useGasValue = () => {
+export const useGasPrice = () => {
   const gasValue = useSelector<AppState, AppState['transactions']['gasValue']>(
     (state) => state.transactions.gasValue,
   );
-
   return gasValue;
 };
 

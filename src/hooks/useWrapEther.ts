@@ -9,7 +9,12 @@ export function useWrapEther() {
   const transact = useTransact();
 
   const contract = useMemo(
-    () => (chainId === 56 ? contracts.wbnb : contracts.weth),
+    () =>
+      contracts
+        ? chainId === 56
+          ? contracts.Wbnb
+          : contracts.Weth
+        : ({} as any),
     [contracts, chainId],
   );
 

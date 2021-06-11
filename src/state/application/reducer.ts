@@ -5,14 +5,15 @@ import { ethers } from 'ethers';
 import { Provider } from 'ethers-multicall';
 import { ChainId } from '@uniswap/sdk';
 
+import { PremiaContracts } from 'web3/contracts';
+
 import {
   ApplicationModal,
-  ApplicationNotification,
   setWeb3Settings,
   setActiveModal,
-  setActiveNotification,
   updateBlockNumber,
   updateTokenPrices,
+  updateTokenPriceChanges,
   setApprovalType,
   setWrapEthModalOpen,
   setWrapEth,
@@ -21,7 +22,7 @@ import {
 export interface ApplicationState {
   onboard?: OnboardAPI;
   notify: NotifyAPI;
-  chainId?: ChainId;
+  chainId?: ChainId | 56;
   blockNumber: number;
   ethereum: any;
   account: string;
@@ -31,9 +32,9 @@ export interface ApplicationState {
   multicallProvider?: Provider | null;
   wallet?: Wallet | null;
   activeModal?: ApplicationModal | null;
-  activeNotification?: ApplicationNotification | null;
-  contracts: any;
+  contracts?: PremiaContracts;
   prices: { [symbol: string]: number };
+  priceChanges: { [symbol: string]: number };
   approvalType: string | null;
   wrapEthModalOpen: boolean;
   wrapEth: boolean;
@@ -54,9 +55,9 @@ export const initialState: ApplicationState = {
   web3: undefined,
   wallet: undefined,
   activeModal: undefined,
-  activeNotification: undefined,
-  contracts: {},
+  contracts: undefined,
   prices: {},
+  priceChanges: {},
   approvalType: 'write',
   wrapEthModalOpen: false,
   wrapEth: true,
@@ -87,7 +88,7 @@ export default createReducer(initialState, (builder) =>
       state.signer = signer || state.signer;
       state.web3 = web3 !== undefined ? web3 : state.web3;
       state.wallet = wallet !== undefined ? wallet : state.wallet;
-      state.contracts = contracts || state.contracts;
+      state.contracts = (contracts as any) || state.contracts;
       state.chainId = chainId ?? state.chainId;
 
       if (state.web3) {
@@ -105,11 +106,13 @@ export default createReducer(initialState, (builder) =>
         state.prices[el.key] = el.value;
       }
     })
+    .addCase(updateTokenPriceChanges, (state, { payload }) => {
+      for (const el of payload) {
+        state.priceChanges[el.key] = el.value;
+      }
+    })
     .addCase(setActiveModal, (state, { payload }) => {
       state.activeModal = payload;
-    })
-    .addCase(setActiveNotification, (state, { payload }) => {
-      state.activeNotification = payload;
     })
     .addCase(setApprovalType, (state, { payload }) => {
       state.approvalType = payload;

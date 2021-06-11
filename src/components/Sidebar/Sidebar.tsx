@@ -17,6 +17,7 @@ import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
+import { useWeb3 } from 'state/application/hooks';
 
 import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 
@@ -85,10 +86,11 @@ interface PageIndexing {
 const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
+  const { account } = useWeb3();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const pageIndexes: PageIndexing = {
-    '/': 0,
+    '/positions': 0,
     '/vaults': 1,
     '/options': 2,
     '/stake': 3,
@@ -123,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     },
     {
       title: 'Vaults',
-      link: '/vaults',
+      link: '/vaults?tab=pro',
       Icon: <VaultsIcon />,
     },
     {
@@ -138,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     },
     {
       title: 'Swap',
-      onClick: () => setShowSwapModal(true),
+      onClick: account ? () => setShowSwapModal(true) : () => {},
       Icon: <SwapIcon />,
     },
   ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box } from '@material-ui/core';
+import { Typography, Modal, Box, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { useTxStateMsg } from 'state/transactions/hooks';
@@ -185,65 +185,75 @@ const TransactionCancelledModal: React.FC<TransactionCancelledModalProps> = ({
   const { palette } = theme;
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer size='md'>
-        <Box width={1} className={classes.wrapper}>
-          <Box
-            className={classes.topIconWraper}
-            style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}
-          >
-            <Box className={classes.innerMainBorderedCircle}></Box>
-          </Box>
-          <img
-            src={MostOuterErrorRadial}
-            alt='---'
-            className={classes.firstOuterRadial}
-            style={!mobile ? {} : { top: 'calc(20vh + 3.5px)' }}
-          />
-          <img
-            src={SecondErrorRadial}
-            alt='--'
-            className={classes.secondOuterRadial}
-            style={!mobile ? {} : { top: 'calc(20vh + 10px)' }}
-          />
-          <img
-            src={ErrorIcon}
-            alt='Cancelled'
-            className={classes.iconCore}
-            style={!mobile ? {} : { top: 'calc(20vh + 23.5px)' }}
-          />
-          <Box
-            className={classes.innerMainTransparent}
-            style={!mobile ? {} : { top: 'calc(20vh + 18px)' }}
-          />
-          <Box
-            className={classes.innerCoreBackgroundFill}
-            style={!mobile ? {} : { top: 'calc(20vh + 42px)' }}
-          />
-          <Box
-            className={classes.coloredBorderBackgroundForCard}
-            style={
-              palette && palette.type === 'light' ? { background: 'none' } : {}
-            }
-          >
-            <Box className={classes.mainCard}>
-              <Box className={classes.textColumn}>
-                <Box className={classes.topTextWrapper}>
-                  <Typography variant='h2' className={classes.title}>
-                    {!swapModal ? 'Transaction cancelled' : 'Swap cancelled'}
-                  </Typography>
-                  <Typography color='secondary' className={classes.subTitle}>
-                    {txStateMsg}
-                  </Typography>
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer size='md'>
+          <Box width={1} className={classes.wrapper}>
+            <Box
+              className={classes.topIconWraper}
+              style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}
+            >
+              <Box className={classes.innerMainBorderedCircle}></Box>
+            </Box>
+            <img
+              src={MostOuterErrorRadial}
+              alt='---'
+              className={classes.firstOuterRadial}
+              style={!mobile ? {} : { top: 'calc(20vh + 3.5px)' }}
+            />
+            <img
+              src={SecondErrorRadial}
+              alt='--'
+              className={classes.secondOuterRadial}
+              style={!mobile ? {} : { top: 'calc(20vh + 10px)' }}
+            />
+            <img
+              src={ErrorIcon}
+              alt='Cancelled'
+              className={classes.iconCore}
+              style={!mobile ? {} : { top: 'calc(20vh + 23.5px)' }}
+            />
+            <Box
+              className={classes.innerMainTransparent}
+              style={!mobile ? {} : { top: 'calc(20vh + 18px)' }}
+            />
+            <Box
+              className={classes.innerCoreBackgroundFill}
+              style={!mobile ? {} : { top: 'calc(20vh + 42px)' }}
+            />
+            <Box
+              className={classes.coloredBorderBackgroundForCard}
+              style={
+                palette && palette.type === 'light' ? { background: 'none' } : {}
+              }
+            >
+              <Box className={classes.mainCard}>
+                <Box className={classes.textColumn}>
+                  <Box className={classes.topTextWrapper}>
+                    <Typography variant='h2' className={classes.title}>
+                      {!swapModal ? 'Transaction cancelled' : 'Swap cancelled'}
+                    </Typography>
+                    <Typography color='secondary' className={classes.subTitle}>
+                      {txStateMsg}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-            <Box className={classes.exitContainer} onClick={onClose}>
-              <img src={XOut} alt='Exit' />
+              <Box className={classes.exitContainer} onClick={onClose}>
+                <img src={XOut} alt='Exit' />
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };

@@ -1,5 +1,8 @@
-import { ChainId, Token, Currency, WETH as _WETH } from '@uniswap/sdk';
+import { ChainId, Currency, WETH as _WETH } from '@uniswap/sdk';
 
+import { Token } from 'web3/tokens';
+
+export { default as tokenIcons } from './tokenIcons';
 export { default as wallets } from './wallets';
 
 export const AVG_BLOCK_TIME = 13;
@@ -21,113 +24,98 @@ export const BNB: Currency = {
   name: 'Binance Coin',
 };
 
-export const WBNB = new Token(
-  56,
-  '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-  18,
-  'WBNB',
-  'Wrapped BNB',
-);
+export const WBNB: Token = {
+  id: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  decimals: 18,
+  symbol: 'WBNB',
+  name: 'Wrapped BNB',
+};
 
-export const BUSD = new Token(
-  56,
-  '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-  18,
-  'BUSD',
-  'Binance USD',
-);
+export const BUSD: Token = {
+  id: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+  address: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+  decimals: 18,
+  symbol: 'BUSD',
+  name: 'Binance USD',
+};
 
 export const DAI: { [chainId in ChainId | 56]: Token } = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin',
-  ),
-  [ChainId.RINKEBY]: new Token(
-    ChainId.MAINNET,
-    '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
-    18,
-    'DAI',
-    'Dai Stablecoin',
-  ),
-  [ChainId.ROPSTEN]: new Token(
-    ChainId.ROPSTEN,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin',
-  ),
-  [ChainId.GÖRLI]: new Token(
-    ChainId.GÖRLI,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin',
-  ),
-  [ChainId.KOVAN]: new Token(
-    ChainId.KOVAN,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin',
-  ),
+  [ChainId.MAINNET]: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
+  [ChainId.RINKEBY]: {
+    id: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
+    address: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
+  [ChainId.ROPSTEN]: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
+  [ChainId.GÖRLI]: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
+  [ChainId.KOVAN]: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
   56: BUSD,
 };
 
 export const WETH: { [chainId in ChainId | 56]: Token } = {
-  [ChainId.MAINNET]: _WETH[ChainId.MAINNET],
-  [ChainId.ROPSTEN]: _WETH[ChainId.ROPSTEN],
-  [ChainId.RINKEBY]: _WETH[ChainId.RINKEBY],
-  [ChainId.GÖRLI]: _WETH[ChainId.GÖRLI],
-  [ChainId.KOVAN]: _WETH[ChainId.KOVAN],
+  [ChainId.MAINNET]: {
+    id: _WETH[ChainId.MAINNET].address,
+    address: _WETH[ChainId.MAINNET].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
+  [ChainId.RINKEBY]: {
+    id: _WETH[ChainId.RINKEBY].address,
+    address: _WETH[ChainId.RINKEBY].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
+  [ChainId.ROPSTEN]: {
+    id: _WETH[ChainId.ROPSTEN].address,
+    address: _WETH[ChainId.ROPSTEN].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
+  [ChainId.GÖRLI]: {
+    id: _WETH[ChainId.GÖRLI].address,
+    address: _WETH[ChainId.GÖRLI].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
+  [ChainId.KOVAN]: {
+    id: _WETH[ChainId.KOVAN].address,
+    address: _WETH[ChainId.KOVAN].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
   56: WBNB,
-};
-
-export const WBTC: { [chainId in ChainId | 56]: Token } = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
-    '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    8,
-    'WBTC',
-    'Wrapped BTC',
-  ),
-  [ChainId.RINKEBY]: new Token(
-    ChainId.RINKEBY,
-    '0x577d296678535e4903d59a4c929b718e1d575e0a',
-    8,
-    'WBTC',
-    'Wrapped BTC',
-  ),
-  [ChainId.ROPSTEN]: new Token(
-    ChainId.ROPSTEN,
-    '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    8,
-    'WBTC',
-    'Wrapped BTC',
-  ),
-  [ChainId.GÖRLI]: new Token(
-    ChainId.GÖRLI,
-    '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    8,
-    'WBTC',
-    'Wrapped BTC',
-  ),
-  [ChainId.KOVAN]: new Token(
-    ChainId.KOVAN,
-    '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    8,
-    'WBTC',
-    'Wrapped BTC',
-  ),
-  56: new Token(
-    56,
-    '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
-    8,
-    'BTCB',
-    'Binance-Peg BTC',
-  ),
 };
 
 export const defaultSwapPath = (

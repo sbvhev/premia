@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { Button, Typography, Modal, Box } from '@material-ui/core';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Button, Typography, Modal, Box, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
-
+import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useApproval, useTransact, usePools } from 'hooks';
+import { getTokenIcon } from 'utils/getTokenIcon';
+import { formatBigNumber, formatCompact } from 'utils/formatNumber';
+
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
+import floatToBigNumber from 'utils/floatToBigNumber';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   borderedCard: {
@@ -148,13 +153,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       position: 'relative',
       top: -4,
       marginRight: 5,
-
-      '& path': {
-        fill: (props: any) =>
-          props.call
-            ? 'url(#paint_linear_gradient_call_uniswap)'
-            : 'url(#paint_linear_gradient_put_uniswap)',
-      },
     },
   },
   col: {
@@ -183,7 +181,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: -38,
+    top: '-40px',
     left: 14,
     width: 20,
     zIndex: 1,
@@ -224,93 +222,185 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   open,
   onClose,
 }) => {
+  const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const [value, setValue] = useState(100);
+  const { account } = useWeb3();
+  const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
+  const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
+    usePools(true);
+  const transact = useTransact();
+
+  const activePool = useMemo(
+    () => (call ? callPool : putPool),
+    [call, callPool, putPool],
+  );
+  const activePoolContract = useMemo(
+    () => (call ? callPoolContract : putPoolContract),
+    [call, callPoolContract, putPoolContract],
+  );
+  const activeToken = useMemo(
+    () => (call ? activePool?.underlying : activePool?.base),
+    [activePool, call],
+  );
+  const activeTokenBalance = useCurrencyBalance(account, activeToken);
+  const activePoolBalance = formatBigNumber(
+    call ? userOwnedCallPool?.totalAvailable : userOwnedPutPool?.totalAvailable,
+  );
+  const activeBalance = useMemo(
+    () => (type === 'deposit' ? activeTokenBalance : activePoolBalance),
+    [type, activeTokenBalance, activePoolBalance],
+  );
+
+  const { allowance, onApprove } = useApproval(
+    activeToken?.address,
+    activePoolContract?.address,
+  );
+
+  const isAmountAllowed = useMemo(
+    () => allowance > 0 && allowance > (value ?? 0),
+    [allowance, value],
+  );
+
+  const UnderlyingIcon = useMemo(
+    () => getTokenIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
+  const BaseIcon = useMemo(
+    () => getTokenIcon(activePool?.base.symbol),
+    [activePool],
+  );
+
+  const handleWithdrawDeposit = useCallback(() => {
+    if (!value || !activePoolContract || !activeToken) return;
+
+    const depositWithdraw =
+      type === 'deposit'
+        ? activePoolContract!.deposit
+        : activePoolContract!.withdraw;
+
+    const amount = floatToBigNumber(value, activeToken!.decimals);
+
+    transact(depositWithdraw(amount, call))
+      .then(async (tx) => {
+        try {
+          await tx?.wait();
+          onClose();
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .then(onClose);
+  }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer size='md'>
-        <Box className={classes.wrapper}>
-          <Box className={classes.borderedCard}>
-            <Box className={classes.titleBox}>
-              <UniswapIcon />
-              <Typography
-                component='h2'
-                color='textPrimary'
-                className={classes.title}
-              >
-                {call ? `Uni Call pool ${type}` : `Uni Put pool ${type}`}
-              </Typography>
-            </Box>
-            <Box className={classes.topSection}>
-              <Box className={classes.col}>
-                <Box
-                  className={classes.horizontalBox}
-                  style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer size='md'>
+          <Box className={classes.wrapper}>
+            <Box className={classes.borderedCard}>
+              <Box className={classes.titleBox}>
+                <Box height={16}>
+                  <UnderlyingIcon />
+                </Box>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.title}
                 >
-                  <Typography
-                    component='p'
-                    color='textPrimary'
-                    className={classes.elementHeader}
+                  {call
+                    ? `${activePool?.underlying.symbol} Call pool ${type}`
+                    : `${activePool?.underlying.symbol} Put pool ${type}`}
+                </Typography>
+              </Box>
+              <Box className={classes.topSection}>
+                <Box className={classes.col}>
+                  <Box
+                    className={classes.horizontalBox}
+                    style={{ margin: '10px 8px 0', width: 'calc(100% - 16px)' }}
                   >
-                    {type === 'withdraw' ? 'Amount' : 'Uni Amount'}
-                  </Typography>
-                  <Typography
-                    component='p'
-                    color='textSecondary'
-                    className={classes.smallInfoText}
+                    <Typography
+                      component='p'
+                      color='textPrimary'
+                      className={classes.elementHeader}
+                    >
+                      {activeToken?.symbol} Amount
+                    </Typography>
+                    <Typography
+                      component='p'
+                      color='textSecondary'
+                      className={classes.smallInfoText}
+                    >
+                      Max size available:
+                      <b>{formatCompact(activeBalance)}</b>
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    width='100%'
+                    height='46px'
+                    style={{ position: 'relative' }}
                   >
-                    Max size available:
-                    <b>40012</b>
-                  </Typography>
+                    <input
+                      value={value}
+                      onChange={(event: any) => setValue(event.target.value)}
+                      className={classes.borderedInput}
+                    />
+
+                    {call ? (
+                      <UnderlyingIcon className={classes.inputIcon} />
+                    ) : (
+                      <BaseIcon className={classes.inputIcon} />
+                    )}
+
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      className={classes.maxButton}
+                      onClick={() => setValue(Number(activeBalance || 0))}
+                    >
+                      MAX
+                    </Button>
+                  </Box>
                 </Box>
 
                 <Box
-                  width='100%'
-                  height='46px'
-                  style={{ position: 'relative' }}
+                  className={classes.horizontalBox}
+                  style={{ marginTop: '16px' }}
                 >
-                  <input
-                    value={value}
-                    onChange={() => {}}
-                    className={classes.borderedInput}
-                  />
-                  <UniswapIcon className={classes.inputIcon} />
                   <Button
-                    color='primary'
-                    variant='outlined'
-                    size='small'
-                    className={classes.maxButton}
-                    onClick={() => {
-                      setValue(40012);
-                    }}
+                    fullWidth
+                    disabled={Number(value) <= 0}
+                    color={call ? 'primary' : 'secondary'}
+                    variant='contained'
+                    size='large'
+                    onClick={() =>
+                      isAmountAllowed ? handleWithdrawDeposit() : onApprove()
+                    }
                   >
-                    MAX
+                    {isAmountAllowed
+                      ? `Confirm`
+                      : `Approve ${activeToken?.symbol}`}
                   </Button>
                 </Box>
               </Box>
-
-              <Box
-                className={classes.horizontalBox}
-                style={{ marginTop: '16px' }}
-              >
-                <Button
-                  color={call ? 'primary' : 'secondary'}
-                  variant='contained'
-                  size='large'
-                  fullWidth
-                >
-                  Confirm
-                </Button>
-              </Box>
+            </Box>
+            <Box onClick={onClose} className={classes.exitContainer}>
+              <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
             </Box>
           </Box>
-          <Box onClick={onClose} className={classes.exitContainer}>
-            <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
-          </Box>
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };

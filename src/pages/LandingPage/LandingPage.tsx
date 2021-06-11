@@ -51,10 +51,9 @@ import { ReactComponent as ConsetellationMobileEight } from 'assets/svg/mobile/C
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
-import { ReactComponent as TradeOptionsSVG } from 'assets/images/TradeOptions.svg';
-import { ReactComponent as VaultsBasicSVG } from 'assets/images/Vaults.svg';
-import { ReactComponent as VaultsProSVG } from 'assets/images/VaultsPro.svg';
-import HeroImage from 'assets/images/HeroImage.png';
+import TradeOptionsSVGBackground from 'assets/images/TradeOptions.svg';
+import VaultsBasicSVGBackground from 'assets/images/VaultBasic.svg';
+import VaultsProSVGBackground from 'assets/images/VaultPro.svg';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 
@@ -166,11 +165,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'relative',
   },
   topSectionRight: {
-    width: '50%',
-    backgroundImage: `url("${HeroImage}")`,
-    backgroundSize: '100% auto',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      width: '100%',
+      height: '100%',
+      border: 'none',
+    },
 
     [breakpoints.down('sm')]: {
       width: '100%',
@@ -199,10 +201,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.between('sm', 'md')]: {
       padding: '40px 0',
+      height: 500,
     },
   },
   gradientTitle: {
-    fontSize: 55,
+    fontSize: 53,
     lineHeight: '51px',
     fontWeight: 700,
     background:
@@ -328,6 +331,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
+    '& $rightSideImage': {
+      backgroundImage: `url("${TradeOptionsSVGBackground}")`,
+    },
+
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -339,6 +346,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 180,
     position: 'relative',
 
+    '& $rightSideImage': {
+      backgroundImage: `url("${VaultsBasicSVGBackground}")`,
+    },
+
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
@@ -348,6 +359,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 0,
+
+    '& $rightSideImage': {
+      backgroundImage: `url("${VaultsProSVGBackground}")`,
+    },
 
     [breakpoints.down('sm')]: {
       marginBottom: 0,
@@ -364,6 +379,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   tradeOptionsSubTitle: {
     marginBottom: 36,
+
+    [breakpoints.down('sm')]: {
+      marginBottom: 0,
+      fontSize: 12,
+      lineHeight: '16px',
+      position: 'relative',
+      top: -20,
+    },
   },
   white: {
     fontSize: 42,
@@ -381,8 +404,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   rightSideImage: {
     width: '45%',
-    height: 360,
+    height: 410,
     position: 'relative',
+    backgroundSize: 'contain',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
 
     '& svg:first-of-type': {
       zIndex: 300000,
@@ -390,9 +416,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.down('sm')]: {
       width: '100%',
+      height: 300,
 
       '& svg': {
         width: '100%',
+        height: '100%',
       },
     },
   },
@@ -434,6 +462,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('sm')]: {
       width: '100%',
       paddingLeft: 56,
+      paddingRight: 40,
       display: 'flex',
       flexDirection: 'column',
     },
@@ -441,7 +470,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   outlinedButton: {
     marginBottom: 60,
     borderRadius: 12,
-    border: '1.5px solid #5294FF',
+    border: '2px solid #5294FF',
     padding: '10px 30px',
     width: 200,
     height: 45,
@@ -451,14 +480,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: 'transparent',
 
     '&:hover': {
-      border: '1.5px solid #5294FF',
-      background: 'transparent',
-      opacity: 0.8,
+      border: '2px solid #5294FF',
+      background: '#5294FF',
+      color: 'black',
     },
 
     '&:active': {
-      color: '#5294FF',
-      background: 'rgba(82, 148, 255, 0.1)',
+      color: 'black',
+      background: '#5294FF',
     },
   },
   divider: {
@@ -468,9 +497,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: '100%',
     backgroundImage: `url("${BackgroundTop}")`,
     backgroundSize: '100% auto',
-    backgroundPosition: 'center',
+    backgroundPosition: 'top',
     backgroundRepeat: 'no-repeat',
-    height: 410,
+    height: 440,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -492,7 +521,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
-      top: -120,
+      top: -80,
       height: 200,
 
       '& > div': {
@@ -860,9 +889,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     width: '100%',
     backgroundImage: `url("${BackgroundBottom}")`,
     backgroundSize: '100% auto',
-    backgroundPosition: 'center',
+    backgroundPosition: 'top',
     backgroundRepeat: 'no-repeat',
-    height: 410,
+    height: 440,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -957,7 +986,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     left: 20,
     top: 3,
 
-    [breakpoints.down('sm')]: {
+    [breakpoints.between('md', 'lg')]: {
+      left: -60,
+    },
+
+    [breakpoints.down('md')]: {
       display: 'none',
     },
   },
@@ -1082,7 +1115,7 @@ const LandingPage: React.FC = () => {
       <AppBar position='static' className={classes.appBar}>
         <Toolbar>
           <Container className={classes.container}>
-            <AnchorLink href="#hero" onClick={preventDefault}>
+            <AnchorLink href='#hero' onClick={preventDefault}>
               <PremiaLogo />
             </AnchorLink>
 
@@ -1134,7 +1167,12 @@ const LandingPage: React.FC = () => {
                     <MediumIcon />
                   </AnchorLink>
                 </Box>
-                <Button className={classes.openApp} onClick={() => history.push('/positions')}>Open App</Button>
+                <Button
+                  className={classes.openApp}
+                  onClick={() => history.push('/positions')}
+                >
+                  Open App
+                </Button>
               </Box>
             )}
             {mobile && !menuOpen && (
@@ -1155,7 +1193,12 @@ const LandingPage: React.FC = () => {
       {menuOpen && mobile && (
         <Box className={classes.mobileMenu}>
           <Box>
-            <Button className={classes.openApp} onClick={() => history.push('/positions')}>Open App</Button>
+            <Button
+              className={classes.openApp}
+              onClick={() => history.push('/positions')}
+            >
+              Open App
+            </Button>
           </Box>
           <Box>
             <AnchorLink href='#' onClick={preventDefault}>
@@ -1188,7 +1231,7 @@ const LandingPage: React.FC = () => {
       )}
       <Container className={classes.body}>
         {!mobile && <Consetellation className={classes.consetellation} />}
-        <Box className={classes.topSection} id="hero">
+        <Box className={classes.topSection} id='hero'>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
               Permissionless options and metavaults
@@ -1198,9 +1241,16 @@ const LandingPage: React.FC = () => {
               based on market volatility, bringing fully-featured peer-to-pool
               trading and capital efficiency to DeFi options.
             </Typography>
-            <Button className={classes.openAppBig} onClick={() => history.push('/positions')}>Open App</Button>
+            <Button
+              className={classes.openAppBig}
+              onClick={() => history.push('/positions')}
+            >
+              Open App
+            </Button>
           </Box>
-          <Box className={classes.topSectionRight}></Box>
+          <Box className={classes.topSectionRight}>
+            <iframe src='./iframe.html' title='top right image'></iframe>
+          </Box>
         </Box>
         {!mobile && <ConsetellationTwo className={classes.consetellationTwo} />}
         <Box className={classes.explorePremia} id='explore-premia'>
@@ -1227,11 +1277,7 @@ const LandingPage: React.FC = () => {
               Buy and sell options using Premia’s state of the art automated
               peer-to-pool market making algorithm.
             </Typography>
-            {mobile && (
-              <Box className={classes.rightSideImage}>
-                <TradeOptionsSVG />
-              </Box>
-            )}
+            {mobile && <Box className={classes.rightSideImage}></Box>}
             <Button
               variant='outlined'
               color='primary'
@@ -1249,9 +1295,7 @@ const LandingPage: React.FC = () => {
               onClick={() => {
                 history.push('/options');
               }}
-            >
-              <TradeOptionsSVG />
-            </Box>
+            ></Box>
           )}
           {mobile && (
             <ConsetellationMobileThree
@@ -1271,11 +1315,7 @@ const LandingPage: React.FC = () => {
               underwriting on-chain options and other baskets of structured
               finance products.
             </Typography>
-            {mobile && (
-              <Box className={classes.rightSideImage}>
-                <VaultsBasicSVG />
-              </Box>
-            )}
+            {mobile && <Box className={classes.rightSideImage}></Box>}
             <Button
               variant='outlined'
               color='primary'
@@ -1293,9 +1333,7 @@ const LandingPage: React.FC = () => {
               onClick={() => {
                 history.push('/vaults?tab=basic');
               }}
-            >
-              <VaultsBasicSVG />
-            </Box>
+            ></Box>
           )}
           {mobile && (
             <ConsetellationMobileFour
@@ -1315,7 +1353,6 @@ const LandingPage: React.FC = () => {
             </Typography>
             {mobile && (
               <Box className={classes.rightSideImage}>
-                <VaultsProSVG />
                 {!mobile && (
                   <ConsetellationFour className={classes.consetellationFour} />
                 )}
@@ -1339,7 +1376,6 @@ const LandingPage: React.FC = () => {
                 history.push('/vaults?tab=pro');
               }}
             >
-              <VaultsProSVG />
               <ConsetellationFour className={classes.consetellationFour} />
             </Box>
           )}
@@ -1353,8 +1389,22 @@ const LandingPage: React.FC = () => {
               {!mobile && <MediumIcon />}
               <Typography>Interested in learning more about Premia?</Typography>
             </Box>
-            {!mobile && <Button onClick={() => window.open('https://premia.medium.com', '_blank')}>Learn More</Button>}
-            {mobile && <ArrowCircleIcon onClick={() => window.open('https://premia.medium.com', '_blank')} />}
+            {!mobile && (
+              <Button
+                onClick={() =>
+                  window.open('https://premia.medium.com', '_blank')
+                }
+              >
+                Learn More
+              </Button>
+            )}
+            {mobile && (
+              <ArrowCircleIcon
+                onClick={() =>
+                  window.open('https://premia.medium.com', '_blank')
+                }
+              />
+            )}
           </Box>
         </Container>
         {!mobile && <ConsetellationSix />}
@@ -1412,8 +1462,18 @@ const LandingPage: React.FC = () => {
               Dive into our open collection of decentralized financial research
             </Typography>
           </Box>
-          {!mobile && <Button onClick={() => window.open('https://docs.premia.com', '_blank')}>Our Research</Button>}
-          {mobile && <ArrowCircleIcon onClick={() => window.open('https://docs.premia.com', '_blank')} />}
+          {!mobile && (
+            <Button
+              onClick={() => window.open('https://docs.premia.com', '_blank')}
+            >
+              Our Research
+            </Button>
+          )}
+          {mobile && (
+            <ArrowCircleIcon
+              onClick={() => window.open('https://docs.premia.com', '_blank')}
+            />
+          )}
         </Box>
         {!mobile && (
           <ConsetellationEight className={classes.consetellationEight} />
@@ -1507,8 +1567,22 @@ const LandingPage: React.FC = () => {
               finance.
             </Typography>
           </Box>
-          {!mobile && <Button onClick={() => window.open('https://careers.premia.com', '_blank')}>Careers</Button>}
-          {mobile && <ArrowCircleIcon onClick={() => window.open('https://careers.premia.com', '_blank')} />}
+          {!mobile && (
+            <Button
+              onClick={() =>
+                window.open('https://careers.premia.com', '_blank')
+              }
+            >
+              Careers
+            </Button>
+          )}
+          {mobile && (
+            <ArrowCircleIcon
+              onClick={() =>
+                window.open('https://careers.premia.com', '_blank')
+              }
+            />
+          )}
         </Box>
       </Container>
       <Box className={classes.footer}>
@@ -1520,7 +1594,7 @@ const LandingPage: React.FC = () => {
         <Box className={classes.footerBar}>
           <Container className={classes.footerBarInner}>
             <Box>
-              <AnchorLink href="#hero" onClick={preventDefault}>
+              <AnchorLink href='#hero' onClick={preventDefault}>
                 <PremiaLogo />
               </AnchorLink>
 
