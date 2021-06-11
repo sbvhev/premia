@@ -7,7 +7,10 @@ import { formatNumber } from 'utils/formatNumber';
 
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
-import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
+import { useDarkModeManager } from 'state/user/hooks';
+import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
+
+import { ContainedButton } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -156,6 +159,8 @@ const useStyles = makeStyles(({ palette }) => ({
     zIndex: 2,
     '&:hover': {
       backgroundColor: palette.primary.dark,
+      border: `1px solid ${palette.primary.main}`,
+      color: palette.primary.main,
     },
     '&:focus': {
       borderColor: palette.primary.main,
@@ -165,21 +170,30 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   inputIcon: {
-    position: 'relative',
-    top: -38,
-    left: 14,
-    zIndex: 1,
+    '& svg ': {
+      position: 'relative',
+      top: -30,
+      left: 14,
+      zIndex: 1,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+    },
   },
   maxButton: {
+    width: '74px',
     position: 'relative',
-    top: -43,
-    right: -260,
+    top: -63,
+    right: -269,
     zIndex: 3,
   },
   maxButtonMobile: {
+    width: '74px',
     position: 'relative',
-    top: -43,
-    right: -227,
+    top: -62,
+    right: -236,
     zIndex: 3,
   },
   elementHeader: {
@@ -203,14 +217,14 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '12px',
+    padding: '12px 16px',
     height: '158px',
   },
   botSectionMobile: {
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '12px 8px',
+    padding: '12px 20px',
   },
   progressBarAndTime: {
     display: 'flex',
@@ -245,7 +259,9 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [darkMode] = useDarkModeManager();
   const [stakeAmount, setStakeAmount] = React.useState('');
 
   const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -289,6 +305,14 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
       )}
       <Box
         className={!mobile ? classes.borderedCard : classes.borderedCardMobile}
+        style={
+          darkMode
+            ? {}
+            : {
+                borderColor: 'transparent',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+              }
+        }
       >
         <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
           {mobile && (
@@ -348,40 +372,39 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
               </Typography>
             </Box>
 
-            <Box width='100%' height='46px'>
+            <Box width='100%' height='46px' className={classes.inputIcon}>
               <input
                 value={stakeAmount}
                 onChange={handleChangeStakeAmount}
                 className={classes.borderedInput}
               />
-              <img
-                src={greyLogo}
-                alt='Select Amount'
-                className={classes.inputIcon}
-              />
-              <Button
-                color='primary'
-                variant='outlined'
-                size='small'
-                onClick={handleMax}
+              <PremiaWhite fill={palette.text.primary} />
+              <Box
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile
                 }
               >
-                MAX
-              </Button>
+                <Button
+                  color='primary'
+                  variant='outlined'
+                  size='small'
+                  fullWidth
+                  onClick={handleMax}
+                >
+                  MAX
+                </Button>
+              </Box>
             </Box>
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Button
-              size='large'
-              color='primary'
-              variant='contained'
-              className={classes.buttonLeft}
-            >
-              Stake
-            </Button>
+            <Box className={classes.buttonLeft}>
+              <ContainedButton
+                label={'Stake'}
+                fullWidth
+                onClick={() => alert}
+              />
+            </Box>
             <Button
               color='secondary'
               variant='outlined'

@@ -131,9 +131,9 @@ ul.bn-notify-custom.bn-notify-notifications {
 
 .bn-onboard-custom.bn-onboard-modal-content
   .bn-onboard-custom.bn-onboard-prepare-button {
-  border: 1px solid #E9E9E9;
+  border: 1px solid #e9e9e9;
   border-radius: 12px;
-  color: #8D97A0;
+  color: #8d97a0;
   text-align: center;
   padding: 14px 38px;
   font-weight: 500;
@@ -194,15 +194,17 @@ ul.bn-notify-custom.bn-notify-notifications {
 }
 
 .bn-onboard-modal-content .bn-onboard-modal-content-header h3 {
-  color: #29343E;
+  color: #29343e;
   font-size: 28px;
   font-weight: 700;
   line-height: 18px;
   margin: 0 auto;
 }
 
-.bn-onboard-modal-content.bn-onboard-dark-mode .bn-onboard-modal-content-header h3 {
-  color: #DCDCDC;
+.bn-onboard-modal-content.bn-onboard-dark-mode
+  .bn-onboard-modal-content-header
+  h3 {
+  color: #dcdcdc;
   font-size: 28px;
   font-weight: 700;
   line-height: 18px;
@@ -213,7 +215,7 @@ ul.bn-notify-custom.bn-notify-notifications {
   font-size: 14px;
   line-height: 18px;
   font-weight: 500;
-  color: #8D97A0;
+  color: #8d97a0;
   font-family: 'DM Sans';
   margin-bottom: 6rem;
   padding: 0 3rem;
@@ -227,24 +229,28 @@ ul.bn-notify-custom.bn-notify-notifications {
   width: 100%;
 }
 
-.bn-onboard-modal-content .bn-onboard-prepare-button-container .bn-onboard-loading-container {
+.bn-onboard-modal-content
+  .bn-onboard-prepare-button-container
+  .bn-onboard-loading-container {
   margin-top: -9rem;
   position: absolute;
 }
 
-.bn-onboard-modal-content .bn-onboard-prepare-button-container .bn-onboard-prepare-button {
+.bn-onboard-modal-content
+  .bn-onboard-prepare-button-container
+  .bn-onboard-prepare-button {
   position: initial;
 }
 
 .bn-onboard-custom.bn-onboard-loading {
   width: 56px;
-  height: 56px
+  height: 56px;
 }
 
 .bn-onboard-custom.bn-onboard-loading > div {
   width: 56px;
   height: 56px;
-  border-color: #5294FF transparent transparent transparent;
+  border-color: #5294ff transparent transparent transparent;
 }
 
 .bn-onboard-custom.bn-onboard-modal-content-close {

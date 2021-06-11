@@ -12,8 +12,10 @@ import { isToken, Token } from 'web3/tokens';
 import { useTokenBalance } from 'state/wallet/hooks';
 import { formatNumber } from 'utils/formatNumber';
 
-import PremiaBlue from 'assets/svg/PremiaLogoSmallBlue.svg';
-import PremiaRed from 'assets/svg/PremiaLogoSmallRed.svg';
+import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
+import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
+
+import { useDarkModeManager } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   col: {
@@ -111,8 +113,8 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   redPremiaIcon: {
     position: 'relative',
-    top: 2,
-    left: -42,
+    top: 4,
+    left: -38,
     zIndex: 5,
     opacity: 1,
   },
@@ -122,6 +124,7 @@ const Stake: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const { account, chainId } = useWeb3();
+  const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const chain = chainId ? chainId.toString() : '';
@@ -205,10 +208,18 @@ const Stake: React.FC = () => {
           <Box
             className={classes.borderedBox}
             width={!mobile ? '190px' : '50%'}
-            style={{ marginRight: '6px' }}
+            marginRight='6px'
+            style={
+              darkMode
+                ? {}
+                : {
+                    borderColor: 'transparent',
+                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                  }
+            }
           >
             <Box className={classes.premiaBox1}>
-              <img src={PremiaBlue} alt='Premia' style={{ marginTop: '3px' }} />
+              <PremiaBlue />
             </Box>
             <Box className={classes.col} style={{ margin: '4px 0' }}>
               <Typography
@@ -233,14 +244,23 @@ const Stake: React.FC = () => {
             className={classes.borderedBox}
             justifyContent='flex-start'
             width={!mobile ? '190px' : '50%'}
+            style={
+              darkMode
+                ? {}
+                : {
+                    borderColor: 'transparent',
+                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                  }
+            }
           >
             <Box className={classes.premiaBox2}></Box>
-            <img
-              src={PremiaRed}
-              alt='xPremia'
-              className={classes.redPremiaIcon}
-            />
-            <Box className={classes.colRelative} style={{ margin: '4px 0' }}>
+            <Box className={classes.redPremiaIcon}>
+              <PremiaRed />
+            </Box>
+            <Box
+              className={classes.colRelative}
+              style={{ margin: '4px 0 4px 8px' }}
+            >
               <Typography
                 component='p'
                 color='textSecondary'
