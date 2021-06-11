@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Modal, Box, Paper } from '@material-ui/core';
+import { Typography, Modal, Box, Paper, Fade, Backdrop } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
@@ -384,138 +384,148 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   const { palette } = theme;
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer className={classes.container} size='sm'>
-        <Box width={1} className={classes.wrapper}>
-          <Box
-            className={classes.topIconWraper}
-            style={!mobile ? {} : { top: 'calc(20vh + 5px)' }}
-          >
-            <Box className={classes.innerMainBorderedCircle}></Box>
-          </Box>
-          <img
-            src={MostOuterSuccessRadial}
-            alt='---'
-            className={classes.firstOuterRadial}
-            style={!mobile ? {} : { top: 'calc(20vh + 5.5px)' }}
-          />
-          <img
-            src={SecondSuccessRadial}
-            alt='--'
-            className={classes.secondOuterRadial}
-            style={!mobile ? {} : { top: 'calc(20vh + 12px)' }}
-          />
-          <img
-            src={SuccessIcon}
-            alt='Success'
-            className={classes.iconCore}
-            style={!mobile ? {} : { top: 'calc(20vh + 25.5px)' }}
-          />
-          <Box
-            className={classes.innerMainTransparent}
-            style={!mobile ? {} : { top: 'calc(20vh + 20px)' }}
-          />
-          <Box
-            className={classes.innerCoreBackgroundFill}
-            style={!mobile ? {} : { top: 'calc(20vh + 42.5px)' }}
-          />
-          <Box
-            className={classes.coloredBorderBackgroundForCard}
-            style={
-              palette && palette.type === 'light' ? { background: 'none' } : {}
-            }
-          >
-            <Box className={classes.mainCard}>
-              <Box className={classes.textColumn}>
-                <Box className={classes.topTextWrapper}>
-                  <Typography variant='h2' className={classes.title}>
-                    Position closed
-                  </Typography>
-                  <Typography color='secondary' className={classes.subTitle}>
-                    {txStateMsg}
-                  </Typography>
-                  <Paper className={classes.paperWrapper}>
-                    <Box className={classes.boxWrapper}>
-                      <Typography
-                        color='secondary'
-                        className={classes.subTitle}
-                      >
-                        Asset
-                      </Typography>
-                      <Box className={classes.boxLine}>
-                        <UniswapIcon />
-                        <Typography>Uni</Typography>
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500
+      }}
+    >
+      <Fade in={open}>
+        <ModalContainer className={classes.container} size='sm'>
+          <Box width={1} className={classes.wrapper}>
+            <Box
+              className={classes.topIconWraper}
+              style={!mobile ? {} : { top: 'calc(20vh + 5px)' }}
+            >
+              <Box className={classes.innerMainBorderedCircle}></Box>
+            </Box>
+            <img
+              src={MostOuterSuccessRadial}
+              alt='---'
+              className={classes.firstOuterRadial}
+              style={!mobile ? {} : { top: 'calc(20vh + 5.5px)' }}
+            />
+            <img
+              src={SecondSuccessRadial}
+              alt='--'
+              className={classes.secondOuterRadial}
+              style={!mobile ? {} : { top: 'calc(20vh + 12px)' }}
+            />
+            <img
+              src={SuccessIcon}
+              alt='Success'
+              className={classes.iconCore}
+              style={!mobile ? {} : { top: 'calc(20vh + 25.5px)' }}
+            />
+            <Box
+              className={classes.innerMainTransparent}
+              style={!mobile ? {} : { top: 'calc(20vh + 20px)' }}
+            />
+            <Box
+              className={classes.innerCoreBackgroundFill}
+              style={!mobile ? {} : { top: 'calc(20vh + 42.5px)' }}
+            />
+            <Box
+              className={classes.coloredBorderBackgroundForCard}
+              style={
+                palette && palette.type === 'light' ? { background: 'none' } : {}
+              }
+            >
+              <Box className={classes.mainCard}>
+                <Box className={classes.textColumn}>
+                  <Box className={classes.topTextWrapper}>
+                    <Typography variant='h2' className={classes.title}>
+                      Position closed
+                    </Typography>
+                    <Typography color='secondary' className={classes.subTitle}>
+                      {txStateMsg}
+                    </Typography>
+                    <Paper className={classes.paperWrapper}>
+                      <Box className={classes.boxWrapper}>
+                        <Typography
+                          color='secondary'
+                          className={classes.subTitle}
+                        >
+                          Asset
+                        </Typography>
+                        <Box className={classes.boxLine}>
+                          <UniswapIcon />
+                          <Typography>Uni</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Box className={classes.boxWrapper}>
-                      <Typography
-                        color='secondary'
-                        className={classes.subTitle}
-                      >
-                        Type
-                      </Typography>
-                      <Box className={cx(classes.boxLine, classes.callBox)}>
-                        <ArrowUpwardIcon />
-                        <Typography>Call</Typography>
+                      <Box className={classes.boxWrapper}>
+                        <Typography
+                          color='secondary'
+                          className={classes.subTitle}
+                        >
+                          Type
+                        </Typography>
+                        <Box className={cx(classes.boxLine, classes.callBox)}>
+                          <ArrowUpwardIcon />
+                          <Typography>Call</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Box className={classes.boxWrapper}>
-                      <Typography
-                        color='secondary'
-                        className={classes.subTitle}
-                      >
-                        Purchase price
-                      </Typography>
-                      <Box className={classes.boxLine}>
-                        <DaiIcon />
-                        <Typography>15,002</Typography>
+                      <Box className={classes.boxWrapper}>
+                        <Typography
+                          color='secondary'
+                          className={classes.subTitle}
+                        >
+                          Purchase price
+                        </Typography>
+                        <Box className={classes.boxLine}>
+                          <DaiIcon />
+                          <Typography>15,002</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Box className={classes.boxWrapper}>
-                      <Typography
-                        color='secondary'
-                        className={classes.subTitle}
-                      >
-                        Exit price
-                      </Typography>
-                      <Box className={classes.boxLine}>
-                        <DaiIcon />
-                        <Typography>18,002</Typography>
+                      <Box className={classes.boxWrapper}>
+                        <Typography
+                          color='secondary'
+                          className={classes.subTitle}
+                        >
+                          Exit price
+                        </Typography>
+                        <Box className={classes.boxLine}>
+                          <DaiIcon />
+                          <Typography>18,002</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Box className={classes.boxWrapper}>
-                      <Typography className={classes.subTitle}>
-                        Profit
-                      </Typography>
-                      <Box className={cx(classes.boxLine, classes.profitBox)}>
-                        <Typography>15%</Typography>
+                      <Box className={classes.boxWrapper}>
+                        <Typography className={classes.subTitle}>
+                          Profit
+                        </Typography>
+                        <Box className={cx(classes.boxLine, classes.profitBox)}>
+                          <Typography>15%</Typography>
+                        </Box>
                       </Box>
+                    </Paper>
+                    <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
+                    <Box className={classes.socialLinks}>
+                      <TwitterIcon />
+                      <TelegramIcon />
+                      <FacebookIcon />
+                      <DiscordIcon />
+                      <ForumIcon />
                     </Box>
-                  </Paper>
-                  <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
-                  <Box className={classes.socialLinks}>
-                    <TwitterIcon />
-                    <TelegramIcon />
-                    <FacebookIcon />
-                    <DiscordIcon />
-                    <ForumIcon />
+                    <Typography
+                      color='secondary'
+                      className={classes.hyperlink}
+                      onClick={onClose}
+                    >
+                      Not right now
+                    </Typography>
                   </Box>
-                  <Typography
-                    color='secondary'
-                    className={classes.hyperlink}
-                    onClick={onClose}
-                  >
-                    Not right now
-                  </Typography>
                 </Box>
               </Box>
-            </Box>
-            <Box className={classes.exitContainer} onClick={onClose}>
-              <img src={XOut} alt='Exit' />
+              <Box className={classes.exitContainer} onClick={onClose}>
+                <img src={XOut} alt='Exit' />
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </ModalContainer>
+        </ModalContainer>
+      </Fade>
     </Modal>
   );
 };

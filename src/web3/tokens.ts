@@ -8,6 +8,8 @@ export interface Token extends Currency {
   symbol: string;
   decimals: number;
   address: string;
+  logoURI?: string;
+  chainId?: number;
 }
 
 export function isToken(object: any): object is Token {

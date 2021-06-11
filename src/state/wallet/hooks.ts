@@ -149,7 +149,9 @@ export function useCurrencyBalances(
   const containsBase: boolean = useMemo(
     () =>
       currencies?.some((currency?: Currency) =>
-        chainId === 56 ? currency === BNB : currency === ETHER,
+        chainId === 56
+          ? currency?.symbol === BNB.symbol
+          : currency?.symbol === ETHER.symbol,
       ) ?? false,
     [currencies, chainId],
   );
@@ -159,7 +161,7 @@ export function useCurrencyBalances(
     () =>
       currencies?.map((currency) => {
         if (!account || account === '' || !currency) return undefined;
-        if (currency === ETHER || currency.symbol === BNB.symbol)
+        if (currency.symbol === ETHER.symbol || currency.symbol === BNB.symbol)
           return baseBalance[account];
         if (isToken(currency)) return tokenBalances[currency.address];
 
