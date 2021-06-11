@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { useDarkModeManager } from 'state/user/hooks';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { EligibleTradingModal } from 'components';
 import TradingCompetitionBanner from 'assets/images/TradingCompetitionBanner.png';
 import PrizeFirst from 'assets/svg/PrizeFirst.svg';
 import PrizeSecond from 'assets/svg/PrizeSecond.svg';
@@ -189,9 +190,16 @@ const TradingCompetition: React.FC = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ darkMode, mobile });
+  const [ eligibleTradingModalOpen, setEligibleTradingModalOpen ] = useState(false);
 
   return (
     <>
+      <EligibleTradingModal
+        open={eligibleTradingModalOpen}
+        onClose={() => {
+          setEligibleTradingModalOpen(false)
+        }}
+      />
       <Typography
         component='h1'
         color='textPrimary'
@@ -230,7 +238,15 @@ const TradingCompetition: React.FC = () => {
           </Container>
         </Grid>
         <Grid item sm={4} className={classes.competitionButtons}>
-          <Button variant='contained' color='primary'>Check if I am eligible</Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              setEligibleTradingModalOpen(true);
+            }}
+          >
+            Check if I am eligible
+          </Button>
           <Button variant='outlined'>Claim tokens</Button>
           <Button variant='outlined'>Switch to Rinkeby testnet</Button>
           <Container fixed className={classes.competitionPrize}>
