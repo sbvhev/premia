@@ -2,19 +2,27 @@ import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { Box, Typography, Button, CircularProgress } from '@material-ui/core';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Checkbox,
+} from '@material-ui/core';
 import { formatNumber } from 'utils/formatNumber';
 
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
 import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
+import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
+// import TickForCheckBox from 'assets/svg/TickOnCheckBox.svg';
 
 import { ContainedButton } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '610px',
+    height: '642px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
@@ -23,7 +31,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    height: '480px',
+    height: '501px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
@@ -36,7 +44,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    height: '545px',
+    height: '577px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -47,7 +55,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '335px',
-    height: '480px',
+    // height: '501px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -116,7 +124,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     padding: '0 16px 12px',
-    height: '230px',
+    height: '262px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -246,6 +254,18 @@ const useStyles = makeStyles(({ palette }) => ({
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
   },
+  checkbox: {
+    margin: '2px 10px 2px 0',
+    padding: '0',
+    '&:hover': {
+      backgroundColor: palette.primary,
+    },
+  },
+  hardwareWalletApprovalText: {
+    fontWeight: 500,
+    fontSize: '13px',
+    lineHeight: '24px',
+  },
 }));
 
 interface StakePremiaCardProps {
@@ -262,6 +282,8 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
+  const [checkIsOn, setCheckIsOn] = React.useState(false);
+
   const [stakeAmount, setStakeAmount] = React.useState('');
 
   const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -292,6 +314,12 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
     if (premiaBalance) {
       setStakeAmount(premiaBalance);
     }
+  };
+
+  const handleDisclaimerCheck = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCheckIsOn(!checkIsOn);
   };
 
   return (
@@ -413,6 +441,55 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
             >
               Unstake
             </Button>
+          </Box>
+
+          <Box display='flex' width='100%' marginTop='12px'>
+            <Checkbox
+              checked={checkIsOn}
+              onChange={handleDisclaimerCheck}
+              name='agreeToTerms'
+              size='small'
+              className={classes.checkbox}
+              icon={<CustomCheckBox />}
+              checkedIcon={
+                <svg
+                  width='20'
+                  height='20'
+                  viewBox='0 0 20 20'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <rect
+                    width='20'
+                    height='20'
+                    rx='4'
+                    fill='#5294FF'
+                    fill-opacity='0.2'
+                  />
+                  <rect
+                    x='0.5'
+                    y='0.5'
+                    width='19'
+                    height='19'
+                    rx='3.5'
+                    stroke='#5294FF'
+                    stroke-opacity='0.5'
+                  />
+                  <path
+                    d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
+                    fill='#5294FF'
+                  />
+                </svg>
+              }
+            />
+            <Typography
+              component='p'
+              color='textSecondary'
+              className={classes.hardwareWalletApprovalText}
+              style={mobile ? { fontSize: '11.5px' } : {}}
+            >
+              Use Approve (required by some hardware wallets)
+            </Typography>
           </Box>
         </Box>
 
