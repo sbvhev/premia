@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { ModalContainer, ClaimTokensModal } from 'components';
+import { ModalContainer } from 'components';
 
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
@@ -172,6 +172,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
       color: palette.text.secondary,
+      cursor: 'pointer'
     },
     '& > div': {
       margin: '8px 0 15px',
@@ -185,12 +186,18 @@ const useStyles = makeStyles(({ palette }) => ({
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 10,
+        cursor: 'pointer',
         '&:last-child': {
           marginRight: 0
         },
         '& svg path': {
           fill: palette.text.secondary
-        }
+        },
+        '&:hover, &:active': {
+          '& svg path': {
+            fill: palette.text.primary
+          },
+        },
       }
     }
   }

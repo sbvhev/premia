@@ -174,12 +174,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 10,
+        cursor: 'pointer',
         '&:last-child': {
           marginRight: 0
         },
         '& svg path': {
           fill: palette.text.secondary
-        }
+        },
+        '&:hover, &:active': {
+          '& svg path': {
+            fill: palette.text.primary
+          },
+        },
       }
     }
   }
