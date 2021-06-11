@@ -21,6 +21,7 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 import { usePrices } from 'state/application/hooks';
 import { formatBigNumber, formatNumber } from 'utils/formatNumber';
+import { UserOwnedPool } from 'web3/pools';
 import { OptionType, UserOwnedOption } from 'web3/options';
 import { useAllUserOwnedPools, useUserOwnedOptions } from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
@@ -34,10 +35,6 @@ import {
 } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
-import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
-import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
@@ -70,7 +67,7 @@ const getYieldHeadCells = () => [
   {
     id: 'typename',
     numeric: false,
-    label: 'Type&name',
+    label: 'Type & Name',
     sortKey: (yieldItem: any) => yieldItem?.name,
   },
   {
@@ -954,70 +951,33 @@ const Positions: React.FC = () => {
   ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
 
-  const yieldData = [
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      capital: 15002,
-      type: 'vault',
-      name: 'Medium Risk',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <LinkIcon />,
-      symbol: 'Link',
-      capital: 15002,
-      option: OptionType.Call,
-      type: 'pool',
-      name: 'Link Call Pool',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <YFIIcon />,
-      symbol: 'YFI',
-      capital: 15002,
-      option: 'PUT',
-      type: 'pool',
-      name: 'Uni Put Pool',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      capital: 15002,
-      type: 'vault',
-      name: 'Low Risk',
-      earned: 100,
-      apy: 24,
-    },
-  ];
-
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
   const optionAssets = [
     {
-      category: 'Option 1',
+      category: 'LINK Call',
       value: 73,
     },
     {
-      category: 'Option 2',
+      category: 'LINK Put',
       value: 27,
     },
   ];
 
   const yieldAssets = [
     {
-      category: 'ETH',
-      value: 73,
+      category: 'LINK',
+      value: 43,
     },
     {
-      category: 'Uni',
+      category: 'ETH',
       value: 27,
+    },
+    {
+      category: 'DAI',
+      value: 30,
     },
   ];
 
@@ -1626,146 +1586,169 @@ const Positions: React.FC = () => {
               <Box mt={mobileWindowSize ? 1.5 : 2.5}>
                 {mobileWindowSize ? (
                   <>
-                    {yieldData.map((item: any, index) => (
-                      <Box mb={2}>
-                        <Container fixed>
-                          <Box
-                            width={1}
-                            display='flex'
-                            p={1.25}
-                            pl={1}
-                            justifyContent='space-between'
-                            alignItems='center'
-                          >
-                            <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
-                            </Box>
-                            <Box display='flex' alignItems='center'>
-                              {item.name}
-                              <Box ml={2} display='flex' alignItems='center'>
-                                <Box
-                                  className={cx(
-                                    classes.typeBox,
-                                    item.type === 'vault'
-                                      ? classes.vault
-                                      : item.option === OptionType.Call
-                                      ? classes.call
-                                      : classes.put,
-                                  )}
-                                >
-                                  <Box />
-                                  {item.type === 'vault' ? (
-                                    <VaultIcon />
-                                  ) : item.option === OptionType.Call ? (
-                                    <CallIcon />
-                                  ) : (
-                                    <PutIcon />
-                                  )}
-                                  {item.type}
+                    {pools.map((pool: UserOwnedPool, index) => {
+                      const isCall = pool.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? pool.underlying.symbol
+                        : pool.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+
+                      return (
+                        <Box mb={2}>
+                          <Container fixed>
+                            <Box
+                              width={1}
+                              display='flex'
+                              p={1.25}
+                              pl={1}
+                              justifyContent='space-between'
+                              alignItems='center'
+                            >
+                              <Box className={classes.tokenIconCell}>
+                                <Box>
+                                  <TokenIcon />
+                                </Box>
+                                {pool.underlying.symbol}
+                              </Box>
+                              <Box display='flex' alignItems='center'>
+                                {pool.underlying.symbol}{' '}
+                                {isCall ? 'Call' : 'Put'}
+                                <Box ml={2} display='flex' alignItems='center'>
+                                  <Box
+                                    className={cx(
+                                      classes.typeBox,
+                                      isCall ? classes.call : classes.put,
+                                    )}
+                                  >
+                                    <Box />
+                                    {isCall ? <CallIcon /> : <PutIcon />}
+                                    Pool
+                                  </Box>
                                 </Box>
                               </Box>
                             </Box>
-                          </Box>
-                          <Divider />
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Capital
-                              </Typography>
-                              <DaiIcon />
+                            <Divider />
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Capital
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatNumber(
+                                (Number(pool.totalAvailable) +
+                                  Number(pool.totalLocked)) /
+                                  10 ** pool.underlying.decimals,
+                              )}
                             </Box>
-                            {formatNumber(item.capital)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Earned
-                              </Typography>
-                              <DaiIcon />
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Earned
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatBigNumber(pool.totalPremiumsEarned)}
                             </Box>
-                            {item.earned}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Expected APY
-                              </Typography>
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Expected APY
+                                </Typography>
+                              </Box>
+                              {formatNumber(
+                                (Number(pool.totalPremiumsEarned) /
+                                  Number(pool.totalDeposited)) *
+                                  100,
+                              )}
+                              %
                             </Box>
-                            {item.apy}
-                          </Box>
-                          <Box className={classes.yieldButtonCell}>
-                            <Grid container spacing={1}>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  color='primary'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Add
-                                </Button>
+                            <Box className={classes.yieldButtonCell}>
+                              <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                  <Button
+                                    fullWidth
+                                    color='primary'
+                                    onClick={() => setPositionModalOpen(true)}
+                                  >
+                                    Add
+                                  </Button>
+                                </Grid>
+                                <Grid item xs={6}>
+                                  <Button
+                                    fullWidth
+                                    variant='outlined'
+                                    onClick={() => setPositionModalOpen(true)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </Grid>
                               </Grid>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  variant='outlined'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Remove
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          </Box>
-                        </Container>
-                      </Box>
-                    ))}
+                            </Box>
+                          </Container>
+                        </Box>
+                      );
+                    })}
                   </>
                 ) : (
                   <DataTable
                     headCells={yieldHeadCells}
-                    data={yieldData}
+                    data={pools}
                     sortUpIcon={<UpArrow />}
                     sortDownIcon={<DownArrow />}
                     rowPerPage={5}
                     showEmptyRows={false}
-                    renderRow={(item: any, index) => {
+                    renderRow={(pool: UserOwnedPool, index) => {
+                      const isCall = pool.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? pool.underlying.symbol
+                        : pool.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+
                       return (
                         <TableRow key={index}>
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
+                              <Box>
+                                <TokenIcon />
+                              </Box>
+                              {pool.underlying.symbol}
                             </Box>
                           </TableCell>
-                          <TableCell>{formatNumber(item.capital)}</TableCell>
+                          <TableCell>
+                            {formatNumber(
+                              (Number(pool.totalLocked) +
+                                Number(pool.totalAvailable)) /
+                                10 ** pool.underlying.decimals,
+                            )}
+                          </TableCell>
                           <TableCell>
                             <Box display='flex' alignItems='center'>
                               <Box
                                 mr={1}
                                 className={cx(
                                   classes.typeBox,
-                                  item.type === 'vault'
-                                    ? classes.vault
-                                    : item.option === OptionType.Call
-                                    ? classes.call
-                                    : classes.put,
+                                  isCall ? classes.call : classes.put,
                                 )}
                               >
                                 <Box />
-                                {item.type === 'vault' ? (
-                                  <VaultIcon />
-                                ) : item.option === OptionType.Call ? (
-                                  <CallIcon />
-                                ) : (
-                                  <PutIcon />
-                                )}
-                                {item.type}
+                                {isCall ? <CallIcon /> : <PutIcon />}
+                                Pool
                               </Box>
-                              {item.name}
+                              {pool.underlying.symbol} {isCall ? 'Call' : 'Put'}
                             </Box>
                           </TableCell>
-                          <TableCell>{item.earned}</TableCell>
-                          <TableCell>{item.apy}</TableCell>
+                          <TableCell>
+                            {formatBigNumber(pool.totalPremiumsEarned)}
+                          </TableCell>
+                          <TableCell>
+                            {formatNumber(
+                              (Number(pool.totalPremiumsEarned) /
+                                Number(pool.totalDeposited)) *
+                                100,
+                            )}
+                            %
+                          </TableCell>
                           <TableCell className='yieldButtonCell'>
                             <Button
                               color='primary'

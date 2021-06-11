@@ -22,7 +22,7 @@ const SelectTokenTabs: React.FC = () => {
           token,
           label: token.symbol,
           icon: tokenIcons[token.symbol as keyof typeof tokenIcons],
-          highlight: ['WETH', 'UNI'].includes(token.symbol),
+          highlight: ['LINK', 'UNI'].includes(token.symbol),
         })),
     [tokens, base],
   );

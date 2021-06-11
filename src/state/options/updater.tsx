@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-import { useUnderlyingPrice, useOnChainOptionData } from 'state/options/hooks';
+import {
+  useBasePrice,
+  useUnderlyingPrice,
+  useOnChainOptionData,
+} from 'state/options/hooks';
 import { AppDispatch, AppState } from 'state';
 import {
   updatePricePerUnit,
@@ -30,6 +34,7 @@ export default function Updater(): null {
   >((state) => state.options);
   const { optionPoolContract } = usePools();
   const underlyingPrice = useUnderlyingPrice();
+  const basePrice = useBasePrice();
   const location = useLocation();
 
   useEffect(() => {
@@ -57,7 +62,7 @@ export default function Updater(): null {
           isCall,
         });
 
-        const activePrice = isCall ? underlyingPrice : 1 / underlyingPrice;
+        const activePrice = isCall ? underlyingPrice : basePrice;
         const fee = floatFromFixed(response.feeCost64x64);
         const feeInUsd = fee * activePrice;
         const baseCost = floatFromFixed(response.baseCost64x64);
@@ -117,6 +122,7 @@ export default function Updater(): null {
     location.pathname,
     underlying,
     underlyingPrice,
+    basePrice,
     optionType,
     optionPoolContract,
   ]);

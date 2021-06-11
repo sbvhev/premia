@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-apollo';
 import { get } from 'lodash';
 
-import { getUserOwnedPools, getPools } from 'graphql/queries';
+import { getUserOwnedPoolsForPair, getPools } from 'graphql/queries';
 import { getPairId } from 'graphql/utils';
 import { OptionType } from 'web3/options';
 import { Pool as PoolContract } from 'contracts';
@@ -28,7 +28,7 @@ export function usePools(
   const { optionType } = useOptionType();
 
   const query = useMemo(
-    () => (userOwned ? getUserOwnedPools : getPools),
+    () => (userOwned ? getUserOwnedPoolsForPair : getPools),
     [userOwned],
   );
 
