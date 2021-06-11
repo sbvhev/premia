@@ -41,8 +41,8 @@ import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
 import { ReactComponent as CallIcon } from 'assets/svg/CallIcon.svg';
 import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
-import NoPositionYield from 'assets/svg/NoPositionYield.svg';
-import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
+import NoPositionYield from 'assets/images/NoPositionYield.png';
+import NoPositionOptions from 'assets/images/NoPositionOptions.png';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 
@@ -166,7 +166,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
     fontSize: 28,
     fontWeight: 700,
-    lineHeight: 0.64,
+    lineHeight: '18px',
+    [breakpoints.down('xs')]: {
+      lineHeight: 1
+    }
   },
   mainTitle: {
     fontSize: 16,
@@ -298,29 +301,38 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   noPositionsContainer: {
-    '@media (min-height: 700px)': {
-      position: 'absolute',
-      maxWidth: 800,
-      left: '50%',
-      top: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '100%',
-      padding: 16,
-    },
+    maxWidth: 790,
+    margin: 'auto',
     '& h2': {
       fontSize: 18,
-      fontWeight: 700,
+      lineHeight: 1,
+      fontWeight: 'bold',
     },
+    [breakpoints.down('xs')]: {
+      minHeight: 'calc(100vh - 290px)',
+      '& h1': {
+        marginTop: 20
+      }
+    }
   },
   findPositionContainer: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
     boxShadow: `0px 0px 25px rgba(43, 229, 154, 0.25)`,
     borderRadius: 10,
     padding: 18,
-    marginTop: 20,
+    margin: '20px 0',
+    justifyContent: 'space-between',
     '& h2': {
+      textAlign: 'center',
       color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
     },
+    [breakpoints.down('xs')]: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      '& h2': {
+        marginBottom: 16
+      }
+    }
   },
   noPositionBox: {
     height: '100%',
@@ -332,11 +344,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       textDecoration: 'none',
     },
   },
-  noPositionButton: {
-    minWidth: 181,
-    marginTop: 4,
-    lineHeight: '24px',
-    color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
+  noPositionBtnContainer: {
+    marginLeft: 30,
+    '& h2': {
+      marginBottom: 9,
+    },
+    '& button': {
+      width: 181,
+      height: 45,
+      fontSize: 16,
+      margin: 0,
+      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),  
+    }
   },
   positionFilterContainer: {
     boxSizing: 'border-box',
@@ -374,23 +393,27 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   findPositionButton: {
-    minWidth: 169,
-    background: palette.common.black,
+    width: 169,
+    height: 45,
+    margin: 0,
+    fontSize: 14,
+    background: palette.background.paper,
     border: '1px solid transparent',
+    color: palette.text.primary,
 
     '&:hover:not(:active)': {
-      borderColor: palette.common.white,
-      background: palette.common.black,
+      background: palette.background.paper,
       opacity: 0.8,
     },
 
     '&:active': {
-      background: palette.common.black,
+      background: palette.background.paper,
       opacity: 0.8,
     },
 
     '& svg': {
       opacity: 0.5,
+      fill: palette.text.primary
     },
   },
   infoHeading: {
@@ -574,6 +597,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 92,
     display: 'flex',
     alignItems: 'center',
+    '& img': {
+      width: '100%',
+    }
   },
   plPercents: {
     display: 'flex',
@@ -1225,7 +1251,6 @@ const Positions: React.FC = () => {
           </Typography>
           <Box
             mt={mobileWindowSize ? 3 : 5}
-            ml={!mobileWindowSize ? '6px' : ''}
           >
             <Container fixed className={classes.noPositionBox}>
               {positionFilterIndex === 0 && (
@@ -1233,13 +1258,10 @@ const Positions: React.FC = () => {
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionOptions} alt='No Options' />
                   </Box>
-                  <Box ml={3}>
+                  <Box className={classes.noPositionBtnContainer}>
                     <Typography component='h2'>Your options</Typography>
                     <Link to='/options'>
-                      <Button
-                        className={classes.noPositionButton}
-                        color='primary'
-                      >
+                      <Button color='primary'>
                         Buy options
                       </Button>
                     </Link>
@@ -1251,13 +1273,10 @@ const Positions: React.FC = () => {
                   <Box className={classes.noPositionImage}>
                     <img src={NoPositionYield} alt='No Yield' />
                   </Box>
-                  <Box ml={3}>
+                  <Box className={classes.noPositionBtnContainer}>
                     <Typography component='h2'>Your yield</Typography>
                     <Link to='/vaults?tab=pro'>
-                      <Button
-                        className={classes.noPositionButton}
-                        color='primary'
-                      >
+                      <Button color='primary'>
                         Earn yield
                       </Button>
                     </Link>
@@ -1268,7 +1287,6 @@ const Positions: React.FC = () => {
           </Box>
           <Grid
             container
-            justify={mobileWindowSize ? 'center' : 'space-between'}
             alignItems='center'
             className={classes.findPositionContainer}
           >

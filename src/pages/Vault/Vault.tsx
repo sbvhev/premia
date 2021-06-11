@@ -58,7 +58,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   topTab: {
-    margin: '20px 0 20px 6px',
+    margin: '20px 0',
 
     [breakpoints.down('md')]: {
       margin: '20px 0 12px',
