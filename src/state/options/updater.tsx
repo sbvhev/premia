@@ -4,7 +4,12 @@ import { useLocation } from 'react-router-dom';
 
 import { useUnderlyingPrice, useOnChainOptionData } from 'state/options/hooks';
 import { AppDispatch, AppState } from 'state';
-import { updatePricePerUnit, updateTotalCost, updateFee } from './actions';
+import {
+  updatePricePerUnit,
+  updateTotalCost,
+  updateFee,
+  updatePriceImpact,
+} from './actions';
 import { useDebounce, usePools } from 'hooks';
 import { OptionType } from 'web3/options';
 import { floatFromFixed } from 'utils/floatFromFixed';
@@ -30,7 +35,8 @@ export default function Updater(): null {
       !maturity ||
       !strike64x64 ||
       !spot64x64 ||
-      !optionSize
+      !optionSize ||
+      !size
     )
       return;
 
@@ -53,8 +59,9 @@ export default function Updater(): null {
           floatFromFixed(response.baseCost64x64) * underlyingPrice;
         const totalCost = fee + baseCost;
         const pricePerUnit = totalCost / size;
+        const priceImpact = floatFromFixed(response.slippageCoefficient64x64);
 
-        return { fee, totalCost, pricePerUnit };
+        return { fee, totalCost, pricePerUnit, priceImpact };
       } catch (err) {
         console.log('Error fetching price per unit: ', err);
       }
@@ -65,11 +72,12 @@ export default function Updater(): null {
     fetchPricePerUnit().then((response) => {
       if (response == null) return;
 
-      const { totalCost, fee, pricePerUnit } = response;
+      const { totalCost, fee, pricePerUnit, priceImpact } = response;
 
       dispatch(updatePricePerUnit(pricePerUnit));
       dispatch(updateTotalCost(totalCost));
       dispatch(updateFee(fee));
+      dispatch(updatePriceImpact(priceImpact));
     });
   }, [
     dispatch,

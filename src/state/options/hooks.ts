@@ -19,6 +19,7 @@ import {
   updatePricePerUnit,
   updateTotalCost,
   updateFee,
+  updatePriceImpact,
 } from './actions';
 
 export function useUnderlyingPrice(): number {
@@ -192,6 +193,20 @@ export function useFee() {
   );
 
   return { fee, setFee };
+}
+
+export function usePriceImpact() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { priceImpact } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPriceImpact = useCallback(
+    (priceImpact: number) => dispatch(updatePriceImpact(priceImpact)),
+    [dispatch],
+  );
+
+  return { priceImpact, setPriceImpact };
 }
 
 export function useBreakEvenPrice() {

@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Button, Typography, Modal, Box, Checkbox, Fade, Backdrop } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  Modal,
+  Box,
+  Checkbox,
+  Fade,
+  Backdrop,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 
@@ -11,6 +19,7 @@ import {
   useOptionType,
   useBase,
   useUnderlying,
+  usePriceImpact,
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { usePurchaseOption } from 'hooks';
@@ -195,6 +204,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   const { underlying } = useUnderlying();
   const { maturityDate } = useMaturityDate();
   const { totalCost } = useTotalCost();
+  const { priceImpact } = usePriceImpact();
   const { size } = useSize();
   const breakEvenPrice = useBreakEvenPrice();
   const purchase = usePurchaseOption();
@@ -232,13 +242,15 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
         <ModalContainer size='md'>
           <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
-            <Box className={!mobile ? classes.mainCard : classes.mainCardMobile}>
+            <Box
+              className={!mobile ? classes.mainCard : classes.mainCardMobile}
+            >
               <Box
                 className={
                   !mobile ? classes.topSection : classes.topSectionMobile
@@ -261,7 +273,9 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                   >
                     <Typography color='secondary'>Option size</Typography>
                     <Box display='flex' flexDirection='row'>
-                      <Typography component='h2'>{formatNumber(size)}</Typography>
+                      <Typography component='h2'>
+                        {formatNumber(size)}
+                      </Typography>
                       <Typography
                         color='secondary'
                         style={{ marginRight: '2px' }}
@@ -314,7 +328,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                     className={classes.element}
                   >
                     <Typography color='secondary'>
-                      Slippage
+                      Price Impact
                       <HelpIcon />
                     </Typography>
                     <Box
@@ -322,7 +336,9 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                       flexDirection='row'
                       justifyContent='flex-end'
                     >
-                      <Typography component='h2'>2.29%</Typography>
+                      <Typography component='h2'>
+                        {formatNumber(priceImpact)}%
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>

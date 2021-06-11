@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -22,7 +22,13 @@ import { useDarkModeManager } from 'state/user/hooks';
 import { formatNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 
-import { DataTable, LineChart, DonutChart, PositionModal, SwitchWithGlider } from 'components';
+import {
+  DataTable,
+  LineChart,
+  DonutChart,
+  PositionModal,
+  SwitchWithGlider,
+} from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
 import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
@@ -39,6 +45,7 @@ import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
+import { useUserOwnedOptions } from 'hooks';
 
 const getYieldHeadCells = () => [
   {
@@ -586,7 +593,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: palette.divider,
     position: 'absolute',
     left: 0,
-    zIndex: 3
+    zIndex: 3,
   },
   switchContainer: {
     border: `1px solid ${palette.divider}`,
@@ -707,7 +714,15 @@ const Positions: React.FC = () => {
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [darkMode] = useDarkModeManager();
 
-  React.useEffect(() => {
+  const options = useUserOwnedOptions();
+
+  const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
+  const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
+  const noPositions = false;
+
+  console.log('options', options);
+
+  useEffect(() => {
     const handleResize = () => {
       setDeviceWidth(window.innerWidth);
     };
@@ -715,9 +730,6 @@ const Positions: React.FC = () => {
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const yieldHeadCells = getYieldHeadCells();
-  const optionsHeadCells = getOptionsHeadCells();
 
   const handleFilterOptions = () => {
     setPositionFilterIndex(0);
@@ -895,8 +907,6 @@ const Positions: React.FC = () => {
       </Box>
     );
   };
-
-  const noPositions = false;
 
   const chartTypes = ['daily', 'weekly', 'monthly'];
   const chartDateCats = [

@@ -15,6 +15,7 @@ import {
   updatePricePerUnit,
   updateTotalCost,
   updateFee,
+  updatePriceImpact,
 } from './actions';
 
 export interface OptionsState {
@@ -27,6 +28,7 @@ export interface OptionsState {
   pricePerUnit: number;
   totalCost: number;
   fee: number;
+  priceImpact: number;
 }
 
 export const initialState: OptionsState = {
@@ -39,6 +41,7 @@ export const initialState: OptionsState = {
   pricePerUnit: 0,
   totalCost: 0,
   fee: 0,
+  priceImpact: 0,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -69,5 +72,8 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateFee, (state, { payload }) => {
       state.fee = payload;
+    })
+    .addCase(updatePriceImpact, (state, { payload }) => {
+      state.priceImpact = payload;
     }),
 );
