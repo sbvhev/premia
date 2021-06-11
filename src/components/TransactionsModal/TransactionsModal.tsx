@@ -531,14 +531,6 @@ const TransactionsModal: React.FC<TransactionsModalProps> = ({
                     </Box>
                   )}
                 </Box>
-                {!!txHistory.length && (
-                  <Box
-                    className={classes.transactionListContainer}
-                    style={!moreThanFiveTXs ? { marginRight: '14px' } : {}}
-                  >
-                    {mappedRecentTransactions}
-                  </Box>
-                )}
               </Box>
               {!!txHistory.length && (
                 <Box
