@@ -1379,7 +1379,7 @@ const Positions: React.FC = () => {
                             >
                               <Box className={classes.tokenIconCell}>
                                 <Box>
-                                  <TokenIcon />
+                                  <TokenIcon height={20} width={20} />
                                 </Box>
                                 {tokenSymbol}
                               </Box>
@@ -1400,7 +1400,7 @@ const Positions: React.FC = () => {
                                 <Typography color='textSecondary'>
                                   Size
                                 </Typography>
-                                <TokenIcon />
+                                <TokenIcon height={20} width={20} />
                               </Box>
                               {formatBigNumber(userOwnedOption.size)}
                             </Box>
@@ -1495,7 +1495,7 @@ const Positions: React.FC = () => {
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
                               <Box>
-                                <TokenIcon />
+                                <TokenIcon height={20} width={20} />
                               </Box>
                               {tokenSymbol}
                             </Box>
@@ -1606,7 +1606,7 @@ const Positions: React.FC = () => {
                             >
                               <Box className={classes.tokenIconCell}>
                                 <Box>
-                                  <TokenIcon />
+                                  <TokenIcon height={20} width={20} />
                                 </Box>
                                 {pool.underlying.symbol}
                               </Box>
@@ -1710,7 +1710,7 @@ const Positions: React.FC = () => {
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
                               <Box>
-                                <TokenIcon />
+                                <TokenIcon height={20} width={20} />
                               </Box>
                               {pool.underlying.symbol}
                             </Box>
