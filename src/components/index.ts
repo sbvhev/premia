@@ -5,6 +5,7 @@ export { default as Breadcrumb } from './Breadcrumb';
 export { default as BorderLinearProgress } from './BorderLinearProgress';
 export { default as ColoredSlider } from './ColoredSlider';
 export { default as ConfirmTermsModal } from './ConfirmTermsModal';
+export { default as ContainedButton } from './ContainedButton';
 export { default as BuyConfirmationModal } from './BuyConfirmationModal';
 export { default as WithdrawDepositModal } from './WithdrawDepositModal';
 export { default as SwitchTab } from './SwitchTab';

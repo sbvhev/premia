@@ -20,7 +20,7 @@ export function usePurchaseOption() {
   const onPurchaseOption = useCallback(async () => {
     if (!optionPoolContract) return;
 
-    const tx = await transact(
+    return transact(
       optionPoolContract.purchase({
         maturity,
         strike64x64,
@@ -32,8 +32,6 @@ export function usePurchaseOption() {
         description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
       },
     );
-
-    console.log('tx', await tx?.wait(1));
   }, [
     transact,
     optionPoolContract,

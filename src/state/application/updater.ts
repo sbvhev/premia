@@ -197,6 +197,8 @@ export default function Updater(): null {
   useEffect(() => {
     if (_onboard) return;
 
+    if (location.pathname === '/') return;
+
     const chain = Number(localStorage.getItem('chainId') || 1);
 
     const onboard = Onboard({
@@ -255,7 +257,7 @@ export default function Updater(): null {
     });
 
     dispatch(setWeb3Settings({ onboard }));
-  }, [dispatch, _onboard, chainId, signer, dark, baseToken, comparisonToken]);
+  }, [dispatch, _onboard, location, chainId, signer, dark, baseToken, comparisonToken]);
 
   useEffect(() => {
     const previouslySelectedWallet = window.localStorage
