@@ -182,3 +182,17 @@ export const UserOwnedPool = gql`
     uniqueWithdrawals
   }
 `;
+
+export const CLevelChartItem = gql`
+  ${Pool}
+
+  fragment CLevelChartItem on CLevelChartItem {
+    id
+    pool {
+      ...Pool
+    }
+    cLevel64x64
+    cLevel
+    timestamp
+  }
+`;

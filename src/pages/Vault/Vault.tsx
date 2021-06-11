@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
@@ -15,14 +16,23 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
-
+import moment from 'moment';
+import {
+  getUserOwnedPoolsForPair,
+  getPools,
+  getCLevelChartItems,
+} from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
 import { UserOwnedPool } from 'web3/pools';
 import { usePools } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
 import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
-import { formatNumber, formatCompact } from 'utils/formatNumber';
+import {
+  formatNumber,
+  formatCompact,
+  formatBigNumber,
+} from 'utils/formatNumber';
 import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
@@ -45,6 +55,7 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
+import { OptionType } from 'web3/options';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -369,6 +380,11 @@ const ProVault: React.FC = () => {
     () => getPoolUtilization(userOwnedPutPool),
     [userOwnedPutPool],
   );
+
+  const cLevelChartQuery = useMemo(() => getCLevelChartItems, []);
+  let { data: { clevelChartItems = [] } = {} } = useQuery(cLevelChartQuery, {
+    variables: {},
+  });
 
   const BaseIcon = useMemo(
     () => getTokenIcon(callPool?.base.symbol),
@@ -829,16 +845,20 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
+                    data={clevelChartItems
+                      .filter(
+                        (item: any) =>
+                          item?.pool?.optionType === OptionType.Call,
+                      )
+                      .map((i: any) => formatBigNumber(i.cLevel))}
+                    categories={clevelChartItems
+                      .filter(
+                        (item: any) =>
+                          item?.pool?.optionType === OptionType.Call,
+                      )
+                      .map((i: any) =>
+                        moment.unix(i.timestamp).format('YYYY/MM/DD'),
+                      )}
                     width='100%'
                     height={200}
                   />
@@ -1053,16 +1073,20 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall={false}
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
+                    data={clevelChartItems
+                      .filter(
+                        (item: any) =>
+                          item?.pool?.optionType === OptionType.Put,
+                      )
+                      .map((i: any) => formatBigNumber(i.cLevel))}
+                    categories={clevelChartItems
+                      .filter(
+                        (item: any) =>
+                          item?.pool?.optionType === OptionType.Put,
+                      )
+                      .map((i: any) =>
+                        moment.unix(i.timestamp).format('YYYY/MM/DD'),
+                      )}
                     width='100%'
                     height={200}
                   />
