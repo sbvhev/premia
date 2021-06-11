@@ -1,6 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setCurrentTx, setTxStateMsg, setTxOption, setGasType, setGasPrices } from './actions';
+import {
+  setCurrentTx,
+  setTxHistory,
+  clearTxHistory,
+  setTxStateMsg,
+  setTxOption,
+  setGasType,
+  setGasPrices,
+} from './actions';
 
 export const GAS_MODE_LOCALSTORAGE_KEY = 'transactions/gas_mode';
 
@@ -10,6 +18,12 @@ export interface CurrentTransaction {
 
 export interface SetCurrentTransaction {
   hash: string;
+}
+
+export interface Transaction {
+  hash: string;
+  timestamp?: number;
+  complete?: boolean;
 }
 
 export interface GasNowData {
@@ -22,6 +36,7 @@ export interface GasNowData {
 
 export interface PBCState {
   currentTx?: CurrentTransaction | null;
+  txHistory: Transaction[];
   txStateMsg?: string | null;
   txOption: any | null | undefined;
   gasValue: number;
@@ -32,10 +47,12 @@ export interface PBCState {
 export const initialState: PBCState = {
   currentTx: undefined,
   txStateMsg: '',
+  txHistory: [],
   txOption: null,
   gasValue: 1,
-  gasType: (localStorage.getItem(GAS_MODE_LOCALSTORAGE_KEY) || 'fast') as keyof GasNowData,
-  gasPrices: undefined
+  gasType: (localStorage.getItem(GAS_MODE_LOCALSTORAGE_KEY) ||
+    'fast') as keyof GasNowData,
+  gasPrices: undefined,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -60,10 +77,18 @@ export default createReducer(initialState, (builder) =>
     .addCase(setGasType, (state, { payload }) => {
       state.gasType = payload;
       state.gasValue = Number(state.gasPrices?.[payload] ?? state.gasValue);
-      localStorage.setItem(GAS_MODE_LOCALSTORAGE_KEY, payload)
+      localStorage.setItem(GAS_MODE_LOCALSTORAGE_KEY, payload);
     })
     .addCase(setGasPrices, (state, { payload }) => {
       state.gasPrices = payload;
-      state.gasValue = Number(payload[state.gasType as keyof GasNowData] ?? state.gasValue);
+      state.gasValue = Number(
+        payload[state.gasType as keyof GasNowData] ?? state.gasValue,
+      );
+    })
+    .addCase(setTxHistory, (state, { payload }: { payload: Transaction[] }) => {
+      state.txHistory = [...payload, ...(state.txHistory || [])];
+    })
+    .addCase(clearTxHistory, (state) => {
+      state.txHistory = [];
     }),
 );

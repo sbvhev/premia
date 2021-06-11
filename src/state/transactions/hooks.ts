@@ -1,16 +1,18 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { ChainId } from '@uniswap/sdk';
 
 import { useWeb3 } from 'state/application/hooks';
+import { getTxLink } from 'utils/getTxLink';
 import { AppState, AppDispatch } from 'state';
 import {
   setCurrentTx as _setCurrentTx,
+  setTxHistory as _setTxHistory,
+  clearTxHistory as _clearTxHistory,
   setTxStateMsg as _setTxStateMsg,
   setTxOption as _setTxOption,
   setGasType as _setGasType,
   setGasPrices as _setGasPrices,
 } from './actions';
-import { GasNowData, SetCurrentTransaction } from './reducer';
+import { GasNowData, SetCurrentTransaction, Transaction } from './reducer';
 
 export const useCurrentTx = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +26,21 @@ export const useCurrentTx = () => {
     dispatch(_setCurrentTx(currentTx));
 
   return { ...currentTx, txLink, setCurrentTx };
+};
+
+export const useTxHistory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const txHistory = useSelector<
+    AppState,
+    AppState['transactions']['txHistory']
+  >((state) => state.transactions.txHistory);
+
+  const setTxHistory = (txHistory: Transaction[]) =>
+    dispatch(_setTxHistory(txHistory));
+
+  const clearTxHistory = () => dispatch(_clearTxHistory(undefined));
+
+  return { txHistory, setTxHistory, clearTxHistory };
 };
 
 export const useTxStateMsg = () => {
@@ -86,19 +103,9 @@ export const useTxOption = () => {
 export const useTxLink = (txHash: string | undefined | null) => {
   const { chainId } = useWeb3();
 
-  if (!txHash) {
+  if (!txHash || !chainId) {
     return null;
   }
 
-  switch (chainId) {
-    case 56:
-      return `https://bscscan.com/tx/${txHash}`;
-
-    case ChainId.RINKEBY:
-      return `https://rinkeby.etherscan.io/tx/${txHash}`;
-
-    case ChainId.MAINNET:
-    default:
-      return `https://etherscan.io/tx/${txHash}`;
-  }
+  return getTxLink(txHash, chainId);
 };

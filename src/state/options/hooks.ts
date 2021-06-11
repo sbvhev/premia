@@ -145,10 +145,7 @@ export function useOnChainOptionData() {
   ).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
-  const maxCost = floatToBigNumber(
-    totalCost * 1.1 + (1 / underlyingPrice) * 10,
-    underlying.decimals,
-  );
+  const maxCost = floatToBigNumber(totalCost * 100, underlying.decimals);
 
   return {
     maturity,
