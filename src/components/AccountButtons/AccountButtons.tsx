@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import {
   Box,
@@ -15,7 +15,7 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
-
+import moment from 'moment';
 import { shortenAddress } from 'utils';
 import {
   BetaSoftwareModal,
@@ -238,6 +238,17 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode, mobile });
+  const [ countDownStr, setCountDownStr ] = useState('');
+  const getCountDownStr = () => {
+    const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
+    setCountDownStr(Math.floor(hours / 24) + 'd' + (hours % 24 > 0 ? ' ' + (hours % 24) + 'h' : ' '));
+  }
+  useEffect(() => {
+    getCountDownStr();
+  });
+  setInterval(() => {
+    getCountDownStr();
+  }, 3600000)
 
   return (
     <Grid container alignItems='center' justify='flex-end'>
@@ -268,7 +279,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           <ClockIcon />
           <Box height={1} className={classes.tradingContainer}>
             <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
-            <Typography className={classes.tradinghours}>2d 21h left</Typography>
+            <Typography className={classes.tradinghours}>{countDownStr} left</Typography>
           </Box>
         </Box>
         <Box
