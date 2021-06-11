@@ -84,6 +84,7 @@ const useStyles = makeStyles(({ palette }) => ({
   transactionListContainer: {
     overflowY: 'auto',
     maxHeight: '180px',
+    padding: '0 14px 0 28px',
   },
   title: {
     fontWeight: 700,

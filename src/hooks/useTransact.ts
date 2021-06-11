@@ -1,4 +1,7 @@
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'state';
+import { Transaction } from 'state/transactions/reducer';
 import { ContractTransaction } from 'ethers';
 
 import {
@@ -24,6 +27,7 @@ export interface TransactProps {
 
 export function useTransact() {
   const { notify } = useWeb3();
+  const dispatch = useDispatch<AppDispatch>();
   const { setCurrentTx } = useCurrentTx();
   const { setTxHistory } = useTxHistory();
   const { setTxStateMsg } = useTxStateMsg();
@@ -62,11 +66,15 @@ export function useTransact() {
 
           emitter.on('txConfirmed', (transaction) => {
             toggleTxSuccessModal(true);
-            setTxHistory({
-              hash: tx.hash,
-              timestamp: tx.timestamp,
-              complete: true,
-            });
+            dispatch(
+              setTxHistory([
+                {
+                  hash: tx.hash,
+                  timestamp: tx.timestamp,
+                  complete: true,
+                } as Transaction,
+              ]),
+            );
 
             if (closeOnSuccess) {
               setTimeout(closeModals, 2000);
@@ -74,21 +82,25 @@ export function useTransact() {
           });
 
           emitter.on('txFailed', () => {
-            setTxHistory({
-              hash: tx.hash,
-              timestamp: tx.timestamp,
-              complete: false,
-            });
+            setTxHistory([
+              {
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: false,
+              } as Transaction,
+            ]);
             toggleTxFailedModal(true);
           });
 
           emitter.on('txCancel', (err) => {
             console.log('Error in transaction: ', err);
-            setTxHistory({
-              hash: tx.hash,
-              timestamp: tx.timestamp,
-              complete: false,
-            });
+            setTxHistory([
+              {
+                hash: tx.hash,
+                timestamp: tx.timestamp,
+                complete: false,
+              } as Transaction,
+            ]);
             toggleTxCancelledModal(true);
           });
         } else {

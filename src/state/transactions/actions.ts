@@ -6,7 +6,7 @@ export const setCurrentTx = createAction<
   SetCurrentTransaction | null | undefined
 >('transactions/setCurrentTx');
 
-export const setTxHistory = createAction<Transaction>(
+export const setTxHistory = createAction<Transaction[]>(
   'transactions/setTxHistory',
 );
 

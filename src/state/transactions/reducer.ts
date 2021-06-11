@@ -85,8 +85,8 @@ export default createReducer(initialState, (builder) =>
         payload[state.gasType as keyof GasNowData] ?? state.gasValue,
       );
     })
-    .addCase(setTxHistory, (state, { payload }: { payload: Transaction }) => {
-      state.txHistory = [payload, ...(state.txHistory || [])];
+    .addCase(setTxHistory, (state, { payload }: { payload: Transaction[] }) => {
+      state.txHistory = [...payload, ...(state.txHistory || [])];
     })
     .addCase(clearTxHistory, (state) => {
       state.txHistory = [];

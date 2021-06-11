@@ -35,8 +35,8 @@ export const useTxHistory = () => {
     AppState['transactions']['txHistory']
   >((state) => state.transactions.txHistory);
 
-  const setTxHistory = (currentTx: Transaction) =>
-    dispatch(_setTxHistory(currentTx));
+  const setTxHistory = (txHistory: Transaction[]) =>
+    dispatch(_setTxHistory(txHistory));
 
   const clearTxHistory = () => dispatch(_clearTxHistory(undefined));
 
