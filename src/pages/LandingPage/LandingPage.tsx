@@ -229,7 +229,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     [breakpoints.between('sm', 'md')]: {
       padding: '40px 0',
-      height: 500,
     },
   },
   gradientTitle: {
@@ -419,7 +418,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   rightSideImage: {
     width: '100%',
     height: 450,
-    backgroundSize: 'auto 100%',
+    backgroundSize: 'contain',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundColor: 'black',
@@ -435,6 +434,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('sm')]: {
       width: '100%',
       height: 300,
+      marginTop: 40,
       position: 'relative',
       right: 0,
       backgroundPosition: 'center',
@@ -465,6 +465,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& > button': {
       [breakpoints.down('sm')]: {
         margin: 'auto',
+        marginTop: 40,
       },
     },
 
@@ -485,6 +486,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: '100%',
       paddingLeft: 56,
       paddingRight: 40,
+      height: 570,
       display: 'flex',
       flexDirection: 'column',
     },
@@ -528,27 +530,31 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     justifyContent: 'center',
     position: 'relative',
 
-    '& > svg': {
+    '& figure': {
       '&:first-of-type': {
-        position: 'absolute',
-        left: 0,
-        top: -50,
+        '& svg': {
+          position: 'absolute',
+          left: 0,
+          top: -50,
+        },
       },
 
       '&:last-of-type': {
-        position: 'absolute',
-        right: 0,
-        bottom: -200,
+        '& svg': {
+          position: 'absolute',
+          right: 0,
+          bottom: -200,
+        },
       },
     },
 
     [breakpoints.down('sm')]: {
       top: -80,
-      height: 200,
+      height: 100,
 
       '& > div': {
         position: 'absolute',
-        top: 200,
+        top: 75,
       },
     },
   },
@@ -1160,8 +1166,10 @@ const LandingPage: React.FC = () => {
   const [scrollPos, setScrollPos] = useState(0);
   const [currentNav, setCurrentNav] = useState('');
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const preventDefault = (event: React.SyntheticEvent) =>
+  const preventDefault = (event: React.SyntheticEvent) => {
     event.preventDefault();
+    setMenuOpen(false);
+  };
 
   useEffect(() => {
     setMenuOpen(false);
@@ -1305,29 +1313,53 @@ const LandingPage: React.FC = () => {
             </Button>
           </Box>
           <Box>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='#explore-premia'
+              offset='100'
+              onClick={preventDefault}
+            >
               <Typography className={classes.menuItem}>
                 Explore Premia
               </Typography>
             </AnchorLink>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='#definative-architecture'
+              offset='100'
+              onClick={preventDefault}
+            >
               <Typography className={classes.menuItem}>Architecture</Typography>
             </AnchorLink>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='#our-values'
+              offset='300'
+              onClick={preventDefault}
+            >
               <Typography className={classes.menuItem}>Our Values</Typography>
             </AnchorLink>
           </Box>
           <Box>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='https://twitter.com/PremiaFinance'
+              onClick={preventDefault}
+            >
               <TwitterIcon />
             </AnchorLink>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='https://discord.com/invite/6MhRmzmdHN'
+              onClick={preventDefault}
+            >
               <DiscordIcon />
             </AnchorLink>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='https://github.com/PremiaFinance'
+              onClick={preventDefault}
+            >
               <GithubIcon />
             </AnchorLink>
-            <AnchorLink href='#' onClick={preventDefault}>
+            <AnchorLink
+              href='https://premia.medium.com/'
+              onClick={preventDefault}
+            >
               <MediumIcon />
             </AnchorLink>
           </Box>
@@ -1416,7 +1448,7 @@ const LandingPage: React.FC = () => {
           </Parallax>
         )}
         <Box className={classes.sectionImages}>
-          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+          <ScrollAnimation duration={1} offset={100} animateIn='fadeIn'>
             <Box className={classes.tradeOptions}>
               <Box className={classes.leftSide}>
                 <LandingTradingIcon />
@@ -1452,7 +1484,7 @@ const LandingPage: React.FC = () => {
               )}
             </Box>
           </ScrollAnimation>
-          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+          <ScrollAnimation duration={1} offset={100} animateIn='fadeIn'>
             <Box className={classes.earnYield}>
               <Box className={classes.leftSide}>
                 <LandingYieldIcon />
@@ -1489,7 +1521,7 @@ const LandingPage: React.FC = () => {
               )}
             </Box>
           </ScrollAnimation>
-          <ScrollAnimation duration={1} offset={200} animateIn='fadeIn'>
+          <ScrollAnimation duration={1} offset={100} animateIn='fadeIn'>
             <Box className={classes.hedgeRisks}>
               <Box className={classes.leftSide}>
                 <LandingHedgeIcon />
