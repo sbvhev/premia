@@ -9,7 +9,6 @@ import { merge } from 'lodash';
 const primary = '#5294FF';
 const premiaBlueDay = 'rgba(82, 148, 255, 0.12)';
 const premiaBlueNight = 'rgba(82, 148, 255, 0.2)';
-const primaryOnHover = '#80B5FF';
 
 const greySecondaryDay = '#8D97A0';
 const greySecondaryNight = '#646464';
@@ -246,7 +245,7 @@ export const lightTheme = responsiveFontSizes(
           },
           '&:active': {
             color: textSecondaryDay,
-            border: `1px solid ${primaryOnHover}`,
+            border: `1px solid ${greySecondaryDay}`,
           },
         },
       },
