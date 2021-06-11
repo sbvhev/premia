@@ -13,8 +13,11 @@ import {
   updateOptionType,
   updateStrikePrice,
   updatePricePerUnit,
+  updatePricePerUnitInUsd,
   updateTotalCost,
+  updateTotalCostInUsd,
   updateFee,
+  updateFeeInUsd,
   updatePriceImpact,
 } from './actions';
 
@@ -26,8 +29,11 @@ export interface OptionsState {
   strikePrice: number;
   size: number;
   pricePerUnit: number;
+  pricePerUnitInUsd: number;
   totalCost: number;
+  totalCostInUsd: number;
   fee: number;
+  feeInUsd: number;
   priceImpact: number;
 }
 
@@ -39,8 +45,11 @@ export const initialState: OptionsState = {
   strikePrice: 0,
   size: 0,
   pricePerUnit: 0,
+  pricePerUnitInUsd: 0,
   totalCost: 0,
+  totalCostInUsd: 0,
   fee: 0,
+  feeInUsd: 0,
   priceImpact: 0,
 };
 
@@ -67,11 +76,20 @@ export default createReducer(initialState, (builder) =>
     .addCase(updatePricePerUnit, (state, { payload }) => {
       state.pricePerUnit = payload;
     })
+    .addCase(updatePricePerUnitInUsd, (state, { payload }) => {
+      state.pricePerUnitInUsd = payload;
+    })
     .addCase(updateTotalCost, (state, { payload }) => {
       state.totalCost = payload;
     })
+    .addCase(updateTotalCostInUsd, (state, { payload }) => {
+      state.totalCostInUsd = payload;
+    })
     .addCase(updateFee, (state, { payload }) => {
       state.fee = payload;
+    })
+    .addCase(updateFeeInUsd, (state, { payload }) => {
+      state.feeInUsd = payload;
     })
     .addCase(updatePriceImpact, (state, { payload }) => {
       state.priceImpact = payload;

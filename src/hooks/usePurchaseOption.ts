@@ -20,6 +20,14 @@ export function usePurchaseOption() {
   const onPurchaseOption = useCallback(async () => {
     if (!optionPoolContract) return;
 
+    console.log('inputs: ', {
+      maturity,
+      strike64x64,
+      amount: optionSize,
+      maxCost,
+      isCall: optionType === OptionType.Call,
+    });
+
     return transact(
       optionPoolContract.purchase({
         maturity,

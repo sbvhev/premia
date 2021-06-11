@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 
 import {
+  useTotalCostInUsd,
   useTotalCost,
   useBreakEvenPrice,
   useMaturityDate,
@@ -23,7 +24,7 @@ import {
 } from 'state/options/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { usePurchaseOption } from 'hooks';
-import { formatNumber } from 'utils/formatNumber';
+import { formatCompact, formatNumber } from 'utils/formatNumber';
 
 import { ModalContainer } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
@@ -204,6 +205,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   const { underlying } = useUnderlying();
   const { maturityDate } = useMaturityDate();
   const { totalCost } = useTotalCost();
+  const { totalCostInUsd } = useTotalCostInUsd();
   const { priceImpact } = usePriceImpact();
   const { size } = useSize();
   const breakEvenPrice = useBreakEvenPrice();
@@ -433,7 +435,8 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                   size='large'
                   onClick={onTransact}
                 >
-                  Buy for ${formatNumber(totalCost)}
+                  Buy for {formatCompact(totalCost)} {activeToken?.symbol} ($
+                  {formatCompact(totalCostInUsd)})
                 </Button>
               </Box>
             </Box>
