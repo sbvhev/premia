@@ -17,8 +17,12 @@ import {
   updateStrikePrice,
   updateSize,
   updatePricePerUnit,
+  updatePricePerUnitInUsd,
   updateTotalCost,
+  updateTotalCostInUsd,
   updateFee,
+  updateFeeInUsd,
+  updatePriceImpact,
 } from './actions';
 
 export function useUnderlyingPrice(): number {
@@ -141,7 +145,7 @@ export function useOnChainOptionData() {
   ).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
-  const maxCost = floatToBigNumber(totalCost * 2, underlying.decimals);
+  const maxCost = floatToBigNumber(totalCost * 100, underlying.decimals);
 
   return {
     maturity,
@@ -166,6 +170,21 @@ export function usePricePerUnit() {
   return { pricePerUnit, setPricePerUnit };
 }
 
+export function usePricePerUnitInUsd() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { pricePerUnitInUsd } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPricePerUnitInUsd = useCallback(
+    (pricePerUnitInUsd: number) =>
+      dispatch(updatePricePerUnitInUsd(pricePerUnitInUsd)),
+    [dispatch],
+  );
+
+  return { pricePerUnitInUsd, setPricePerUnitInUsd };
+}
+
 export function useTotalCost() {
   const dispatch = useDispatch<AppDispatch>();
   const { totalCost } = useSelector<AppState, AppState['options']>(
@@ -180,6 +199,20 @@ export function useTotalCost() {
   return { totalCost, setTotalCost };
 }
 
+export function useTotalCostInUsd() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { totalCostInUsd } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setTotalCostInUsd = useCallback(
+    (totalCostInUsd: number) => dispatch(updateTotalCostInUsd(totalCostInUsd)),
+    [dispatch],
+  );
+
+  return { totalCostInUsd, setTotalCostInUsd };
+}
+
 export function useFee() {
   const dispatch = useDispatch<AppDispatch>();
   const { fee } = useSelector<AppState, AppState['options']>(
@@ -192,6 +225,34 @@ export function useFee() {
   );
 
   return { fee, setFee };
+}
+
+export function useFeeInUsd() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { feeInUsd } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setFeeInUsd = useCallback(
+    (feeInUsd: number) => dispatch(updateFeeInUsd(feeInUsd)),
+    [dispatch],
+  );
+
+  return { feeInUsd, setFeeInUsd };
+}
+
+export function usePriceImpact() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { priceImpact } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setPriceImpact = useCallback(
+    (priceImpact: number) => dispatch(updatePriceImpact(priceImpact)),
+    [dispatch],
+  );
+
+  return { priceImpact, setPriceImpact };
 }
 
 export function useBreakEvenPrice() {

@@ -757,7 +757,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              {userOwnedCallPoolUtilization}%
+                              {formatNumber(userOwnedCallPoolUtilization)}%
                             </Typography>
                           </Grid>
                         </Grid>
@@ -981,7 +981,7 @@ const ProVault: React.FC = () => {
                               component='h2'
                               color='textPrimary'
                             >
-                              {userOwnedPutPoolUtilization}%
+                              {formatNumber(userOwnedPutPoolUtilization)}%
                             </Typography>
                           </Grid>
                         </Grid>

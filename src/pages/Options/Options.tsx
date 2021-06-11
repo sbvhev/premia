@@ -18,7 +18,7 @@ import {
   useOptionType,
   useUnderlyingPrice,
   useBreakEvenPrice,
-  useTotalCost,
+  useTotalCostInUsd,
   useBase,
   useUnderlying,
   useMaturityDate,
@@ -178,7 +178,7 @@ const Options: React.FC = () => {
   const { underlying } = useUnderlying();
   const { optionType } = useOptionType();
   const { maturityDate } = useMaturityDate();
-  const { totalCost } = useTotalCost();
+  const { totalCostInUsd } = useTotalCostInUsd();
   const { account } = useWeb3();
   const { optionPoolContract } = usePools();
 
@@ -358,7 +358,10 @@ const Options: React.FC = () => {
             <Box pl={xs ? 1 : 3}>
               <Typography color='textSecondary'>Total cost</Typography>
               <Typography color='textPrimary' component='h2'>
-                ${formatNumber(totalCost, true, { maximumFractionDigits: 6 })}
+                $
+                {formatNumber(totalCostInUsd, true, {
+                  maximumFractionDigits: 6,
+                })}
               </Typography>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
@@ -368,12 +371,12 @@ const Options: React.FC = () => {
                 size='large'
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 onClick={() =>
-                  Number(allowance) > 0 && Number(allowance) >= totalCost
+                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
                     ? handleBuyOption()
                     : onApprove()
                 }
               >
-                {Number(allowance) > 0 && Number(allowance) >= totalCost
+                {Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
                   ? 'Buy Option'
                   : `Approve ${underlying.symbol}`}
               </Button>

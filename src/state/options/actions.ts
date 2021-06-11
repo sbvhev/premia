@@ -25,6 +25,20 @@ export const updatePricePerUnit = createAction<number>(
   'options/updatePricePerUnit',
 );
 
+export const updatePricePerUnitInUsd = createAction<number>(
+  'options/updatePricePerUnitInUsd',
+);
+
 export const updateTotalCost = createAction<number>('options/updateTotalCost');
 
+export const updateTotalCostInUsd = createAction<number>(
+  'options/updateTotalCostInUsd',
+);
+
 export const updateFee = createAction<number>('options/updateFee');
+
+export const updateFeeInUsd = createAction<number>('options/updateFeeInUsd');
+
+export const updatePriceImpact = createAction<number>(
+  'options/updatePriceImpact',
+);

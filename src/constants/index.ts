@@ -18,6 +18,12 @@ export const UNISWAP_FACTORY: { [chainId in ChainId | 56]: string } = {
   56: '0xbcfccbde45ce874adcb698cc183debcf17952812',
 };
 
+export const ETH: Currency = {
+  decimals: 18,
+  symbol: 'ETH',
+  name: 'Ether',
+};
+
 export const BNB: Currency = {
   decimals: 18,
   symbol: 'BNB',
@@ -49,8 +55,8 @@ export const DAI: { [chainId in ChainId | 56]: Token } = {
     name: 'Dai Stablecoin',
   },
   [ChainId.RINKEBY]: {
-    id: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
-    address: '0x8e401d45e59555e95766b5fcb023b5f65cca37b2',
+    id: '0x0562c2d2248d955773fcdd04422944226b0e4b78',
+    address: '0x0562c2d2248d955773fcdd04422944226b0e4b78',
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
