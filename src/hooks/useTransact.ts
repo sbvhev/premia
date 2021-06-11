@@ -129,6 +129,7 @@ export function useTransact() {
       setTxHistory,
       setTxStateMsg,
       setTxOption,
+      dispatch,
       notify,
     ],
   );
