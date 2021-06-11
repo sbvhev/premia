@@ -175,17 +175,44 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   
   leaderboard: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    '& p': {
+      fontSize: 14,
+      lineHeight: '18px',
+      color: palette.text.secondary,
+    }
+  },
 
+  tradingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 5,
+    '& p': {
+      fontSize: 14,
+      fontWeight: 'bold',
+      lineHeight: '18px',
+      margin: 0, 
+    }
   },
 
   tradingCompetition: {
     background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
     WebkitBackgroundClip: 'text',
     textFillColor: 'transparent',
+    paddingRight: 16,
+    position: 'relative',
+    '& svg': {
+      position: 'absolute',
+      right: 0,
+      top: 3,
+    },
   },
 
   tradinghours: {
-
+    color: palette.text.primary,
   }
 }));
 
@@ -222,7 +249,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           className={classes.accountInfo}
         >
           <ClockIcon />
-          <Box height={1}>
+          <Box height={1} className={classes.tradingContainer}>
             <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
             <Typography className={classes.tradinghours}>2d 21h left</Typography>
           </Box>
