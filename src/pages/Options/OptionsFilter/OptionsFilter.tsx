@@ -336,6 +336,54 @@ const OptionFilter: React.FC = () => {
             <ArrowDownwardIcon />
             &nbsp;Put
           </Button>
+          {/* {optionType === OptionType.Call ? (
+            <ContainedButton
+              label='Call'
+              fullWidth
+              margin='0 3px 0 0'
+              onClick={() => setOptionType(OptionType.Call)}
+              startIcon={
+                <ArrowUpwardIcon fill={theme.palette.background.paper} />
+              }
+            />
+          ) : (
+            <Button
+              variant='outlined'
+              color='secondary'
+              fullWidth
+              style={{ marginRight: '3px', height: '45px' }}
+              onClick={() => setOptionType(OptionType.Call)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Call
+            </Button>
+          )}
+        </Box>
+
+        <Box clone width={1 / 2}>
+          {optionType === OptionType.Put ? (
+            <ContainedButton
+              label='Put'
+              fullWidth
+              color='secondary'
+              margin='0 0 0 3px'
+              onClick={() => setOptionType(OptionType.Put)}
+              startIcon={
+                <ArrowDownwardIcon fill={theme.palette.background.paper} />
+              }
+            />
+          ) : (
+            <Button
+              variant='outlined'
+              color='secondary'
+              fullWidth
+              style={{ marginLeft: '3px', height: '45px' }}
+              onClick={() => setOptionType(OptionType.Put)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Put
+            </Button>
+          )} */}
         </Box>
       </Box>
 

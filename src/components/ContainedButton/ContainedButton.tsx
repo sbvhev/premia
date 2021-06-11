@@ -7,11 +7,10 @@ const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     fontWeight: 700,
     borderRadius: 12,
-    minWidth: '120px',
+    minWidth: '100px',
     textTransform: 'none',
     padding: '1px',
     margin: '2px',
-    height: '45px',
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%);`,
     display: 'flex',
     cursor: 'pointer',
@@ -23,7 +22,6 @@ const useStyles = makeStyles(({ palette }) => ({
     textTransform: 'none',
     padding: '1px',
     margin: '2px',
-    height: '45px',
     background: `linear-gradient(316.57deg, ${palette.error.main} 18.89%, ${palette.error.dark} 95.84%);`,
     display: 'flex',
     cursor: 'pointer',
@@ -60,6 +58,11 @@ const useStyles = makeStyles(({ palette }) => ({
       fill: palette.primary.main,
     },
   },
+  starIconHoverConatinerSecondary: {
+    '& svg path': {
+      fill: palette.error.main,
+    },
+  },
   endIconHoverConatiner: {
     '& svg path': {
       fill: palette.success.dark,
@@ -90,7 +93,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 interface ContainedButtonProps {
-  size?: string;
+  height?: string;
   color?: string;
   label?: string;
   textStyling?: object;
@@ -106,6 +109,7 @@ interface ContainedButtonProps {
 const ContainedButton: React.FC<ContainedButtonProps> = ({
   fullWidth,
   color,
+  height,
   label,
   textStyling,
   disabled,
@@ -126,18 +130,26 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
       onMouseLeave={!disabled ? () => setHoverState(false) : () => {}}
       style={disabled ? { opacity: 0.3, margin } : { margin }}
       width={fullWidth ? '100%' : 'auto'}
+      height={height ? height : '45px'}
       onClick={onClick}
       id={id}
     >
       <Box
         className={classes.container}
         bgcolor={!hoverState ? 'transparent' : palette.background.paper}
+        height={height ? height : '45px'}
       >
         {startIcon && (
           <Box
             display='flex'
             alignItems='center'
-            className={!hoverState ? '' : classes.starIconHoverConatiner}
+            className={
+              !hoverState
+                ? ''
+                : color === 'secondary'
+                ? classes.starIconHoverConatinerSecondary
+                : classes.starIconHoverConatiner
+            }
             marginRight='8px'
           >
             {startIcon}

@@ -336,7 +336,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     minWidth: 181,
     marginTop: 4,
     lineHeight: '24px',
-    color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
+    // color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
   },
   positionFilterContainer: {
     boxSizing: 'border-box',
@@ -1236,10 +1236,7 @@ const Positions: React.FC = () => {
                   <Box ml={3}>
                     <Typography component='h2'>Your options</Typography>
                     <Link to='/options'>
-                      <Button
-                        className={classes.noPositionButton}
-                        color='primary'
-                      >
+                      <Button className={classes.noPositionButton}>
                         Buy options
                       </Button>
                     </Link>
@@ -1254,10 +1251,7 @@ const Positions: React.FC = () => {
                   <Box ml={3}>
                     <Typography component='h2'>Your yield</Typography>
                     <Link to='/vaults?tab=pro'>
-                      <Button
-                        className={classes.noPositionButton}
-                        color='primary'
-                      >
+                      <Button className={classes.noPositionButton}>
                         Earn yield
                       </Button>
                     </Link>

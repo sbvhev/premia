@@ -5,8 +5,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Hamburger from 'hamburger-react';
 import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
-import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
-import MainLogo from 'assets/svg/MainLogo.svg';
+import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
+import MainLogo from 'assets/svg/NewLogoComboLight.svg';
 import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -41,12 +41,13 @@ const useStyles = makeStyles(({ palette }) => ({
     transform: 'scale(0)',
     transformOrigin: 'center 0',
     position: 'absolute',
-    transition: 'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+    transition:
+      'opacity 354ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 236ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
   },
   transitionOpen: {
     opacity: 1,
     transform: 'scale(1)',
-  }
+  },
 }));
 
 export interface PageWithSidebarProps {
@@ -113,7 +114,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   >
                     <Box marginLeft='22px' marginTop='2px'>
                       <img
-                        src={darkMode ? MainLogo : MainLogoBlack}
+                        src={darkMode ? MainLogoBlack : MainLogo}
                         alt='main logo'
                         style={{ height: '28px' }}
                       />
@@ -150,7 +151,10 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
 
           {mobile && (
             <Box
-              className={cx(classes.transitionItem, !mobileSidebarHidden && classes.transitionOpen)}
+              className={cx(
+                classes.transitionItem,
+                !mobileSidebarHidden && classes.transitionOpen,
+              )}
               width={mobile ? 1 : 'calc(100vw - 210px)'}
               position='relative'
               mt='60px'

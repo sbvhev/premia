@@ -43,7 +43,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& path': {
       fill: palette.text.hint,
-    }
+    },
   },
 
   divider: {
@@ -221,7 +221,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           {!mobile ? (
             <>
               <Button
-                color='primary'
                 className={classes.button}
                 onClick={() =>
                   window.open(

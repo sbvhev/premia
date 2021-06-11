@@ -46,7 +46,7 @@ import { BigNumber } from 'bignumber.js';
 import TokenList from '../../tokens.json';
 import ROUTE_ICON_LIST from '../../routeIconList.json';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -1207,12 +1207,11 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                   {swapValid && (
                     <>
                       {tokenNeedsapproval ? (
-                        <Button
-                          color='primary'
-                          variant='contained'
-                          id='bottomTarget'
-                          size='large'
+                        <ContainedButton
+                          label={`Approve ${fromToken?.symbol}`}
                           onClick={() => onApprove()}
+                          id='bottomTarget'
+                          margin='0 0 10px 0'
                           endIcon={
                             <Tooltip
                               arrow
@@ -1224,49 +1223,35 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                               <InfoIcon fill={palette.background.paper} />
                             </Tooltip>
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          {`Approve ${fromToken?.symbol}`}
-                        </Button>
+                        />
                       ) : (
-                        <Button
-                          color='primary'
-                          variant='contained'
-                          id='bottomTarget'
+                        <ContainedButton
+                          label='Approved'
                           disabled
-                          size='large'
+                          id='bottomTarget'
                           startIcon={
                             <ApprovedIcon fill={palette.background.paper} />
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          Approved
-                        </Button>
+                          margin='0 0 10px 0'
+                        />
                       )}
                     </>
                   )}
                   {swapValid && swapReady ? (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
+                      label='Swap'
                       id='bottomTarget'
-                      size='large'
-                      style={{ marginBottom: '20px' }}
                       onClick={handleSwap}
-                    >
-                      Swap
-                    </Button>
+                      margin='0 0 20px 0'
+                    />
                   ) : (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
+                      disabled
+                      label={preSwapButtonGuide}
                       id='bottomTarget'
-                      size='large'
-                      disabled={true}
-                      style={{ marginBottom: '20px' }}
-                    >
-                      {preSwapButtonGuide}
-                    </Button>
+                      onClick={handleSwap}
+                      margin='0 0 20px 0'
+                    />
                   )}
                 </>
               </Box>
