@@ -6,11 +6,13 @@ import cn from 'classnames';
 import { StakePremiaCard, LockPremiaCard } from './components';
 
 import { useWeb3 } from 'state/application/hooks';
-import { Currency } from '@uniswap/sdk';
+// import { Currency } from '@uniswap/sdk';
 import { contracts } from 'web3/contracts';
-import { isToken, Token } from 'web3/tokens';
+import { Token } from 'web3/tokens';
 import { useTokenBalance } from 'state/wallet/hooks';
+// import { formatEther, parseEther } from 'ethers/lib/utils';
 import { formatNumber } from 'utils/formatNumber';
+// import { useStakingBalances } from 'state/staking/hooks';
 
 import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
 import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
@@ -126,6 +128,14 @@ const Stake: React.FC = () => {
   const { account, chainId } = useWeb3();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  // const {
+  //   unclaimedPremia,
+  //   xPremiaLocked,
+  //   xPremiaLockedUntil,
+  //   premiaBalance,
+  //   xPremiaBalance,
+  //   premiaStaked,
+  // } = useStakingBalances();
 
   const chain = chainId ? chainId.toString() : '';
   const premiaAddress = chain ? contracts?.PremiaErc20[+chain] : false;
@@ -273,9 +283,7 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {account && xPremiaBalance
-                  ? formatNumber(xPremiaBalance)
-                  : '???'}
+                {account && xPremiaBalance ? xPremiaBalance : '???'}
               </Typography>
             </Box>
           </Box>

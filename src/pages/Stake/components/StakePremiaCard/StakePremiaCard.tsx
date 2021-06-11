@@ -11,18 +11,25 @@ import {
 } from '@material-ui/core';
 import { formatNumber } from 'utils/formatNumber';
 
+import { useWeb3 } from 'state/application/hooks';
+import { useTransact, useIsHardwareWallet } from 'hooks';
+import { parseEther } from 'ethers/lib/utils';
+
+import { formatBigNumber } from 'utils/formatNumber';
+// import { BigNumber } from 'ethers';
+import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
+import { RSV } from 'eth-permit/rpc';
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
 import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
-// import TickForCheckBox from 'assets/svg/TickOnCheckBox.svg';
 
 import { ContainedButton } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '642px',
+    height: '643px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
@@ -44,7 +51,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    height: '577px',
+    // height: '578px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -55,7 +62,6 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '335px',
-    // height: '501px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -268,9 +274,13 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
+interface PermitState {
+  permit?: ERC2612PermitMessage & RSV;
+  permitDeadline?: number;
+}
 interface StakePremiaCardProps {
-  premiaBalance: string | undefined;
-  xPremiaBalance: string | undefined;
+  premiaBalance?: string | undefined;
+  xPremiaBalance?: string | undefined;
 }
 
 const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
@@ -282,9 +292,17 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
-  const [checkIsOn, setCheckIsOn] = React.useState(false);
+  const { web3, account, contracts } = useWeb3();
 
+  const [checkIsOn, setCheckIsOn] = React.useState(false);
+  const isHardwareWallet = useIsHardwareWallet();
+
+  const [shouldApprove] = React.useState(isHardwareWallet);
+  const [signedAlready, setSignedAlready] = React.useState(false);
+  const [approvedAready, setApprovedAready] = React.useState(false);
+  const [permitState, setPermitState] = React.useState<PermitState>({});
   const [stakeAmount, setStakeAmount] = React.useState('');
+  const transact = useTransact();
 
   const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -316,10 +334,58 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
     }
   };
 
-  const handleDisclaimerCheck = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleApproveCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckIsOn(!checkIsOn);
+  };
+
+  const signPermit = async () => {
+    if (!stakeAmount) return;
+    const token = contracts?.PremiaErc20?.address as string;
+    const spender = contracts?.PremiaStaking.address as string;
+    const amount = parseEther(stakeAmount);
+    const deadline = Math.floor(new Date().getTime() / 1000 + 3600);
+
+    const permit = await signERC2612Permit(
+      web3,
+      token,
+      account,
+      spender,
+      amount.toString(),
+      deadline,
+    );
+    if (permit && permit.r) {
+      setPermitState({ permit, permitDeadline: deadline });
+      setSignedAlready(true);
+    }
+  };
+
+  const handleApprove = () => {};
+
+  const handleStakeWithApproval = async () => {
+    if (!stakeAmount) return;
+    const amount = parseEther(stakeAmount);
+    await transact(contracts?.PremiaStaking?.enter(amount), {
+      description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
+    });
+  };
+
+  const handleStakeWithPermit = async () => {
+    if (!permitState.permit || !permitState.permitDeadline || !stakeAmount)
+      return;
+
+    const amount = parseEther(stakeAmount);
+    await transact(
+      contracts?.PremiaStaking?.enterWithPermit(
+        amount,
+        permitState.permitDeadline,
+        permitState.permit.v,
+        permitState.permit.r,
+        permitState.permit.s,
+      ),
+      {
+        description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
+      },
+    );
   };
 
   return (
@@ -396,7 +462,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
                 color='textSecondary'
                 className={classes.smallInfoText}
               >
-                {'Max size available: 124,098'}
+                {`Max size available: ${formatNumber(premiaBalance)}`}
               </Typography>
             </Box>
 
@@ -427,11 +493,21 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             <Box className={classes.buttonLeft}>
-              <ContainedButton
-                label={'Stake'}
-                fullWidth
-                onClick={() => alert}
-              />
+              {checkIsOn || shouldApprove ? (
+                <ContainedButton
+                  label={!approvedAready ? 'Approve 1/2' : 'Stake'}
+                  fullWidth
+                  onClick={
+                    approvedAready ? handleApprove : handleStakeWithApproval
+                  }
+                />
+              ) : (
+                <ContainedButton
+                  label={!signedAlready ? 'Sign Permit 1/2' : 'Stake'}
+                  fullWidth
+                  onClick={!signedAlready ? signPermit : handleStakeWithPermit}
+                />
+              )}
             </Box>
             <Button
               color='secondary'
@@ -446,7 +522,7 @@ const StakePremiaCard: React.FC<StakePremiaCardProps> = ({
           <Box display='flex' width='100%' marginTop='12px'>
             <Checkbox
               checked={checkIsOn}
-              onChange={handleDisclaimerCheck}
+              onChange={handleApproveCheck}
               name='agreeToTerms'
               size='small'
               className={classes.checkbox}

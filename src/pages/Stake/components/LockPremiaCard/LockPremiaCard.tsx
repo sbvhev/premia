@@ -11,6 +11,16 @@ import {
   Checkbox,
 } from '@material-ui/core';
 
+// import { formatNumber } from 'utils/formatNumber';
+// import { useWeb3 } from 'state/application/hooks';
+// import { useTransact, useIsHardwareWallet, useApproval } from 'hooks';
+// import { formatEther, parseEther } from 'ethers/lib/utils';
+
+// import { formatBigNumber } from 'utils/formatNumber';
+// import { BigNumber } from 'ethers';
+// import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
+// import { RSV } from 'eth-permit/rpc';
+
 import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
 import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
 
@@ -56,7 +66,6 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '335px',
-    // height: '566px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -293,15 +302,26 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
+// interface PermitState {
+//   permit?: ERC2612PermitMessage & RSV;
+//   permitDeadline?: number;
+// }
+
 const LockPremiaCard: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  // const { web3, account, contracts } = useWeb3();
+  // const isHardwareWallet = useIsHardwareWallet();
   const progress = '75%';
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [darkMode] = useDarkModeManager();
   const [checkIsOn, setCheckIsOn] = React.useState(false);
+  // const [shouldApprove, handleChangeShouldApprove] =
+  // React.useState(isHardwareWallet);
+  const [signedAlready, setSignedAlready] = React.useState(false);
+  // const [permitState, setPermitState] = React.useState<PermitState>({});
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -311,9 +331,7 @@ const LockPremiaCard: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleDisclaimerCheck = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleApproveCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckIsOn(!checkIsOn);
   };
 
@@ -477,7 +495,21 @@ const LockPremiaCard: React.FC = () => {
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             <Box className={classes.buttonLeft}>
-              <ContainedButton label='Lock' color='secondary' />
+              {!checkIsOn ? (
+                <ContainedButton
+                  label={!signedAlready ? 'Sign Permit 1/2' : 'Lock'}
+                  color='secondary'
+                  fullWidth
+                  onClick={() => {}}
+                />
+              ) : (
+                <ContainedButton
+                  label={!signedAlready ? 'Approve 1/2' : 'Lock'}
+                  color='secondary'
+                  fullWidth
+                  onClick={() => {}}
+                />
+              )}
             </Box>
             <Button
               color='secondary'
@@ -491,7 +523,7 @@ const LockPremiaCard: React.FC = () => {
           <Box display='flex' width='100%' marginTop='12px'>
             <Checkbox
               checked={checkIsOn}
-              onChange={handleDisclaimerCheck}
+              onChange={handleApproveCheck}
               name='agreeToTerms'
               size='small'
               className={classes.checkbox}
