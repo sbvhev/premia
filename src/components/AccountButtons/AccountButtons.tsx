@@ -20,9 +20,11 @@ import {
   ConfirmTermsModal,
   TransactionsModal,
 } from 'components';
+import { ReactComponent as ClockIcon } from 'assets/svg/ClockIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
+import { ReactComponent as UpRightArrow } from 'assets/svg/UpRightArrow.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -171,6 +173,20 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   connectWalletButton: {
     fontSize: 14,
   },
+  
+  leaderboard: {
+
+  },
+
+  tradingCompetition: {
+    background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
+  },
+
+  tradinghours: {
+
+  }
 }));
 
 interface AccountButtonsProps {
@@ -189,18 +205,37 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
   const classes = useStyles({ darkMode });
 
   return (
-    <Grid container direction='row' alignItems='center' justify='flex-end'>
+    <Grid container alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
       />
 
-      {confirmTermsModalOpen && (
-        <ConfirmTermsModal
-          open={confirmTermsModalOpen}
-          onClose={() => setConfirmTermsModalOpen(false)}
-        />
-      )}
+      <ConfirmTermsModal
+        open={confirmTermsModalOpen}
+        onClose={() => setConfirmTermsModalOpen(false)}
+      />
+
+      <Box display='flex' className={classes.account} mr={1}>
+        <Box
+          height={1}
+          className={classes.accountInfo}
+        >
+          <ClockIcon />
+          <Box height={1}>
+            <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
+            <Typography className={classes.tradinghours}>2d 21h left</Typography>
+          </Box>
+        </Box>
+        <Box
+          height={1}
+          borderLeft={1}
+          borderColor={theme.palette.divider}
+          className={classes.leaderboard}
+        >
+          <Typography>Leaderboard</Typography>
+        </Box>
+      </Box>
 
       {wallet && wallet.provider && wallet.type === 'hardware' && (
         <Grid item xs={2}>
@@ -215,7 +250,6 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       {wallet && wallet.provider && account ? (
         <Box
           display='flex'
-          width='100%'
           style={{ backgroundColor: 'transparent' }}
         >
           {!mobile ? (
@@ -336,21 +370,19 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           )}
         </Box>
       ) : (
-        <Box width='100%' p={1.25}>
-          <Button
-            variant='contained'
-            color='primary'
-            size='large'
-            className={cx(
-              mobile && classes.fullWidth,
-              classes.connectWalletButton,
-            )}
-            onClick={() => setConfirmTermsModalOpen(true)}
-          >
-            <ConnectWallet className={classes.walletIcon} />
-            Connect wallet
-          </Button>
-        </Box>
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={cx(
+            mobile && classes.fullWidth,
+            classes.connectWalletButton,
+          )}
+          onClick={() => setConfirmTermsModalOpen(true)}
+        >
+          <ConnectWallet className={classes.walletIcon} />
+          Connect wallet
+        </Button>
       )}
 
       <Grid item xs={1} />
