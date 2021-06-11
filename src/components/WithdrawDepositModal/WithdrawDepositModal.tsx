@@ -1,17 +1,25 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Button, Typography, Modal, Box, Fade, Backdrop } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  Modal,
+  Box,
+  Fade,
+  Backdrop,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { BNB, ETH } from '../../constants';
 import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 import { useApproval, useTransact, usePools } from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
 import { formatBigNumber, formatCompact } from 'utils/formatNumber';
+import floatToBigNumber from 'utils/floatToBigNumber';
 
 import { ModalContainer } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
-import floatToBigNumber from 'utils/floatToBigNumber';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   borderedCard: {
@@ -225,7 +233,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const { account } = useWeb3();
+  const { chainId, account } = useWeb3();
   const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
     usePools(true);
@@ -244,13 +252,28 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     [activePool, call],
   );
   const activeTokenBalance = useCurrencyBalance(account, activeToken);
+  const activeNativeTokenBalance = useCurrencyBalance(
+    account,
+    chainId === 56 ? BNB : ETH,
+  );
   const activePoolBalance = formatBigNumber(
     call ? userOwnedCallPool?.totalAvailable : userOwnedPutPool?.totalAvailable,
   );
-  const activeBalance = useMemo(
-    () => (type === 'deposit' ? activeTokenBalance : activePoolBalance),
-    [type, activeTokenBalance, activePoolBalance],
-  );
+  const activeBalance = useMemo(() => {
+    if (
+      ['WETH', 'WBNB'].includes(activeToken?.symbol ?? '') &&
+      type === 'deposit'
+    ) {
+      return Number(activeTokenBalance) + Number(activeNativeTokenBalance);
+    }
+    return type === 'deposit' ? activeTokenBalance : activePoolBalance;
+  }, [
+    type,
+    activeToken,
+    activeNativeTokenBalance,
+    activeTokenBalance,
+    activePoolBalance,
+  ]);
 
   const { allowance, onApprove } = useApproval(
     activeToken?.address,
@@ -281,8 +304,24 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
         : activePoolContract!.withdraw;
 
     const amount = floatToBigNumber(value, activeToken!.decimals);
+    const additionalEthNecessary =
+      ['WETH', 'WBNB'].includes(activeToken.symbol) &&
+      value > Number(activeTokenBalance)
+        ? value - Number(activeTokenBalance)
+        : 0;
 
-    transact(depositWithdraw(amount, call))
+    transact(
+      depositWithdraw(amount, call, {
+        ...(additionalEthNecessary
+          ? {
+              value: floatToBigNumber(
+                additionalEthNecessary + 0.00005,
+                activeToken.decimals,
+              ),
+            }
+          : {}),
+      }),
+    )
       .then(async (tx) => {
         try {
           await tx?.wait();
@@ -292,7 +331,16 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
         }
       })
       .then(onClose);
-  }, [type, value, call, activeToken, activePoolContract, transact, onClose]);
+  }, [
+    type,
+    value,
+    call,
+    activeToken,
+    activeTokenBalance,
+    activePoolContract,
+    transact,
+    onClose,
+  ]);
 
   return (
     <Modal
@@ -301,7 +349,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>

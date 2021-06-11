@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       animationDuration: '2s',
       animationTimingFunction: 'linear',
       animationFillMode: 'forwards',
+      animationIterationCount: 'infinite',
       height: (props: any) => props.size,
       width: (props: any) => props.size,
 
