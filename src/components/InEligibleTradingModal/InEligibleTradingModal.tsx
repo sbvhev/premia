@@ -1,17 +1,12 @@
 import React from 'react';
-import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { Typography, Modal, Box, Fade, Backdrop } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
 
-import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
-import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
-import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
-import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
-import { ReactComponent as SocialIcon1 } from 'assets/svg/SocialIcon1.svg';
-import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
-import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
-import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
+import MostOuterErrorRadial from 'assets/svg/ErrorIconOuterRadial.svg';
+import SecondErrorRadial from 'assets/svg/ErrorIconSecondOuterRadial.svg';
+import ErrorIcon from 'assets/svg/ErrorIconCore.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -34,11 +29,11 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   firstOuterRadial: {
     position: 'absolute',
-    top: 6,
+    top: 5,
     left: 'calc(50% - 62px)',
     zIndex: 4,
-    width: '124px',
-    height: '123px',
+    width: '125px',
+    height: '123.5px',
   },
   secondOuterRadial: {
     position: 'absolute',
@@ -51,7 +46,7 @@ const useStyles = makeStyles(({ palette }) => ({
   innerMainBorderedCircle: {
     width: '98px',
     height: '98px',
-    background: `linear-gradient(316.57deg, ${palette.success.dark} 18.89%, ${palette.success.main} 95.84%);`,
+    background: `linear-gradient(316.57deg, ${palette.error.main} 18.89%, ${palette.error.dark} 95.84%);`,
     borderRadius: '50%',
     display: 'flex',
     justifyContent: 'center',
@@ -99,7 +94,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: `linear-gradient(316.57deg, ${palette.success.dark} 18.89%, ${palette.success.main} 95.84%);`,
+    background: `linear-gradient(316.57deg, ${palette.error.main} 18.89%, ${palette.error.dark} 95.84%);`,
     borderRadius: '12px',
     padding: '1.5px 1.5px 2px 2px',
     zIndex: 2,
@@ -119,23 +114,21 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     textAlign: 'center',
-    marginTop: 80,
+    marginTop: 70,
     fontFamily: 'DM Sans',
+    padding: '0 60px',
     '& h2': {
       fontSize: 28,
-      lineHeight: '18px',
-      fontWeight: 'bold',
+      lineHeight: '27px',
       color: palette.text.primary,
+      fontWeight: 'bold',
+      margin: '0 22px 16px',
     },
-    '& > p': {
-      margin: '11px 50px 21px',
+    '& p': {
       fontSize: 14,
       lineHeight: '16px',
-    },
-    '& button': {
-      maxWidth: 220,
-      height: 45,
-      margin: '0 auto 30px',
+      color: palette.text.secondary,
+      marginBottom: 40
     }
   },
   exitContainer: {
@@ -155,55 +148,16 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
-  socialContainer: {
-    marginTop: 20,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    '& p': {
-      fontSize: 14,
-      fontWeight: 500,
-      lineHeight: '24px',
-      color: palette.text.primary
-    },
-    '& a': {
-      marginBottom: 19,
-      textDecoration: 'underline',
-      fontSize: 14,
-      lineHeight: '18px',
-      color: palette.text.secondary,
-    },
-    '& > div': {
-      margin: '8px 0 15px',
-      display: 'flex',
-      justifyContent: 'center',
-      '& > div': {
-        width: 35,
-        height: 35,
-        borderRadius: 12,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-        '&:last-child': {
-          marginRight: 0
-        },
-        '& svg path': {
-          fill: palette.text.secondary
-        }
-      }
-    }
-  }
 }));
 
-export interface EligibleTradingModalProps {
+export interface InEligibleTradingModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
+const InEligibleTradingModal: React.FC<InEligibleTradingModalProps> = ({
   open,
-  onClose
+  onClose,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -225,35 +179,35 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
           <Box width={1} className={classes.wrapper}>
             <Box
               className={classes.topIconWraper}
-              style={!mobile ? {} : { top: 'calc(20vh + 5px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 3px)' }}
             >
               <Box className={classes.innerMainBorderedCircle}></Box>
             </Box>
             <img
-              src={MostOuterSuccessRadial}
+              src={MostOuterErrorRadial}
               alt='---'
               className={classes.firstOuterRadial}
-              style={!mobile ? {} : { top: 'calc(20vh + 5.5px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 3.5px)' }}
             />
             <img
-              src={SecondSuccessRadial}
+              src={SecondErrorRadial}
               alt='--'
               className={classes.secondOuterRadial}
-              style={!mobile ? {} : { top: 'calc(20vh + 12px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 10px)' }}
             />
             <img
-              src={SuccessIcon}
-              alt='Success'
+              src={ErrorIcon}
+              alt='Cancelled'
               className={classes.iconCore}
-              style={!mobile ? {} : { top: 'calc(20vh + 25.5px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 23.5px)' }}
             />
             <Box
               className={classes.innerMainTransparent}
-              style={!mobile ? {} : { top: 'calc(20vh + 20px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 18px)' }}
             />
             <Box
               className={classes.innerCoreBackgroundFill}
-              style={!mobile ? {} : { top: 'calc(20vh + 42.5px)' }}
+              style={!mobile ? {} : { top: 'calc(20vh + 42px)' }}
             />
             <Box
               className={classes.coloredBorderBackgroundForCard}
@@ -264,26 +218,11 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
               <Box className={classes.mainCard}>
                 <Box className={classes.textColumn}>
                   <Typography component='h2'>
-                    You are eligible
+                    Unfortunately, you are not eligible
                   </Typography>
-                  <Typography color='secondary'>
-                    Now, you can claim your tokens for the competition and start trading when the competitions start
+                  <Typography>
+                    Premia trading competition is available for the previous users of Premia v1 and participants of PBC. We hope to see you again when we are live
                   </Typography>
-                  <Button variant='contained' color='primary'>
-                    Claim Tokens
-                  </Button>
-                  <Divider />
-                  <Box className={classes.socialContainer}>
-                    <Typography>Share on:</Typography>
-                    <Box>
-                      <Container fixed><TwitterIcon /></Container>
-                      <Container fixed><TelegramIcon /></Container>
-                      <Container fixed><FacebookIcon /></Container>
-                      <Container fixed><DiscordIcon /></Container>
-                      <Container fixed><SocialIcon1 /></Container>
-                    </Box>
-                    <Link>Not right now</Link>
-                  </Box>
                 </Box>
               </Box>
               <Box className={classes.exitContainer} onClick={onClose}>
@@ -297,4 +236,4 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
   );
 };
 
-export default EligibleTradingModal;
+export default InEligibleTradingModal;

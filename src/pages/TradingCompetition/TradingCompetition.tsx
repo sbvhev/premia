@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { useDarkModeManager } from 'state/user/hooks';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { EligibleTradingModal } from 'components';
+import { EligibleTradingModal, InEligibleTradingModal } from 'components';
 import TradingCompetitionBanner from 'assets/images/TradingCompetitionBanner.png';
 import PrizeFirst from 'assets/svg/PrizeFirst.svg';
 import PrizeSecond from 'assets/svg/PrizeSecond.svg';
@@ -191,6 +191,7 @@ const TradingCompetition: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ darkMode, mobile });
   const [ eligibleTradingModalOpen, setEligibleTradingModalOpen ] = useState(false);
+  const [ inEligibleTradingModalOpen, setInEligibleTradingModalOpen ] = useState(false);
 
   return (
     <>
@@ -198,6 +199,12 @@ const TradingCompetition: React.FC = () => {
         open={eligibleTradingModalOpen}
         onClose={() => {
           setEligibleTradingModalOpen(false)
+        }}
+      />
+      <InEligibleTradingModal
+        open={inEligibleTradingModalOpen}
+        onClose={() => {
+          setInEligibleTradingModalOpen(false)
         }}
       />
       <Typography
@@ -242,7 +249,7 @@ const TradingCompetition: React.FC = () => {
             variant='contained'
             color='primary'
             onClick={() => {
-              setEligibleTradingModalOpen(true);
+              setInEligibleTradingModalOpen(true);
             }}
           >
             Check if I am eligible
