@@ -1724,20 +1724,22 @@ const LandingPage: React.FC = () => {
           style={{ marginBottom: !mobile ? 260 : 60 }}
         >
           <Box>
-            <Typography>
-              Dive into our open collection of decentralized financial research
-            </Typography>
+            <Typography>Explore our platform documentation</Typography>
           </Box>
           {!mobile && (
             <Button
-              onClick={() => window.open('https://docs.premia.com', '_blank')}
+              onClick={() =>
+                window.open('https://docs.premia.finance', '_blank')
+              }
             >
-              Our Research
+              Our Documentation
             </Button>
           )}
           {mobile && (
             <ArrowCircleIcon
-              onClick={() => window.open('https://docs.premia.com', '_blank')}
+              onClick={() =>
+                window.open('https://docs.premia.finance', '_blank')
+              }
             />
           )}
         </Box>
