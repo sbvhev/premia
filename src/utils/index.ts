@@ -101,7 +101,7 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 
 // add 10%
 export function calculateFloatGasMargin(value: number): number {
-  return value * 1.1;
+  return Math.ceil(value * 1.1);
 }
 
 // account is not optional

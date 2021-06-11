@@ -1,4 +1,5 @@
 export * from './useAllTokens';
+export * from './useAllUserOwnedPools';
 export * from './useApproval';
 export * from './useContract';
 export * from './useCurrentBlockTimestamp';

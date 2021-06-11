@@ -189,8 +189,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   inputIcon: {
     position: 'relative',
-    top: '-40px',
+    top: '-34px',
     left: 14,
+    height: 20,
     width: 20,
     zIndex: 1,
 
@@ -358,7 +359,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
             <Box className={classes.borderedCard}>
               <Box className={classes.titleBox}>
                 <Box height={16}>
-                  <UnderlyingIcon />
+                  <UnderlyingIcon height={24} width={24} />
                 </Box>
                 <Typography
                   component='h2'

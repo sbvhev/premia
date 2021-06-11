@@ -19,8 +19,12 @@ import Moment from 'moment';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
-import { formatNumber } from 'utils/formatNumber';
-import { OptionType } from 'web3/options';
+import { usePrices } from 'state/application/hooks';
+import { formatBigNumber, formatNumber } from 'utils/formatNumber';
+import { UserOwnedPool } from 'web3/pools';
+import { OptionType, UserOwnedOption } from 'web3/options';
+import { useAllUserOwnedPools, useUserOwnedOptions } from 'hooks';
+import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
   DataTable,
@@ -31,10 +35,6 @@ import {
 } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as YieldIcon } from 'assets/svg/YieldIcon.svg';
-import { ReactComponent as VaultIcon } from 'assets/svg/VaultIcon.svg';
-import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
 import { ReactComponent as DownArrow } from 'assets/svg/DownArrow.svg';
@@ -45,7 +45,6 @@ import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
-import { useUserOwnedOptions } from 'hooks';
 
 const getYieldHeadCells = () => [
   {
@@ -68,7 +67,7 @@ const getYieldHeadCells = () => [
   {
     id: 'typename',
     numeric: false,
-    label: 'Type&name',
+    label: 'Type & Name',
     sortKey: (yieldItem: any) => yieldItem?.name,
   },
   {
@@ -320,7 +319,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 18,
     marginTop: 20,
     '& h2': {
-      color: palette.common.black,
+      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
     },
   },
   noPositionBox: {
@@ -335,11 +334,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   noPositionButton: {
     minWidth: 181,
-    color: palette.common.black,
     marginTop: 4,
-    '&:hover': {
-      background: palette.primary.light,
-    },
+    lineHeight: '24px',
+    color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
   },
   positionFilterContainer: {
     boxSizing: 'border-box',
@@ -379,6 +376,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   findPositionButton: {
     minWidth: 169,
     background: palette.common.black,
+    border: '1px solid transparent',
+
+    '&:hover:not(:active)': {
+      borderColor: palette.common.white,
+      background: palette.common.black,
+      opacity: 0.8,
+    },
+
+    '&:active': {
+      background: palette.common.black,
+      opacity: 0.8,
+    },
+
     '& svg': {
       opacity: 0.5,
     },
@@ -703,7 +713,8 @@ const getThisMonthDates = () => {
 };
 
 const Positions: React.FC = () => {
-  const classes = useStyles();
+  const [darkMode] = useDarkModeManager();
+  const classes = useStyles({ darkMode });
   const theme = useTheme();
   const mobileWindowSize = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -712,15 +723,28 @@ const Positions: React.FC = () => {
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
-  const [darkMode] = useDarkModeManager();
 
   const options = useUserOwnedOptions();
+  const pools = useAllUserOwnedPools();
+  const tokenPrices = usePrices();
 
   const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
   const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
-  const noPositions = false;
+  const noPositions = options.length + pools.length < 1;
+  const currentTime = useMemo(
+    () => Math.floor(new Date().getTime() / 1000),
+    [],
+  );
 
-  console.log('options', options);
+  const filteredOptions = useMemo(
+    () =>
+      options.filter(({ option }) =>
+        optionFilterIndex
+          ? Number(formatBigNumber(option.maturity)) > currentTime
+          : Number(formatBigNumber(option.maturity)) <= currentTime,
+      ),
+    [options, optionFilterIndex, currentTime],
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -927,101 +951,33 @@ const Positions: React.FC = () => {
   ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
 
-  const yieldData = [
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      capital: 15002,
-      type: 'vault',
-      name: 'Medium Risk',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <LinkIcon />,
-      symbol: 'Link',
-      capital: 15002,
-      option: OptionType.Call,
-      type: 'pool',
-      name: 'Link Call Pool',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <YFIIcon />,
-      symbol: 'YFI',
-      capital: 15002,
-      option: 'PUT',
-      type: 'pool',
-      name: 'Uni Put Pool',
-      earned: 100,
-      apy: 24,
-    },
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      capital: 15002,
-      type: 'vault',
-      name: 'Low Risk',
-      earned: 100,
-      apy: 24,
-    },
-  ];
-
-  const optionsData = [
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      size: 15002,
-      type: OptionType.Call,
-      strike: 100,
-      value: 100,
-      expiration: Moment.now(),
-    },
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      size: 15002,
-      type: OptionType.Call,
-      strike: 100,
-      value: 100,
-      expiration: Moment.now(),
-    },
-    {
-      tokenIcon: <UniIcon />,
-      symbol: 'Uni',
-      size: 15002,
-      type: 'PUT',
-      strike: 100,
-      value: 100,
-      exercised: true,
-      expiration: Moment.now(),
-    },
-  ];
-
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
 
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
   const optionAssets = [
     {
-      category: 'ETH',
+      category: 'LINK Call',
       value: 73,
     },
     {
-      category: 'Uni',
+      category: 'LINK Put',
       value: 27,
     },
   ];
 
   const yieldAssets = [
     {
-      category: 'Option 1',
-      value: 73,
+      category: 'LINK',
+      value: 43,
     },
     {
-      category: 'Option 2',
+      category: 'ETH',
       value: 27,
+    },
+    {
+      category: 'DAI',
+      value: 30,
     },
   ];
 
@@ -1247,7 +1203,7 @@ const Positions: React.FC = () => {
                       endColors={['#2DDEA0', '#A745DD']}
                       rotations={[21.21, 116.57]}
                       content={
-                        positionFilterIndex === 0 ? 'My assets' : 'My options'
+                        positionFilterIndex === 0 ? 'My options' : 'My assets'
                       }
                     />
                   </Box>
@@ -1297,7 +1253,7 @@ const Positions: React.FC = () => {
                   </Box>
                   <Box ml={3}>
                     <Typography component='h2'>Your yield</Typography>
-                    <Link to='/vaults'>
+                    <Link to='/vaults?tab=pro'>
                       <Button
                         className={classes.noPositionButton}
                         color='primary'
@@ -1392,147 +1348,202 @@ const Positions: React.FC = () => {
               <Box mt={mobileWindowSize ? 1.5 : 2.5}>
                 {mobileWindowSize ? (
                   <>
-                    {optionsData.map((item: any) => (
-                      <Box mb={2}>
-                        <Container fixed>
-                          <Box
-                            width={1}
-                            display='flex'
-                            p={1.25}
-                            pl={1}
-                            justifyContent='space-between'
-                            alignItems='center'
-                          >
-                            <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
-                            </Box>
+                    {filteredOptions.map((userOwnedOption) => {
+                      const { option } = userOwnedOption;
+                      const isCall = option.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? option.underlying.symbol
+                        : option.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+                      const expiration = Moment(
+                        new Date(Number(option.maturity) * 1000),
+                      );
+                      const price = tokenPrices[option.underlying.symbol];
+                      const perOptionValue = Math.max(
+                        0,
+                        isCall
+                          ? Number(formatBigNumber(option.strike)) - price
+                          : price - Number(formatBigNumber(option.strike)),
+                      );
+
+                      return (
+                        <Box mb={2}>
+                          <Container fixed>
                             <Box
-                              className={cx(
-                                classes.typeBox,
-                                item.type === OptionType.Call
-                                  ? classes.call
-                                  : classes.put,
-                              )}
+                              width={1}
+                              display='flex'
+                              p={1.25}
+                              pl={1}
+                              justifyContent='space-between'
+                              alignItems='center'
                             >
-                              <Box />
-                              {item.type === OptionType.Call ? (
-                                <CallIcon />
-                              ) : (
-                                <PutIcon />
-                              )}
-                              {item.type}
-                            </Box>
-                          </Box>
-                          <Divider />
-                          <Box className={classes.cardRow}>
-                            <Typography color='textSecondary'>Size</Typography>
-                            {formatNumber(item.size)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Current Value
-                              </Typography>
-                              <DaiIcon />
-                            </Box>
-                            {formatNumber(item.value)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Strike
-                              </Typography>
-                              <DaiIcon />
-                            </Box>
-                            {formatNumber(item.strike)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Typography color='textSecondary'>
-                              Expiration
-                            </Typography>
-                            <Box textAlign='right'>
-                              {Moment(item.expiration).format('DD MMM')}
-                              <Typography color='textSecondary'>
-                                2 days left
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <Box px={1} my={1.5}>
-                            {item.exercised ? (
-                              <Box className={classes.exercisedCell}>
+                              <Box className={classes.tokenIconCell}>
                                 <Box>
-                                  <DoneIcon />
+                                  <TokenIcon height={20} width={20} />
                                 </Box>
-                                <Typography>Exercised for 100</Typography>
+                                {tokenSymbol}
                               </Box>
-                            ) : (
-                              <Button
-                                fullWidth
-                                color='primary'
-                                onClick={() => setPositionModalOpen(true)}
+                              <Box
+                                className={cx(
+                                  classes.typeBox,
+                                  isCall ? classes.call : classes.put,
+                                )}
                               >
-                                Exercise
-                              </Button>
-                            )}
-                          </Box>
-                        </Container>
-                      </Box>
-                    ))}
+                                <Box />
+                                {isCall ? <CallIcon /> : <PutIcon />}
+                                {option.optionType}
+                              </Box>
+                            </Box>
+                            <Divider />
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Size
+                                </Typography>
+                                <TokenIcon height={20} width={20} />
+                              </Box>
+                              {formatBigNumber(userOwnedOption.size)}
+                            </Box>
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Current Value
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatNumber(
+                                Number(formatBigNumber(userOwnedOption.size)) *
+                                  Number(perOptionValue),
+                              )}
+                            </Box>
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Strike
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatBigNumber(option.strike)}
+                            </Box>
+                            <Box className={classes.cardRow}>
+                              <Typography color='textSecondary'>
+                                Expiration
+                              </Typography>
+                              <Box textAlign='right'>
+                                {expiration.format('DD MMM')}
+                                <Typography color='textSecondary'>
+                                  {expiration.fromNow()}
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Box px={1} my={1.5}>
+                              {Number(userOwnedOption.totalExercised) > 0 ? (
+                                <Box className={classes.exercisedCell}>
+                                  <Box>
+                                    <DoneIcon />
+                                  </Box>
+                                  <Typography>
+                                    Exercised for{' '}
+                                    {formatBigNumber(
+                                      userOwnedOption.totalExercised,
+                                    )}
+                                  </Typography>
+                                </Box>
+                              ) : (
+                                <Button
+                                  fullWidth
+                                  color='primary'
+                                  onClick={() => setPositionModalOpen(true)}
+                                >
+                                  Exercise
+                                </Button>
+                              )}
+                            </Box>
+                          </Container>
+                        </Box>
+                      );
+                    })}
                   </>
                 ) : (
                   <DataTable
                     headCells={optionsHeadCells}
-                    data={optionsData}
+                    data={filteredOptions}
                     rowPerPage={5}
                     sortUpIcon={<UpArrow />}
                     sortDownIcon={<DownArrow />}
                     showEmptyRows={false}
-                    renderRow={(item: any, index) => {
+                    renderRow={(userOwnedOption: UserOwnedOption, index) => {
+                      const { option } = userOwnedOption;
+                      const isCall = option.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? option.underlying.symbol
+                        : option.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+                      const expiration = Moment(
+                        new Date(Number(option.maturity) * 1000),
+                      );
+                      const price = tokenPrices[option.underlying.symbol];
+                      const perOptionValue = Math.max(
+                        0,
+                        isCall
+                          ? Number(formatBigNumber(option.strike)) - price
+                          : price - Number(formatBigNumber(option.strike)),
+                      );
+
                       return (
                         <TableRow key={index}>
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
+                              <Box>
+                                <TokenIcon height={20} width={20} />
+                              </Box>
+                              {tokenSymbol}
                             </Box>
                           </TableCell>
-                          <TableCell>{formatNumber(item.size)}</TableCell>
+                          <TableCell>
+                            {formatBigNumber(userOwnedOption.size)}
+                          </TableCell>
                           <TableCell>
                             <Box
                               className={cx(
                                 classes.typeBox,
-                                item.type === OptionType.Call
-                                  ? classes.call
-                                  : classes.put,
+                                isCall ? classes.call : classes.put,
                               )}
                             >
                               <Box />
-                              {item.type === OptionType.Call ? (
-                                <CallIcon />
-                              ) : (
-                                <PutIcon />
-                              )}
-                              {item.type}
+                              {isCall ? <CallIcon /> : <PutIcon />}
+                              {option.optionType}
                             </Box>
                           </TableCell>
-                          <TableCell>{item.strike}</TableCell>
-                          <TableCell>{item.value}</TableCell>
+                          <TableCell>
+                            {formatBigNumber(option.strike)}
+                          </TableCell>
+                          <TableCell>
+                            {formatNumber(
+                              Number(formatBigNumber(userOwnedOption.size)) *
+                                perOptionValue,
+                            )}
+                          </TableCell>
                           <TableCell>
                             <Box className={classes.expirationCell}>
-                              {Moment(item.expiration).format('DD MMM')}{' '}
+                              {expiration.format('DD MMM')}{' '}
                               <Typography color='textSecondary'>
-                                2 days left
+                                {expiration.fromNow()}
                               </Typography>
                             </Box>
                           </TableCell>
                           <TableCell className='buttonCell'>
-                            {item.exercised ? (
+                            {Number(userOwnedOption.totalExercised) > 0 ? (
                               <Box className={classes.exercisedCell}>
                                 <Box>
                                   <DoneIcon />
                                 </Box>
-                                <Typography>Exercised for 100</Typography>
+                                <Typography>
+                                  Exercised for{' '}
+                                  {formatBigNumber(
+                                    userOwnedOption.totalExercised,
+                                  )}
+                                </Typography>
                               </Box>
                             ) : (
                               <Button
@@ -1575,146 +1586,169 @@ const Positions: React.FC = () => {
               <Box mt={mobileWindowSize ? 1.5 : 2.5}>
                 {mobileWindowSize ? (
                   <>
-                    {yieldData.map((item: any, index) => (
-                      <Box mb={2}>
-                        <Container fixed>
-                          <Box
-                            width={1}
-                            display='flex'
-                            p={1.25}
-                            pl={1}
-                            justifyContent='space-between'
-                            alignItems='center'
-                          >
-                            <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
-                            </Box>
-                            <Box display='flex' alignItems='center'>
-                              {item.name}
-                              <Box ml={2} display='flex' alignItems='center'>
-                                <Box
-                                  className={cx(
-                                    classes.typeBox,
-                                    item.type === 'vault'
-                                      ? classes.vault
-                                      : item.option === OptionType.Call
-                                      ? classes.call
-                                      : classes.put,
-                                  )}
-                                >
-                                  <Box />
-                                  {item.type === 'vault' ? (
-                                    <VaultIcon />
-                                  ) : item.option === OptionType.Call ? (
-                                    <CallIcon />
-                                  ) : (
-                                    <PutIcon />
-                                  )}
-                                  {item.type}
+                    {pools.map((pool: UserOwnedPool, index) => {
+                      const isCall = pool.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? pool.underlying.symbol
+                        : pool.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+
+                      return (
+                        <Box mb={2}>
+                          <Container fixed>
+                            <Box
+                              width={1}
+                              display='flex'
+                              p={1.25}
+                              pl={1}
+                              justifyContent='space-between'
+                              alignItems='center'
+                            >
+                              <Box className={classes.tokenIconCell}>
+                                <Box>
+                                  <TokenIcon height={20} width={20} />
+                                </Box>
+                                {pool.underlying.symbol}
+                              </Box>
+                              <Box display='flex' alignItems='center'>
+                                {pool.underlying.symbol}{' '}
+                                {isCall ? 'Call' : 'Put'}
+                                <Box ml={2} display='flex' alignItems='center'>
+                                  <Box
+                                    className={cx(
+                                      classes.typeBox,
+                                      isCall ? classes.call : classes.put,
+                                    )}
+                                  >
+                                    <Box />
+                                    {isCall ? <CallIcon /> : <PutIcon />}
+                                    Pool
+                                  </Box>
                                 </Box>
                               </Box>
                             </Box>
-                          </Box>
-                          <Divider />
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Capital
-                              </Typography>
-                              <DaiIcon />
+                            <Divider />
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Capital
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatNumber(
+                                (Number(pool.totalAvailable) +
+                                  Number(pool.totalLocked)) /
+                                  10 ** pool.underlying.decimals,
+                              )}
                             </Box>
-                            {formatNumber(item.capital)}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Earned
-                              </Typography>
-                              <DaiIcon />
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Earned
+                                </Typography>
+                                <DaiIcon />
+                              </Box>
+                              {formatBigNumber(pool.totalPremiumsEarned)}
                             </Box>
-                            {item.earned}
-                          </Box>
-                          <Box className={classes.cardRow}>
-                            <Box display='flex' alignItems='center'>
-                              <Typography color='textSecondary'>
-                                Expected APY
-                              </Typography>
+                            <Box className={classes.cardRow}>
+                              <Box display='flex' alignItems='center'>
+                                <Typography color='textSecondary'>
+                                  Expected APY
+                                </Typography>
+                              </Box>
+                              {formatNumber(
+                                (Number(pool.totalPremiumsEarned) /
+                                  Number(pool.totalDeposited)) *
+                                  100,
+                              )}
+                              %
                             </Box>
-                            {item.apy}
-                          </Box>
-                          <Box className={classes.yieldButtonCell}>
-                            <Grid container spacing={1}>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  color='primary'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Add
-                                </Button>
+                            <Box className={classes.yieldButtonCell}>
+                              <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                  <Button
+                                    fullWidth
+                                    color='primary'
+                                    onClick={() => setPositionModalOpen(true)}
+                                  >
+                                    Add
+                                  </Button>
+                                </Grid>
+                                <Grid item xs={6}>
+                                  <Button
+                                    fullWidth
+                                    variant='outlined'
+                                    onClick={() => setPositionModalOpen(true)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </Grid>
                               </Grid>
-                              <Grid item xs={6}>
-                                <Button
-                                  fullWidth
-                                  variant='outlined'
-                                  onClick={() => setPositionModalOpen(true)}
-                                >
-                                  Remove
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          </Box>
-                        </Container>
-                      </Box>
-                    ))}
+                            </Box>
+                          </Container>
+                        </Box>
+                      );
+                    })}
                   </>
                 ) : (
                   <DataTable
                     headCells={yieldHeadCells}
-                    data={yieldData}
+                    data={pools}
                     sortUpIcon={<UpArrow />}
                     sortDownIcon={<DownArrow />}
                     rowPerPage={5}
                     showEmptyRows={false}
-                    renderRow={(item: any, index) => {
+                    renderRow={(pool: UserOwnedPool, index) => {
+                      const isCall = pool.optionType === OptionType.Call;
+                      const tokenSymbol = isCall
+                        ? pool.underlying.symbol
+                        : pool.base.symbol;
+                      const TokenIcon = getTokenIcon(tokenSymbol);
+
                       return (
                         <TableRow key={index}>
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
-                              <Box>{item.tokenIcon}</Box>
-                              {item.symbol}
+                              <Box>
+                                <TokenIcon height={20} width={20} />
+                              </Box>
+                              {pool.underlying.symbol}
                             </Box>
                           </TableCell>
-                          <TableCell>{formatNumber(item.capital)}</TableCell>
+                          <TableCell>
+                            {formatNumber(
+                              (Number(pool.totalLocked) +
+                                Number(pool.totalAvailable)) /
+                                10 ** pool.underlying.decimals,
+                            )}
+                          </TableCell>
                           <TableCell>
                             <Box display='flex' alignItems='center'>
                               <Box
                                 mr={1}
                                 className={cx(
                                   classes.typeBox,
-                                  item.type === 'vault'
-                                    ? classes.vault
-                                    : item.option === OptionType.Call
-                                    ? classes.call
-                                    : classes.put,
+                                  isCall ? classes.call : classes.put,
                                 )}
                               >
                                 <Box />
-                                {item.type === 'vault' ? (
-                                  <VaultIcon />
-                                ) : item.option === OptionType.Call ? (
-                                  <CallIcon />
-                                ) : (
-                                  <PutIcon />
-                                )}
-                                {item.type}
+                                {isCall ? <CallIcon /> : <PutIcon />}
+                                Pool
                               </Box>
-                              {item.name}
+                              {pool.underlying.symbol} {isCall ? 'Call' : 'Put'}
                             </Box>
                           </TableCell>
-                          <TableCell>{item.earned}</TableCell>
-                          <TableCell>{item.apy}</TableCell>
+                          <TableCell>
+                            {formatBigNumber(pool.totalPremiumsEarned)}
+                          </TableCell>
+                          <TableCell>
+                            {formatNumber(
+                              (Number(pool.totalPremiumsEarned) /
+                                Number(pool.totalDeposited)) *
+                                100,
+                            )}
+                            %
+                          </TableCell>
                           <TableCell className='yieldButtonCell'>
                             <Button
                               color='primary'
