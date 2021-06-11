@@ -430,7 +430,7 @@ const LockPremiaCard: React.FC = () => {
                 onChange={() => {}}
                 className={classes.borderedInput}
               />
-              <PremiaWhite />
+              <PremiaWhite fill={palette.text.primary} />
               <Box
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile

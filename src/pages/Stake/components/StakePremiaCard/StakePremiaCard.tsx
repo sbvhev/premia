@@ -250,6 +250,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const StakePremiaCard: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
 
@@ -337,7 +338,7 @@ const StakePremiaCard: React.FC = () => {
                 onChange={() => {}}
                 className={classes.borderedInput}
               />
-              <PremiaWhite />
+              <PremiaWhite fill={palette.text.primary} />
               <Box
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile
