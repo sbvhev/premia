@@ -142,10 +142,9 @@ const LineChart: React.FC<LineChartProps> = ({
           }; border-top: none; border-radius: 0 0 12px 12px; background: ${
             dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
           }; color: ${dark ? '#646464' : '#8D97A0'};">` +
-          `Price: <b style="color: ${
+          `C-level: <b style="color: ${
             dark ? 'white' : 'rgba(0, 0, 0, 0.91)'
           };">` +
-          '$' +
           props.series[props.seriesIndex][props.dataPointIndex] +
           '</b></span>' +
           '</div>'

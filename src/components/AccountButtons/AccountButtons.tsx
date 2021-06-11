@@ -23,7 +23,7 @@ import {
   TransactionsModal,
 } from 'components';
 import { ReactComponent as ClockIcon } from 'assets/svg/ClockIcon.svg';
-import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/NewLogoWhite.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
 import { ReactComponent as UpRightArrow } from 'assets/svg/UpRightArrow.svg';
@@ -47,7 +47,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& path': {
       fill: palette.text.hint,
-    }
+    },
   },
 
   divider: {
