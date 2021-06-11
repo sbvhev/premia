@@ -14,3 +14,4 @@ export * from './usePurchaseOption';
 export * from './useTransact';
 export * from './useUserOwnedOptions';
 export * from './useWrapEther';
+export * from './useGasToken';

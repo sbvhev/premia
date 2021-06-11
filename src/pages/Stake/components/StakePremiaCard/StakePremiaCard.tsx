@@ -6,8 +6,8 @@ import { Box, Typography, Button } from '@material-ui/core';
 
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
-import { ReactComponent as GreyLogo } from 'assets/svg/PremiaLogoSmallGrey.svg';
 import { useDarkModeManager } from 'state/user/hooks';
+import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 
 import { ContainedButton } from 'components';
 
@@ -216,7 +216,7 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '12px',
+    padding: '12px 16px',
     height: '158px',
   },
   botSectionMobile: {
@@ -337,7 +337,7 @@ const StakePremiaCard: React.FC = () => {
                 onChange={() => {}}
                 className={classes.borderedInput}
               />
-              <GreyLogo fill='#979797' />
+              <PremiaWhite />
               <Box
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile

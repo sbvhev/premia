@@ -39,7 +39,6 @@ export function useApproval(fromAddress?: string, toAddress?: string) {
   const handleApprove = useCallback(
     async (approval: boolean = true) => {
       if (!tokenContract || !toAddress || !signer) return;
-
       try {
         const symbol = await tokenContract.connect(signer!).symbol();
 
