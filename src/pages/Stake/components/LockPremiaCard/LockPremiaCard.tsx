@@ -6,8 +6,12 @@ import { Box, Typography, Button, Menu, MenuItem } from '@material-ui/core';
 
 import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
 import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
-import calendarIcon from 'assets/svg/CalendarIcon.svg';
-import greyLogo from 'assets/svg/PremiaLogoSmallGrey.svg';
+
+import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
+import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
+import { useDarkModeManager } from 'state/user/hooks';
+
+import { ContainedButton } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -136,6 +140,13 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: '3px',
     '&:hover': {
       backgroundColor: palette.primary.dark,
+      border: `1px solid ${palette.primary.main}`,
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
+      '& svg path': {
+        fill: palette.primary.main,
+      },
     },
   },
   borderedInput: {
@@ -154,6 +165,8 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 400,
     '&:hover': {
       backgroundColor: palette.primary.dark,
+      border: `1px solid ${palette.primary.main}`,
+      color: palette.primary.main,
     },
     '&:focus': {
       borderColor: palette.primary.main,
@@ -163,21 +176,30 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   inputIcon: {
-    position: 'relative',
-    top: -38,
-    left: 14,
-    zIndex: 1,
+    '& svg ': {
+      position: 'relative',
+      top: -30,
+      left: 14,
+      zIndex: 1,
+    },
+    '&:hover': {
+      '& svg path': {
+        fill: palette.primary.main,
+      },
+    },
   },
   maxButton: {
+    width: '74px',
     position: 'relative',
-    top: -43,
-    right: -260,
+    top: -63,
+    right: -269,
     zIndex: 3,
   },
   maxButtonMobile: {
+    width: '74px',
     position: 'relative',
-    top: -43,
-    right: -227,
+    top: -62,
+    right: -236,
     zIndex: 3,
   },
   elementHeader: {
@@ -201,14 +223,14 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '12px',
+    padding: '12px 16px',
     height: '158px',
   },
   botSectionMobile: {
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '12px 8px',
+    padding: '12px 20px',
   },
   progressBarAndTime: {
     display: 'flex',
@@ -217,11 +239,10 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   progressContainer: {
     display: 'flex',
-    width: '145px',
     height: '5px',
     background: 'rgb(141, 151, 160, 0.4)',
     borderRadius: '5px',
-    marginRight: '8px',
+    marginRight: '10px',
   },
   progressBar: {
     display: 'flex',
@@ -254,9 +275,11 @@ const useStyles = makeStyles(({ palette }) => ({
 const LockPremiaCard: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const progress = '75%';
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [darkMode] = useDarkModeManager();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -266,6 +289,7 @@ const LockPremiaCard: React.FC = () => {
     setAnchorEl(null);
   };
 
+  console.log(theme);
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
       {!mobile && (
@@ -277,6 +301,14 @@ const LockPremiaCard: React.FC = () => {
       )}
       <Box
         className={!mobile ? classes.borderedCard : classes.borderedCardMobile}
+        style={
+          darkMode
+            ? {}
+            : {
+                borderColor: 'transparent',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+              }
+        }
       >
         <Box className={!mobile ? classes.titleBox : classes.titleBoxMobile}>
           {mobile && (
@@ -328,9 +360,8 @@ const LockPremiaCard: React.FC = () => {
               >
                 Select period
               </Typography>
-              <img
-                src={calendarIcon}
-                alt='Pick a date'
+              <CalendarIcon
+                fill={palette.secondary.main}
                 style={{ marginRight: '10px' }}
               />
             </Box>
@@ -393,39 +424,34 @@ const LockPremiaCard: React.FC = () => {
               </Typography>
             </Box>
 
-            <Box width='100%' height='46px'>
+            <Box width='100%' height='46px' className={classes.inputIcon}>
               <input
                 value={'100'}
                 onChange={() => {}}
                 className={classes.borderedInput}
               />
-              <img
-                src={greyLogo}
-                alt='Select Amount'
-                className={classes.inputIcon}
-              />
-              <Button
-                color='primary'
-                variant='outlined'
-                size='small'
+              <PremiaWhite fill={palette.text.primary} />
+              <Box
                 className={
                   !mobile ? classes.maxButton : classes.maxButtonMobile
                 }
               >
-                MAX
-              </Button>
+                <Button
+                  color='primary'
+                  variant='outlined'
+                  size='small'
+                  fullWidth
+                >
+                  MAX
+                </Button>
+              </Box>
             </Box>
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Button
-              color='secondary'
-              variant='contained'
-              size='large'
-              className={classes.buttonLeft}
-            >
-              Lock
-            </Button>
+            <Box className={classes.buttonLeft}>
+              <ContainedButton label='Lock' color='secondary' />
+            </Box>
             <Button
               color='secondary'
               variant='outlined'
@@ -461,7 +487,10 @@ const LockPremiaCard: React.FC = () => {
               Time till unlock
             </Typography>
             <Box className={classes.progressBarAndTime}>
-              <Box className={classes.progressContainer}>
+              <Box
+                className={classes.progressContainer}
+                width={!mobile ? '145px' : '85px'}
+              >
                 <Box
                   className={classes.progressBar}
                   style={{ width: progress }}
