@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom'
 import {
   Box,
   Grid,
@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   Tooltip,
+  Divider,
 } from '@material-ui/core';
 import { SupervisorAccount } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -223,18 +224,20 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
 interface AccountButtonsProps {
   mobile?: boolean;
+  onHide?: () => void;
 }
 
-const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
+const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
+  const history = useHistory();
   const theme = useTheme();
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
-  const classes = useStyles({ darkMode });
+  const classes = useStyles({ darkMode, mobile });
 
   return (
     <Grid container alignItems='center' justify='flex-end'>
@@ -248,19 +251,26 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
         onClose={() => setConfirmTermsModalOpen(false)}
       />
 
-      <Box display='flex' className={classes.account} mr={1}>
-        <Link to='trading-competition'>
-          <Box
-            height={1}
-            className={classes.accountInfo}
-          >
-            <ClockIcon />
-            <Box height={1} className={classes.tradingContainer}>
-              <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
-              <Typography className={classes.tradinghours}>2d 21h left</Typography>
-            </Box>
+      <Box display='flex' className={classes.account} width={mobile ? 1 : 'auto'} my={mobile ? 1.25 : 0} mx={mobile ? 1.25 : 1}>
+        <Box
+          height={1}
+          className={classes.accountInfo}
+          flex={1}
+          display='flex'
+          justifyContent='center'
+          onClick={() => {
+            history.push('/trading-competition');
+            if (onHide) {
+              onHide();
+            }
+          }}
+        >
+          <ClockIcon />
+          <Box height={1} className={classes.tradingContainer}>
+            <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
+            <Typography className={classes.tradinghours}>2d 21h left</Typography>
           </Box>
-        </Link>
+        </Box>
         <Box
           height={1}
           borderLeft={1}
@@ -270,6 +280,8 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           <Typography>Leaderboard</Typography>
         </Box>
       </Box>
+
+      {mobile && <Divider className={classes.fullWidth} />}
 
       {wallet && wallet.provider && wallet.type === 'hardware' && (
         <Grid item xs={2}>
@@ -284,6 +296,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       {wallet && wallet.provider && account ? (
         <Box
           display='flex'
+          width={mobile ? 1 : 'auto'}
           style={{ backgroundColor: 'transparent' }}
         >
           {!mobile ? (

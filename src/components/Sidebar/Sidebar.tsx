@@ -214,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
                 elements={navigationItems}
                 defaultIndex={pageNavigationIndex}
                 marginBetweenSwitches={4}
-                gliderWidth={deviceWidth - 20}
+                gliderWidth={'100%'}
                 gliderHeight={47}
                 verticalGlider
               />
