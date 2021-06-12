@@ -91,8 +91,14 @@ export const getUserOwnedPools = gql`
 export const getCLevelChartItems = gql`
   ${CLevelChartItem}
 
-  query CLevelChartItems($first: Int = 1000, $skip: Int = 0) {
-    clevelChartItems(first: $first, skip: $skip) {
+  query CLevelChartItems($poolId: String!, $first: Int = 1000, $skip: Int = 0) {
+    clevelChartItems(
+      where: { pool: $poolId }
+      first: $first
+      skip: $skip
+      orderBy: timestamp
+      orderDirection: asc
+    ) {
       ...CLevelChartItem
     }
   }

@@ -17,9 +17,10 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
 import moment from 'moment';
+
 import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
-import { UserOwnedPool } from 'web3/pools';
+import { CLevelChartItem, UserOwnedPool } from 'web3/pools';
 import { usePools } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
@@ -51,7 +52,6 @@ import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
-import { OptionType } from 'web3/options';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -377,10 +377,17 @@ const ProVault: React.FC = () => {
     [userOwnedPutPool],
   );
 
-  const cLevelChartQuery = useMemo(() => getCLevelChartItems, []);
-  let { data: { clevelChartItems = [] } = {} } = useQuery(cLevelChartQuery, {
-    variables: {},
-  });
+  const { data: { clevelChartItems: callPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      variables: { poolId: callPool?.id },
+    });
+
+  const { data: { clevelChartItems: putPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      variables: { poolId: putPool?.id },
+    });
 
   const BaseIcon = useMemo(
     () => getTokenIcon(callPool?.base.symbol),
@@ -841,20 +848,15 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall
-                    data={clevelChartItems
-                      .filter(
-                        (item: any) =>
-                          item?.pool?.optionType === OptionType.Call,
-                      )
-                      .map((i: any) => formatBigNumber(i.cLevel))}
-                    categories={clevelChartItems
-                      .filter(
-                        (item: any) =>
-                          item?.pool?.optionType === OptionType.Call,
-                      )
-                      .map((i: any) =>
-                        moment.unix(i.timestamp).format('YYYY/MM/DD'),
-                      )}
+                    data={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) => formatBigNumber(item.cLevel),
+                    )}
+                    categories={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD HH:mm'),
+                    )}
                     width='100%'
                     height={200}
                   />
@@ -1069,20 +1071,15 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall={false}
-                    data={clevelChartItems
-                      .filter(
-                        (item: any) =>
-                          item?.pool?.optionType === OptionType.Put,
-                      )
-                      .map((i: any) => formatBigNumber(i.cLevel))}
-                    categories={clevelChartItems
-                      .filter(
-                        (item: any) =>
-                          item?.pool?.optionType === OptionType.Put,
-                      )
-                      .map((i: any) =>
-                        moment.unix(i.timestamp).format('YYYY/MM/DD'),
-                      )}
+                    data={putPoolCLevelChartItems.map((item: CLevelChartItem) =>
+                      formatBigNumber(item.cLevel),
+                    )}
+                    categories={putPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD HH:mm'),
+                    )}
                     width='100%'
                     height={200}
                   />
