@@ -1,12 +1,13 @@
 import React from 'react';
 import { Box, Typography, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { BigNumber } from 'ethers';
 import cn from 'classnames';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
 import { formatEther } from 'ethers/lib/utils';
-import { formatNumber } from 'utils/formatNumber';
+import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 
 import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
@@ -122,7 +123,7 @@ const Stake: React.FC = () => {
   const theme = useTheme();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { premiaBalance, xPremiaBalance } = useStakingBalances();
+  const { premiaBalance, xPremiaBalance, xPremiaLocked } = useStakingBalances();
 
   return (
     <Box
@@ -238,7 +239,11 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {formatNumber(formatEther(xPremiaBalance))}
+                {formatBigNumber(
+                  BigNumber.from(xPremiaBalance).add(
+                    BigNumber.from(xPremiaLocked),
+                  ),
+                )}
               </Typography>
             </Box>
           </Box>

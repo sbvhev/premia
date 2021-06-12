@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -288,16 +288,16 @@ const StakePremiaCard: React.FC = () => {
   const [darkMode] = useDarkModeManager();
   const { web3, account, contracts } = useWeb3();
 
-  const [checkIsOn, setCheckIsOn] = React.useState(false);
+  const [checkIsOn, setCheckIsOn] = useState(false);
   const isHardwareWallet = useIsHardwareWallet();
 
-  const [stakingMode, setStakingMode] = React.useState(true);
-  const [shouldApprove, setShouldApprove] = React.useState(isHardwareWallet);
-  const [signedAlready, setSignedAlready] = React.useState(false);
-  const [approvedAready, setApprovedAready] = React.useState(false);
-  const [permitState, setPermitState] = React.useState<PermitState>({});
-  const [stakeAmount, setStakeAmount] = React.useState('');
-  const [unstakeAmount, setUnstakeAmount] = React.useState('');
+  const [stakingMode, setStakingMode] = useState(true);
+  const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
+  const [signedAlready, setSignedAlready] = useState(false);
+  const [approvedAlready, setApprovedAready] = useState(false);
+  const [permitState, setPermitState] = useState<PermitState>({});
+  const [stakeAmount, setStakeAmount] = useState('');
+  const [unstakeAmount, setUnstakeAmount] = useState('');
   const transact = useTransact();
 
   const { xPremiaLocked, premiaBalance, xPremiaBalance, underlyingPremia } =
@@ -305,17 +305,17 @@ const StakePremiaCard: React.FC = () => {
 
   const { allowance: stakingAllowance, onApprove: onApproveStaking } =
     useApproval(
-      contracts?.PremiaErc20?.address as string,
-      contracts?.PremiaStaking?.address as string,
+      contracts?.PremiaErc20?.address,
+      contracts?.PremiaStaking?.address,
     );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (stakingAllowance) {
       setShouldApprove(true);
     }
-    if (!stakeAmount) {
-      setApprovedAready(false);
-    }
+  }, [stakingAllowance]);
+
+  useEffect(() => {
     if (stakeAmount && stakingAllowance >= parseFloat(stakeAmount)) {
       setApprovedAready(true);
     }
@@ -566,41 +566,33 @@ const StakePremiaCard: React.FC = () => {
             <Box className={classes.buttonLeft}>
               {checkIsOn || shouldApprove ? (
                 <ContainedButton
+                  fullWidth
                   label={
                     stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !approvedAready
+                      ? !approvedAlready
                         ? 'Approve 1/2'
                         : 'Stake'
                       : 'Enter amount'
                   }
-                  fullWidth
                   disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
                   onClick={
-                    stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !approvedAready
-                        ? onApproveStaking
-                        : handleStakeWithApproval
-                      : () => {}
+                    !approvedAlready
+                      ? onApproveStaking
+                      : handleStakeWithApproval
                   }
                 />
               ) : (
                 <ContainedButton
+                  fullWidth
                   label={
-                    stakeAmount && parseFloat(stakeAmount) === 0
+                    stakeAmount && parseFloat(stakeAmount) !== 0
                       ? !signedAlready
                         ? 'Sign Permit 1/2'
                         : 'Stake'
                       : 'Enter amount'
                   }
-                  fullWidth
                   disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
-                  onClick={
-                    stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !signedAlready
-                        ? signPermit
-                        : handleStakeWithPermit
-                      : () => {}
-                  }
+                  onClick={!signedAlready ? signPermit : handleStakeWithPermit}
                 />
               )}
             </Box>

@@ -44,7 +44,7 @@ export const initialState: StakingState = {
     xPremiaLocked: BigNumber.from(0),
     xPremiaFeeDiscount: BigNumber.from(0),
     xPremiaStakeWithBonus: BigNumber.from(0),
-    xPremiaLockedUntil: undefined,
+    xPremiaLockedUntil: BigNumber.from(0),
     xPremiaSupply: BigNumber.from(0),
     underlyingPremia: BigNumber.from(0),
 

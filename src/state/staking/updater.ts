@@ -22,10 +22,6 @@ export default function Updater(): null {
       dispatch(setStakingBalances({ xPremiaBalance: r })),
     );
 
-    contracts?.PremiaFeeDiscount?.userInfo(account)?.then((info) =>
-      dispatch(setStakingBalances({ xPremiaLocked: info.balance })),
-    );
-
     contracts?.PremiaFeeDiscount?.getStakeAmountWithBonus(account)?.then((r) =>
       dispatch(setStakingBalances({ xPremiaStakeWithBonus: r })),
     );
@@ -45,7 +41,12 @@ export default function Updater(): null {
     );
 
     contracts?.PremiaFeeDiscount?.userInfo(account).then((r) =>
-      dispatch(setStakingBalances({ xPremiaLocked: r.balance })),
+      dispatch(
+        setStakingBalances({
+          xPremiaLocked: r.balance,
+          xPremiaLockedUntil: r.lockedUntil,
+        }),
+      ),
     );
 
     contracts?.PremiaStaking?.totalSupply().then((r) =>
