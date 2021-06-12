@@ -126,25 +126,6 @@ export const lightTheme = responsiveFontSizes(
           backgroundColor: primary,
           color: white,
           margin: '2px',
-          '& svg path': {
-            fill: 'rgba(255,255,255, 0.6)',
-          },
-          '&:hover': {
-            color: primary,
-            border: `1px solid ${primary}`,
-            backgroundColor: white,
-            '& svg path': {
-              fill: white,
-            },
-          },
-          '&:active': {
-            color: primary,
-            border: `1px solid ${primary}`,
-            backgroundColor: 'rgba(82, 148, 255, 0.1)',
-            '& svg path': {
-              fill: white,
-            },
-          },
         },
         label: {
           '& svg:not(:first-child)': {
@@ -825,20 +806,8 @@ export const darkTheme = responsiveFontSizes(
           textTransform: 'none',
           padding: '6px 2.25rem',
           backgroundColor: primary,
-          border: '1px solid transparent',
           color: white,
           margin: '2px',
-          '& svg path': {
-            fill: 'rgba(255,255,255, 0.6)',
-          },
-          '&:hover': {
-            color: primary,
-            border: `1px solid ${primary}`,
-            backgroundColor: black,
-            '& svg path': {
-              fill: white,
-            },
-          },
         },
         label: {
           '& svg:not(:first-child)': {

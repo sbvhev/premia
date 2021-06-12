@@ -4,7 +4,6 @@ import {
   Container,
   Grid,
   Typography,
-  Button,
   Divider,
   Popover,
   Link,
@@ -31,7 +30,12 @@ import { OptionType } from 'web3/options';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
-import { SelectTokenTabs, BuyConfirmationModal, LineChart } from 'components';
+import {
+  SelectTokenTabs,
+  BuyConfirmationModal,
+  LineChart,
+  ContainedButton,
+} from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
 
@@ -64,10 +68,6 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    '& p': {
-      fontSize: 14,
-      lineHeight: '24px',
-    },
     '& h2': {
       fontSize: 18,
       fontWeight: 700,
@@ -76,6 +76,10 @@ const useStyles = makeStyles(({ palette }) => ({
     '& $helpIcon': {
       marginLeft: 2,
     },
+  },
+  priceText: {
+    fontSize: 14,
+    lineHeight: '24px',
   },
   graphContainer: {
     '& p': {
@@ -306,7 +310,9 @@ const Options: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={6} className={classes.priceInfoBox}>
             <Box pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>Current price</Typography>
+              <Typography color='textSecondary' className={classes.priceText}>
+                Current price
+              </Typography>
               <Box display='flex' alignItems='center' mt={-0.5625}>
                 <Typography color='textPrimary' component='h2'>
                   $
@@ -329,7 +335,7 @@ const Options: React.FC = () => {
                     height={1}
                     style={{ opacity: darkMode ? 0.1 : 0.2 }}
                   ></Box>
-                  <Typography color='textPrimary'>
+                  <Typography color='textPrimary' className={classes.priceText}>
                     {priceChange < 0 ? '' : '+'}
                     {formatNumber(priceChange)}%
                   </Typography>
@@ -339,7 +345,9 @@ const Options: React.FC = () => {
             </Box>
             <Box pl={xs ? 1 : 3}>
               <Grid container alignItems='center'>
-                <Typography color='textSecondary'>Breakeven</Typography>
+                <Typography color='textSecondary' className={classes.priceText}>
+                  Breakeven
+                </Typography>
                 <HelpIcon
                   className={classes.helpIcon}
                   onMouseEnter={(event) => {
@@ -356,7 +364,9 @@ const Options: React.FC = () => {
               </Typography>
             </Box>
             <Box pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>Total cost</Typography>
+              <Typography color='textSecondary' className={classes.priceText}>
+                Total cost
+              </Typography>
               <Typography color='textPrimary' component='h2'>
                 $
                 {formatNumber(totalCostInUsd, true, {
@@ -365,21 +375,21 @@ const Options: React.FC = () => {
               </Typography>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
-              <Button
+              <ContainedButton
                 fullWidth
-                variant='contained'
                 size='large'
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
+                label={
+                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
+                    ? 'Buy Option'
+                    : `Approve ${underlying.symbol}`
+                }
                 onClick={() =>
                   Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
                     ? handleBuyOption()
                     : onApprove()
                 }
-              >
-                {Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                  ? 'Buy Option'
-                  : `Approve ${underlying.symbol}`}
-              </Button>
+              />
             </Box>
           </Grid>
           {tablet && (

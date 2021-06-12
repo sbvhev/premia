@@ -221,6 +221,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
           {!mobile ? (
             <>
               <Button
+                color='primary'
                 className={classes.button}
                 onClick={() =>
                   window.open(
