@@ -771,6 +771,7 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <ContainedButton
+                            fullWidth
                             height='43px'
                             label='Add'
                             onClick={() => setDepositCallOpen(true)}
@@ -991,6 +992,7 @@ const ProVault: React.FC = () => {
                       >
                         <Grid item xs={6}>
                           <ContainedButton
+                            fullWidth
                             height='43px'
                             label='Add'
                             color='secondary'

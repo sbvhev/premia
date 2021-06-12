@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, Box } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { Typography, Box, ButtonBase } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useIsDarkMode } from 'state/user/hooks';
@@ -26,8 +26,12 @@ const useStyles = makeStyles(({ palette }) => ({
         '-webkit-text-fill-color': 'transparent',
       },
 
-      '& svg path': {
+      '& .startIcon svg path': {
         fill: palette.success.main,
+      },
+
+      '& .endIcon svg path': {
+        fill: '#2AE896',
       },
     },
 
@@ -57,8 +61,12 @@ const useStyles = makeStyles(({ palette }) => ({
         '-webkit-text-fill-color': 'transparent',
       },
 
-      '& svg path': {
+      '& .startIcon svg path': {
         fill: palette.error.main,
+      },
+
+      '& .endIcon svg path': {
+        fill: '#A345DF',
       },
     },
 
@@ -107,7 +115,8 @@ interface ContainedButtonProps {
   id?: string;
   height?: string;
   color?: string;
-  label?: string;
+  label?: React.ReactNode;
+  children?: React.ReactNode;
   textStyling?: object;
   disabled?: boolean;
   startIcon?: any;
@@ -124,6 +133,7 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
   color,
   height,
   label,
+  children,
   textStyling,
   disabled,
   startIcon,
@@ -134,9 +144,14 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
 }) => {
   const darkMode = useIsDarkMode();
   const classes = useStyles({ darkMode, size });
+  const childLabel = useMemo(
+    () => (children === undefined ? label : children),
+    [children, label],
+  );
 
   return (
     <Box
+      clone
       id={id}
       width={fullWidth ? '100%' : 'auto'}
       height={height ? height : '45px'}
@@ -146,29 +161,41 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
       style={disabled ? { opacity: 0.3, margin } : { margin }}
       onClick={onClick}
     >
-      <Box
-        height={height ? height : '45px'}
-        padding='6px 2.25rem'
-        className={classes.container}
-      >
-        {startIcon && (
-          <Box display='flex' alignItems='center' marginRight='2px'>
-            {startIcon}
-          </Box>
-        )}
+      <ButtonBase>
+        <Box
+          height={height ? height : '45px'}
+          padding='6px 2.25rem'
+          className={classes.container}
+        >
+          {startIcon && (
+            <Box
+              display='flex'
+              alignItems='center'
+              marginRight='2px'
+              className='startIcon'
+            >
+              {startIcon}
+            </Box>
+          )}
 
-        {label && (
-          <Typography className={classes.label} style={textStyling}>
-            {label}
-          </Typography>
-        )}
+          {childLabel && (
+            <Typography className={classes.label} style={textStyling}>
+              {childLabel}
+            </Typography>
+          )}
 
-        {endIcon && (
-          <Box display='flex' alignItems='center' marginLeft='8px'>
-            {endIcon}
-          </Box>
-        )}
-      </Box>
+          {endIcon && (
+            <Box
+              display='flex'
+              alignItems='center'
+              marginLeft='8px'
+              className='endIcon'
+            >
+              {endIcon}
+            </Box>
+          )}
+        </Box>
+      </ButtonBase>
     </Box>
   );
 };

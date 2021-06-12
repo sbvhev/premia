@@ -358,16 +358,12 @@ const StakePremiaCard: React.FC = () => {
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             <Box className={classes.buttonLeft}>
-              <ContainedButton
-                label={'Stake'}
-                fullWidth
-                onClick={() => alert}
-              />
+              <ContainedButton fullWidth label='Stake' onClick={() => alert} />
             </Box>
             <Button
+              fullWidth
               color='secondary'
               variant='outlined'
-              size='large'
               className={classes.buttonRight}
             >
               Unstake

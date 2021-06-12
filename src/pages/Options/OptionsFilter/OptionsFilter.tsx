@@ -42,6 +42,7 @@ const useStyles = makeStyles(({ palette }) => ({
     height: '45px',
     marginTop: '2px',
     marginBottom: '2px',
+    padding: 0,
     border: '1px solid transparent',
 
     '&:hover': {
