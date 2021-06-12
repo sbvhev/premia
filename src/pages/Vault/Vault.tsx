@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
@@ -15,14 +16,20 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
+import moment from 'moment';
 
+import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
-import { UserOwnedPool } from 'web3/pools';
+import { CLevelChartItem, UserOwnedPool } from 'web3/pools';
 import { usePools } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
 import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
-import { formatNumber, formatCompact } from 'utils/formatNumber';
+import {
+  formatNumber,
+  formatCompact,
+  formatBigNumber,
+} from 'utils/formatNumber';
 import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
@@ -59,7 +66,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   topTab: {
-    margin: '20px 0 20px 6px',
+    margin: '20px 0',
 
     [breakpoints.down('md')]: {
       margin: '20px 0 12px',
@@ -370,6 +377,18 @@ const ProVault: React.FC = () => {
     () => getPoolUtilization(userOwnedPutPool),
     [userOwnedPutPool],
   );
+
+  const { data: { clevelChartItems: callPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      variables: { poolId: callPool?.id },
+    });
+
+  const { data: { clevelChartItems: putPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      variables: { poolId: putPool?.id },
+    });
 
   const BaseIcon = useMemo(
     () => getTokenIcon(callPool?.base.symbol),
@@ -827,16 +846,15 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
+                    data={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) => formatBigNumber(item.cLevel),
+                    )}
+                    categories={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD HH:mm'),
+                    )}
                     width='100%'
                     height={200}
                   />
@@ -1049,16 +1067,15 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall={false}
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
+                    data={putPoolCLevelChartItems.map((item: CLevelChartItem) =>
+                      formatBigNumber(item.cLevel),
+                    )}
+                    categories={putPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD HH:mm'),
+                    )}
                     width='100%'
                     height={200}
                   />

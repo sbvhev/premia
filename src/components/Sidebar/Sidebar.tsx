@@ -8,8 +8,8 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 
 import SidebarItem from './SidebarItem';
-import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
-import MainLogo from 'assets/svg/NewLogoComboLight.svg';
+import MainLogo from 'assets/svg/NewLogoComboDark.svg';
+import MainLogoBlack from 'assets/svg/NewLogoComboLight.svg';
 import { ReactComponent as DocumentationIcon } from 'assets/svg/DocumentationIcon.svg';
 import { ReactComponent as CareerIcon } from 'assets/svg/CareerIcon.svg';
 import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
@@ -96,20 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 3,
   };
   const [showSwapModal, setShowSwapModal] = useState(false);
-  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
   const state = location.state ? location.state.previous : false;
   const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
   const [pageNavigationIndex, setPageNavigationIndex] =
     React.useState(startIndex);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   React.useEffect(() => {
     const currentPage = pageIndexes[pathname];
@@ -214,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
                 elements={navigationItems}
                 defaultIndex={pageNavigationIndex}
                 marginBetweenSwitches={4}
-                gliderWidth={deviceWidth - 20}
+                gliderWidth={'100%'}
                 gliderHeight={47}
                 verticalGlider
               />

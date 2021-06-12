@@ -24,6 +24,7 @@ import {
   usePrices,
   usePriceChanges,
 } from 'state/application/hooks';
+import { useUnderlying } from 'state/options/hooks';
 import { /* useAllTokens, */ useDebounce, useIsWindowVisible } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getSignerAndContracts } from 'web3/contracts';
@@ -73,6 +74,7 @@ export default function Updater(): null {
   // const latestBlockNumber = useBlockNumber();
   const priceChanges = usePriceChanges();
   const prices = usePrices();
+  const { underlying: previousUnderlying } = useUnderlying();
   // const tokens = useAllTokens();
   const dark = useIsDarkMode();
 
@@ -210,8 +212,11 @@ export default function Updater(): null {
 
           dispatch(setWeb3Settings({ chainId }));
           dispatch(updateBase(base));
-          dispatch(updateUnderlying(underlying));
           dispatch(updateStrikePrice(prices[underlying.symbol]));
+
+          if (previousUnderlying.symbol === underlying.symbol) {
+            dispatch(updateUnderlying(underlying));
+          }
           localStorage.setItem('chainId', String(chainId));
         },
         balance: (balance: string) => dispatch(setWeb3Settings({ balance })),
@@ -261,6 +266,7 @@ export default function Updater(): null {
     prices,
     baseToken,
     comparisonToken,
+    previousUnderlying,
   ]);
 
   useEffect(() => {

@@ -14,14 +14,12 @@ import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: 254,
     backgroundColor: 'transparent',
   },
   coloredBorderBackgroundForCard: {
     boxSizing: 'border-box',
     position: 'relative',
     left: 0,
-    height: 254,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -114,6 +112,13 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 400,
     color: palette.text.secondary
   },
+  tradingButton: {
+    width: '100%',
+    height: 45,
+    margin: 0,
+    fontSize: 16,
+    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)'
+  },
   selected: {},
 }));
 
@@ -160,7 +165,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               </Typography>
               <Grid container direction='row'>
                 { chainIds.map((val, ind) => (
-                  <Grid item key={ind} xs={3} className={classes.chain}>
+                  <Grid item key={ind} xs={6} sm={3} className={classes.chain}>
                     <Box
                       component='div'
                       className={cx({
@@ -189,6 +194,15 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                   </Grid>
                 ))}
               </Grid>
+              <Box p={'5px'} width={1}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  className={classes.tradingButton}
+                >
+                  Switch to Rinkeby for trading competition
+                </Button>
+              </Box>
               <Button className={classes.exitContainer} onClick={onClose}>
                 <img src={XOut} alt='Exit' />
               </Button>

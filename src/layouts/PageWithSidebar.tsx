@@ -161,10 +161,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               mb={mobile ? 0 : 7}
               height={1}
               maxHeight='calc(100vh - 160px)'
+              overflow='auto'
               style={{ backgroundColor: palette.background.paper }}
             >
               <Box p={!mobile ? 1 : 0}>
-                <AccountButtons mobile />
+                <AccountButtons onHide={hideMobileMenu} mobile />
               </Box>
               <Divider />
               <Box p={1} pl={1.25}>

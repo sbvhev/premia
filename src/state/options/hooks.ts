@@ -268,15 +268,15 @@ export function usePriceImpact() {
 }
 
 export function useBreakEvenPrice() {
-  const { optionType, pricePerUnit, strikePrice } = useSelector<
+  const { optionType, pricePerUnitInUsd, strikePrice } = useSelector<
     AppState,
     AppState['options']
   >((state: AppState) => state.options);
 
   const breakEvenPrice =
     optionType === OptionType.Call
-      ? strikePrice + pricePerUnit
-      : strikePrice - pricePerUnit;
+      ? strikePrice + pricePerUnitInUsd
+      : strikePrice - pricePerUnitInUsd;
 
   return breakEvenPrice;
 }

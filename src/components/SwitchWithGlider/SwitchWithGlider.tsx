@@ -22,7 +22,7 @@ export interface SwitchWithGliderProps {
   elements: any;
   defaultIndex: number;
   gliderHeight: number;
-  gliderWidth: number;
+  gliderWidth: number | string;
   marginBetweenSwitches: number;
   verticalGlider?: boolean;
 }
@@ -40,7 +40,7 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
 
   React.useEffect(() => {
     if (!verticalGlider) {
-      const incrementalDistance = gliderWidth + marginBetweenSwitches;
+      const incrementalDistance = (typeof gliderWidth === 'number' ? gliderWidth : 0) + marginBetweenSwitches;
       const newPosition = defaultIndex * incrementalDistance;
       setGliderPosition(newPosition);
     } else {
