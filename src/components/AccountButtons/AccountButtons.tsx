@@ -20,7 +20,7 @@ import {
   ConfirmTermsModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/NewLogoWhite.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
 
@@ -43,7 +43,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& path': {
       fill: palette.text.hint,
-    }
+    },
   },
 
   divider: {
