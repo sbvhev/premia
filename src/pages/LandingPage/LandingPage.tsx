@@ -1279,7 +1279,7 @@ const LandingPage: React.FC = () => {
                     <GithubIcon />
                   </AnchorLink>
                   <AnchorLink
-                    href='https://premia.medium.com/'
+                    href='https://medium.premia.finance/'
                     onClick={preventDefault}
                   >
                     <MediumIcon />
@@ -1363,7 +1363,7 @@ const LandingPage: React.FC = () => {
               <GithubIcon />
             </AnchorLink>
             <AnchorLink
-              href='https://premia.medium.com/'
+              href='https://medium.premia.finance/'
               onClick={preventDefault}
             >
               <MediumIcon />
@@ -1385,12 +1385,12 @@ const LandingPage: React.FC = () => {
         <Box className={classes.topSection} id='hero'>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
-              Permissionless options and metavaults
+              Next-generation options and metavaults
             </Typography>
             <Typography className={classes.subTitle}>
-              Premia's next generation options AMM enables best-in-class pricing
-              based on market volatility, bringing fully-featured peer-to-pool
-              trading and capital efficiency to DeFi options.
+              Premia's automated options market enables best-in-class pricing
+              based on realtime supply and demand, bringing fully-featured
+              peer-to-pool trading and capital efficiency to DeFi options.
             </Typography>
             <Button
               className={classes.openAppBig}
@@ -1637,7 +1637,7 @@ const LandingPage: React.FC = () => {
             {!mobile && (
               <Button
                 onClick={() =>
-                  window.open('https://premia.medium.com', '_blank')
+                  window.open('https://medium.premia.finance', '_blank')
                 }
               >
                 Learn More
@@ -1646,7 +1646,7 @@ const LandingPage: React.FC = () => {
             {mobile && (
               <ArrowCircleIcon
                 onClick={() =>
-                  window.open('https://premia.medium.com', '_blank')
+                  window.open('https://medium.premia.finance', '_blank')
                 }
               />
             )}
@@ -1724,20 +1724,22 @@ const LandingPage: React.FC = () => {
           style={{ marginBottom: !mobile ? 260 : 60 }}
         >
           <Box>
-            <Typography>
-              Dive into our open collection of decentralized financial research
-            </Typography>
+            <Typography>Explore our platform documentation</Typography>
           </Box>
           {!mobile && (
             <Button
-              onClick={() => window.open('https://docs.premia.com', '_blank')}
+              onClick={() =>
+                window.open('https://docs.premia.finance', '_blank')
+              }
             >
-              Our Research
+              Our Documentation
             </Button>
           )}
           {mobile && (
             <ArrowCircleIcon
-              onClick={() => window.open('https://docs.premia.com', '_blank')}
+              onClick={() =>
+                window.open('https://docs.premia.finance', '_blank')
+              }
             />
           )}
         </Box>
@@ -1985,7 +1987,7 @@ const LandingPage: React.FC = () => {
                         <GithubIcon />
                       </AnchorLink>
                       <AnchorLink
-                        href='https://premia.medium.com/'
+                        href='https://medium.premia.finance/'
                         onClick={preventDefault}
                       >
                         <MediumIcon />
@@ -2087,7 +2089,7 @@ const LandingPage: React.FC = () => {
                       <GithubIcon />
                     </AnchorLink>
                     <AnchorLink
-                      href='https://premia.medium.com/'
+                      href='https://medium.premia.finance/'
                       onClick={preventDefault}
                     >
                       <MediumIcon />

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Divider, Popover, useMediaQuery } from '@material-ui/core';
+import {
+  Box,
+  Grid,
+  Typography,
+  Divider,
+  Popover,
+  useMediaQuery,
+} from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
@@ -42,32 +49,34 @@ const useStyles = makeStyles(({ palette }) => ({
   footerRight: {
     display: 'flex',
     alignItems: 'center',
-    marginRight: (props: any) => props.mobile ? 0 : 12.5,
-    justifyContent: (props: any) => props.mobile ? 'space-between' : 'flex-end',
-    height: (props: any) => props.mobile ? '50px' : '40px',
-    order: (props: any) => props.mobile ? 0 : 1,
-    width: (props: any) => props.mobile ? '100%' : 'auto',
+    marginRight: (props: any) => (props.mobile ? 0 : 12.5),
+    justifyContent: (props: any) =>
+      props.mobile ? 'space-between' : 'flex-end',
+    height: (props: any) => (props.mobile ? '50px' : '40px'),
+    order: (props: any) => (props.mobile ? 0 : 1),
+    width: (props: any) => (props.mobile ? '100%' : 'auto'),
 
     '& hr': {
-      height: 25
-    }
+      height: 25,
+    },
   },
 
   footerRightItem: {
-    padding: (props: any) => props.mobile ? '0 10px 0 24px' : '0px 5px 0 16.5px',
+    padding: (props: any) =>
+      props.mobile ? '0 10px 0 24px' : '0px 5px 0 16.5px',
     display: 'flex',
     alignItems: 'center',
     color: palette.text.secondary,
     cursor: 'pointer',
-    width: (props: any) => props.mobile ? '50%' : 'auto',
+    width: (props: any) => (props.mobile ? '50%' : 'auto'),
     '&:first-child': {
       '& svg': {
         width: 13.25,
-        height: 21.58  
-      }
+        height: 21.58,
+      },
     },
     '&:last-child': {
-      justifyContent: (props: any) => props.mobile && 'flex-end'
+      justifyContent: (props: any) => props.mobile && 'flex-end',
     },
     '& span': {
       fontSize: 14,
@@ -78,7 +87,7 @@ const useStyles = makeStyles(({ palette }) => ({
       '& path': {
         fill: palette.text.secondary,
       },
-    }
+    },
   },
 
   upArrow: {
@@ -87,8 +96,8 @@ const useStyles = makeStyles(({ palette }) => ({
     width: '10.68px !important',
     '& path': {
       fill: 'none !important',
-      stroke: palette.text.secondary
-    }
+      stroke: palette.text.secondary,
+    },
   },
 
   gasProgress: {
@@ -206,10 +215,10 @@ const Footer: React.FC = () => {
   const { gasType, setGasType } = useGasType();
   const { gasPrices } = useGasPrices();
   const { chainId, account } = useWeb3();
-  const chainIndex = chainIds.findIndex(val => val === chainId);
+  const chainIndex = chainIds.findIndex((val) => val === chainId);
 
   let testnetLabel = '';
-  switch(chainId) {
+  switch (chainId) {
     case 3:
       testnetLabel = 'Ropsten Testnet';
       break;
@@ -221,7 +230,7 @@ const Footer: React.FC = () => {
       break;
     case 5:
       testnetLabel = 'Goerli Testnet';
-      break;    
+      break;
   }
 
   const handleSelectStandardGas = () => {
@@ -247,7 +256,7 @@ const Footer: React.FC = () => {
       onClick={handleSelectStandardGas}
     >
       <GasStandardIcon />
-      <Typography >
+      <Typography>
         <b>Standard</b>
         <div>{gasPrices?.standard || 1} Gwei</div>
       </Typography>
@@ -262,7 +271,7 @@ const Footer: React.FC = () => {
       onClick={handleSelectFastGas}
     >
       <GasFastIcon />
-      <Typography >
+      <Typography>
         <b>Fast</b>
         <div>{gasPrices?.fast || 1} Gwei</div>
       </Typography>
@@ -280,7 +289,7 @@ const Footer: React.FC = () => {
       onClick={handleSelectRapidGas}
     >
       <ProIcon />
-      <Typography >
+      <Typography>
         <b>Rapid</b>
         <div>{gasPrices?.rapid || 1} Gwei</div>
       </Typography>
@@ -322,7 +331,7 @@ const Footer: React.FC = () => {
             <TwitterIcon />
           </a>
           <a
-            href='https://premia.medium.com/'
+            href='https://medium.premia.finance/'
             target='_blank'
             rel='noreferrer'
             className={classes.footerIcon}
@@ -347,22 +356,23 @@ const Footer: React.FC = () => {
           </a>
         </Box>
         <Box className={classes.footerRight}>
-          { account &&
+          {account && (
             <Box
               className={classes.footerRightItem}
               onClick={() => {
                 setChainModalOpen(true);
-              }}>
-              { (chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon /> }
-              { chainIndex === 1 && <BSCIcon /> }
-              { chainIndex === 2 && <PolygonIcon /> }
-              { chainIndex === 3 && <FantomIcon /> }
+              }}
+            >
+              {(chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon />}
+              {chainIndex === 1 && <BSCIcon />}
+              {chainIndex === 2 && <PolygonIcon />}
+              {chainIndex === 3 && <FantomIcon />}
               <Typography component='span'>
-                { chainIndex === -1 ? testnetLabel : chainLabels[chainIndex] }
+                {chainIndex === -1 ? testnetLabel : chainLabels[chainIndex]}
               </Typography>
               <UpArrow className={classes.upArrow} />
-            </Box>        
-          }
+            </Box>
+          )}
           <Divider orientation='vertical' />
           <Box
             className={classes.footerRightItem}
@@ -374,13 +384,7 @@ const Footer: React.FC = () => {
             <Typography component='span'>Gas Price</Typography>
             <UpArrow className={classes.upArrow} />
             <BorderLinearProgress
-              value={
-                gasType === 'rapid'
-                  ? 100
-                  : gasType === 'fast'
-                  ? 50
-                  : 25
-              }
+              value={gasType === 'rapid' ? 100 : gasType === 'fast' ? 50 : 25}
               color={
                 gasType === 'rapid'
                   ? palette.primary.main

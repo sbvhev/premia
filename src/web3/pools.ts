@@ -3,6 +3,14 @@ import { BigNumber } from 'ethers';
 import { Token, TokenPair } from './tokens';
 import { OptionType } from './options';
 
+export interface CLevelChartItem {
+  id: string;
+  pool: Pool;
+  cLevel: BigNumber;
+  cLevel64x64: BigNumber;
+  timestamp: BigNumber;
+}
+
 export interface Pool {
   id: string;
   address: string;
