@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -58,14 +58,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 0,
     height: 45,
     border: `1px solid ${palette.divider}`,
-    backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
+    backgroundColor: palette.background.default,
     boxShadow: (props: any) =>
-      props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+      props.darkMode ? '0px 2px 5px rgba(0, 0, 0, 0.0746353)' : 'none',
     borderRadius: 12,
     cursor: 'pointer',
 
     '& a': {
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
 
     '&> div:hover:not(:active)': {
@@ -179,7 +179,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   connectWalletButton: {
     fontSize: 14,
   },
-  
+
   leaderboard: {
     display: 'flex',
     alignItems: 'center',
@@ -188,7 +188,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 14,
       lineHeight: '18px',
       color: palette.text.secondary,
-    }
+    },
   },
 
   tradingContainer: {
@@ -200,8 +200,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 14,
       fontWeight: 'bold',
       lineHeight: '18px',
-      margin: 0, 
-    }
+      margin: 0,
+    },
   },
 
   tradingCompetition: {
@@ -219,7 +219,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
   tradinghours: {
     color: palette.text.primary,
-  }
+  },
 }));
 
 interface AccountButtonsProps {
@@ -238,17 +238,21 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode, mobile });
-  const [ countDownStr, setCountDownStr ] = useState('');
+  const [countDownStr, setCountDownStr] = useState('');
   const getCountDownStr = () => {
     const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
-    setCountDownStr(Math.floor(hours / 24) + 'd' + (hours % 24 > 0 ? ' ' + (hours % 24) + 'h' : ' '));
-  }
+    setCountDownStr(
+      Math.floor(hours / 24) +
+        'd' +
+        (hours % 24 > 0 ? ' ' + (hours % 24) + 'h' : ' '),
+    );
+  };
   useEffect(() => {
     getCountDownStr();
   });
   setInterval(() => {
     getCountDownStr();
-  }, 3600000)
+  }, 3600000);
 
   return (
     <Grid container alignItems='center' justify='flex-end'>
@@ -262,7 +266,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
         onClose={() => setConfirmTermsModalOpen(false)}
       />
 
-      <Box display='flex' className={classes.account} width={mobile ? 1 : 'auto'} my={mobile ? 1.25 : 0} mx={mobile ? 1.25 : 1}>
+      <Box
+        display='flex'
+        className={classes.account}
+        width={mobile ? 1 : 'auto'}
+        my={mobile ? 1.25 : 0}
+        mx={mobile ? 1.25 : 1}
+      >
         <Box
           height={1}
           className={classes.accountInfo}
@@ -278,8 +288,12 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
         >
           <ClockIcon />
           <Box height={1} className={classes.tradingContainer}>
-            <Typography className={classes.tradingCompetition}>Trading competition <UpRightArrow /></Typography>
-            <Typography className={classes.tradinghours}>{countDownStr} left</Typography>
+            <Typography className={classes.tradingCompetition}>
+              Trading competition <UpRightArrow />
+            </Typography>
+            <Typography className={classes.tradinghours}>
+              {countDownStr} left
+            </Typography>
           </Box>
         </Box>
         <Box

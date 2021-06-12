@@ -11,7 +11,11 @@ import {
 } from '@material-ui/core';
 import { useDarkModeManager } from 'state/user/hooks';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { EligibleTradingModal, InEligibleTradingModal, ClaimTokensModal } from 'components';
+import {
+  EligibleTradingModal,
+  InEligibleTradingModal,
+  ClaimTokensModal,
+} from 'components';
 import TradingCompetitionBanner from 'assets/images/TradingCompetitionBanner.png';
 import PrizeFirst from 'assets/svg/PrizeFirst.svg';
 import PrizeSecond from 'assets/svg/PrizeSecond.svg';
@@ -29,7 +33,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     lineHeight: '23px',
   },
   competitionContainer: {
-    marginTop: (props: any) => props.mobile ? 19 : 29,
+    marginTop: (props: any) => (props.mobile ? 19 : 29),
     marginBottom: 50,
   },
   competitionContent: {
@@ -38,40 +42,41 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: '100%',
     },
     '& > div': {
-      padding: (props: any) => props.mobile ? '18px 7px 21px 12px' : '31px 29px 22px 26px',
+      padding: (props: any) =>
+        props.mobile ? '18px 7px 21px 12px' : '31px 29px 22px 26px',
       '& h3': {
         color: palette.text.primary,
         fontSize: 18,
         lineHeight: 1,
         fontWeight: 'bold',
-        marginBottom: 6
+        marginBottom: 6,
       },
       '& p, & ol li': {
         fontSize: 14,
         lineHeight: '24px',
         fontWeight: 500,
-        color: palette.text.secondary
+        color: palette.text.secondary,
       },
       '& ol': {
         padding: '0 0 0 14px',
-        margin: 0
-      }
-    }
+        margin: 0,
+      },
+    },
   },
   competitionButtons: {
     '& button': {
       width: '100%',
       height: 45,
       marginBottom: 11,
-    }
+    },
   },
   competitionPrize: {
     '& > div': {
       display: 'flex',
       alignItems: 'center',
-      padding: (props: any) => props.mobile ? '14px 10px' : '17px 12px',
+      padding: (props: any) => (props.mobile ? '14px 10px' : '17px 12px'),
       '&:first-child': {
-        padding: (props: any) => props.mobile ? '19px 11px' : '24px 19px',
+        padding: (props: any) => (props.mobile ? '19px 11px' : '24px 19px'),
         justifyContent: 'space-between',
       },
       '& h3': {
@@ -79,7 +84,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         fontSize: 18,
         fontWeight: 'bold',
         lineHeight: 1,
-        color: palette.text.primary
+        color: palette.text.primary,
       },
       '& a': {
         color: palette.text.secondary,
@@ -92,7 +97,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '& > p': {
         marginLeft: 17,
-        color: palette.text.primary
+        color: palette.text.primary,
       },
       '& > div': {
         width: 51,
@@ -104,51 +109,57 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         '& > div': {
           position: 'absolute',
           top: 0,
-          left: 0, 
+          left: 0,
           borderRadius: 8,
         },
         '& p': {
           marginLeft: 4,
-        }
+        },
       },
       '&:nth-of-type(2)': {
         '& > div': {
           '& > div': {
-            background: 'linear-gradient(115.58deg, #FFA15E 8.45%, #EFFF8E 101.04%)',
-            opacity: (props: any) => props.dark ? 0.1 : 0.2,
+            background:
+              'linear-gradient(115.58deg, #FFA15E 8.45%, #EFFF8E 101.04%)',
+            opacity: (props: any) => (props.dark ? 0.1 : 0.2),
           },
           '& p': {
-            background: 'linear-gradient(115.58deg, #FF5E5E 8.45%, #FFED8E 101.04%)',
+            background:
+              'linear-gradient(115.58deg, #FF5E5E 8.45%, #FFED8E 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
-        }
+          },
+        },
       },
       '&:nth-of-type(3)': {
         '& > div': {
           '& > div': {
-            background: 'linear-gradient(115.58deg, #DEDEDE 8.45%, #CCCCCC 101.04%)',
-            opacity: (props: any) => props.dark ? 0.1 : 0.3,
+            background:
+              'linear-gradient(115.58deg, #DEDEDE 8.45%, #CCCCCC 101.04%)',
+            opacity: (props: any) => (props.dark ? 0.1 : 0.3),
           },
           '& p': {
-            background: 'linear-gradient(115.58deg, #858585 8.45%, #E6E6E6 101.04%)',
+            background:
+              'linear-gradient(115.58deg, #858585 8.45%, #E6E6E6 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
-        }
+          },
+        },
       },
       '&:nth-of-type(4)': {
         '& > div': {
           '& > div': {
-            background: 'linear-gradient(115.58deg, rgba(196, 111, 85, 0.1) 8.45%, rgba(153, 52, 52, 0.1) 101.04%)'
+            background:
+              'linear-gradient(115.58deg, rgba(196, 111, 85, 0.1) 8.45%, rgba(153, 52, 52, 0.1) 101.04%)',
           },
           '& p': {
-            background: 'linear-gradient(115.58deg, #C46F55 8.45%, #993434 101.04%)',
+            background:
+              'linear-gradient(115.58deg, #C46F55 8.45%, #993434 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
-        }
-      }
+          },
+        },
+      },
     },
   },
   socialContainer: {
@@ -160,7 +171,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontSize: 14,
       fontWeight: 500,
       lineHeight: '24px',
-      color: palette.text.primary
+      color: palette.text.primary,
     },
     '& > div': {
       marginTop: 6,
@@ -176,19 +187,24 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         marginRight: 10,
         cursor: 'pointer',
         '&:last-child': {
-          marginRight: 0
+          marginRight: 0,
         },
         '& svg path': {
-          fill: palette.text.secondary
+          fill: palette.text.secondary,
         },
-        '&:hover, &:active': {
+        '&:hover:not(:active)': {
+          borderColor: palette.common.white,
+
           '& svg path': {
-            fill: palette.text.primary
+            fill: palette.text.primary,
           },
         },
-      }
-    }
-  }
+        '&:active': {
+          borderColor: 'rgba(255,255,255,0.5)',
+        },
+      },
+    },
+  },
 }));
 
 const TradingCompetition: React.FC = () => {
@@ -196,60 +212,66 @@ const TradingCompetition: React.FC = () => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ darkMode, mobile });
-  const [ claimTokensModalOpen, setClaimTokensModalOpen ] = useState(false);
-  const [ eligibleTradingModalOpen, setEligibleTradingModalOpen ] = useState(false);
-  const [ inEligibleTradingModalOpen, setInEligibleTradingModalOpen ] = useState(false);
+  const [claimTokensModalOpen, setClaimTokensModalOpen] = useState(false);
+  const [eligibleTradingModalOpen, setEligibleTradingModalOpen] =
+    useState(false);
+  const [inEligibleTradingModalOpen, setInEligibleTradingModalOpen] =
+    useState(false);
 
   return (
     <>
       <ClaimTokensModal
         open={claimTokensModalOpen}
         onClose={() => {
-          setClaimTokensModalOpen(false)
+          setClaimTokensModalOpen(false);
         }}
       />
       <EligibleTradingModal
         open={eligibleTradingModalOpen}
         showClaimToken={() => {
-          setClaimTokensModalOpen(true)
-          setEligibleTradingModalOpen(false)
+          setClaimTokensModalOpen(true);
+          setEligibleTradingModalOpen(false);
         }}
         onClose={() => {
-          setEligibleTradingModalOpen(false)
+          setEligibleTradingModalOpen(false);
         }}
       />
       <InEligibleTradingModal
         open={inEligibleTradingModalOpen}
         onClose={() => {
-          setInEligibleTradingModalOpen(false)
+          setInEligibleTradingModalOpen(false);
         }}
       />
-      <Typography
-        component='h1'
-        color='textPrimary'
-        className={classes.title}
-      >
+      <Typography component='h1' color='textPrimary' className={classes.title}>
         Premia trading competition
       </Typography>
       <Grid container className={classes.competitionContainer} spacing={3}>
         <Grid item sm={8}>
           <Container fixed className={classes.competitionContent}>
-            <img src={TradingCompetitionBanner} alt='Trading Competition Banner' />
+            <img
+              src={TradingCompetitionBanner}
+              alt='Trading Competition Banner'
+            />
             <Box width={1}>
-              <Typography component='h3'>
-                Description
-              </Typography>
+              <Typography component='h3'>Description</Typography>
               <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam venenatis ipsum justo. Sed metus metus, faucibus vel ipsum eget, auctor ultricies mi. Aliquam condimentum consectetur maximus. Morbi orci lacus, accumsan nec laoreet sit amet, laoreet in sapien. Mauris sit amet elit orci. Quisque et erat id sapien mollis iaculis ut eget lorem. 
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+                venenatis ipsum justo. Sed metus metus, faucibus vel ipsum eget,
+                auctor ultricies mi. Aliquam condimentum consectetur maximus.
+                Morbi orci lacus, accumsan nec laoreet sit amet, laoreet in
+                sapien. Mauris sit amet elit orci. Quisque et erat id sapien
+                mollis iaculis ut eget lorem.
               </Typography>
             </Box>
             <Divider />
             <Box width={1}>
-              <Typography component='h3'>
-                Rules
-              </Typography>
+              <Typography component='h3'>Rules</Typography>
               <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam venenatis ipsum justo. Sed metus metus, faucibus vel ipsum eget, auctor ultricies mi. Aliquam condimentum consectetur maximus. Morbi orci lacus, accumsan nec laoreet sit amet, laoreet in sapien. Mauris sit amet elit orci:
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+                venenatis ipsum justo. Sed metus metus, faucibus vel ipsum eget,
+                auctor ultricies mi. Aliquam condimentum consectetur maximus.
+                Morbi orci lacus, accumsan nec laoreet sit amet, laoreet in
+                sapien. Mauris sit amet elit orci:
               </Typography>
               <ol>
                 <li>Etiam venenatis ipsum justo.</li>
@@ -292,7 +314,7 @@ const TradingCompetition: React.FC = () => {
                 <img src={PrizeFirst} alt='Prize First' />
                 <Typography>1</Typography>
               </Box>
-              <Typography>$50,000</Typography>
+              <Typography>$100,000</Typography>
             </Box>
             <Divider />
             <Box>
@@ -301,7 +323,7 @@ const TradingCompetition: React.FC = () => {
                 <img src={PrizeSecond} alt='Prize Second' />
                 <Typography>2</Typography>
               </Box>
-              <Typography>$25,000</Typography>
+              <Typography>$35,000</Typography>
             </Box>
             <Divider />
             <Box>
@@ -316,11 +338,21 @@ const TradingCompetition: React.FC = () => {
           <Box className={classes.socialContainer}>
             <Typography>Share on:</Typography>
             <Box>
-              <Container fixed><TwitterIcon /></Container>
-              <Container fixed><TelegramIcon /></Container>
-              <Container fixed><FacebookIcon /></Container>
-              <Container fixed><DiscordIcon /></Container>
-              <Container fixed><SocialIcon1 /></Container>
+              <Container fixed>
+                <TwitterIcon />
+              </Container>
+              <Container fixed>
+                <TelegramIcon />
+              </Container>
+              <Container fixed>
+                <FacebookIcon />
+              </Container>
+              <Container fixed>
+                <DiscordIcon />
+              </Container>
+              <Container fixed>
+                <SocialIcon1 />
+              </Container>
             </Box>
           </Box>
         </Grid>
