@@ -214,7 +214,7 @@ const Footer: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const { gasType, setGasType } = useGasType();
   const { gasPrices } = useGasPrices();
-  const { chainId } = useWeb3();
+  const { chainId, account } = useWeb3();
   const chainIndex = chainIds.findIndex((val) => val === chainId);
 
   let testnetLabel = '';
@@ -356,21 +356,23 @@ const Footer: React.FC = () => {
           </a>
         </Box>
         <Box className={classes.footerRight}>
-          <Box
-            className={classes.footerRightItem}
-            onClick={() => {
-              setChainModalOpen(true);
-            }}
-          >
-            {(chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon />}
-            {chainIndex === 1 && <BSCIcon />}
-            {chainIndex === 2 && <PolygonIcon />}
-            {chainIndex === 3 && <FantomIcon />}
-            <Typography component='span'>
-              {chainIndex === -1 ? testnetLabel : chainLabels[chainIndex]}
-            </Typography>
-            <UpArrow className={classes.upArrow} />
-          </Box>
+          {account && (
+            <Box
+              className={classes.footerRightItem}
+              onClick={() => {
+                setChainModalOpen(true);
+              }}
+            >
+              {(chainIndex === 0 || testnetLabel !== '') && <EthHeadIcon />}
+              {chainIndex === 1 && <BSCIcon />}
+              {chainIndex === 2 && <PolygonIcon />}
+              {chainIndex === 3 && <FantomIcon />}
+              <Typography component='span'>
+                {chainIndex === -1 ? testnetLabel : chainLabels[chainIndex]}
+              </Typography>
+              <UpArrow className={classes.upArrow} />
+            </Box>
+          )}
           <Divider orientation='vertical' />
           <Box
             className={classes.footerRightItem}
