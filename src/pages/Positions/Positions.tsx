@@ -168,8 +168,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontWeight: 700,
     lineHeight: '18px',
     [breakpoints.down('xs')]: {
-      lineHeight: 1
-    }
+      lineHeight: 1,
+    },
   },
   mainTitle: {
     fontSize: 16,
@@ -311,9 +311,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     [breakpoints.down('xs')]: {
       minHeight: 'calc(100vh - 290px)',
       '& h1': {
-        marginTop: 20
-      }
-    }
+        marginTop: 20,
+      },
+    },
   },
   findPositionContainer: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
@@ -330,9 +330,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       flexDirection: 'column',
       justifyContent: 'center',
       '& h2': {
-        marginBottom: 16
-      }
-    }
+        marginBottom: 16,
+      },
+    },
   },
   noPositionBox: {
     height: '100%',
@@ -354,8 +354,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 45,
       fontSize: 16,
       margin: 0,
-      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),  
-    }
+      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
+    },
   },
   positionFilterContainer: {
     boxSizing: 'border-box',
@@ -413,7 +413,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& svg': {
       opacity: 0.5,
-      fill: palette.text.primary
+      fill: palette.text.primary,
     },
   },
   infoHeading: {
@@ -599,7 +599,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     alignItems: 'center',
     '& img': {
       width: '100%',
-    }
+    },
   },
   plPercents: {
     display: 'flex',
@@ -1249,9 +1249,7 @@ const Positions: React.FC = () => {
           >
             You have no active positions
           </Typography>
-          <Box
-            mt={mobileWindowSize ? 3 : 5}
-          >
+          <Box mt={mobileWindowSize ? 3 : 5}>
             <Container fixed className={classes.noPositionBox}>
               {positionFilterIndex === 0 && (
                 <>
@@ -1261,9 +1259,7 @@ const Positions: React.FC = () => {
                   <Box className={classes.noPositionBtnContainer}>
                     <Typography component='h2'>Your options</Typography>
                     <Link to='/options'>
-                      <Button color='primary'>
-                        Buy options
-                      </Button>
+                      <Button color='primary'>Buy options</Button>
                     </Link>
                   </Box>
                 </>
@@ -1276,9 +1272,7 @@ const Positions: React.FC = () => {
                   <Box className={classes.noPositionBtnContainer}>
                     <Typography component='h2'>Your yield</Typography>
                     <Link to='/vaults?tab=pro'>
-                      <Button color='primary'>
-                        Earn yield
-                      </Button>
+                      <Button color='primary'>Earn yield</Button>
                     </Link>
                   </Box>
                 </>

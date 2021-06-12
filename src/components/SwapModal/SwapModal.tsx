@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Typography,
   Modal,
@@ -46,7 +46,7 @@ import { BigNumber } from 'bignumber.js';
 import TokenList from '../../tokens.json';
 import ROUTE_ICON_LIST from '../../routeIconList.json';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -512,10 +512,30 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const { account, chainId, web3 } = useWeb3();
-  const [editSettings, setEdditSettings] = React.useState(false);
-  const [switched, setSwitched] = useState(false);
   const { palette } = theme;
+  const gasToken = useGasToken();
+  const assetListWithGasToken = useMemo(
+    () => [...TokenList.tokens, gasToken],
+    [gasToken],
+  );
+
+  const [tokenListFrom, setTokenListFrom] = useState(assetListWithGasToken);
+  const [editSettings, setEdditSettings] = useState(false);
+  const [switched, setSwitched] = useState(false);
+  const [tokenListTo, setTokenListTo] = useState(assetListWithGasToken);
+  const [searchValueFrom, setSearchValueFrom] = useState<string>('');
+  const [searchValueTo, setSearchValueTo] = useState<string>('');
+  const [tokenNeedsapproval, setTokenNeedsapproval] = useState(true);
+  const [preSwapButtonGuide, setPreSwapButtonGuide] =
+    useState<string>('Select tokens');
+  const [fromAssetOpen, setFromAssetOpen] = useState<null | HTMLElement>(null);
+  const [toAssetOpen, setToAssetOpen] = useState<null | HTMLElement>(null);
+  const [zeroXQuote, setZeroXQuote] =
+    useState<SwapQuote | undefined>(undefined);
+  const [swapValid, setSwapValid] = useState(false);
+  const [swapReady, setSwapReady] = useState(false);
+
+  const { account, chainId, web3 } = useWeb3();
   const transact = useTransact();
   // const { onWrapEther, onUnwrapEther } = useWrapEther();
   const {
@@ -528,28 +548,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     setSwapSettings,
   } = useSwapSettings();
   const { liquidityProviders } = useToggleExchange();
-  const gasToken = useGasToken();
-  const assetListWithGasToken = [...TokenList.tokens, gasToken];
-  const [tokenListFrom, setTokenListFrom] = React.useState(
-    assetListWithGasToken,
-  );
-  const [tokenListTo, setTokenListTo] = React.useState(assetListWithGasToken);
-  const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
-  const [searchValueTo, setSearchValueTo] = React.useState<string>('');
-  const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  const [preSwapButtonGuide, setPreSwapButtonGuide] =
-    React.useState<string>('Select tokens');
-  const [fromAssetOpen, setFromAssetOpen] =
-    React.useState<null | HTMLElement>(null);
-  const [toAssetOpen, setToAssetOpen] =
-    React.useState<null | HTMLElement>(null);
-  const [zeroXQuote, setZeroXQuote] =
-    useState<SwapQuote | undefined>(undefined);
-  const [swapValid, setSwapValid] = React.useState(false);
-  const [swapReady, setSwapReady] = React.useState(false);
 
   const gasPriceinGwei = useGasPrice() * 1000000000;
-
   const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
   const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
   const excludedLiquidityProviders = liquidityProviders.filter(
@@ -563,6 +563,188 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     isToken(fromToken) ? fromToken.address : undefined,
     zeroXQuote?.allowanceTarget as string,
   );
+
+  const mappedItemsFrom = tokenListFrom
+    .filter((item) => item.symbol !== toToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`from${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectFromToken(item)}
+      />
+    ));
+
+  const mappedItemsTo = tokenListTo
+    .filter((item) => item.symbol !== fromToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`to${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectToToken(item)}
+      />
+    ));
+
+  const getMinimumReceive = () => {
+    if (!zeroXQuote) return '?';
+    return formatUnits(
+      new BigNumber(zeroXQuote?.buyAmount ?? '0')
+        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
+        .toFixed(0),
+      toToken?.decimals,
+    );
+  };
+
+  const getSymbolWithAddress = (address: string) => {
+    return TokenList.tokens.find(
+      (e) => e.address.toLowerCase() === address.toLowerCase(),
+    )?.symbol;
+  };
+
+  const getSwapRoute = () => {
+    if (!zeroXQuote) return '?';
+    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
+      (e: string) => getSymbolWithAddress(e),
+    );
+    return routes ? routes.join(' > ') : '?';
+  };
+
+  const getSwapRouter = () => {
+    if (!zeroXQuote) return;
+
+    const routeIconList = ROUTE_ICON_LIST.routeIconList;
+    const icon = routeIconList.find(
+      (r) => r.routerName === zeroXQuote.orders[0].source,
+    )?.logoUrl;
+
+    return icon ? (
+      <img
+        style={{ height: '18px', marginRight: '8px' }}
+        src={icon}
+        alt='router'
+      />
+    ) : (
+      <Typography style={{ margin: '5px' }} color='primary'>
+        ?
+      </Typography>
+    );
+  };
+
+  useEffect(() => {
+    (async () => {
+      setSwapValid(false);
+      setSwapReady(false);
+      if (!web3 || !account || !chainId) {
+        return;
+      }
+
+      if (!fromToken || !toToken) {
+        setPreSwapButtonGuide('Select tokens');
+        return;
+      }
+      if (!fromAmount && !toAmount) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+
+      if (!inputType && (!fromAmount || parseFloat(fromAmount) === 0)) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+      if (inputType && (!toAmount || parseFloat(toAmount) === 0)) {
+        setPreSwapButtonGuide('Enter amount');
+        return;
+      }
+
+      if (
+        !inputType &&
+        parseFloat(fromAmount ?? '0') > parseFloat(fromTokenBalance ?? '0')
+      ) {
+        setPreSwapButtonGuide('Insufficient balance');
+        return;
+      }
+      setPreSwapButtonGuide('Swap');
+
+      const swapSlippage = slippagePercentage
+        ? slippagePercentage / 100
+        : 0.005;
+
+      const _zeroXQuote = await getSwapQuote(
+        fromToken,
+        toToken,
+        fromAmount ?? '0',
+        toAmount ?? '0',
+        gasPriceinGwei,
+        inputType,
+        chainId,
+        swapSlippage,
+        simpleExclusionList.join(','),
+      );
+
+      if (_zeroXQuote.validationErrors) {
+        setPreSwapButtonGuide(_zeroXQuote.reason);
+        return;
+      }
+      setZeroXQuote(_zeroXQuote);
+
+      if (inputType) {
+        setSwapSettings({
+          fromAmount: formatUnits(_zeroXQuote.sellAmount, fromToken?.decimals),
+        });
+      } else {
+        setSwapSettings({
+          toAmount: formatUnits(_zeroXQuote.buyAmount, toToken?.decimals),
+        });
+      }
+
+      if (inputType) {
+        const calculatedSendAmount = formatUnits(
+          _zeroXQuote.sellAmount,
+          fromToken?.decimals,
+        );
+        if (
+          parseFloat(calculatedSendAmount ?? '0') >
+          parseFloat(fromTokenBalance ?? '0')
+        ) {
+          setPreSwapButtonGuide('Insufficient balance');
+          setSwapValid(false);
+          return;
+        }
+      }
+      setSwapValid(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromAmount, fromToken, toAmount, toToken, inputType, fromTokenBalance]);
+
+  useEffect(() => {
+    if (fromToken?.symbol === 'ETH') {
+      setTokenNeedsapproval(false);
+      return;
+    }
+    if (fromAmount && allowance >= parseFloat(fromAmount)) {
+      setTokenNeedsapproval(false);
+    } else {
+      setTokenNeedsapproval(true);
+    }
+  }, [allowance, fromAmount, fromToken]);
+
+  useEffect(() => {
+    if (swapValid && !tokenNeedsapproval && fromAmount) {
+      if (
+        parseFloat(fromAmount ?? '0') <= parseFloat(fromTokenBalance ?? '0')
+      ) {
+        setSwapReady(true);
+        return;
+      }
+      setSwapReady(false);
+    }
+  }, [
+    tokenNeedsapproval,
+    swapValid,
+    fromTokenBalance,
+    fromAmount,
+    fromToken,
+    toToken,
+  ]);
 
   const handleSwapTokenPositions = () => {
     setSwitched(!switched);
@@ -690,143 +872,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     setTokenListTo(filteredList);
   };
 
-  React.useEffect(() => {
-    (async () => {
-      setSwapValid(false);
-      setSwapReady(false);
-      if (!web3 || !account || !chainId) {
-        return;
-      }
-
-      if (!fromToken || !toToken) {
-        setPreSwapButtonGuide('Select tokens');
-        return;
-      }
-      if (!fromAmount && !toAmount) {
-        setPreSwapButtonGuide('Enter amount');
-        return;
-      }
-
-      if (!inputType && (!fromAmount || parseFloat(fromAmount) === 0)) {
-        setPreSwapButtonGuide('Enter amount');
-        return;
-      }
-      if (inputType && (!toAmount || parseFloat(toAmount) === 0)) {
-        setPreSwapButtonGuide('Enter amount');
-        return;
-      }
-
-      if (
-        !inputType &&
-        parseFloat(fromAmount ?? '0') > parseFloat(fromTokenBalance ?? '0')
-      ) {
-        setPreSwapButtonGuide('Insufficient balance');
-        return;
-      }
-      setPreSwapButtonGuide('Swap');
-
-      const swapSlippage = slippagePercentage
-        ? slippagePercentage / 100
-        : 0.005;
-
-      const _zeroXQuote = await getSwapQuote(
-        fromToken,
-        toToken,
-        fromAmount ?? '0',
-        toAmount ?? '0',
-        gasPriceinGwei,
-        inputType,
-        chainId,
-        swapSlippage,
-        simpleExclusionList.join(','),
-      );
-
-      if (_zeroXQuote.validationErrors) {
-        setPreSwapButtonGuide(_zeroXQuote.reason);
-        return;
-      }
-      setZeroXQuote(_zeroXQuote);
-
-      if (inputType) {
-        setSwapSettings({
-          fromAmount: formatUnits(_zeroXQuote.sellAmount, fromToken?.decimals),
-        });
-      } else {
-        setSwapSettings({
-          toAmount: formatUnits(_zeroXQuote.buyAmount, toToken?.decimals),
-        });
-      }
-
-      if (inputType) {
-        const calculatedSendAmount = formatUnits(
-          _zeroXQuote.sellAmount,
-          fromToken?.decimals,
-        );
-        if (
-          parseFloat(calculatedSendAmount ?? '0') >
-          parseFloat(fromTokenBalance ?? '0')
-        ) {
-          setPreSwapButtonGuide('Insufficient balance');
-          setSwapValid(false);
-          return;
-        }
-      }
-      setSwapValid(true);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromAmount, fromToken, toAmount, toToken, inputType, fromTokenBalance]);
-
-  React.useEffect(() => {
-    if (fromToken?.symbol === 'ETH') {
-      setTokenNeedsapproval(false);
-      return;
-    }
-    if (fromAmount && allowance >= parseFloat(fromAmount)) {
-      setTokenNeedsapproval(false);
-    } else {
-      setTokenNeedsapproval(true);
-    }
-  }, [allowance, fromAmount, fromToken]);
-
-  React.useEffect(() => {
-    if (swapValid && !tokenNeedsapproval && fromAmount) {
-      if (
-        parseFloat(fromAmount ?? '0') <= parseFloat(fromTokenBalance ?? '0')
-      ) {
-        setSwapReady(true);
-        return;
-      }
-      setSwapReady(false);
-    }
-  }, [
-    tokenNeedsapproval,
-    swapValid,
-    fromTokenBalance,
-    fromAmount,
-    fromToken,
-    toToken,
-  ]);
-
-  const mappedItemsFrom = tokenListFrom
-    .filter((item, index) => item.symbol !== toToken?.symbol)
-    .map((item) => (
-      <TokenMenuItem
-        key={`from${item.symbol}`}
-        token={item}
-        onSelect={() => handleSelectFromToken(item)}
-      />
-    ));
-
-  const mappedItemsTo = tokenListTo
-    .filter((item) => item.symbol !== fromToken?.symbol)
-    .map((item, index) => (
-      <TokenMenuItem
-        key={`to${item.symbol}`}
-        token={item}
-        onSelect={() => handleSelectToToken(item)}
-      />
-    ));
-
   const handleSwap = async () => {
     if (zeroXQuote && swapReady) {
       transact(
@@ -843,51 +888,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         },
       );
     }
-  };
-
-  const getMinimumReceive = () => {
-    if (!zeroXQuote) return '???';
-    return formatUnits(
-      new BigNumber(zeroXQuote?.buyAmount ?? '0')
-        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
-        .toFixed(0),
-      toToken?.decimals,
-    );
-  };
-
-  const getSymbolWithAddress = (address: string) => {
-    return TokenList.tokens.find(
-      (e) => e.address.toLowerCase() === address.toLowerCase(),
-    )?.symbol;
-  };
-
-  const getSwapRoute = () => {
-    if (!zeroXQuote) return '???';
-    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
-      (e: string) => getSymbolWithAddress(e),
-    );
-    return routes ? routes.join(' > ') : '???';
-  };
-
-  const getSwapRouter = () => {
-    if (!zeroXQuote) return;
-
-    const routeIconList = ROUTE_ICON_LIST.routeIconList;
-
-    const icon = routeIconList.find(
-      (r) => r.routerName === zeroXQuote.orders[0].source,
-    )?.logoUrl;
-    return icon ? (
-      <img
-        style={{ height: '18px', marginRight: '8px' }}
-        src={icon}
-        alt='router'
-      />
-    ) : (
-      <Typography style={{ margin: '5px' }} color='primary'>
-        ?
-      </Typography>
-    );
   };
 
   return (
@@ -1207,12 +1207,10 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                   {swapValid && (
                     <>
                       {tokenNeedsapproval ? (
-                        <Button
-                          color='primary'
-                          variant='contained'
+                        <ContainedButton
                           id='bottomTarget'
-                          size='large'
-                          onClick={() => onApprove()}
+                          margin='0 0 10px 0'
+                          label={`Approve ${fromToken?.symbol}`}
                           endIcon={
                             <Tooltip
                               arrow
@@ -1224,49 +1222,36 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                               <InfoIcon fill={palette.background.paper} />
                             </Tooltip>
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          {`Approve ${fromToken?.symbol}`}
-                        </Button>
+                          onClick={() => onApprove()}
+                        />
                       ) : (
-                        <Button
-                          color='primary'
-                          variant='contained'
-                          id='bottomTarget'
+                        <ContainedButton
                           disabled
-                          size='large'
+                          id='bottomTarget'
+                          margin='0 0 10px 0'
+                          label='Approved'
                           startIcon={
                             <ApprovedIcon fill={palette.background.paper} />
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          Approved
-                        </Button>
+                        />
                       )}
                     </>
                   )}
                   {swapValid && swapReady ? (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
                       id='bottomTarget'
-                      size='large'
-                      style={{ marginBottom: '20px' }}
+                      label='Swap'
+                      margin='0 0 20px 0'
                       onClick={handleSwap}
-                    >
-                      Swap
-                    </Button>
+                    />
                   ) : (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
+                      disabled
                       id='bottomTarget'
-                      size='large'
-                      disabled={true}
-                      style={{ marginBottom: '20px' }}
-                    >
-                      {preSwapButtonGuide}
-                    </Button>
+                      margin='0 0 20px 0'
+                      label={preSwapButtonGuide}
+                      onClick={handleSwap}
+                    />
                   )}
                 </>
               </Box>

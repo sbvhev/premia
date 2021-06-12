@@ -449,12 +449,12 @@ const LockPremiaCard: React.FC = () => {
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             <Box className={classes.buttonLeft}>
-              <ContainedButton label='Lock' color='secondary' />
+              <ContainedButton fullWidth label='Lock' color='secondary' />
             </Box>
             <Button
+              fullWidth
               color='secondary'
               variant='outlined'
-              size='large'
               className={classes.buttonRight}
             >
               Unlock

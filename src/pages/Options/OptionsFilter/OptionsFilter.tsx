@@ -19,22 +19,35 @@ import {
 } from 'state/options/hooks';
 import { initialState as initialOptionsState } from 'state/options/reducer';
 import { useOutsideAlerter } from 'hooks';
+import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
 
-import { ColoredSlider, Loader } from 'components';
+import { ColoredSlider, Loader, ContainedButton } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   optionButtons: {
     padding: 3,
     '& button': {
-      height: 41,
-      margin: 0,
+      height: 45,
       '& span': {
         fontSize: 14,
         fontWeight: 700,
       },
+    },
+  },
+
+  secondaryButton: {
+    height: '45px',
+    marginTop: '2px',
+    marginBottom: '2px',
+    padding: 0,
+    border: '1px solid transparent',
+
+    '&:hover': {
+      borderColor: ({ darkMode }: any) =>
+        darkMode ? palette.text.primary : palette.text.secondary,
     },
   },
 
@@ -254,8 +267,9 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const OptionFilter: React.FC = () => {
-  const classes = useStyles();
   const theme = useTheme();
+  const darkMode = useIsDarkMode();
+  const classes = useStyles({ darkMode });
   const { underlying } = useUnderlying();
   const { optionType, setOptionType } = useOptionType();
   const { maturityDate, setMaturityDate } = useMaturityDate();
@@ -315,27 +329,48 @@ const OptionFilter: React.FC = () => {
         borderRadius={12}
       >
         <Box clone width={1 / 2}>
-          <Button
-            variant='contained'
-            color={optionType === OptionType.Call ? 'primary' : undefined}
-            style={{ marginRight: '3px' }}
-            onClick={() => setOptionType(OptionType.Call)}
-          >
-            <ArrowUpwardIcon />
-            &nbsp;Call
-          </Button>
+          {optionType === OptionType.Call ? (
+            <ContainedButton
+              fullWidth
+              label='Call'
+              onClick={() => setOptionType(OptionType.Call)}
+              startIcon={<ArrowUpwardIcon />}
+            />
+          ) : (
+            <Button
+              fullWidth
+              variant='outlined'
+              color='secondary'
+              className={classes.secondaryButton}
+              onClick={() => setOptionType(OptionType.Call)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Call
+            </Button>
+          )}
         </Box>
 
         <Box clone width={1 / 2}>
-          <Button
-            variant='contained'
-            color={optionType === OptionType.Put ? 'secondary' : undefined}
-            style={{ marginLeft: '3px' }}
-            onClick={() => setOptionType(OptionType.Put)}
-          >
-            <ArrowDownwardIcon />
-            &nbsp;Put
-          </Button>
+          {optionType === OptionType.Put ? (
+            <ContainedButton
+              fullWidth
+              label='Put'
+              color='secondary'
+              onClick={() => setOptionType(OptionType.Put)}
+              startIcon={<ArrowDownwardIcon />}
+            />
+          ) : (
+            <Button
+              fullWidth
+              variant='outlined'
+              color='secondary'
+              className={classes.secondaryButton}
+              onClick={() => setOptionType(OptionType.Put)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Put
+            </Button>
+          )}
         </Box>
       </Box>
 

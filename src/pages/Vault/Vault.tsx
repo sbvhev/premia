@@ -39,6 +39,7 @@ import {
   TooltipPan,
   WithdrawDepositModal,
   SwitchWithGlider,
+  ContainedButton,
 } from 'components';
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
@@ -788,15 +789,12 @@ const ProVault: React.FC = () => {
                         style={{ marginTop: '1rem' }}
                       >
                         <Grid item xs={6}>
-                          <Button
+                          <ContainedButton
                             fullWidth
-                            size='large'
-                            color='primary'
-                            variant='contained'
+                            height='43px'
+                            label='Add'
                             onClick={() => setDepositCallOpen(true)}
-                          >
-                            Add
-                          </Button>
+                          />
                         </Grid>
                         <Grid item xs={6}>
                           <Button
@@ -1011,15 +1009,13 @@ const ProVault: React.FC = () => {
                         style={{ marginTop: '1rem' }}
                       >
                         <Grid item xs={6}>
-                          <Button
+                          <ContainedButton
                             fullWidth
-                            size='large'
+                            height='43px'
+                            label='Add'
                             color='secondary'
-                            variant='contained'
                             onClick={() => setDepositPutOpen(true)}
-                          >
-                            Add
-                          </Button>
+                          />
                         </Grid>
                         <Grid item xs={6}>
                           <Button

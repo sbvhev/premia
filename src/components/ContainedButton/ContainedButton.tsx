@@ -1,32 +1,79 @@
-import React, { useState } from 'react';
-import { Typography, Box } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { Typography, Box, ButtonBase } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     fontWeight: 700,
     borderRadius: 12,
-    minWidth: '120px',
+    minWidth: '64px',
     textTransform: 'none',
     padding: '1px',
     margin: '2px',
-    height: '45px',
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%);`,
     display: 'flex',
     cursor: 'pointer',
+
+    '&:hover': {
+      '& p': {
+        background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+        backgroundClip: 'text',
+        '-webkit-background-clip': 'text',
+        '-moz-background-clip': 'text',
+        '-moz-text-fill-color': 'transparent',
+        '-webkit-text-fill-color': 'transparent',
+      },
+
+      '& .startIcon svg path': {
+        fill: palette.success.main,
+      },
+
+      '& .endIcon svg path': {
+        fill: '#2AE896',
+      },
+    },
+
+    '& svg path': {
+      fill: ({ darkMode }: any) =>
+        darkMode ? palette.common.black : palette.common.white,
+    },
   },
   wrapperSecondary: {
     fontWeight: 700,
     borderRadius: 12,
-    minWidth: '100px',
+    minWidth: '64px',
     textTransform: 'none',
     padding: '1px',
     margin: '2px',
-    height: '45px',
     background: `linear-gradient(316.57deg, ${palette.error.main} 18.89%, ${palette.error.dark} 95.84%);`,
     display: 'flex',
     cursor: 'pointer',
+
+    '&:hover': {
+      '& p': {
+        background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
+        backgroundClip: 'text',
+        '-webkit-background-clip': 'text',
+        '-moz-background-clip': 'text',
+        '-moz-text-fill-color': 'transparent',
+        '-webkit-text-fill-color': 'transparent',
+      },
+
+      '& .startIcon svg path': {
+        fill: palette.error.main,
+      },
+
+      '& .endIcon svg path': {
+        fill: '#A345DF',
+      },
+    },
+
+    '& svg path': {
+      fill: ({ darkMode }: any) =>
+        darkMode ? palette.common.black : palette.common.white,
+    },
   },
   container: {
     borderRadius: 11,
@@ -36,6 +83,12 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'transparent',
+
+    '&:hover': {
+      backgroundColor: palette.background.paper,
+    },
+
     '&:active': {
       opacity: 0.8,
     },
@@ -49,128 +102,100 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'absolute',
     zIndex: 10,
   },
+
   label: {
     color: palette.background.paper,
     fontWeight: 700,
-    fontSize: '16px',
+    fontSize: ({ size }: any) => (size === 'large' ? '16px' : '14px'),
     lineHeight: '18px',
-  },
-  starIconHoverConatiner: {
-    '& svg path': {
-      fill: palette.primary.main,
-    },
-  },
-  endIconHoverConatiner: {
-    '& svg path': {
-      fill: palette.success.dark,
-    },
-  },
-  hoverGradientText: {
-    fontWeight: 700,
-    fontSize: '16px',
-    lineHeight: '18px',
-    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
-    backgroundClip: 'text',
-    '-webkit-background-clip': 'text',
-    '-moz-background-clip': 'text',
-    '-moz-text-fill-color': 'transparent',
-    '-webkit-text-fill-color': 'transparent',
-  },
-  hoverGradientTextSecondary: {
-    fontWeight: 700,
-    fontSize: '16px',
-    lineHeight: '18px',
-    background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.main} 118.78%)`,
-    backgroundClip: 'text',
-    '-webkit-background-clip': 'text',
-    '-moz-background-clip': 'text',
-    '-moz-text-fill-color': 'transparent',
-    '-webkit-text-fill-color': 'transparent',
   },
 }));
 
 interface ContainedButtonProps {
-  size?: string;
+  id?: string;
+  height?: string;
   color?: string;
-  label?: string;
+  label?: React.ReactNode;
+  children?: React.ReactNode;
   textStyling?: object;
   disabled?: boolean;
   startIcon?: any;
   endIcon?: any;
   fullWidth?: boolean;
-  onClick?: () => void;
   margin?: string;
-  id?: string;
+  size?: 'small' | 'medium' | 'large';
+  onClick?: () => void;
 }
 
 const ContainedButton: React.FC<ContainedButtonProps> = ({
+  id,
   fullWidth,
   color,
+  height,
   label,
+  children,
   textStyling,
   disabled,
   startIcon,
   endIcon,
-  onClick,
   margin,
-  id,
+  size,
+  onClick,
 }) => {
-  const classes = useStyles();
-  const { palette } = useTheme();
-  const [hoverState, setHoverState] = useState(false);
+  const darkMode = useIsDarkMode();
+  const classes = useStyles({ darkMode, size });
+  const childLabel = useMemo(
+    () => (children === undefined ? label : children),
+    [children, label],
+  );
 
   return (
     <Box
-      className={!color ? classes.wrapper : classes.wrapperSecondary}
-      onMouseEnter={!disabled ? () => setHoverState(true) : () => {}}
-      onMouseLeave={!disabled ? () => setHoverState(false) : () => {}}
-      style={disabled ? { opacity: 0.3, margin } : { margin }}
-      width={fullWidth ? '100%' : 'auto'}
-      onClick={onClick}
+      clone
       id={id}
+      width={fullWidth ? '100%' : 'auto'}
+      height={height ? height : '45px'}
+      className={
+        color === 'secondary' ? classes.wrapperSecondary : classes.wrapper
+      }
+      style={disabled ? { opacity: 0.3, margin } : { margin }}
+      onClick={onClick}
     >
-      <Box
-        className={classes.container}
-        bgcolor={!hoverState ? 'transparent' : palette.background.paper}
-      >
-        {startIcon && (
-          <Box
-            display='flex'
-            alignItems='center'
-            className={!hoverState ? '' : classes.starIconHoverConatiner}
-            marginRight='8px'
-          >
-            {startIcon}
-          </Box>
-        )}
-        {label &&
-          (!hoverState ? (
-            <Typography className={classes.label} style={textStyling}>
-              {label}
-            </Typography>
-          ) : (
-            <h2
-              className={
-                !color
-                  ? classes.hoverGradientText
-                  : classes.hoverGradientTextSecondary
-              }
-              style={textStyling}
+      <ButtonBase>
+        <Box
+          height={height ? height : '45px'}
+          padding='6px 2.25rem'
+          className={classes.container}
+        >
+          {startIcon && (
+            <Box
+              display='flex'
+              alignItems='center'
+              marginRight='2px'
+              className='startIcon'
             >
-              {label}
-            </h2>
-          ))}
-        {endIcon && (
-          <Box
-            display='flex'
-            alignItems='center'
-            className={!hoverState ? '' : classes.endIconHoverConatiner}
-            marginLeft='8px'
-          >
-            {endIcon}
-          </Box>
-        )}
-      </Box>
+              {startIcon}
+            </Box>
+          )}
+
+          {childLabel && (
+            <Typography className={classes.label} style={textStyling}>
+              {childLabel}
+            </Typography>
+          )}
+
+          {endIcon && (
+            <Box
+              display='flex'
+              alignItems='center'
+              marginLeft='8px'
+              className='endIcon'
+            >
+              {endIcon}
+            </Box>
+          )}
+        </Box>
+      </ButtonBase>
     </Box>
   );
 };
