@@ -6,6 +6,7 @@ import {
   Pool,
   UserOwnedOption,
   UserOwnedPool,
+  CLevelChartItem,
 } from './fragments';
 
 export const getToken = gql`
@@ -83,6 +84,22 @@ export const getUserOwnedPools = gql`
   query UserOwnedPools($account: String!, $first: Int = 100, $skip: Int = 0) {
     userOwnedPools(first: $first, skip: $skip, where: { user: $account }) {
       ...UserOwnedPool
+    }
+  }
+`;
+
+export const getCLevelChartItems = gql`
+  ${CLevelChartItem}
+
+  query CLevelChartItems($poolId: String!, $first: Int = 1000, $skip: Int = 0) {
+    clevelChartItems(
+      where: { pool: $poolId }
+      first: $first
+      skip: $skip
+      orderBy: timestamp
+      orderDirection: asc
+    ) {
+      ...CLevelChartItem
     }
   }
 `;

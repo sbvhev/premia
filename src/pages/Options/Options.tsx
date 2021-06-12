@@ -11,6 +11,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import cx from 'classnames';
 
@@ -25,9 +26,11 @@ import {
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import { getCLevelChartItems } from 'graphql/queries';
 import { useApproval, usePools } from 'hooks';
-import { formatNumber } from 'utils/formatNumber';
+import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
+import { CLevelChartItem } from 'web3/pools';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
@@ -180,11 +183,19 @@ const Options: React.FC = () => {
   const { maturityDate } = useMaturityDate();
   const { totalCostInUsd } = useTotalCostInUsd();
   const { account } = useWeb3();
-  const { optionPoolContract } = usePools();
+  const { optionPool, optionPoolContract } = usePools();
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),
     [optionType, base, underlying],
+  );
+
+  const { data: { clevelChartItems = [] } = {} } = useQuery(
+    getCLevelChartItems,
+    {
+      pollInterval: 5000,
+      variables: { poolId: optionPool?.id },
+    },
   );
 
   const priceChanges = usePriceChanges();
@@ -408,22 +419,14 @@ const Options: React.FC = () => {
               <LineChart
                 isCall={optionType === OptionType.Call}
                 backgroundColor={theme.palette.background.default}
-                data={
-                  optionType === OptionType.Call
-                    ? [2.345, 3.423, 3.323, 2.643, 3.234, 6.432, 1.234]
-                    : [
-                        2.345, 3.423, 3.323, 2.643, 3.234, 6.432, 1.234,
-                      ].reverse()
-                }
-                categories={[
-                  '2021/5/24',
-                  '2021/5/25',
-                  '2021/5/26',
-                  '2021/5/27',
-                  '2021/5/28',
-                  '2021/5/29',
-                  '2021/5/30',
-                ]}
+                data={clevelChartItems.map((item: CLevelChartItem) =>
+                  formatBigNumber(item.cLevel),
+                )}
+                categories={clevelChartItems.map((item: CLevelChartItem) =>
+                  moment
+                    .unix(Number(item.timestamp))
+                    .format('YYYY/MM/DD HH:mm'),
+                )}
                 width='100%'
                 height={200}
               />

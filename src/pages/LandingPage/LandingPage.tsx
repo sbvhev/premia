@@ -1385,12 +1385,12 @@ const LandingPage: React.FC = () => {
         <Box className={classes.topSection} id='hero'>
           <Box className={classes.topSectionLeft}>
             <Typography className={classes.gradientTitle}>
-              Permissionless options and metavaults
+              Next-generation options and metavaults
             </Typography>
             <Typography className={classes.subTitle}>
-              Premia's next generation options AMM enables best-in-class pricing
-              based on market volatility, bringing fully-featured peer-to-pool
-              trading and capital efficiency to DeFi options.
+              Premia's automated options market enables best-in-class pricing
+              based on realtime supply and demand, bringing fully-featured
+              peer-to-pool trading and capital efficiency to DeFi options.
             </Typography>
             <Button
               className={classes.openAppBig}
