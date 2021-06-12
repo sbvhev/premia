@@ -8,8 +8,8 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 
 import SidebarItem from './SidebarItem';
-import MainLogo from 'assets/svg/NewLogoComboDark.svg';
-import MainLogoBlack from 'assets/svg/NewLogoComboLight.svg';
+import MainLogo from 'assets/svg/NewLogoComboLight.svg';
+import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
 import { ReactComponent as DocumentationIcon } from 'assets/svg/DocumentationIcon.svg';
 import { ReactComponent as CareerIcon } from 'assets/svg/CareerIcon.svg';
 import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';

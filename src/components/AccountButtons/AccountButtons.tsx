@@ -252,7 +252,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   });
   setInterval(() => {
     getCountDownStr();
-  }, 3600000);
+  }, 20 * 60 * 1000);
 
   return (
     <Grid container alignItems='center' justify='flex-end'>
@@ -281,6 +281,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           justifyContent='center'
           onClick={() => {
             history.push('/trading-competition');
+
             if (onHide) {
               onHide();
             }
@@ -337,7 +338,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
                 }
               >
                 <span>Get</span>
-                <LogoIcon />
+                <LogoIcon fill={theme.palette.common.white} />
               </Button>
 
               <Box clone mb={mobile ? 1 : 0}>
@@ -435,7 +436,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
                   }
                 >
                   Get
-                  <LogoIcon />
+                  <LogoIcon fill={theme.palette.common.white} />
                 </Button>
               </Box>
             </Box>
