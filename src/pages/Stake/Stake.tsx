@@ -5,8 +5,7 @@ import cn from 'classnames';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
-import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
-import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
+import { ReactComponent as PremiaLogo } from 'assets/svg/NewLogoWhite.svg';
 
 import { useDarkModeManager } from 'state/user/hooks';
 
@@ -90,6 +89,10 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
     borderRadius: '7px',
     marginRight: '7px',
+
+    '& svg path': {
+      fill: palette.common.white,
+    },
   },
   premiaBox2: {
     width: '40px',
@@ -110,6 +113,10 @@ const useStyles = makeStyles(({ palette }) => ({
     left: -38,
     zIndex: 5,
     opacity: 1,
+
+    '& svg path': {
+      fill: palette.common.white,
+    },
   },
 }));
 
@@ -181,7 +188,7 @@ const Stake: React.FC = () => {
             }
           >
             <Box className={classes.premiaBox1}>
-              <PremiaBlue />
+              <PremiaLogo />
             </Box>
             <Box className={classes.col} style={{ margin: '4px 0' }}>
               <Typography
@@ -215,7 +222,7 @@ const Stake: React.FC = () => {
           >
             <Box className={classes.premiaBox2}></Box>
             <Box className={classes.redPremiaIcon}>
-              <PremiaRed />
+              <PremiaLogo />
             </Box>
             <Box
               className={classes.colRelative}
