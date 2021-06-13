@@ -45,6 +45,7 @@ export default function Updater(): null {
         setStakingBalances({
           xPremiaLocked: r.balance,
           xPremiaLockedUntil: r.lockedUntil,
+          xPremiaStakePeriod: r.stakePeriod,
         }),
       ),
     );

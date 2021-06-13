@@ -43,7 +43,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    height: '566px',
+    height: '632px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
@@ -333,20 +333,17 @@ const LockPremiaCard: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
   const { web3, account, contracts } = useWeb3();
+  const isHardwareWallet = useIsHardwareWallet();
+  const transact = useTransact();
 
   const [checkIsOn, setCheckIsOn] = useState(false);
-  const isHardwareWallet = useIsHardwareWallet();
   const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
-
-  const progress = '75%';
-
   const [lockingMode, setLockingMode] = useState(true);
   const [signedAlready, setSignedAlready] = useState(false);
   const [approvedAready, setApprovedAready] = useState(false);
   const [permitState, setPermitState] = useState<PermitState>({});
   const [lockAmount, setLockAmount] = useState('');
   const [lockupMonths, setLockupMonths] = useState<number | null>(null);
-  const transact = useTransact();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const {
@@ -355,7 +352,20 @@ const LockPremiaCard: React.FC = () => {
     xPremiaBalance,
     xPremiaFeeDiscount,
     xPremiaStakeWithBonus,
+    xPremiaStakePeriod,
   } = useStakingBalances();
+
+  const progress = useMemo(
+    () =>
+      xPremiaLockedUntil &&
+      xPremiaStakePeriod &&
+      xPremiaLockedUntil.toNumber() !== 0
+        ? (moment.unix(xPremiaLockedUntil.toNumber()).diff(moment(), 'days') /
+            (xPremiaStakePeriod.toNumber() / 86400)) *
+          100
+        : 0,
+    [xPremiaLockedUntil, xPremiaStakePeriod],
+  );
 
   const { allowance: lockingAllowance, onApprove: onApproveLocking } =
     useApproval(
@@ -902,7 +912,7 @@ const LockPremiaCard: React.FC = () => {
               >
                 <Box
                   className={classes.progressBar}
-                  style={{ width: progress }}
+                  style={{ width: `${progress}%` }}
                 />
               </Box>
               <Typography
@@ -915,6 +925,8 @@ const LockPremiaCard: React.FC = () => {
                     .unix(xPremiaLockedUntil.toNumber())
                     .fromNow()
                     .replace('in ', '')
+                ) : xPremiaLockedUntil?.toNumber() === 0 ? (
+                  0
                 ) : (
                   <Loader />
                 )}

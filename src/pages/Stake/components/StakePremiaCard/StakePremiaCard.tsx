@@ -40,7 +40,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    height: '501px',
+    height: '567px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
