@@ -22,6 +22,7 @@ import { useOutsideAlerter } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
+import { formatCompact } from 'utils/formatNumber';
 
 import { ColoredSlider, Loader, ContainedButton } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
@@ -284,7 +285,7 @@ const OptionFilter: React.FC = () => {
     [underlying],
   );
   const rounding = useMemo(
-    () => Math.pow(10, Math.round(Math.log10(underlyingPrice) - 1)),
+    () => Math.pow(10, Math.ceil(Math.log10(underlyingPrice) - 1)) / 2,
     [underlyingPrice],
   );
   const roundedPrice = useMemo(
@@ -299,6 +300,21 @@ const OptionFilter: React.FC = () => {
     () => Math.floor((underlyingPrice * 2) / rounding) * rounding,
     [underlyingPrice, rounding],
   );
+
+  const highlightedStrikes = useMemo(() => {
+    if (!maxPrice || !minPrice) return [];
+
+    const increments = Math.ceil((maxPrice - minPrice) / rounding);
+    const result = [...Array(increments + 1)].map(
+      (x, y) => minPrice + rounding * y,
+    );
+
+    return result.map((value, i) => ({
+      label:
+        value === minPrice || value === maxPrice ? formatCompact(value) : '',
+      value,
+    }));
+  }, [minPrice, maxPrice, rounding]);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
 
@@ -385,15 +401,12 @@ const OptionFilter: React.FC = () => {
             <ColoredSlider
               min={minPrice}
               max={maxPrice}
-              marks={[minPrice, maxPrice].map((value) => ({
-                label: value,
-                value,
-              }))}
+              marks={highlightedStrikes}
               step={10 ** -underlying.decimals}
-              value={strikePrice === 0 ? 1 : Math.round(strikePrice)}
+              value={strikePrice === 0 ? 1 : strikePrice}
               valueLabelDisplay='on'
               onChange={(event: any, value) => {
-                setStrikePrice(Math.round(value as number));
+                setStrikePrice(value as number);
               }}
             />
           ) : (

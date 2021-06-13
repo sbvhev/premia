@@ -601,7 +601,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const getSwapRoute = () => {
-    if (!zeroXQuote) return '?';
+    if (!zeroXQuote || !zeroXQuote.orders[0]) return '?';
     const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
       (e: string) => getSymbolWithAddress(e),
     );
@@ -609,7 +609,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const getSwapRouter = () => {
-    if (!zeroXQuote) return;
+    if (!zeroXQuote || !zeroXQuote.orders[0]) return;
 
     const routeIconList = ROUTE_ICON_LIST.routeIconList;
     const icon = routeIconList.find(

@@ -5,6 +5,7 @@ import moment from 'moment';
 import { DAI, WETH } from '../../constants';
 import { Token } from 'web3/tokens';
 import { OptionType } from 'web3/options';
+import { roundToLog } from 'utils/roundToLog';
 import {
   updateBase,
   updateUnderlying,
@@ -68,7 +69,7 @@ export default createReducer(initialState, (builder) =>
       state.maturityDate = payload;
     })
     .addCase(updateStrikePrice, (state, { payload }) => {
-      state.strikePrice = payload;
+      state.strikePrice = roundToLog(payload as number, -2);
     })
     .addCase(updateSize, (state, { payload }) => {
       state.size = payload;

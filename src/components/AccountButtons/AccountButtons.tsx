@@ -271,7 +271,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
         className={classes.account}
         width={mobile ? 1 : 'auto'}
         my={mobile ? 1.25 : 0}
-        mx={mobile ? 1.25 : 1}
+        mx={mobile ? 1.25 : 1.25}
       >
         <Box
           height={1}
