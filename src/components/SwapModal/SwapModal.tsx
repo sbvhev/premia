@@ -870,13 +870,13 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   };
 
   const getSwapRouter = () => {
-    if (!zeroXQuote) return;
+    if (!zeroXQuote || !zeroXQuote.orders[0]) return;
 
     const routeIconList = ROUTE_ICON_LIST.routeIconList;
-
     const icon = routeIconList.find(
       (r) => r.routerName === zeroXQuote.orders[0].source,
     )?.logoUrl;
+
     return icon ? (
       <img
         style={{ height: '18px', marginRight: '8px' }}

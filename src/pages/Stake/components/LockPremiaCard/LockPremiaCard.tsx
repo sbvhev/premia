@@ -22,7 +22,6 @@ import { formatNumber } from 'utils/formatNumber';
 import { formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
-import { getRemainingPeriods } from 'utils';
 
 import { ContainedButton, Loader } from 'components';
 import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';

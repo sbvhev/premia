@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -21,6 +21,7 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 import { formatNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
+import { useDeviceWidth, useUserOwnedOptions } from 'hooks';
 
 import {
   DataTable,
@@ -45,7 +46,6 @@ import NoPositionYield from 'assets/svg/NoPositionYield.svg';
 import NoPositionOptions from 'assets/svg/NoPositionOptions.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
-import { useUserOwnedOptions } from 'hooks';
 
 const getYieldHeadCells = () => [
   {
@@ -711,8 +711,8 @@ const Positions: React.FC = () => {
   const [dateFilterIndex, setDateFilterIndex] = useState(0);
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
-  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [darkMode] = useDarkModeManager();
+  const deviceWidth = useDeviceWidth();
 
   const options = useUserOwnedOptions();
 
@@ -721,15 +721,6 @@ const Positions: React.FC = () => {
   const noPositions = false;
 
   console.log('options', options);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleFilterOptions = () => {
     setPositionFilterIndex(0);
