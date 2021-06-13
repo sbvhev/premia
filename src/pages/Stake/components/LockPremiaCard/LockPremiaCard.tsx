@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Box,
+  ButtonBase,
   Typography,
   Button,
   Menu,
@@ -12,6 +13,7 @@ import {
 import { BigNumber } from 'ethers';
 import { formatEther, parseEther } from 'ethers/lib/utils';
 import moment from 'moment';
+import cn from 'classnames';
 
 import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
 import { RSV } from 'eth-permit/rpc';
@@ -23,21 +25,21 @@ import { formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
 
-import { ContainedButton, Loader } from 'components';
-import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
-import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
+import { ContainedButton, Loader, SwitchWithGlider } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
+import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
+import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '642px',
+    height: '710px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px',
   },
   wrapperMobile: {
@@ -46,7 +48,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px 12px 50px',
   },
   borderedCard: {
@@ -54,7 +56,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    height: '577px',
+    height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -131,7 +133,6 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     padding: '0 16px 12px',
-    height: '262px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -223,18 +224,6 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '14px',
     lineHeight: '24px',
   },
-  buttonLeft: {
-    width: '48%',
-    marginRight: '4px',
-    fontSize: '16px',
-    fontWeight: 700,
-  },
-  buttonRight: {
-    width: '52%',
-    marginLeft: '4px',
-    fontSize: '16px',
-    fontWeight: 500,
-  },
   botSection: {
     boxSizing: 'border-box',
     display: 'flex',
@@ -298,6 +287,38 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '13px',
     lineHeight: '24px',
   },
+  switchButton: {
+    borderRadius: 10,
+    height: 40,
+
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.text.secondary,
+    },
+  },
+  switchButtonLeft: {
+    marginRight: 7,
+  },
+  activeSwitch: {
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.primary.main,
+    },
+  },
 }));
 
 interface PermitState {
@@ -324,7 +345,6 @@ const LockPremiaCard: React.FC = () => {
   const [approvedAready, setApprovedAready] = useState(false);
   const [permitState, setPermitState] = useState<PermitState>({});
   const [lockAmount, setLockAmount] = useState('');
-  const [unlockAmount, setUnlockAmount] = useState('');
   const [lockupMonths, setLockupMonths] = useState<number | null>(null);
   const transact = useTransact();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -347,6 +367,9 @@ const LockPremiaCard: React.FC = () => {
     if (lockingAllowance) {
       setShouldApprove(true);
     }
+  }, [lockingAllowance]);
+
+  useEffect(() => {
     if (!lockAmount) {
       setApprovedAready(false);
     } else if (lockingAllowance >= parseFloat(lockAmount)) {
@@ -354,85 +377,113 @@ const LockPremiaCard: React.FC = () => {
     }
   }, [lockingAllowance, lockAmount]);
 
-  const handleOpenSelector = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const StakeButton = useCallback(
+    () => (
+      <Box
+        clone
+        height={30}
+        width={165}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        className={cn(classes.switchButton, classes.switchButtonLeft, {
+          [classes.activeSwitch]: !lockingMode,
+        })}
+        onClick={() => setLockingMode(false)}
+      >
+        <ButtonBase>
+          <Typography>Lock</Typography>
+        </ButtonBase>
+      </Box>
+    ),
+    [lockingMode, classes],
+  );
 
-  const handleSetLockupMonths = (months: number) => {
+  const UnstakeButton = useCallback(
+    () => (
+      <Box
+        clone
+        height={30}
+        width={165}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        className={cn(classes.switchButton, {
+          [classes.activeSwitch]: lockingMode,
+        })}
+        onClick={() => setLockingMode(true)}
+      >
+        <ButtonBase>
+          <Typography>Unlock</Typography>
+        </ButtonBase>
+      </Box>
+    ),
+    [lockingMode, classes],
+  );
+
+  const handleOpenSelector = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [],
+  );
+
+  const handleSetLockupMonths = useCallback((months: number) => {
     setLockupMonths(months);
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleChangeLockAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (paddedValue === '') {
-      setLockAmount('');
-      return;
-    }
-    if (paddedValue === '.') {
-      setLockAmount('0.');
-      return;
-    }
-    if (paddedValue === '0') {
-      setLockAmount('0');
-      return;
-    }
-    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-      const last = paddedValue.length;
-      paddedValue = paddedValue.slice(1, last);
-    }
-    if (paddedValue) {
-      setLockAmount(paddedValue);
-    }
-  };
+  const handleChangeLockAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      let paddedValue = value.replace(/[^0-9.]/g, '');
+      if (paddedValue === '') {
+        setLockAmount('');
+        return;
+      }
+      if (paddedValue === '.') {
+        setLockAmount('0.');
+        return;
+      }
+      if (paddedValue === '0') {
+        setLockAmount('0');
+        return;
+      }
+      if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+        const last = paddedValue.length;
+        paddedValue = paddedValue.slice(1, last);
+      }
+      if (paddedValue) {
+        setLockAmount(paddedValue);
+      }
+    },
+    [],
+  );
 
-  // const handleChangeUnlockAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = e.target;
-  //   let paddedValue = value.replace(/[^0-9.]/g, '');
-  //   console.log('value', paddedValue);
-  //   if (paddedValue === '') {
-  //     setUnlockAmount('');
-  //     return;
-  //   }
-  //   if (paddedValue === '.') {
-  //     setUnlockAmount('0.');
-  //     return;
-  //   }
-  //   if (paddedValue === '0') {
-  //     setUnlockAmount('0');
-  //     return;
-  //   }
-  //   if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-  //     const last = paddedValue.length;
-  //     paddedValue = paddedValue.slice(1, last);
-  //   }
-  //   if (paddedValue) {
-  //     setUnlockAmount(paddedValue);
-  //   }
-  // };
-
-  const handleMax = () => {
+  const handleMax = useCallback(() => {
     if (lockingMode) {
       if (xPremiaBalance) {
         setLockAmount(formatEther(xPremiaBalance));
       }
     } else {
       if (xPremiaLocked) {
-        setUnlockAmount(formatEther(xPremiaLocked));
+        setLockAmount(formatEther(xPremiaLocked));
       }
     }
-  };
+  }, [xPremiaBalance, xPremiaLocked, lockingMode]);
 
-  const handleToggleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckIsOn(!checkIsOn);
-  };
+  const handleToggleCheck = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCheckIsOn(!checkIsOn);
+    },
+    [checkIsOn],
+  );
 
-  const signPermit = async () => {
+  const signPermit = useCallback(async () => {
     if (!lockAmount) return;
     const token = contracts?.PremiaStaking?.address as string;
     const spender = contracts?.PremiaFeeDiscount.address as string;
@@ -451,9 +502,9 @@ const LockPremiaCard: React.FC = () => {
       setPermitState({ permit, permitDeadline: deadline });
       setSignedAlready(true);
     }
-  };
+  }, [contracts, account, lockAmount, web3]);
 
-  const handleLockWithApproval = async () => {
+  const handleLockWithApproval = useCallback(async () => {
     if (!lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths) return;
     const amount = parseEther(lockAmount);
     await transact(
@@ -467,9 +518,9 @@ const LockPremiaCard: React.FC = () => {
         )} xPREMIA for fee discounts`,
       },
     );
-  };
+  }, [contracts, transact, lockAmount, lockupMonths]);
 
-  const handleLockWithPermit = async () => {
+  const handleLockWithPermit = useCallback(async () => {
     if (
       !permitState.permit ||
       !lockupMonths ||
@@ -501,7 +552,47 @@ const LockPremiaCard: React.FC = () => {
         )} xPREMIA for fee discounts`,
       },
     );
-  };
+  }, [contracts, transact, permitState, lockAmount, lockupMonths]);
+
+  const handleUnlock = useCallback(async () => {
+    if (!lockAmount || parseFloat(lockAmount) === 0) return;
+
+    const amount = parseEther(lockAmount);
+
+    transact(contracts?.PremiaFeeDiscount?.unstake(lockAmount), {
+      description: `Unlock ${formatBigNumber(amount)} locked xPREMIA`,
+    });
+  }, [contracts, lockAmount, transact]);
+
+  const activeOnClickAction = useMemo(() => {
+    if (lockingMode) {
+      return handleUnlock;
+    }
+
+    return !signedAlready ? signPermit : handleLockWithPermit;
+  }, [
+    lockingMode,
+    signedAlready,
+    signPermit,
+    handleLockWithPermit,
+    handleUnlock,
+  ]);
+
+  const activeLabel = useMemo(() => {
+    if (!lockupMonths) {
+      return 'Enter period';
+    }
+
+    if (!lockAmount || parseFloat(lockAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (lockingMode) {
+      return 'Unlock';
+    }
+
+    return !signedAlready ? 'Sign Permit 1/2' : 'Lock';
+  }, [lockupMonths, lockAmount, lockingMode, signedAlready]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -551,6 +642,22 @@ const LockPremiaCard: React.FC = () => {
         <Box
           className={!mobile ? classes.topSection : classes.topSectionMobile}
         >
+          <Box
+            width={1}
+            marginBottom={2}
+            borderRadius={10}
+            padding='5px'
+            border={`1px solid ${theme.palette.divider}`}
+          >
+            <SwitchWithGlider
+              gliderWidth={165}
+              gliderHeight={40}
+              marginBetweenSwitches={7}
+              defaultIndex={lockingMode ? 1 : 0}
+              elements={[StakeButton, UnstakeButton]}
+            />
+          </Box>
+
           <Box className={classes.col}>
             <Box
               display='flex'
@@ -589,27 +696,45 @@ const LockPremiaCard: React.FC = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem
-                onClick={() => handleSetLockupMonths(1)}
-                className={classes.selectionItem}
-                style={!mobile ? { width: '350px' } : { width: '315px' }}
-              >
-                1 Month
-              </MenuItem>
-              <MenuItem
-                onClick={() => handleSetLockupMonths(3)}
-                className={classes.selectionItem}
-                style={!mobile ? { width: '350px' } : { width: '315px' }}
-              >
-                3 Months
-              </MenuItem>
-              <MenuItem
-                onClick={() => handleSetLockupMonths(6)}
-                className={classes.selectionItem}
-                style={!mobile ? { width: '350px' } : { width: '315px' }}
-              >
-                6 Months
-              </MenuItem>
+              {(!xPremiaLockedUntil ||
+                moment
+                  .unix(xPremiaLockedUntil.toNumber())
+                  .diff(moment(), 'months') < 1) && (
+                <MenuItem
+                  onClick={() => handleSetLockupMonths(1)}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  1 Month
+                </MenuItem>
+              )}
+
+              {(!xPremiaLockedUntil ||
+                moment
+                  .unix(xPremiaLockedUntil.toNumber())
+                  .diff(moment(), 'months') < 3) && (
+                <MenuItem
+                  onClick={() => handleSetLockupMonths(3)}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  3 Months
+                </MenuItem>
+              )}
+
+              {(!xPremiaLockedUntil ||
+                moment
+                  .unix(xPremiaLockedUntil.toNumber())
+                  .diff(moment(), 'months') < 6) && (
+                <MenuItem
+                  onClick={() => handleSetLockupMonths(6)}
+                  className={classes.selectionItem}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  6 Months
+                </MenuItem>
+              )}
+
               <MenuItem
                 onClick={() => handleSetLockupMonths(12)}
                 className={classes.selectionItemLast}
@@ -667,51 +792,35 @@ const LockPremiaCard: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Box className={classes.buttonLeft}>
-              {checkIsOn || shouldApprove ? (
-                <ContainedButton
-                  fullWidth
-                  color='secondary'
-                  label={
-                    lockAmount && parseFloat(lockAmount) !== 0 && lockupMonths
-                      ? !approvedAready
-                        ? 'Approve 1/2'
-                        : 'Lock'
-                      : `Enter ${lockupMonths ? 'Amount' : 'Period'}`
-                  }
-                  disabled={
-                    !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
-                  }
-                  onClick={
-                    !approvedAready ? onApproveLocking : handleLockWithApproval
-                  }
-                />
-              ) : (
-                <ContainedButton
-                  fullWidth
-                  color='secondary'
-                  label={
-                    lockAmount && parseFloat(lockAmount) !== 0 && lockupMonths
-                      ? !signedAlready
-                        ? 'Sign Permit 1/2'
-                        : 'Lock'
-                      : `Enter ${lockupMonths ? 'Amount' : 'Period'}`
-                  }
-                  disabled={
-                    !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
-                  }
-                  onClick={!signedAlready ? signPermit : handleLockWithPermit}
-                />
-              )}
-            </Box>
-            <Button
-              color='secondary'
-              variant='outlined'
-              size='large'
-              className={classes.buttonRight}
-            >
-              Unlock
-            </Button>
+            {checkIsOn || shouldApprove ? (
+              <ContainedButton
+                fullWidth
+                color='secondary'
+                label={
+                  lockAmount && parseFloat(lockAmount) !== 0 && lockupMonths
+                    ? !approvedAready
+                      ? 'Approve 1/2'
+                      : 'Lock'
+                    : `Enter ${lockupMonths ? 'Amount' : 'Period'}`
+                }
+                disabled={
+                  !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
+                }
+                onClick={
+                  !approvedAready ? onApproveLocking : handleLockWithApproval
+                }
+              />
+            ) : (
+              <ContainedButton
+                fullWidth
+                color='secondary'
+                label={activeLabel}
+                disabled={
+                  !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
+                }
+                onClick={activeOnClickAction}
+              />
+            )}
           </Box>
           <Box display='flex' width='100%' marginTop='12px'>
             <Checkbox
@@ -801,7 +910,7 @@ const LockPremiaCard: React.FC = () => {
                 color='textPrimary'
                 className={classes.elementHeader}
               >
-                {xPremiaLockedUntil ? (
+                {xPremiaLockedUntil && xPremiaLockedUntil.toNumber() > 0 ? (
                   moment
                     .unix(xPremiaLockedUntil.toNumber())
                     .fromNow()

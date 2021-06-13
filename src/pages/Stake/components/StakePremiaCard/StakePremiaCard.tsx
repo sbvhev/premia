@@ -31,12 +31,12 @@ import { ContainedButton, SwitchWithGlider } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '643px',
+    height: '710px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px',
   },
   wrapperMobile: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px 12px 50px',
   },
   borderedCard: {
@@ -53,7 +53,8 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    // height: '578px',
+    minHeight: '645px',
+    height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -131,8 +132,8 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    height: '330px',
     padding: '0 16px 12px',
-    height: '262px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -587,7 +588,7 @@ const StakePremiaCard: React.FC = () => {
         >
           <Box
             width={1}
-            marginBottom={2}
+            marginBottom={11}
             borderRadius={10}
             padding='5px'
             border={`1px solid ${theme.palette.divider}`}
