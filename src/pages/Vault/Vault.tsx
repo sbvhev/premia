@@ -779,6 +779,8 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall
+                    width='100%'
+                    height={200}
                     data={callPoolCLevelChartItems.map(
                       (item: CLevelChartItem) => formatBigNumber(item.cLevel),
                     )}
@@ -788,8 +790,6 @@ const ProVault: React.FC = () => {
                           .unix(Number(item.timestamp))
                           .format('YYYY/MM/DD HH:mm'),
                     )}
-                    width='100%'
-                    height={200}
                   />
                 </Box>
               </Paper>
@@ -1007,7 +1007,7 @@ const ProVault: React.FC = () => {
                       (item: CLevelChartItem) =>
                         moment
                           .unix(Number(item.timestamp))
-                          .format('YYYY/MM/DD HH:mm'),
+                          .format('YYYY/MM/DD'),
                     )}
                     width='100%'
                     height={200}
