@@ -8,14 +8,16 @@ import {
   Backdrop,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { formatUnits } from 'ethers/lib/utils';
 
 import { BNB, ETH } from '../../constants';
 import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
+import { useUnderlying } from 'state/options/hooks';
 import { useApproval, useTransact, usePools } from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
-import { formatBigNumber, formatCompact } from 'utils/formatNumber';
+import { formatCompact } from 'utils/formatNumber';
 import floatToBigNumber from 'utils/floatToBigNumber';
 
 import { ModalContainer } from 'components';
@@ -235,6 +237,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
   const { chainId, account } = useWeb3();
+  const { underlying } = useUnderlying();
   const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
     usePools(true);
@@ -257,8 +260,17 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     account,
     chainId === 56 ? BNB : ETH,
   );
-  const activePoolBalance = formatBigNumber(
-    call ? userOwnedCallPool?.totalAvailable : userOwnedPutPool?.totalAvailable,
+  const activePoolBalance = useMemo(
+    () =>
+      Number(
+        formatUnits(
+          call
+            ? userOwnedCallPool?.totalAvailable ?? 0
+            : userOwnedPutPool?.totalAvailable ?? 0,
+          underlying.decimals,
+        ),
+      ) * 0.9999999995,
+    [call, userOwnedCallPool, userOwnedPutPool, underlying],
   );
   const activeBalance = useMemo(() => {
     if (
@@ -342,6 +354,14 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     transact,
     onClose,
   ]);
+
+  React.useEffect(() => {
+    if (!activePoolContract) return;
+
+    activePoolContract
+      ?.balanceOf(account, 0)
+      .then((tokens) => console.log('tokens', Number(tokens) / 10 ** 18));
+  }, [activePoolContract, account]);
 
   return (
     <Modal
