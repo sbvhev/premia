@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
@@ -6,10 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
+import { useWeb3 } from 'state/application/hooks';
+import { useDeviceWidth } from 'hooks';
 
-import SidebarItem from './SidebarItem';
-import MainLogo from 'assets/svg/MainLogo.svg';
-import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
+import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 import { ReactComponent as DocumentationIcon } from 'assets/svg/DocumentationIcon.svg';
 import { ReactComponent as CareerIcon } from 'assets/svg/CareerIcon.svg';
 import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
@@ -17,9 +17,9 @@ import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import { useWeb3 } from 'state/application/hooks';
-
-import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
+import MainLogo from 'assets/svg/MainLogo.svg';
+import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
+import SidebarItem from './SidebarItem';
 
 const insights = [
   {
@@ -96,22 +96,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 3,
   };
   const [showSwapModal, setShowSwapModal] = useState(false);
-  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
+  const deviceWidth = useDeviceWidth();
   const state = location.state ? location.state.previous : false;
   const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
-  const [pageNavigationIndex, setPageNavigationIndex] =
-    React.useState(startIndex);
+  const [pageNavigationIndex, setPageNavigationIndex] = useState(startIndex);
 
-  React.useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  React.useEffect(() => {
+  useEffect(() => {
     const currentPage = pageIndexes[pathname];
     setPageNavigationIndex(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps

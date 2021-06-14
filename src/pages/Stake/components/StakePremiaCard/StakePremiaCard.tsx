@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import {
   Box,
+  ButtonBase,
   Typography,
   Button,
   CircularProgress,
   Checkbox,
+  useMediaQuery,
 } from '@material-ui/core';
 import { formatNumber } from 'utils/formatNumber';
+import cn from 'classnames';
 
 import { useWeb3 } from 'state/application/hooks';
 import { useTransact, useIsHardwareWallet, useApproval } from 'hooks';
@@ -26,25 +27,25 @@ import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
 
-import { ContainedButton } from 'components';
+import { ContainedButton, SwitchWithGlider } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '643px',
+    height: '710px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px',
   },
   wrapperMobile: {
-    height: '501px',
+    height: '567px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px 12px 50px',
   },
   borderedCard: {
@@ -52,7 +53,8 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    // height: '578px',
+    minHeight: '645px',
+    height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -130,8 +132,8 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    height: '330px',
     padding: '0 16px 12px',
-    height: '262px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -273,6 +275,38 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '13px',
     lineHeight: '24px',
   },
+  switchButton: {
+    borderRadius: 10,
+    height: 40,
+
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.text.secondary,
+    },
+  },
+  switchButtonLeft: {
+    marginRight: 7,
+  },
+  activeSwitch: {
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.primary.main,
+    },
+  },
 }));
 
 interface PermitState {
@@ -287,109 +321,106 @@ const StakePremiaCard: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
   const { web3, account, contracts } = useWeb3();
-
-  const [checkIsOn, setCheckIsOn] = React.useState(false);
   const isHardwareWallet = useIsHardwareWallet();
-
-  const [stakingMode, setStakingMode] = React.useState(true);
-  const [shouldApprove, setShouldApprove] = React.useState(isHardwareWallet);
-  const [signedAlready, setSignedAlready] = React.useState(false);
-  const [approvedAready, setApprovedAready] = React.useState(false);
-  const [permitState, setPermitState] = React.useState<PermitState>({});
-  const [stakeAmount, setStakeAmount] = React.useState('');
-  const [unstakeAmount, setUnstakeAmount] = React.useState('');
   const transact = useTransact();
+
+  const [stakingMode, setStakingMode] = useState(true);
+  const [checkIsOn, setCheckIsOn] = useState(false);
+  const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
+  const [signedAlready, setSignedAlready] = useState(false);
+  const [approvedAlready, setApprovedAready] = useState(false);
+  const [permitState, setPermitState] = useState<PermitState>({});
+  const [stakeAmount, setStakeAmount] = useState('');
 
   const { xPremiaLocked, premiaBalance, xPremiaBalance, underlyingPremia } =
     useStakingBalances();
 
   const { allowance: stakingAllowance, onApprove: onApproveStaking } =
     useApproval(
-      contracts?.PremiaErc20?.address as string,
-      contracts?.PremiaStaking?.address as string,
+      contracts?.PremiaErc20?.address,
+      contracts?.PremiaStaking?.address,
     );
 
-  React.useEffect(() => {
+  const StakeButton = () => (
+    <Box
+      clone
+      height={30}
+      width={165}
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cn(classes.switchButton, classes.switchButtonLeft, {
+        [classes.activeSwitch]: !stakingMode,
+      })}
+      onClick={() => setStakingMode(false)}
+    >
+      <ButtonBase>
+        <Typography>Stake</Typography>
+      </ButtonBase>
+    </Box>
+  );
+
+  const UnstakeButton = () => (
+    <Box
+      clone
+      height={30}
+      width={165}
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cn(classes.switchButton, {
+        [classes.activeSwitch]: stakingMode,
+      })}
+      onClick={() => setStakingMode(true)}
+    >
+      <ButtonBase>
+        <Typography>Unstake</Typography>
+      </ButtonBase>
+    </Box>
+  );
+
+  useEffect(() => {
     if (stakingAllowance) {
       setShouldApprove(true);
     }
-    if (!stakeAmount) {
-      setApprovedAready(false);
-    }
+  }, [stakingAllowance]);
+
+  useEffect(() => {
     if (stakeAmount && stakingAllowance >= parseFloat(stakeAmount)) {
       setApprovedAready(true);
     }
   }, [stakingAllowance, stakeAmount]);
 
-  const handleChangeStakeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (paddedValue === '') {
-      setStakeAmount('');
-      return;
-    }
-    if (paddedValue === '.') {
-      setStakeAmount('0.');
-      return;
-    }
-    if (paddedValue === '0') {
-      setStakeAmount('0');
-      return;
-    }
-    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-      const last = paddedValue.length;
-      paddedValue = paddedValue.slice(1, last);
-    }
-    if (paddedValue) {
-      setStakeAmount(paddedValue);
-    }
-  };
-
-  // const handleChangeUnstakeAmount = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ) => {
-  //   const { value } = e.target;
-  //   let paddedValue = value.replace(/[^0-9.]/g, '');
-  //   console.log('value', paddedValue);
-  //   if (paddedValue === '') {
-  //     setUnstakeAmount('');
-  //     return;
-  //   }
-  //   if (paddedValue === '.') {
-  //     setUnstakeAmount('0.');
-  //     return;
-  //   }
-  //   if (paddedValue === '0') {
-  //     setUnstakeAmount('0');
-  //     return;
-  //   }
-  //   if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-  //     const last = paddedValue.length;
-  //     paddedValue = paddedValue.slice(1, last);
-  //   }
-  //   if (paddedValue) {
-  //     setUnstakeAmount(paddedValue);
-  //   }
-  // };
-
-  const handleMax = () => {
-    if (stakingMode) {
-      if (premiaBalance) {
-        setStakeAmount(formatEther(premiaBalance));
+  const handleChangeStakeAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      let paddedValue = value.replace(/[^0-9.]/g, '');
+      if (paddedValue === '') {
+        setStakeAmount('');
+        return;
       }
-    } else {
-      if (xPremiaBalance) {
-        setUnstakeAmount(formatEther(xPremiaBalance));
+      if (paddedValue === '.') {
+        setStakeAmount('0.');
+        return;
       }
-    }
-  };
+      if (paddedValue === '0') {
+        setStakeAmount('0');
+        return;
+      }
+      if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+        const last = paddedValue.length;
+        paddedValue = paddedValue.slice(1, last);
+      }
+      if (paddedValue) {
+        setStakeAmount(paddedValue);
+      }
+    },
+    [setStakeAmount],
+  );
 
-  const handleToggleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckIsOn(!checkIsOn);
-  };
-
-  const signPermit = async () => {
+  const signPermit = useCallback(async () => {
     if (!stakeAmount) return;
+
     const token = contracts?.PremiaErc20?.address as string;
     const spender = contracts?.PremiaStaking.address as string;
     const amount = parseEther(stakeAmount);
@@ -407,17 +438,36 @@ const StakePremiaCard: React.FC = () => {
       setPermitState({ permit, permitDeadline: deadline });
       setSignedAlready(true);
     }
-  };
+  }, [contracts, stakeAmount, web3, account, setPermitState, setSignedAlready]);
 
-  const handleStakeWithApproval = async () => {
+  const handleMax = useCallback(() => {
+    if (!stakingMode) {
+      if (premiaBalance) {
+        setStakeAmount(formatEther(premiaBalance));
+      }
+    } else {
+      if (xPremiaBalance) {
+        setStakeAmount(formatEther(xPremiaBalance));
+      }
+    }
+  }, [stakingMode, premiaBalance, xPremiaBalance, setStakeAmount]);
+
+  const handleToggleCheck = useCallback(
+    () => setCheckIsOn(!checkIsOn),
+    [checkIsOn, setCheckIsOn],
+  );
+
+  const handleStakeWithApproval = useCallback(async () => {
     if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
+
     const amount = parseEther(stakeAmount);
+
     await transact(contracts?.PremiaStaking?.enter(amount), {
       description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
     });
-  };
+  }, [contracts, stakeAmount, transact]);
 
-  const handleStakeWithPermit = async () => {
+  const handleStakeWithPermit = useCallback(async () => {
     if (
       !permitState.permit ||
       !permitState.permitDeadline ||
@@ -425,6 +475,7 @@ const StakePremiaCard: React.FC = () => {
       parseFloat(stakeAmount) === 0
     )
       return;
+
     const dateNow = Date.now();
     const expirationDate = permitState.permitDeadline * 1000;
     if (dateNow > expirationDate) {
@@ -433,6 +484,7 @@ const StakePremiaCard: React.FC = () => {
       return;
     }
     const amount = parseEther(stakeAmount);
+
     await transact(
       contracts?.PremiaStaking?.enterWithPermit(
         amount,
@@ -445,17 +497,45 @@ const StakePremiaCard: React.FC = () => {
         description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
       },
     );
-  };
+  }, [contracts, permitState, stakeAmount, transact]);
 
-  const handleUnstake = async () => {
-    if (!unstakeAmount || parseFloat(unstakeAmount) === 0) return;
-    const amount = parseEther(unstakeAmount);
+  const handleUnstake = useCallback(async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
+
+    const amount = parseEther(stakeAmount);
+
     transact(contracts?.PremiaStaking?.leave(amount), {
       description: `Unstake to withdraw ${formatBigNumber(
         amount,
       )} xPREMIA as PREMIA`,
     });
-  };
+  }, [contracts, stakeAmount, transact]);
+
+  const activeOnClickAction = useMemo(() => {
+    if (stakingMode) {
+      return handleUnstake;
+    }
+
+    return !signedAlready ? signPermit : handleStakeWithPermit;
+  }, [
+    stakingMode,
+    signedAlready,
+    signPermit,
+    handleStakeWithPermit,
+    handleUnstake,
+  ]);
+
+  const activeLabel = useMemo(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (stakingMode) {
+      return 'Unstake';
+    }
+
+    return !signedAlready ? 'Sign Permit 1/2' : 'Stake';
+  }, [stakeAmount, stakingMode, signedAlready]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -502,17 +582,25 @@ const StakePremiaCard: React.FC = () => {
             </Typography>
           </Box>
         </Box>
+
         <Box
           className={!mobile ? classes.topSection : classes.topSectionMobile}
         >
           <Box
-            className={classes.col}
-            style={{
-              margin: '0 8px 2px',
-              justifyContent: 'flex-start',
-              width: 'calc(100% - 16px)',
-            }}
-          ></Box>
+            width={1}
+            marginBottom={11}
+            borderRadius={10}
+            padding='5px'
+            border={`1px solid ${theme.palette.divider}`}
+          >
+            <SwitchWithGlider
+              gliderWidth={165}
+              gliderHeight={40}
+              marginBetweenSwitches={7}
+              defaultIndex={stakingMode ? 1 : 0}
+              elements={[StakeButton, UnstakeButton]}
+            />
+          </Box>
 
           <Box className={classes.col}>
             <Box
@@ -532,7 +620,7 @@ const StakePremiaCard: React.FC = () => {
                 className={classes.smallInfoText}
               >
                 {`Max size available: ${formatNumber(
-                  formatEther(premiaBalance),
+                  formatEther(stakingMode ? xPremiaBalance : premiaBalance),
                 )}`}
               </Typography>
             </Box>
@@ -540,8 +628,8 @@ const StakePremiaCard: React.FC = () => {
             <Box width='100%' height='46px' className={classes.inputIcon}>
               <input
                 value={stakeAmount}
-                onChange={handleChangeStakeAmount}
                 className={classes.borderedInput}
+                onChange={handleChangeStakeAmount}
               />
               <PremiaWhite fill={palette.text.primary} />
               <Box
@@ -550,10 +638,10 @@ const StakePremiaCard: React.FC = () => {
                 }
               >
                 <Button
+                  fullWidth
                   color='primary'
                   variant='outlined'
                   size='small'
-                  fullWidth
                   onClick={handleMax}
                 >
                   MAX
@@ -563,56 +651,29 @@ const StakePremiaCard: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Box className={classes.buttonLeft}>
-              {checkIsOn || shouldApprove ? (
-                <ContainedButton
-                  label={
-                    stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !approvedAready
-                        ? 'Approve 1/2'
-                        : 'Stake'
-                      : 'Enter amount'
-                  }
-                  fullWidth
-                  disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
-                  onClick={
-                    stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !approvedAready
-                        ? onApproveStaking
-                        : handleStakeWithApproval
-                      : () => {}
-                  }
-                />
-              ) : (
-                <ContainedButton
-                  label={
-                    stakeAmount && parseFloat(stakeAmount) === 0
-                      ? !signedAlready
-                        ? 'Sign Permit 1/2'
-                        : 'Stake'
-                      : 'Enter amount'
-                  }
-                  fullWidth
-                  disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
-                  onClick={
-                    stakeAmount && parseFloat(stakeAmount) !== 0
-                      ? !signedAlready
-                        ? signPermit
-                        : handleStakeWithPermit
-                      : () => {}
-                  }
-                />
-              )}
-            </Box>
-            <Button
-              color='secondary'
-              variant='outlined'
-              size='large'
-              className={classes.buttonRight}
-              onClick={handleUnstake}
-            >
-              Unstake
-            </Button>
+            {!stakingMode && (checkIsOn || shouldApprove) ? (
+              <ContainedButton
+                fullWidth
+                label={
+                  stakeAmount && parseFloat(stakeAmount) !== 0
+                    ? !approvedAlready
+                      ? 'Approve 1/2'
+                      : 'Stake'
+                    : 'Enter amount'
+                }
+                disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
+                onClick={
+                  !approvedAlready ? onApproveStaking : handleStakeWithApproval
+                }
+              />
+            ) : (
+              <ContainedButton
+                fullWidth
+                label={activeLabel}
+                disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
+                onClick={activeOnClickAction}
+              />
+            )}
           </Box>
 
           <Box display='flex' width='100%' marginTop='12px'>

@@ -11,6 +11,7 @@ export interface StakingBalances {
   xPremiaStakeWithBonus: BigNumber;
   xPremiaLockedUntil?: BigNumber | null;
   xPremiaSupply: BigNumber;
+  xPremiaStakePeriod?: BigNumber | null;
   underlyingPremia: BigNumber;
 
   totalPremiaStaked: BigNumber;
@@ -26,6 +27,7 @@ export interface SetStakingBalances {
   xPremiaStakeWithBonus?: BigNumber;
   xPremiaLockedUntil?: BigNumber | null;
   xPremiaSupply?: BigNumber;
+  xPremiaStakePeriod?: BigNumber;
   underlyingPremia?: BigNumber;
 
   totalPremiaStaked?: BigNumber;
@@ -44,8 +46,9 @@ export const initialState: StakingState = {
     xPremiaLocked: BigNumber.from(0),
     xPremiaFeeDiscount: BigNumber.from(0),
     xPremiaStakeWithBonus: BigNumber.from(0),
-    xPremiaLockedUntil: undefined,
+    xPremiaLockedUntil: null,
     xPremiaSupply: BigNumber.from(0),
+    xPremiaStakePeriod: null,
     underlyingPremia: BigNumber.from(0),
 
     totalPremiaStaked: BigNumber.from(0),
