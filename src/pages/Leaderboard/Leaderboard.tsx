@@ -80,6 +80,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           fontWeight: 'bold',
           '& $callText': {
             fontWeight: 'bold'
+          },
+          '& $successRatioBox': {
+            '& > div': {
+              opacity: 1,
+              zIndex: 1,
+            },
+            '& p': {
+              color: palette.common.black,
+              zIndex: 2,
+            }
           }
         }
       },
@@ -128,7 +138,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   firstRank: {
     '& div': {
       background: 'linear-gradient(115.58deg, #FFA15E 8.45%, #EFFF8E 101.04%)',
-      opacity: 0.1,
+      opacity: (props: any) => props.darkMode ? 0.1 : 0.2,
     },
     '& p': {
       background: 'linear-gradient(115.58deg, #FF5E5E 8.45%, #FFED8E 101.04%)',
@@ -141,7 +151,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   secondRank: {
     '& div': {
       background: 'linear-gradient(115.58deg, #FDFDFD 8.45%, #E6E6E6 101.04%)',
-      opacity: 0.1,
+      opacity: (props: any) => props.darkMode ? 0.1 : 0.3,
     },
     '& p': {
       background: 'linear-gradient(115.58deg, #858585 8.45%, #E6E6E6 101.04%)',
@@ -168,6 +178,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'absolute',
     top: 0,
     left: 0,
+    zIndex: 2,
     border: '1px solid',
     borderImageSlice: 1,
     borderImageSource: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
@@ -189,12 +200,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   cardRow: {
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 12,
     padding: '0 10px',
     color: palette.text.primary,
     '& p': {
       fontSize: 14,
+      fontWeight: 500,
+      '&$callText': {
+        fontWeight: 'normal'
+      }
     },
     '& svg': {
       width: 16,
@@ -205,6 +221,66 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
     },
   },
+  mobileItem: {
+    position: 'relative',
+    '& $meBack': {
+      border: 'none',
+      left: 3
+    },
+    '&.meRow': {
+      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      borderRadius: 12,
+      padding: 1,
+      '& .MuiDivider-root': {
+        background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      },
+      '& > div.MuiContainer-root': {
+        background: palette.background.paper,
+        border: 'none'
+      },
+      '& $cardRow, & $callText, & $putText, & $mobileAddressContainer p': {
+        fontWeight: 'bold'
+      },
+      '& $successRatioBox': {
+        '& > div': {
+          opacity: 1,
+        },
+        '& p': {
+          zIndex: 2,
+          color: 'black'
+        }
+      }
+    },
+    '& $rankBox': {
+      marginLeft: 0
+    },
+    '& > div > div': {
+      padding: '0 12px',
+    },
+    '& > div > div:first-child': {
+      height: 54
+    },
+    '& $cardRow': {
+      marginTop: 8,
+      fontSize: 14,
+      fontWeight: 500,
+      '&:first-child': {
+        marginTop: 12,
+      },
+      '&:last-child': {
+        paddingBottom: 14
+      }
+    }
+  },
+  mobileAddressContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    '& > p': {
+      fontSize: 14,
+      fontWeight: 500,
+      marginRight: 5
+    }
+  },
   callText: {
     background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
     WebkitBackgroundClip: 'text',
@@ -214,6 +290,24 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
     WebkitBackgroundClip: 'text',
     textFillColor: 'transparent'
+  },
+  successRatioBox: {
+    width: 63,
+    height: 32,
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& > div': {
+      position: 'absolute',
+      borderRadius: 8,
+      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      opacity: 0.1,
+    },
+    '& p': {
+      fontSize: 14,
+      lineHeight: '18px'
+    }
   }
 }));
 
@@ -330,23 +424,46 @@ const Leaderboard: React.FC = () => {
         <>
           {leaderItems.map((leaderItem) => {
             const { rank, user, successratio, totalPL, optionsPL, vaultsPL } = leaderItem;
-
             return (
-              <Box mb={2}>
+              <Box mb={2} className={cx(classes.mobileItem, leaderItem.me && 'meRow')}>
+                {leaderItem.me &&
+                  <Box className={classes.meBack} width={1} height={1}>
+                    <img src={LeaderMe} alt='Me' />
+                    <Typography>Me</Typography>
+                  </Box>
+                }
                 <Container fixed>
                   <Box
                     width={1}
                     display='flex'
-                    p={1.25}
                     pl={1}
                     justifyContent='space-between'
                     alignItems='center'
+                    position='relative'
                   >
-                    <Box className={classes.rankBox}>
-                      { rank }
+                    <Box className={cx(
+                      classes.rankBox,
+                      rank === 1 && classes.firstRank,
+                      rank === 2 && classes.secondRank,
+                      rank === 3 && classes.thirdRank
+                    )}>
+                      { (rank === 1 || rank === 2 || rank === 3) && <Box width={1} height={1} />}
+                      { rank === 1 && <img src={PrizeFirst} alt='Prize First' />}
+                      { rank === 2 && <img src={PrizeSecond} alt='Prize Second' />}
+                      { rank === 3 && <img src={PrizeThird} alt='Prize Third' />}
+                      <Typography>
+                        {rank !== 1 && rank !== 2 && rank !== 3 && '#'}
+                        {rank}
+                      </Typography>
                     </Box>
-                    <Box className={classes.rankBox}>
-                      { user }
+                    <Box className={classes.mobileAddressContainer}>
+                      <Typography>
+                        { shortenAddress(user) }
+                      </Typography>
+                      <Box className={classes.successRatioBox}>
+                        <Box width={1} height={1} />
+                        <Typography className={cx(!leaderItem.me && classes.callText)}>{successratio}%</Typography>
+                      </Box>
                     </Box>
                   </Box>
                   <Divider />
@@ -354,19 +471,21 @@ const Leaderboard: React.FC = () => {
                     <Typography color='textSecondary'>
                       Total P&L
                     </Typography>
-                    {totalPL}
+                    <Typography className={leaderItem.totalPL > 0 ? classes.callText : classes.putText}>
+                      {totalPL >= 0 ? '+' : '-'}${formatNumber(Math.abs(totalPL))}
+                    </Typography>
                   </Box>
                   <Box className={classes.cardRow}>
                     <Typography color='textSecondary'>
                       Option P&L
                     </Typography>
-                    {optionsPL}
+                    {optionsPL >= 0 ? '+' : '-'}${formatNumber(Math.abs(optionsPL))}
                   </Box>
                   <Box className={classes.cardRow}>
                     <Typography color='textSecondary'>
                       Vaults P&L
                     </Typography>
-                    {vaultsPL}
+                    {vaultsPL >= 0 ? '+' : '-'}${formatNumber(Math.abs(vaultsPL))}
                   </Box>
                 </Container>
               </Box>
@@ -422,8 +541,11 @@ const Leaderboard: React.FC = () => {
                   <TableCell>
                     {leaderItem.vaultsPL >= 0 ? '+' : '-'}${formatNumber(Math.abs(leaderItem.vaultsPL))}
                   </TableCell>
-                  <TableCell className='yieldButtonCell'>
-                    {leaderItem.successratio}%
+                  <TableCell>
+                    <Box className={classes.successRatioBox}>
+                      <Box width={1} height={1} />
+                      <Typography className={cx(!leaderItem.me && classes.callText)}>{leaderItem.successratio}%</Typography>
+                    </Box>
                   </TableCell>
                 </TableRow>
               );
