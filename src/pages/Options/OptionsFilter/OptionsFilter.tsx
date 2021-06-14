@@ -32,6 +32,7 @@ const useStyles = makeStyles(({ palette }) => ({
     padding: 3,
     '& button': {
       height: 45,
+      borderRadius: 10,
       '& span': {
         fontSize: 14,
         fontWeight: 700,
@@ -383,7 +384,7 @@ const OptionFilter: React.FC = () => {
               className={classes.secondaryButton}
               onClick={() => setOptionType(OptionType.Put)}
             >
-              <ArrowUpwardIcon />
+              <ArrowDownwardIcon />
               &nbsp;Put
             </Button>
           )}
