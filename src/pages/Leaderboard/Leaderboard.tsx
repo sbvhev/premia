@@ -29,7 +29,7 @@ const getHeadCells = () => [
     id: 'rank',
     numeric: false,
     label: 'Rank',
-    sortKey: (leadItem: any) => leadItem.me && leadItem?.rank,
+    sortKey: (leadItem: any) => leadItem?.rank,
   },
   {
     id: 'user',
@@ -73,11 +73,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       lineHeight: 1,
     },
   },
+  meRow: {
+    position: 'relative'
+  },
   leaderTable: {
     '& table': {
       '& tr': {
-        position: 'relative',
-        '&.meRow td': {
+        '&$meRow td': {
           fontWeight: 'bold',
           '& $callText': {
             fontWeight: 'bold'
@@ -228,7 +230,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       border: 'none',
       left: 3
     },
-    '&.meRow': {
+    '&$meRow': {
       background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
       borderRadius: 12,
       padding: 1,
@@ -323,7 +325,7 @@ const Leaderboard: React.FC = () => {
   const leaderItems = [
     {
       rank: 1,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -339,7 +341,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 3,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -416,10 +418,10 @@ const Leaderboard: React.FC = () => {
       </Typography>
       {mobileWindowSize ? (
         <>
-          {leaderItems.map((leaderItem) => {
+          {leaderItems.map((leaderItem, index) => {
             const { rank, user, successratio, totalPL, optionsPL, vaultsPL } = leaderItem;
             return (
-              <Box mb={2} className={cx(classes.mobileItem, account === user.toLowerCase() && 'meRow')}>
+              <Box mb={2} key={index} className={cx(classes.mobileItem, account === user.toLowerCase() && classes.meRow)}>
                 {account === user.toLowerCase() &&
                   <Box className={classes.meBack} width={1} height={1}>
                     <img src={LeaderMe} alt='Me' />
@@ -497,7 +499,7 @@ const Leaderboard: React.FC = () => {
             showEmptyRows={false}
             renderRow={(leaderItem: any, index) => {
               return (
-                <TableRow key={index} className={cx(account === leaderItem.user.toLowerCase() && 'meRow')}>
+                <TableRow key={index} className={cx(account === leaderItem.user.toLowerCase() && classes.meRow)}>
                   <TableCell>
                     {account === leaderItem.user.toLowerCase() &&
                       <Box width={1} height={1} className={classes.meBack}>

@@ -246,7 +246,7 @@ const TradingCompetition: React.FC = () => {
         Premia trading competition
       </Typography>
       <Grid container className={classes.competitionContainer} spacing={3}>
-        <Grid item sm={8}>
+        <Grid item xs={12} sm={8}>
           <Container fixed className={classes.competitionContent}>
             <img
               src={TradingCompetitionBanner}
@@ -283,7 +283,7 @@ const TradingCompetition: React.FC = () => {
             </Box>
           </Container>
         </Grid>
-        <Grid item sm={4} className={classes.competitionButtons}>
+        <Grid item xs={12} sm={4} className={classes.competitionButtons}>
           <Button
             variant='contained'
             color='primary'
