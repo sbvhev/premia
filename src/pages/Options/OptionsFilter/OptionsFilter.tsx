@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Box, Typography, Button } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -16,25 +22,42 @@ import {
   useStrikePrice,
   useSize,
   useUnderlying,
+  useBase,
 } from 'state/options/hooks';
 import { initialState as initialOptionsState } from 'state/options/reducer';
 import { useOutsideAlerter } from 'hooks';
+import { useIsDarkMode } from 'state/user/hooks';
+import { useTokenBalance } from 'state/wallet/hooks';
+import { useWeb3 } from 'state/application/hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
+import { formatCompact, formatNumber } from 'utils/formatNumber';
 
-import { ColoredSlider, Loader } from 'components';
+import { ColoredSlider, Loader, ContainedButton } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   optionButtons: {
     padding: 3,
     '& button': {
-      height: 41,
-      margin: 0,
+      height: 45,
       '& span': {
         fontSize: 14,
         fontWeight: 700,
       },
+    },
+  },
+
+  secondaryButton: {
+    height: '45px',
+    marginTop: '2px',
+    marginBottom: '2px',
+    padding: 0,
+    border: '1px solid transparent',
+
+    '&:hover': {
+      borderColor: ({ darkMode }: any) =>
+        darkMode ? palette.text.primary : palette.text.secondary,
     },
   },
 
@@ -254,23 +277,37 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const OptionFilter: React.FC = () => {
-  const classes = useStyles();
   const theme = useTheme();
+  const darkMode = useIsDarkMode();
+  const classes = useStyles({ darkMode });
   const { underlying } = useUnderlying();
+  const { base } = useBase();
   const { optionType, setOptionType } = useOptionType();
   const { maturityDate, setMaturityDate } = useMaturityDate();
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { size, setSize } = useSize();
+  const { account } = useWeb3();
   const [maturityFocused, setMaturityFocused] = useState(false);
   const underlyingPrice = useUnderlyingPrice();
   const calendarRef = useRef<HTMLInputElement | null>(null);
+
+  const activeToken = useMemo(
+    () => (optionType === OptionType.Call ? underlying : base),
+    [optionType, base, underlying],
+  );
+  const activeTokenBalance = useTokenBalance(account, activeToken);
+  const maxSize = useMemo(() => {
+    return optionType === OptionType.Call
+      ? activeTokenBalance
+      : Number(activeTokenBalance) / Number(underlyingPrice);
+  }, [activeTokenBalance, optionType, underlyingPrice]);
 
   const TokenIcon = useMemo(
     () => tokenIcons[underlying.symbol as keyof typeof tokenIcons],
     [underlying],
   );
   const rounding = useMemo(
-    () => Math.pow(10, Math.round(Math.log10(underlyingPrice) - 1)),
+    () => Math.pow(10, Math.ceil(Math.log10(underlyingPrice) - 1)) / 2,
     [underlyingPrice],
   );
   const roundedPrice = useMemo(
@@ -285,6 +322,32 @@ const OptionFilter: React.FC = () => {
     () => Math.floor((underlyingPrice * 2) / rounding) * rounding,
     [underlyingPrice, rounding],
   );
+
+  const highlightedStrikes = useMemo(() => {
+    if (!maxPrice || !minPrice) return [];
+
+    const increments = Math.ceil((maxPrice - minPrice) / rounding);
+    const result = [...Array(increments + 1)].map(
+      (x, y) => minPrice + rounding * y,
+    );
+
+    return result.map((value, i) => ({
+      label:
+        value === minPrice || value === maxPrice ? formatCompact(value) : '',
+      value,
+    }));
+  }, [minPrice, maxPrice, rounding]);
+
+  const handleChangeSize = useCallback(
+    (ev) => {
+      setSize(Number(ev.target.value));
+    },
+    [setSize],
+  );
+
+  const handleMax = useCallback(() => {
+    setSize(Number(maxSize));
+  }, [maxSize, setSize]);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
 
@@ -315,27 +378,48 @@ const OptionFilter: React.FC = () => {
         borderRadius={12}
       >
         <Box clone width={1 / 2}>
-          <Button
-            variant='contained'
-            color={optionType === OptionType.Call ? 'primary' : undefined}
-            style={{ marginRight: '3px' }}
-            onClick={() => setOptionType(OptionType.Call)}
-          >
-            <ArrowUpwardIcon />
-            &nbsp;Call
-          </Button>
+          {optionType === OptionType.Call ? (
+            <ContainedButton
+              fullWidth
+              label='Call'
+              onClick={() => setOptionType(OptionType.Call)}
+              startIcon={<ArrowUpwardIcon />}
+            />
+          ) : (
+            <Button
+              fullWidth
+              variant='outlined'
+              color='secondary'
+              className={classes.secondaryButton}
+              onClick={() => setOptionType(OptionType.Call)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Call
+            </Button>
+          )}
         </Box>
 
         <Box clone width={1 / 2}>
-          <Button
-            variant='contained'
-            color={optionType === OptionType.Put ? 'secondary' : undefined}
-            style={{ marginLeft: '3px' }}
-            onClick={() => setOptionType(OptionType.Put)}
-          >
-            <ArrowDownwardIcon />
-            &nbsp;Put
-          </Button>
+          {optionType === OptionType.Put ? (
+            <ContainedButton
+              fullWidth
+              label='Put'
+              color='secondary'
+              onClick={() => setOptionType(OptionType.Put)}
+              startIcon={<ArrowDownwardIcon />}
+            />
+          ) : (
+            <Button
+              fullWidth
+              variant='outlined'
+              color='secondary'
+              className={classes.secondaryButton}
+              onClick={() => setOptionType(OptionType.Put)}
+            >
+              <ArrowUpwardIcon />
+              &nbsp;Put
+            </Button>
+          )}
         </Box>
       </Box>
 
@@ -350,15 +434,12 @@ const OptionFilter: React.FC = () => {
             <ColoredSlider
               min={minPrice}
               max={maxPrice}
-              marks={[minPrice, maxPrice].map((value) => ({
-                label: value,
-                value,
-              }))}
+              marks={highlightedStrikes}
               step={10 ** -underlying.decimals}
-              value={strikePrice === 0 ? 1 : Math.round(strikePrice)}
+              value={strikePrice === 0 ? 1 : strikePrice}
               valueLabelDisplay='on'
               onChange={(event: any, value) => {
-                setStrikePrice(Math.round(value as number));
+                setStrikePrice(value as number);
               }}
             />
           ) : (
@@ -426,7 +507,7 @@ const OptionFilter: React.FC = () => {
       >
         <Typography className={classes.titleText}>Option Size</Typography>
         <Typography className={classes.descText}>
-          Max size available: 40,012
+          Max size available: {formatNumber(maxSize)}
         </Typography>
       </Box>
       <Box className={classes.sizeInputBox}>
@@ -434,14 +515,13 @@ const OptionFilter: React.FC = () => {
           height={18}
           className={underlying.symbol === 'UNI' ? classes.uniIcon : ''}
         />
-        <input
-          type='number'
-          value={size}
-          onChange={(ev) => {
-            setSize(Number(ev.target.value));
-          }}
-        />
-        <Button color='primary' variant='outlined' size='small'>
+        <input type='number' value={size} onChange={handleChangeSize} />
+        <Button
+          color='primary'
+          variant='outlined'
+          size='small'
+          onClick={handleMax}
+        >
           MAX
         </Button>
       </Box>

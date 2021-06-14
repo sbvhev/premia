@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Typography,
   Modal,
@@ -46,7 +46,7 @@ import { BigNumber } from 'bignumber.js';
 import TokenList from '../../tokens.json';
 import ROUTE_ICON_LIST from '../../routeIconList.json';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { SwapSettings, TokenMenuItem } from './components';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -512,10 +512,30 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const { account, chainId, web3 } = useWeb3();
-  const [editSettings, setEdditSettings] = React.useState(false);
-  const [switched, setSwitched] = useState(false);
   const { palette } = theme;
+  const gasToken = useGasToken();
+  const assetListWithGasToken = useMemo(
+    () => [...TokenList.tokens, gasToken],
+    [gasToken],
+  );
+
+  const [tokenListFrom, setTokenListFrom] = useState(assetListWithGasToken);
+  const [editSettings, setEdditSettings] = useState(false);
+  const [switched, setSwitched] = useState(false);
+  const [tokenListTo, setTokenListTo] = useState(assetListWithGasToken);
+  const [searchValueFrom, setSearchValueFrom] = useState<string>('');
+  const [searchValueTo, setSearchValueTo] = useState<string>('');
+  const [tokenNeedsapproval, setTokenNeedsapproval] = useState(true);
+  const [preSwapButtonGuide, setPreSwapButtonGuide] =
+    useState<string>('Select tokens');
+  const [fromAssetOpen, setFromAssetOpen] = useState<null | HTMLElement>(null);
+  const [toAssetOpen, setToAssetOpen] = useState<null | HTMLElement>(null);
+  const [zeroXQuote, setZeroXQuote] =
+    useState<SwapQuote | undefined>(undefined);
+  const [swapValid, setSwapValid] = useState(false);
+  const [swapReady, setSwapReady] = useState(false);
+
+  const { account, chainId, web3 } = useWeb3();
   const transact = useTransact();
   // const { onWrapEther, onUnwrapEther } = useWrapEther();
   const {
@@ -528,28 +548,8 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     setSwapSettings,
   } = useSwapSettings();
   const { liquidityProviders } = useToggleExchange();
-  const gasToken = useGasToken();
-  const assetListWithGasToken = [...TokenList.tokens, gasToken];
-  const [tokenListFrom, setTokenListFrom] = React.useState(
-    assetListWithGasToken,
-  );
-  const [tokenListTo, setTokenListTo] = React.useState(assetListWithGasToken);
-  const [searchValueFrom, setSearchValueFrom] = React.useState<string>('');
-  const [searchValueTo, setSearchValueTo] = React.useState<string>('');
-  const [tokenNeedsapproval, setTokenNeedsapproval] = React.useState(true);
-  const [preSwapButtonGuide, setPreSwapButtonGuide] =
-    React.useState<string>('Select tokens');
-  const [fromAssetOpen, setFromAssetOpen] =
-    React.useState<null | HTMLElement>(null);
-  const [toAssetOpen, setToAssetOpen] =
-    React.useState<null | HTMLElement>(null);
-  const [zeroXQuote, setZeroXQuote] =
-    useState<SwapQuote | undefined>(undefined);
-  const [swapValid, setSwapValid] = React.useState(false);
-  const [swapReady, setSwapReady] = React.useState(false);
 
   const gasPriceinGwei = useGasPrice() * 1000000000;
-
   const fromTokenBalance = useCurrencyBalance(account, fromToken ?? undefined);
   const toTokenBalance = useCurrencyBalance(account, toToken ?? undefined);
   const excludedLiquidityProviders = liquidityProviders.filter(
@@ -564,133 +564,27 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     zeroXQuote?.allowanceTarget as string,
   );
 
-  const handleSwapTokenPositions = () => {
-    setSwitched(!switched);
-    setSwapSettings({
-      fromToken: toToken,
-      toToken: fromToken,
-      fromAmount: toAmount,
-      toAmount: fromAmount,
-    });
-  };
+  const mappedItemsFrom = tokenListFrom
+    .filter((item) => item.symbol !== toToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`from${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectFromToken(item)}
+      />
+    ));
 
-  const handleMax = () => {
-    if (fromToken) {
-      setSwapSettings({ fromAmount: fromTokenBalance, inputType: false });
-    }
-  };
+  const mappedItemsTo = tokenListTo
+    .filter((item) => item.symbol !== fromToken?.symbol)
+    .map((item) => (
+      <TokenMenuItem
+        key={`to${item.symbol}`}
+        token={item}
+        onSelect={() => handleSelectToToken(item)}
+      />
+    ));
 
-  const handleChangeFromAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (paddedValue === '') {
-      setSwapSettings({ fromAmount: '' });
-      return;
-    }
-    if (paddedValue === '.') {
-      setSwapSettings({ fromAmount: '0.' });
-      return;
-    }
-    if (paddedValue === '0') {
-      setSwapSettings({ fromAmount: '0' });
-      return;
-    }
-    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-      const last = paddedValue.length;
-      paddedValue = paddedValue.slice(1, last);
-    }
-    if (paddedValue) {
-      setSwapSettings({ fromAmount: paddedValue, inputType: false });
-    }
-  };
-
-  const handleChangeToAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let paddedValue = value.replace(/[^0-9.]/g, '');
-    if (paddedValue === '') {
-      setSwapSettings({ toAmount: '' });
-      return;
-    }
-    if (paddedValue === '.') {
-      setSwapSettings({ toAmount: '0.' });
-      return;
-    }
-    if (paddedValue === '0') {
-      setSwapSettings({ toAmount: '0' });
-      return;
-    }
-    if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
-      const last = paddedValue.length;
-      paddedValue = value.slice(1, last);
-    }
-    if (paddedValue) {
-      setSwapSettings({ toAmount: paddedValue, inputType: true });
-    }
-  };
-
-  const handleChangeFromAsset = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    const top = document.getElementById('topTarget');
-    setFromAssetOpen(top);
-  };
-
-  const handleChangeToAsset = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const bottom = document.getElementById('bottomTarget');
-    setToAssetOpen(bottom);
-  };
-
-  const handleClosefromAsset = () => {
-    setFromAssetOpen(null);
-  };
-
-  const handleCloseToAsset = () => {
-    setToAssetOpen(null);
-  };
-
-  const handleSelectFromToken = (token: Token | CurrencyWithLogoUri) => {
-    setSwapSettings({ fromToken: token });
-    setTokenListFrom(TokenList.tokens);
-    handleClosefromAsset();
-    setSearchValueFrom('');
-  };
-
-  const handleSelectToToken = (token: Token | CurrencyWithLogoUri) => {
-    setSwapSettings({ toToken: token });
-    setTokenListTo(TokenList.tokens);
-    handleCloseToAsset();
-    setSearchValueTo('');
-  };
-
-  const handleSearchFromAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const searchValueLower = value.toLowerCase();
-    setSearchValueFrom(value);
-    const filteredList = TokenList.tokens.filter((asset) => {
-      const name = asset.name.toLowerCase();
-      const ticker = asset.symbol.toLowerCase();
-      return (
-        name.includes(searchValueLower) || ticker.includes(searchValueLower)
-      );
-    });
-    setTokenListFrom(filteredList);
-  };
-
-  const handleSearchToAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const searchValueLower = value.toLowerCase();
-    setSearchValueTo(value);
-    const filteredList = TokenList.tokens.filter((asset) => {
-      const name = asset.name.toLowerCase();
-      const ticker = asset.symbol.toLowerCase();
-      return (
-        name.includes(searchValueLower) || ticker.includes(searchValueLower)
-      );
-    });
-    setTokenListTo(filteredList);
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       setSwapValid(false);
       setSwapReady(false);
@@ -776,7 +670,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAmount, fromToken, toAmount, toToken, inputType, fromTokenBalance]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (fromToken?.symbol === 'ETH') {
       setTokenNeedsapproval(false);
       return;
@@ -788,7 +682,7 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     }
   }, [allowance, fromAmount, fromToken]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (swapValid && !tokenNeedsapproval && fromAmount) {
       if (
         parseFloat(fromAmount ?? '0') <= parseFloat(fromTokenBalance ?? '0')
@@ -807,25 +701,131 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
     toToken,
   ]);
 
-  const mappedItemsFrom = tokenListFrom
-    .filter((item, index) => item.symbol !== toToken?.symbol)
-    .map((item) => (
-      <TokenMenuItem
-        key={`from${item.symbol}`}
-        token={item}
-        onSelect={() => handleSelectFromToken(item)}
-      />
-    ));
+  const handleSwapTokenPositions = () => {
+    setSwitched(!switched);
+    setSwapSettings({
+      fromToken: toToken,
+      toToken: fromToken,
+      fromAmount: toAmount,
+      toAmount: fromAmount,
+    });
+  };
 
-  const mappedItemsTo = tokenListTo
-    .filter((item) => item.symbol !== fromToken?.symbol)
-    .map((item, index) => (
-      <TokenMenuItem
-        key={`to${item.symbol}`}
-        token={item}
-        onSelect={() => handleSelectToToken(item)}
-      />
-    ));
+  const handleMax = () => {
+    if (fromToken) {
+      setSwapSettings({ fromAmount: fromTokenBalance, inputType: false });
+    }
+  };
+
+  const handleChangeFromAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ fromAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ fromAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ fromAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ fromAmount: paddedValue, inputType: false });
+    }
+  };
+
+  const handleChangeToAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    let paddedValue = value.replace(/[^0-9.]/g, '');
+    if (value === '') {
+      setSwapSettings({ toAmount: '' });
+      return;
+    }
+    if (value === '.') {
+      setSwapSettings({ toAmount: '0.' });
+      return;
+    }
+    if (value === '0') {
+      setSwapSettings({ toAmount: '0' });
+      return;
+    }
+    if (value.startsWith('0') && value[1] !== '.') {
+      const last = value.length;
+      paddedValue = value.slice(1, last);
+    }
+    if (paddedValue) {
+      setSwapSettings({ toAmount: paddedValue, inputType: true });
+    }
+  };
+
+  const handleChangeFromAsset = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    const top = document.getElementById('topTarget');
+    setFromAssetOpen(top);
+  };
+
+  const handleChangeToAsset = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const bottom = document.getElementById('bottomTarget');
+    setToAssetOpen(bottom);
+  };
+
+  const handleClosefromAsset = () => {
+    setFromAssetOpen(null);
+  };
+
+  const handleCloseToAsset = () => {
+    setToAssetOpen(null);
+  };
+
+  const handleSelectFromToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ fromToken: token });
+    setTokenListFrom(TokenList.tokens);
+    handleClosefromAsset();
+    setSearchValueFrom('');
+  };
+
+  const handleSelectToToken = (token: Token | CurrencyWithLogoUri) => {
+    setSwapSettings({ toToken: token });
+    setTokenListTo(TokenList.tokens);
+    handleCloseToAsset();
+    setSearchValueTo('');
+  };
+
+  const handleSearchFromAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueFrom(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenListFrom(filteredList);
+  };
+
+  const handleSearchToAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const searchValueLower = value.toLowerCase();
+    setSearchValueTo(value);
+    const filteredList = TokenList.tokens.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ticker = asset.symbol.toLowerCase();
+      return (
+        name.includes(searchValueLower) || ticker.includes(searchValueLower)
+      );
+    });
+    setTokenListTo(filteredList);
+  };
 
   const handleSwap = async () => {
     if (zeroXQuote && swapReady) {
@@ -1207,12 +1207,10 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                   {swapValid && (
                     <>
                       {tokenNeedsapproval ? (
-                        <Button
-                          color='primary'
-                          variant='contained'
+                        <ContainedButton
                           id='bottomTarget'
-                          size='large'
-                          onClick={() => onApprove()}
+                          margin='0 0 10px 0'
+                          label={`Approve ${fromToken?.symbol}`}
                           endIcon={
                             <Tooltip
                               arrow
@@ -1224,49 +1222,36 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
                               <InfoIcon fill={palette.background.paper} />
                             </Tooltip>
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          {`Approve ${fromToken?.symbol}`}
-                        </Button>
+                          onClick={() => onApprove()}
+                        />
                       ) : (
-                        <Button
-                          color='primary'
-                          variant='contained'
-                          id='bottomTarget'
+                        <ContainedButton
                           disabled
-                          size='large'
+                          id='bottomTarget'
+                          margin='0 0 10px 0'
+                          label='Approved'
                           startIcon={
                             <ApprovedIcon fill={palette.background.paper} />
                           }
-                          style={{ marginBottom: '10px' }}
-                        >
-                          Approved
-                        </Button>
+                        />
                       )}
                     </>
                   )}
                   {swapValid && swapReady ? (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
                       id='bottomTarget'
-                      size='large'
-                      style={{ marginBottom: '20px' }}
+                      label='Swap'
+                      margin='0 0 20px 0'
                       onClick={handleSwap}
-                    >
-                      Swap
-                    </Button>
+                    />
                   ) : (
-                    <Button
-                      color='primary'
-                      variant='contained'
+                    <ContainedButton
+                      disabled
                       id='bottomTarget'
-                      size='large'
-                      disabled={true}
-                      style={{ marginBottom: '20px' }}
-                    >
-                      {preSwapButtonGuide}
-                    </Button>
+                      margin='0 0 20px 0'
+                      label={preSwapButtonGuide}
+                      onClick={handleSwap}
+                    />
                   )}
                 </>
               </Box>

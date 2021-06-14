@@ -4,20 +4,22 @@ import { Slider } from '@material-ui/core';
 
 const ColoredSlider = withStyles((theme: Theme) => ({
   root: {
-    color: theme.palette.primary.main,
+    color: '#5294FF',
     height: 8,
     width: 'calc(100% - 16px)',
     padding: '13px 0',
   },
 
   mark: {
-    display: 'none',
+    height: 8,
+    backgroundColor: '#B4C2D5',
+    transform: 'translateX(8px)',
   },
 
   thumb: {
     height: 16,
     width: 16,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: '#5294FF',
     border: '4px solid white',
     marginTop: -4,
     marginLeft: 0,

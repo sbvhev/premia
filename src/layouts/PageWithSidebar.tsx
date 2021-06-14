@@ -5,8 +5,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Hamburger from 'hamburger-react';
 import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
-import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
-import MainLogo from 'assets/svg/MainLogo.svg';
+import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
+import MainLogo from 'assets/svg/NewLogoComboLight.svg';
 import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -114,7 +114,7 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
                   >
                     <Box marginLeft='22px' marginTop='2px'>
                       <img
-                        src={darkMode ? MainLogo : MainLogoBlack}
+                        src={darkMode ? MainLogoBlack : MainLogo}
                         alt='main logo'
                         style={{ height: '28px' }}
                       />
@@ -161,10 +161,11 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
               mb={mobile ? 0 : 7}
               height={1}
               maxHeight='calc(100vh - 160px)'
+              overflow='auto'
               style={{ backgroundColor: palette.background.paper }}
             >
               <Box p={!mobile ? 1 : 0}>
-                <AccountButtons mobile />
+                <AccountButtons onHide={hideMobileMenu} mobile />
               </Box>
               <Divider />
               <Box p={1} pl={1.25}>

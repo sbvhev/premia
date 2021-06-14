@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -6,6 +7,7 @@ import {
   Button,
   Typography,
   Tooltip,
+  Divider,
 } from '@material-ui/core';
 import { SupervisorAccount } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -13,16 +15,18 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
-
+import moment from 'moment';
 import { shortenAddress } from 'utils';
 import {
   BetaSoftwareModal,
   ConfirmTermsModal,
   TransactionsModal,
 } from 'components';
-import { ReactComponent as LogoIcon } from 'assets/svg/LogoIcon.svg';
+import { ReactComponent as ClockIcon } from 'assets/svg/ClockIcon.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/NewLogoWhite.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/LogoutIcon.svg';
 import { ReactComponent as ConnectWallet } from 'assets/svg/ConnectWallet.svg';
+import { ReactComponent as UpRightArrow } from 'assets/svg/UpRightArrow.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   page: {
@@ -43,7 +47,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& path': {
       fill: palette.text.hint,
-    }
+    },
   },
 
   divider: {
@@ -54,11 +58,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     padding: 0,
     height: 45,
     border: `1px solid ${palette.divider}`,
-    backgroundColor: (props: any) => (props.darkMode ? 'transparent' : 'white'),
+    backgroundColor: palette.background.default,
     boxShadow: (props: any) =>
-      props.darkMode ? 'none' : '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+      props.darkMode ? '0px 2px 5px rgba(0, 0, 0, 0.0746353)' : 'none',
     borderRadius: 12,
     cursor: 'pointer',
+
+    '& a': {
+      textDecoration: 'none',
+    },
 
     '&> div:hover:not(:active)': {
       '&> svg path': {
@@ -171,36 +179,135 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   connectWalletButton: {
     fontSize: 14,
   },
+
+  leaderboard: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    '& p': {
+      fontSize: 14,
+      lineHeight: '18px',
+      color: palette.text.secondary,
+    },
+  },
+
+  tradingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 5,
+    '& p': {
+      fontSize: 14,
+      fontWeight: 'bold',
+      lineHeight: '18px',
+      margin: 0,
+    },
+  },
+
+  tradingCompetition: {
+    background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+    WebkitBackgroundClip: 'text',
+    textFillColor: 'transparent',
+    paddingRight: 16,
+    position: 'relative',
+    '& svg': {
+      position: 'absolute',
+      right: 0,
+      top: 3,
+    },
+  },
+
+  tradinghours: {
+    color: palette.text.primary,
+  },
 }));
 
 interface AccountButtonsProps {
   mobile?: boolean;
+  onHide?: () => void;
 }
 
-const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
+const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const { account, wallet, onboard } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
+  const history = useHistory();
   const theme = useTheme();
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
-  const classes = useStyles({ darkMode });
+  const classes = useStyles({ darkMode, mobile });
+  const [countDownStr, setCountDownStr] = useState('');
+  const getCountDownStr = () => {
+    const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
+    setCountDownStr(
+      Math.floor(hours / 24) +
+        'd' +
+        (hours % 24 > 0 ? ' ' + (hours % 24) + 'h' : ' '),
+    );
+  };
+  useEffect(() => {
+    getCountDownStr();
+  });
+  setInterval(() => {
+    getCountDownStr();
+  }, 20 * 60 * 1000);
 
   return (
-    <Grid container direction='row' alignItems='center' justify='flex-end'>
+    <Grid container alignItems='center' justify='flex-end'>
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
       />
 
-      {confirmTermsModalOpen && (
-        <ConfirmTermsModal
-          open={confirmTermsModalOpen}
-          onClose={() => setConfirmTermsModalOpen(false)}
-        />
-      )}
+      <ConfirmTermsModal
+        open={confirmTermsModalOpen}
+        onClose={() => setConfirmTermsModalOpen(false)}
+      />
+
+      <Box
+        display='flex'
+        className={classes.account}
+        width={mobile ? 1 : 'auto'}
+        my={mobile ? 1.25 : 0}
+        mx={mobile ? 1.25 : 1.25}
+      >
+        <Box
+          height={1}
+          className={classes.accountInfo}
+          flex={1}
+          display='flex'
+          justifyContent='center'
+          onClick={() => {
+            history.push('/trading-competition');
+
+            if (onHide) {
+              onHide();
+            }
+          }}
+        >
+          <ClockIcon />
+          <Box height={1} className={classes.tradingContainer}>
+            <Typography className={classes.tradingCompetition}>
+              Trading competition <UpRightArrow />
+            </Typography>
+            <Typography className={classes.tradinghours}>
+              {countDownStr} left
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          height={1}
+          borderLeft={1}
+          borderColor={theme.palette.divider}
+          className={classes.leaderboard}
+        >
+          <Typography>Leaderboard</Typography>
+        </Box>
+      </Box>
+
+      {mobile && <Divider className={classes.fullWidth} />}
 
       {wallet && wallet.provider && wallet.type === 'hardware' && (
         <Grid item xs={2}>
@@ -215,7 +322,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
       {wallet && wallet.provider && account ? (
         <Box
           display='flex'
-          width='100%'
+          width={mobile ? 1 : 'auto'}
           style={{ backgroundColor: 'transparent' }}
         >
           {!mobile ? (
@@ -231,7 +338,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                 }
               >
                 <span>Get</span>
-                <LogoIcon />
+                <LogoIcon fill={theme.palette.common.white} />
               </Button>
 
               <Box clone mb={mobile ? 1 : 0}>
@@ -329,28 +436,26 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile }) => {
                   }
                 >
                   Get
-                  <LogoIcon />
+                  <LogoIcon fill={theme.palette.common.white} />
                 </Button>
               </Box>
             </Box>
           )}
         </Box>
       ) : (
-        <Box width='100%' p={1.25}>
-          <Button
-            variant='contained'
-            color='primary'
-            size='large'
-            className={cx(
-              mobile && classes.fullWidth,
-              classes.connectWalletButton,
-            )}
-            onClick={() => setConfirmTermsModalOpen(true)}
-          >
-            <ConnectWallet className={classes.walletIcon} />
-            Connect wallet
-          </Button>
-        </Box>
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={cx(
+            mobile && classes.fullWidth,
+            classes.connectWalletButton,
+          )}
+          onClick={() => setConfirmTermsModalOpen(true)}
+        >
+          <ConnectWallet className={classes.walletIcon} />
+          Connect wallet
+        </Button>
       )}
 
       <Grid item xs={1} />

@@ -32,6 +32,7 @@ import {
   Positions,
   LandingPage,
   PositionGuide,
+  TradingCompetition
 } from './pages';
 import {
   TransactionLoadingModal,
@@ -156,6 +157,12 @@ const App: React.FC = () => {
         <Route exact path='/options'>
           <PageWithSidebar>
             <Options />
+          </PageWithSidebar>
+        </Route>
+
+        <Route exact path='/trading-competition'>
+          <PageWithSidebar>
+            <TradingCompetition />
           </PageWithSidebar>
         </Route>
 

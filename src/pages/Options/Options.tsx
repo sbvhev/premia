@@ -4,13 +4,13 @@ import {
   Container,
   Grid,
   Typography,
-  Button,
   Divider,
   Popover,
   Link,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import cx from 'classnames';
 
@@ -22,18 +22,27 @@ import {
   useBase,
   useUnderlying,
   useMaturityDate,
+  useSize,
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import { getCLevelChartItems } from 'graphql/queries';
 import { useApproval, usePools } from 'hooks';
-import { formatNumber } from 'utils/formatNumber';
+import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
+import { CLevelChartItem } from 'web3/pools';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
-import { SelectTokenTabs, BuyConfirmationModal, LineChart } from 'components';
+import {
+  SelectTokenTabs,
+  BuyConfirmationModal,
+  LineChart,
+  ContainedButton,
+} from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
+import { formatUnits } from 'ethers/lib/utils';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -64,10 +73,6 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    '& p': {
-      fontSize: 14,
-      lineHeight: '24px',
-    },
     '& h2': {
       fontSize: 18,
       fontWeight: 700,
@@ -76,6 +81,10 @@ const useStyles = makeStyles(({ palette }) => ({
     '& $helpIcon': {
       marginLeft: 2,
     },
+  },
+  priceText: {
+    fontSize: 14,
+    lineHeight: '24px',
   },
   graphContainer: {
     '& p': {
@@ -176,15 +185,25 @@ const Options: React.FC = () => {
 
   const { base } = useBase();
   const { underlying } = useUnderlying();
+  const { size } = useSize();
   const { optionType } = useOptionType();
   const { maturityDate } = useMaturityDate();
   const { totalCostInUsd } = useTotalCostInUsd();
   const { account } = useWeb3();
-  const { optionPoolContract } = usePools();
+  const { optionPool, optionPoolContract } = usePools();
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),
     [optionType, base, underlying],
+  );
+
+  const { data: { clevelChartItems = [] } = {} } = useQuery(
+    getCLevelChartItems,
+    {
+      pollInterval: 5000,
+      skip: !optionPool,
+      variables: { poolId: optionPool?.id },
+    },
   );
 
   const priceChanges = usePriceChanges();
@@ -204,6 +223,23 @@ const Options: React.FC = () => {
     [priceChanges, underlying],
   );
   const classes = useStyles({ priceChange });
+
+  const totalAvailableInActiveToken = useMemo(
+    () =>
+      Number(
+        formatUnits(optionPool?.totalAvailable ?? 0, underlying.decimals),
+      ) / (optionType === OptionType.Call ? 1 : underlyingPrice),
+    [optionPool, underlying, optionType, underlyingPrice],
+  );
+
+  const sufficientAllowance = useMemo(
+    () => Number(allowance) > 0 && Number(allowance) >= totalCostInUsd,
+    [allowance, totalCostInUsd],
+  );
+  const sufficientLiquidity = useMemo(
+    () => totalAvailableInActiveToken >= size,
+    [totalAvailableInActiveToken, size],
+  );
 
   return (
     <>
@@ -306,7 +342,9 @@ const Options: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={6} className={classes.priceInfoBox}>
             <Box pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>Current price</Typography>
+              <Typography color='textSecondary' className={classes.priceText}>
+                Current price
+              </Typography>
               <Box display='flex' alignItems='center' mt={-0.5625}>
                 <Typography color='textPrimary' component='h2'>
                   $
@@ -329,7 +367,7 @@ const Options: React.FC = () => {
                     height={1}
                     style={{ opacity: darkMode ? 0.1 : 0.2 }}
                   ></Box>
-                  <Typography color='textPrimary'>
+                  <Typography color='textPrimary' className={classes.priceText}>
                     {priceChange < 0 ? '' : '+'}
                     {formatNumber(priceChange)}%
                   </Typography>
@@ -339,7 +377,9 @@ const Options: React.FC = () => {
             </Box>
             <Box pl={xs ? 1 : 3}>
               <Grid container alignItems='center'>
-                <Typography color='textSecondary'>Breakeven</Typography>
+                <Typography color='textSecondary' className={classes.priceText}>
+                  Breakeven
+                </Typography>
                 <HelpIcon
                   className={classes.helpIcon}
                   onMouseEnter={(event) => {
@@ -356,7 +396,9 @@ const Options: React.FC = () => {
               </Typography>
             </Box>
             <Box pl={xs ? 1 : 3}>
-              <Typography color='textSecondary'>Total cost</Typography>
+              <Typography color='textSecondary' className={classes.priceText}>
+                Total cost
+              </Typography>
               <Typography color='textPrimary' component='h2'>
                 $
                 {formatNumber(totalCostInUsd, true, {
@@ -365,21 +407,21 @@ const Options: React.FC = () => {
               </Typography>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
-              <Button
+              <ContainedButton
                 fullWidth
-                variant='contained'
                 size='large'
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
-                onClick={() =>
-                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                    ? handleBuyOption()
-                    : onApprove()
+                label={
+                  sufficientAllowance
+                    ? sufficientLiquidity
+                      ? 'Buy Option'
+                      : 'Insufficient Liquidity'
+                    : `Approve ${underlying.symbol}`
                 }
-              >
-                {Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                  ? 'Buy Option'
-                  : `Approve ${underlying.symbol}`}
-              </Button>
+                onClick={() =>
+                  sufficientAllowance ? handleBuyOption() : onApprove()
+                }
+              />
             </Box>
           </Grid>
           {tablet && (
@@ -408,16 +450,14 @@ const Options: React.FC = () => {
               <LineChart
                 isCall={optionType === OptionType.Call}
                 backgroundColor={theme.palette.background.default}
-                data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                categories={[
-                  '2021/5/24',
-                  '2021/5/25',
-                  '2021/5/26',
-                  '2021/5/27',
-                  '2021/5/28',
-                  '2021/5/29',
-                  '2021/5/30',
-                ]}
+                data={clevelChartItems.map((item: CLevelChartItem) =>
+                  formatBigNumber(item.cLevel),
+                )}
+                categories={clevelChartItems.map((item: CLevelChartItem) =>
+                  moment
+                    .unix(Number(item.timestamp))
+                    .format('YYYY/MM/DD HH:mm'),
+                )}
                 width='100%'
                 height={200}
               />

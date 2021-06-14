@@ -36,7 +36,7 @@
     "@web3-react/walletlink-connector": "^6.1.6",
     "ajv": "^6.12.6",
     "animate.css": "^4.1.1",
-    "apexcharts": "^3.26.2",
+    "apexcharts": "^3.27.1",
     "apollo-boost": "^0.4.9",
     "bnc-notify": "^1.5.1",
     "bnc-onboard": "^1.19.2",

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
@@ -7,22 +8,24 @@ import {
   Paper,
   Button,
   IconButton,
-  FormControl,
-  Select,
-  MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
+import moment from 'moment';
 
+import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
-import { UserOwnedPool } from 'web3/pools';
+import { CLevelChartItem, UserOwnedPool } from 'web3/pools';
 import { usePools, useDeviceWidth } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
 import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
-import { formatNumber, formatCompact } from 'utils/formatNumber';
+import {
+  formatNumber,
+  formatCompact,
+  formatBigNumber,
+} from 'utils/formatNumber';
 import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
@@ -32,17 +35,13 @@ import {
   TooltipPan,
   WithdrawDepositModal,
   SwitchWithGlider,
+  ContainedButton,
 } from 'components';
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
-import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
-import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
 
@@ -58,7 +57,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   topTab: {
-    margin: '20px 0 20px 6px',
+    margin: '20px 0',
 
     [breakpoints.down('md')]: {
       margin: '20px 0 12px',
@@ -179,6 +178,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   box: {
     width: 'calc(100% - 226px)',
     position: 'relative',
+  },
+  smallBox: {
+    width: '100%',
+    position: 'relative',
+    marginTop: 12,
   },
   menuItem: {
     display: 'flex',
@@ -326,7 +330,6 @@ const ProVault: React.FC = () => {
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
-  const [coin, setCoin] = useState<any>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
@@ -370,6 +373,20 @@ const ProVault: React.FC = () => {
     [userOwnedPutPool],
   );
 
+  const { data: { clevelChartItems: callPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      skip: !callPool,
+      variables: { poolId: callPool?.id },
+    });
+
+  const { data: { clevelChartItems: putPoolCLevelChartItems = [] } = {} } =
+    useQuery(getCLevelChartItems, {
+      pollInterval: 5000,
+      skip: !putPool,
+      variables: { poolId: putPool?.id },
+    });
+
   const BaseIcon = useMemo(
     () => getTokenIcon(callPool?.base.symbol),
     [callPool],
@@ -384,61 +401,60 @@ const ProVault: React.FC = () => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleLeave = () => setAnchorEl(null);
+  const handleLeave = useCallback(() => setAnchorEl(null), []);
 
-  const open = Boolean(anchorEl);
+  const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
-  const handleChange = (
-    event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
-  ) => {
-    const coin = event.target.value;
-    setCoin(coin);
-  };
-
-  const handleBasicVaultSwitch = () => {
+  const handleBasicVaultSwitch = useCallback(() => {
     setVaultIndex(0);
     history.push('/vaults?tab=basic');
-  };
+  }, [history]);
 
-  const handleProVaultSwitch = () => {
+  const handleProVaultSwitch = useCallback(() => {
     setVaultIndex(1);
     history.push('/vaults?tab=pro');
-  };
+  }, [history]);
 
-  const BasicVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={mobileDevice || mediumWindow ? '50%' : '94px'}
-      height={mobileDevice || mediumWindow ? '32px' : '42px'}
-      className={cx(
-        classes.vaultSwitchButton,
-        vaultIndex === 0 && classes.activeVaultswitch,
-      )}
-      onClick={handleBasicVaultSwitch}
-    >
-      <BasicIcon />
-      <Typography>Basic</Typography>
-    </Box>
+  const BasicVaultButton = useCallback(
+    () => (
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        width={mobileDevice || mediumWindow ? '50%' : '94px'}
+        height={mobileDevice || mediumWindow ? '32px' : '42px'}
+        className={cx(
+          classes.vaultSwitchButton,
+          vaultIndex === 0 && classes.activeVaultswitch,
+        )}
+        onClick={handleBasicVaultSwitch}
+      >
+        <BasicIcon />
+        <Typography>Basic</Typography>
+      </Box>
+    ),
+    [mobileDevice, classes, vaultIndex, mediumWindow, handleBasicVaultSwitch],
   );
 
-  const ProVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={mobileDevice || mediumWindow ? '50%' : '94px'}
-      height={mobileDevice || mediumWindow ? '32px' : '42px'}
-      className={cx(
-        classes.vaultSwitchButton,
-        vaultIndex === 1 && classes.activeVaultswitch,
-      )}
-      onClick={handleProVaultSwitch}
-    >
-      <ProIcon />
-      <Typography>Pro</Typography>
-    </Box>
+  const ProVaultButton = useCallback(
+    () => (
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        width={mobileDevice || mediumWindow ? '50%' : '94px'}
+        height={mobileDevice || mediumWindow ? '32px' : '42px'}
+        className={cx(
+          classes.vaultSwitchButton,
+          vaultIndex === 1 && classes.activeVaultswitch,
+        )}
+        onClick={handleProVaultSwitch}
+      >
+        <ProIcon />
+        <Typography>Pro</Typography>
+      </Box>
+    ),
+    [mobileDevice, classes, vaultIndex, mediumWindow, handleProVaultSwitch],
   );
 
   return (
@@ -527,76 +543,13 @@ const ProVault: React.FC = () => {
               />
             )}
           </Box>
-          {!mediumWindow && vaultIndex === 1 && (
-            <Box component='div' className={classes.box}>
+          {vaultIndex === 1 && (
+            <Box
+              component='div'
+              className={mediumWindow ? classes.smallBox : classes.box}
+            >
               <SelectTokenTabs />
             </Box>
-          )}
-          {mediumWindow && vaultIndex === 1 && (
-            <>
-              <Box className={classes.col}>
-                <Box
-                  display='flex'
-                  style={{
-                    margin: '0 8px 2px',
-                    justifyContent: 'flex-start',
-                  }}
-                >
-                  <Typography
-                    component='p'
-                    color='textPrimary'
-                    className={classes.elementHeader}
-                  >
-                    Pool
-                  </Typography>
-                </Box>
-              </Box>
-              <Box width='100%' height='46px'>
-                <FormControl variant='outlined' fullWidth>
-                  <Select
-                    IconComponent={() => {
-                      return <ExpandMore />;
-                    }}
-                    value={coin}
-                    onChange={handleChange}
-                    inputProps={{
-                      name: 'age',
-                    }}
-                  >
-                    <MenuItem className={classes.menuItem} value='wBTC'>
-                      <WBTCIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Uni
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='Uni'>
-                      <UniswapIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Uni
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='Link'>
-                      <LinkIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Link
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='YFI'>
-                      <YFIIcon />
-                      <Typography component='span' color='textSecondary'>
-                        YFI
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='ETH'>
-                      <ETHIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Eth
-                      </Typography>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </>
           )}
         </Grid>
         {vaultIndex === 0 && (
@@ -760,15 +713,12 @@ const ProVault: React.FC = () => {
                         style={{ marginTop: '1rem' }}
                       >
                         <Grid item xs={6}>
-                          <Button
+                          <ContainedButton
                             fullWidth
-                            size='large'
-                            color='primary'
-                            variant='contained'
+                            height='43px'
+                            label='Add'
                             onClick={() => setDepositCallOpen(true)}
-                          >
-                            Add
-                          </Button>
+                          />
                         </Grid>
                         <Grid item xs={6}>
                           <Button
@@ -820,18 +770,17 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
                     width='100%'
                     height={200}
+                    data={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) => formatBigNumber(item.cLevel),
+                    )}
+                    categories={callPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD HH:mm'),
+                    )}
                   />
                 </Box>
               </Paper>
@@ -984,15 +933,13 @@ const ProVault: React.FC = () => {
                         style={{ marginTop: '1rem' }}
                       >
                         <Grid item xs={6}>
-                          <Button
+                          <ContainedButton
                             fullWidth
-                            size='large'
+                            height='43px'
+                            label='Add'
                             color='secondary'
-                            variant='contained'
                             onClick={() => setDepositPutOpen(true)}
-                          >
-                            Add
-                          </Button>
+                          />
                         </Grid>
                         <Grid item xs={6}>
                           <Button
@@ -1044,16 +991,15 @@ const ProVault: React.FC = () => {
                   </Box>
                   <LineChart
                     isCall={false}
-                    data={[2345, 3423, 3323, 2643, 3234, 6432, 1234]}
-                    categories={[
-                      '2021/5/24',
-                      '2021/5/25',
-                      '2021/5/26',
-                      '2021/5/27',
-                      '2021/5/28',
-                      '2021/5/29',
-                      '2021/5/30',
-                    ]}
+                    data={putPoolCLevelChartItems.map((item: CLevelChartItem) =>
+                      formatBigNumber(item.cLevel),
+                    )}
+                    categories={putPoolCLevelChartItems.map(
+                      (item: CLevelChartItem) =>
+                        moment
+                          .unix(Number(item.timestamp))
+                          .format('YYYY/MM/DD'),
+                    )}
                     width='100%'
                     height={200}
                   />

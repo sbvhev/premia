@@ -95,6 +95,10 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.primary.dark,
     borderRadius: '7px',
     marginRight: '7px',
+
+    '& svg path': {
+      fill: palette.common.white,
+    },
   },
   premiaBox2: {
     width: '40px',
@@ -115,6 +119,10 @@ const useStyles = makeStyles(({ palette }) => ({
     left: -38,
     zIndex: 5,
     opacity: 1,
+
+    '& svg path': {
+      fill: palette.common.white,
+    },
   },
 }));
 

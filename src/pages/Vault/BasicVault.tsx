@@ -23,7 +23,7 @@ import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as VaultBlueIcon } from 'assets/svg/VaultBlue.svg';
 import { ReactComponent as VaultGreenIcon } from 'assets/svg/VaultGreen.svg';
 import { ReactComponent as VaultRedIcon } from 'assets/svg/VaultRed.svg';
-import { TooltipPan } from 'components';
+import { TooltipPan, ContainedButton } from 'components';
 import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -449,9 +449,7 @@ const BasicVault: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Button color='primary' variant='contained' size='large' fullWidth>
-              Deposit
-            </Button>
+            <ContainedButton fullWidth label='Deposit' onClick={() => {}} />
           </Box>
         </Box>
       </Box>

@@ -10,6 +10,9 @@ import { useWeb3 } from 'state/application/hooks';
 import { useDeviceWidth } from 'hooks';
 
 import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
+import SidebarItem from './SidebarItem';
+import MainLogo from 'assets/svg/NewLogoComboLight.svg';
+import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
 import { ReactComponent as DocumentationIcon } from 'assets/svg/DocumentationIcon.svg';
 import { ReactComponent as CareerIcon } from 'assets/svg/CareerIcon.svg';
 import { ReactComponent as PositionsIcon } from 'assets/svg/PositionsIcon.svg';
@@ -17,9 +20,6 @@ import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import MainLogo from 'assets/svg/MainLogo.svg';
-import MainLogoBlack from 'assets/svg/MainLogoBlack.svg';
-import SidebarItem from './SidebarItem';
 
 const insights = [
   {
@@ -96,12 +96,12 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     '/stake': 3,
   };
   const [showSwapModal, setShowSwapModal] = useState(false);
-  const deviceWidth = useDeviceWidth();
   const state = location.state ? location.state.previous : false;
   const startIndex = state ? pageIndexes[state] : pageIndexes[pathname] || 0;
-  const [pageNavigationIndex, setPageNavigationIndex] = useState(startIndex);
+  const [pageNavigationIndex, setPageNavigationIndex] =
+    React.useState(startIndex);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const currentPage = pageIndexes[pathname];
     setPageNavigationIndex(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,7 +178,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             <Grid container component={Link} to='/'>
               <Box pb={3}>
                 <img
-                  src={darkMode ? MainLogo : MainLogoBlack}
+                  src={!darkMode ? MainLogo : MainLogoBlack}
                   alt='Logo'
                   style={{ marginLeft: '15px' }}
                 />
@@ -204,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
                 elements={navigationItems}
                 defaultIndex={pageNavigationIndex}
                 marginBetweenSwitches={4}
-                gliderWidth={deviceWidth - 20}
+                gliderWidth={'100%'}
                 gliderHeight={47}
                 verticalGlider
               />
