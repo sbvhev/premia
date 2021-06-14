@@ -87,7 +87,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
               zIndex: 1,
             },
             '& p': {
-              color: palette.common.black,
+              color: (props: any) => props.darkMode ? 'black' : 'white',
               zIndex: 2,
             }
           }
@@ -247,7 +247,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         },
         '& p': {
           zIndex: 2,
-          color: 'black'
+          color: (props: any) => props.darkMode ? 'black' : 'white'
         }
       }
     },
@@ -302,11 +302,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       position: 'absolute',
       borderRadius: 8,
       background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
-      opacity: 0.1,
+      opacity: (props: any) => props.darkMode ? 0.1 : 0.2,
     },
     '& p': {
       fontSize: 14,
-      lineHeight: '18px'
+      lineHeight: '18px',
+      color: (props: any) => props.darkMode ? 'black' : 'white'
     }
   }
 }));
@@ -499,7 +500,7 @@ const Leaderboard: React.FC = () => {
             data={leaderItems}
             sortUpIcon={<UpArrow />}
             sortDownIcon={<DownArrow />}
-            rowPerPage={11}
+            rowPerPage={25}
             showEmptyRows={false}
             renderRow={(leaderItem: any, index) => {
               return (
