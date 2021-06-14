@@ -198,6 +198,7 @@ const Options: React.FC = () => {
     getCLevelChartItems,
     {
       pollInterval: 5000,
+      skip: !optionPool,
       variables: { poolId: optionPool?.id },
     },
   );

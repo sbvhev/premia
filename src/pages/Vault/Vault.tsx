@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
@@ -8,13 +8,9 @@ import {
   Paper,
   Button,
   IconButton,
-  FormControl,
-  Select,
-  MenuItem,
   useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { ExpandMore } from '@material-ui/icons';
 import cx from 'classnames';
 import moment from 'moment';
 
@@ -44,13 +40,8 @@ import {
 import { ReactComponent as Help } from 'assets/svg/Help.svg';
 import { ReactComponent as BasicIcon } from 'assets/svg/BasicIcon.svg';
 import { ReactComponent as ProIcon } from 'assets/svg/ProIcon.svg';
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as CallUpIcon } from 'assets/svg/CallUpIcon.svg';
 import { ReactComponent as PoolDownIcon } from 'assets/svg/PoolDownIcon.svg';
-import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
-import { ReactComponent as ETHIcon } from 'assets/svg/EthIcon.svg';
-import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as AttentionIcon } from 'assets/svg/AttentionIcon.svg';
 import BasicVault from './BasicVault';
 
@@ -187,6 +178,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   box: {
     width: 'calc(100% - 226px)',
     position: 'relative',
+  },
+  smallBox: {
+    width: '100%',
+    position: 'relative',
+    marginTop: 12,
   },
   menuItem: {
     display: 'flex',
@@ -333,7 +329,6 @@ const ProVault: React.FC = () => {
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
-  const [coin, setCoin] = useState<any>(null);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
@@ -381,12 +376,14 @@ const ProVault: React.FC = () => {
   const { data: { clevelChartItems: callPoolCLevelChartItems = [] } = {} } =
     useQuery(getCLevelChartItems, {
       pollInterval: 5000,
+      skip: !callPool,
       variables: { poolId: callPool?.id },
     });
 
   const { data: { clevelChartItems: putPoolCLevelChartItems = [] } = {} } =
     useQuery(getCLevelChartItems, {
       pollInterval: 5000,
+      skip: !putPool,
       variables: { poolId: putPool?.id },
     });
 
@@ -413,61 +410,60 @@ const ProVault: React.FC = () => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleLeave = () => setAnchorEl(null);
+  const handleLeave = useCallback(() => setAnchorEl(null), []);
 
-  const open = Boolean(anchorEl);
+  const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
-  const handleChange = (
-    event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
-  ) => {
-    const coin = event.target.value;
-    setCoin(coin);
-  };
-
-  const handleBasicVaultSwitch = () => {
+  const handleBasicVaultSwitch = useCallback(() => {
     setVaultIndex(0);
     history.push('/vaults?tab=basic');
-  };
+  }, [history]);
 
-  const handleProVaultSwitch = () => {
+  const handleProVaultSwitch = useCallback(() => {
     setVaultIndex(1);
     history.push('/vaults?tab=pro');
-  };
+  }, [history]);
 
-  const BasicVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={mobileDevice || mediumWindow ? '50%' : '94px'}
-      height={mobileDevice || mediumWindow ? '32px' : '42px'}
-      className={cx(
-        classes.vaultSwitchButton,
-        vaultIndex === 0 && classes.activeVaultswitch,
-      )}
-      onClick={handleBasicVaultSwitch}
-    >
-      <BasicIcon />
-      <Typography>Basic</Typography>
-    </Box>
+  const BasicVaultButton = useCallback(
+    () => (
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        width={mobileDevice || mediumWindow ? '50%' : '94px'}
+        height={mobileDevice || mediumWindow ? '32px' : '42px'}
+        className={cx(
+          classes.vaultSwitchButton,
+          vaultIndex === 0 && classes.activeVaultswitch,
+        )}
+        onClick={handleBasicVaultSwitch}
+      >
+        <BasicIcon />
+        <Typography>Basic</Typography>
+      </Box>
+    ),
+    [mobileDevice, classes, vaultIndex, mediumWindow, handleBasicVaultSwitch],
   );
 
-  const ProVaultButton = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={mobileDevice || mediumWindow ? '50%' : '94px'}
-      height={mobileDevice || mediumWindow ? '32px' : '42px'}
-      className={cx(
-        classes.vaultSwitchButton,
-        vaultIndex === 1 && classes.activeVaultswitch,
-      )}
-      onClick={handleProVaultSwitch}
-    >
-      <ProIcon />
-      <Typography>Pro</Typography>
-    </Box>
+  const ProVaultButton = useCallback(
+    () => (
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        width={mobileDevice || mediumWindow ? '50%' : '94px'}
+        height={mobileDevice || mediumWindow ? '32px' : '42px'}
+        className={cx(
+          classes.vaultSwitchButton,
+          vaultIndex === 1 && classes.activeVaultswitch,
+        )}
+        onClick={handleProVaultSwitch}
+      >
+        <ProIcon />
+        <Typography>Pro</Typography>
+      </Box>
+    ),
+    [mobileDevice, classes, vaultIndex, mediumWindow, handleProVaultSwitch],
   );
 
   return (
@@ -556,76 +552,13 @@ const ProVault: React.FC = () => {
               />
             )}
           </Box>
-          {!mediumWindow && vaultIndex === 1 && (
-            <Box component='div' className={classes.box}>
+          {vaultIndex === 1 && (
+            <Box
+              component='div'
+              className={mediumWindow ? classes.smallBox : classes.box}
+            >
               <SelectTokenTabs />
             </Box>
-          )}
-          {mediumWindow && vaultIndex === 1 && (
-            <>
-              <Box className={classes.col}>
-                <Box
-                  display='flex'
-                  style={{
-                    margin: '0 8px 2px',
-                    justifyContent: 'flex-start',
-                  }}
-                >
-                  <Typography
-                    component='p'
-                    color='textPrimary'
-                    className={classes.elementHeader}
-                  >
-                    Pool
-                  </Typography>
-                </Box>
-              </Box>
-              <Box width='100%' height='46px'>
-                <FormControl variant='outlined' fullWidth>
-                  <Select
-                    IconComponent={() => {
-                      return <ExpandMore />;
-                    }}
-                    value={coin}
-                    onChange={handleChange}
-                    inputProps={{
-                      name: 'age',
-                    }}
-                  >
-                    <MenuItem className={classes.menuItem} value='wBTC'>
-                      <WBTCIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Uni
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='Uni'>
-                      <UniswapIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Uni
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='Link'>
-                      <LinkIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Link
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='YFI'>
-                      <YFIIcon />
-                      <Typography component='span' color='textSecondary'>
-                        YFI
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem className={classes.menuItem} value='ETH'>
-                      <ETHIcon />
-                      <Typography component='span' color='textSecondary'>
-                        Eth
-                      </Typography>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </>
           )}
         </Grid>
         {vaultIndex === 0 && (
