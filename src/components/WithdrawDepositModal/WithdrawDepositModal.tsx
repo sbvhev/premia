@@ -355,14 +355,6 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     onClose,
   ]);
 
-  React.useEffect(() => {
-    if (!activePoolContract) return;
-
-    activePoolContract
-      ?.balanceOf(account, 0)
-      .then((tokens) => console.log('tokens', Number(tokens) / 10 ** 18));
-  }, [activePoolContract, account]);
-
   return (
     <Modal
       open={open}
