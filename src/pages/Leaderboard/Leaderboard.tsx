@@ -14,6 +14,7 @@ import { useDarkModeManager } from 'state/user/hooks';
 import { shortenAddress } from 'utils';
 import { formatNumber } from 'utils/formatNumber';
 import cx from 'classnames';
+import { useWeb3 } from 'state/application/hooks';
 
 import { DataTable } from 'components';
 import { ReactComponent as UpArrow } from 'assets/svg/UpArrow.svg';
@@ -315,22 +316,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 const Leaderboard: React.FC = () => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode });
+  const { account } = useWeb3();
   const theme = useTheme();
   const mobileWindowSize = useMediaQuery(theme.breakpoints.down('xs'));
 
   const leaderItems = [
     {
-      rank: 3,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
-      totalPL: 124001.04,
-      optionsPL: 100002.01,
-      vaultsPL: 23999.03,
-      successratio: 100,
-      me: true,
-    },
-    {
       rank: 1,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -338,7 +331,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 2,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -354,7 +347,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 4,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -362,7 +355,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 5,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -370,7 +363,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 6,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: -22341.01,
       optionsPL: -23631.40,
       vaultsPL: 1929.41,
@@ -378,7 +371,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 7,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: -22341.01,
       optionsPL: -23631.40,
       vaultsPL: 1929.41,
@@ -386,7 +379,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 8,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: -22341.01,
       optionsPL: -23631.40,
       vaultsPL: 1929.41,
@@ -394,7 +387,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 9,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: -22341.01,
       optionsPL: -23631.40,
       vaultsPL: 1929.41,
@@ -402,7 +395,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 10,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
       totalPL: -22341.01,
       optionsPL: -23631.40,
       vaultsPL: 1929.41,
@@ -426,8 +419,8 @@ const Leaderboard: React.FC = () => {
           {leaderItems.map((leaderItem) => {
             const { rank, user, successratio, totalPL, optionsPL, vaultsPL } = leaderItem;
             return (
-              <Box mb={2} className={cx(classes.mobileItem, leaderItem.me && 'meRow')}>
-                {leaderItem.me &&
+              <Box mb={2} className={cx(classes.mobileItem, account === user.toLowerCase() && 'meRow')}>
+                {account === user.toLowerCase() &&
                   <Box className={classes.meBack} width={1} height={1}>
                     <img src={LeaderMe} alt='Me' />
                     <Typography>Me</Typography>
@@ -463,7 +456,7 @@ const Leaderboard: React.FC = () => {
                       </Typography>
                       <Box className={classes.successRatioBox}>
                         <Box width={1} height={1} />
-                        <Typography className={cx(!leaderItem.me && classes.callText)}>{successratio}%</Typography>
+                        <Typography className={cx(account !== user.toLowerCase() && classes.callText)}>{successratio}%</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -504,9 +497,9 @@ const Leaderboard: React.FC = () => {
             showEmptyRows={false}
             renderRow={(leaderItem: any, index) => {
               return (
-                <TableRow key={index} className={leaderItem.me && 'meRow'}>
+                <TableRow key={index} className={cx(account === leaderItem.user.toLowerCase() && 'meRow')}>
                   <TableCell>
-                    {leaderItem.me &&
+                    {account === leaderItem.user.toLowerCase() &&
                       <Box width={1} height={1} className={classes.meBack}>
                         <img src={LeaderMe} alt='Me' />
                         <Typography>Me</Typography>
@@ -545,7 +538,7 @@ const Leaderboard: React.FC = () => {
                   <TableCell>
                     <Box className={classes.successRatioBox}>
                       <Box width={1} height={1} />
-                      <Typography className={cx(!leaderItem.me && classes.callText)}>{leaderItem.successratio}%</Typography>
+                      <Typography className={cx(account !== leaderItem.user.toLowerCase() && classes.callText)}>{leaderItem.successratio}%</Typography>
                     </Box>
                   </TableCell>
                 </TableRow>
