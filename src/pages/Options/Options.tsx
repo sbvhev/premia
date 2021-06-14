@@ -224,6 +224,23 @@ const Options: React.FC = () => {
   );
   const classes = useStyles({ priceChange });
 
+  const totalAvailableInActiveToken = useMemo(
+    () =>
+      Number(
+        formatUnits(optionPool?.totalAvailable ?? 0, underlying.decimals),
+      ) / (optionType === OptionType.Call ? 1 : underlyingPrice),
+    [optionPool, underlying, optionType, underlyingPrice],
+  );
+
+  const sufficientAllowance = useMemo(
+    () => Number(allowance) > 0 && Number(allowance) >= totalCostInUsd,
+    [allowance, totalCostInUsd],
+  );
+  const sufficientLiquidity = useMemo(
+    () => totalAvailableInActiveToken >= size,
+    [totalAvailableInActiveToken, size],
+  );
+
   return (
     <>
       {buyConfirmationModalOpen && (
@@ -395,25 +412,14 @@ const Options: React.FC = () => {
                 size='large'
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 label={
-                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                    ? Number(
-                        formatUnits(
-                          optionPool?.totalAvailable ?? 0,
-                          underlying.decimals,
-                        ),
-                      ) /
-                        (optionType === OptionType.Call
-                          ? 1
-                          : underlyingPrice) >=
-                      size
+                  sufficientAllowance
+                    ? sufficientLiquidity
                       ? 'Buy Option'
                       : 'Insufficient Liquidity'
                     : `Approve ${underlying.symbol}`
                 }
                 onClick={() =>
-                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                    ? handleBuyOption()
-                    : onApprove()
+                  sufficientAllowance ? handleBuyOption() : onApprove()
                 }
               />
             </Box>
