@@ -308,11 +308,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       lineHeight: 1,
       fontWeight: 'bold',
     },
-    [breakpoints.down('xs')]: {
-      minHeight: 'calc(100vh - 290px)',
+    [breakpoints.down('sm')]: {
+      minHeight: 'calc(100vh - 275px)',
       '& h1': {
         marginTop: 20,
       },
+    },
+    [breakpoints.down('xs')]: {
+      minHeight: 'calc(100vh - 290px)',
     },
   },
   findPositionContainer: {
