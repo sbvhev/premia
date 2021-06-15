@@ -350,7 +350,7 @@ const LockPremiaCard: React.FC = () => {
   const transact = useTransact();
 
   const [checkIsOn, setCheckIsOn] = useState(false);
-  const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
+  const [shouldApprove] = useState(isHardwareWallet);
   const [lockingMode, setLockingMode] = useState(true);
   const [signedAlready, setSignedAlready] = useState(false);
   const [approvedAlready, setApprovedAlready] = useState(false);
@@ -380,6 +380,19 @@ const LockPremiaCard: React.FC = () => {
     [xPremiaLockedUntil, xPremiaStakePeriod],
   );
 
+  const lockPeriodIsOver = useMemo(
+    () =>
+      xPremiaLockedUntil && xPremiaLockedUntil.toNumber() !== 0
+        ? xPremiaLockedUntil.toNumber() * 1000 < Date.now()
+        : false,
+    [xPremiaLockedUntil],
+  );
+
+  const lockedXPremia = useMemo(
+    () => (xPremiaLocked ? Number(formatBigNumber(xPremiaLocked)) : false),
+    [xPremiaLocked],
+  );
+
   const { allowance: lockingAllowance, onApprove: onApproveLocking } =
     useApproval(
       contracts?.PremiaStaking?.address as string,
@@ -387,15 +400,14 @@ const LockPremiaCard: React.FC = () => {
     );
 
   useEffect(() => {
-    if (lockingAllowance) {
-      setShouldApprove(true);
-    }
-  }, [lockingAllowance]);
-
-  useEffect(() => {
-    if (!lockAmount) {
+    if (!lockingAllowance) {
       setApprovedAlready(false);
-    } else if (lockingAllowance && lockingAllowance >= parseFloat(lockAmount)) {
+    } else if (
+      lockAmount &&
+      parseFloat(lockAmount) !== 0 &&
+      lockingAllowance &&
+      lockingAllowance >= parseFloat(lockAmount)
+    ) {
       setApprovedAlready(true);
     }
   }, [lockingAllowance, lockAmount]);
@@ -587,14 +599,14 @@ const LockPremiaCard: React.FC = () => {
 
   const handleUnlock = useCallback(async () => {
     if (!lockAmount || parseFloat(lockAmount) === 0) return;
-    if (progress > 0) return;
+    if (!lockPeriodIsOver) return;
 
     const amount = parseEther(lockAmount);
 
     transact(contracts?.PremiaFeeDiscount?.unstake(lockAmount), {
       description: `Unlock ${formatBigNumber(amount)} locked xPREMIA`,
     });
-  }, [contracts?.PremiaFeeDiscount, lockAmount, progress, transact]);
+  }, [contracts?.PremiaFeeDiscount, lockAmount, lockPeriodIsOver, transact]);
 
   const activeOnClickAction = useMemo(() => {
     if (checkIsOn || shouldApprove) {
@@ -645,7 +657,11 @@ const LockPremiaCard: React.FC = () => {
   ]);
 
   const unlockingLabel = useMemo(() => {
-    if (progress > 0) {
+    if (!lockedXPremia) {
+      return 'No xPremia to unlock';
+    }
+
+    if (lockedXPremia && !lockPeriodIsOver) {
       return 'Still locked';
     }
 
@@ -653,12 +669,12 @@ const LockPremiaCard: React.FC = () => {
       return 'Enter amount';
     }
 
-    if (xPremiaLocked && parseEther(lockAmount) > xPremiaLocked) {
+    if (lockedXPremia && parseEther(lockAmount).gt(xPremiaLocked)) {
       return 'Enter valid amount';
     }
 
     return 'Unlock';
-  }, [lockAmount, progress, xPremiaLocked]);
+  }, [lockAmount, lockPeriodIsOver, lockedXPremia, xPremiaLocked]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -884,7 +900,7 @@ const LockPremiaCard: React.FC = () => {
                   !lockAmount ||
                   parseFloat(lockAmount) === 0 ||
                   (xPremiaLocked && parseEther(lockAmount).gt(xPremiaLocked)) ||
-                  progress > 0
+                  !lockPeriodIsOver
                 }
                 onClick={handleUnlock}
               />
@@ -912,7 +928,7 @@ const LockPremiaCard: React.FC = () => {
                       height='20'
                       rx='4'
                       fill='#5294FF'
-                      fill-opacity='0.2'
+                      fillOpacity='0.2'
                     />
                     <rect
                       x='0.5'
@@ -921,7 +937,7 @@ const LockPremiaCard: React.FC = () => {
                       height='19'
                       rx='3.5'
                       stroke='#5294FF'
-                      stroke-opacity='0.5'
+                      strokeOpacity='0.5'
                     />
                     <path
                       d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'

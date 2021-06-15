@@ -335,7 +335,7 @@ const StakePremiaCard: React.FC = () => {
 
   const [stakingMode, setStakingMode] = useState(true);
   const [checkIsOn, setCheckIsOn] = useState(false);
-  const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
+  const [shouldApprove] = useState(isHardwareWallet);
   const [signedAlready, setSignedAlready] = useState(false);
   const [approvedAlready, setApprovedAready] = useState(false);
   const [permitState, setPermitState] = useState<PermitState>({});
@@ -395,15 +395,11 @@ const StakePremiaCard: React.FC = () => {
   );
 
   useEffect(() => {
-    if (stakingAllowance) {
-      setShouldApprove(true);
-    }
-  }, [stakingAllowance]);
-
-  useEffect(() => {
-    if (!stakeAmount) {
+    if (!stakingAllowance) {
       setApprovedAready(false);
     } else if (
+      stakeAmount &&
+      parseFloat(stakeAmount) !== 0 &&
       stakingAllowance &&
       stakingAllowance >= parseFloat(stakeAmount)
     ) {
@@ -439,7 +435,7 @@ const StakePremiaCard: React.FC = () => {
   );
 
   const signPermit = useCallback(async () => {
-    if (!stakeAmount) return;
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
 
     const token = contracts?.PremiaErc20?.address as string;
     const spender = contracts?.PremiaStaking.address as string;
@@ -470,7 +466,7 @@ const StakePremiaCard: React.FC = () => {
         setStakeAmount(formatEther(xPremiaBalance));
       }
     }
-  }, [stakingMode, premiaBalance, xPremiaBalance, setStakeAmount]);
+  }, [stakingMode, premiaBalance, xPremiaBalance]);
 
   const handleToggleCheck = useCallback(
     () => setCheckIsOn(!checkIsOn),
@@ -478,7 +474,6 @@ const StakePremiaCard: React.FC = () => {
   );
 
   const handleStakeWithApproval = useCallback(async () => {
-    console.log('with approval');
     if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
 
     const amount = parseEther(stakeAmount);
@@ -562,8 +557,6 @@ const StakePremiaCard: React.FC = () => {
     }
 
     if (signedAlready || approvedAlready) {
-      console.log('this');
-      console.log(signedAlready, approvedAlready);
       return 'Stake';
     }
 
@@ -582,7 +575,7 @@ const StakePremiaCard: React.FC = () => {
       return 'Enter amount';
     }
 
-    if (xPremiaBalance && parseEther(stakeAmount) > xPremiaBalance) {
+    if (xPremiaBalance && parseEther(stakeAmount).gt(xPremiaBalance)) {
       return 'Not enough xPremia';
     }
 
@@ -750,7 +743,7 @@ const StakePremiaCard: React.FC = () => {
                       height='20'
                       rx='4'
                       fill='#5294FF'
-                      fill-opacity='0.2'
+                      fillOpacity='0.2'
                     />
                     <rect
                       x='0.5'
@@ -759,7 +752,7 @@ const StakePremiaCard: React.FC = () => {
                       height='19'
                       rx='3.5'
                       stroke='#5294FF'
-                      stroke-opacity='0.5'
+                      strokeOpacity='0.5'
                     />
                     <path
                       d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
