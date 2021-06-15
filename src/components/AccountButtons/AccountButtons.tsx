@@ -239,6 +239,9 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode, mobile });
   const [countDownStr, setCountDownStr] = useState('');
+  const doNotShowDisclaimerAgain = localStorage.getItem(
+    'doNotShowDisclaimerAgain',
+  );
   const getCountDownStr = () => {
     const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
     setCountDownStr(
@@ -458,8 +461,14 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
             mobile && classes.fullWidth,
             classes.connectWalletButton,
           )}
-          onClick={() => setConfirmTermsModalOpen(true)}
-        >
+          onClick={() => {
+            if (doNotShowDisclaimerAgain) {
+              onboard?.walletSelect();
+            } else {
+              setConfirmTermsModalOpen(true)
+            }
+          }
+        }>
           <ConnectWallet className={classes.walletIcon} />
           Connect wallet
         </Button>
