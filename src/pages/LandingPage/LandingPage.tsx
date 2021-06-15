@@ -1320,7 +1320,10 @@ const LandingPage: React.FC = () => {
     <Grid container className={classes.mainContainer}>
       <AppBar
         position='static'
-        className={cn(classes.appBar, scrollPos < 50 ? classes.expanded : '')}
+        className={cn(
+          classes.appBar,
+          scrollPos < 50 && !mobile ? classes.expanded : '',
+        )}
       >
         <Toolbar>
           <Container className={classes.container}>
