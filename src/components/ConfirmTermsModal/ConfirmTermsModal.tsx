@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Typography, Modal, Box, Checkbox, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
@@ -146,16 +146,6 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
-
-  useEffect(() => {
-    const doNotShowDisclaimerAgain = localStorage.getItem(
-      'doNotShowDisclaimerAgain',
-    );
-    if (doNotShowDisclaimerAgain) {
-      onboard?.walletSelect();
-      onClose();
-    }
-  });
 
   const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (checkIsOn) {
