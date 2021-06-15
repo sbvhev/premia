@@ -1,9 +1,11 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
 
+import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
@@ -19,7 +21,7 @@ import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    maxWidth: 489,
+    maxWidth: 578,
     backgroundColor: 'transparent',
   },
   topIconWraper: {
@@ -122,7 +124,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   mainCard: {
     boxSizing: 'border-box',
-    display: 'flex',
     width: '100%',
     height: '100%',
     backgroundColor: palette.background.paper,
@@ -136,6 +137,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'space-between',
     textAlign: 'center',
     marginTop: 80,
+    padding: '0 73px',
     fontFamily: 'DM Sans',
     '& h2': {
       fontSize: 28,
@@ -144,15 +146,17 @@ const useStyles = makeStyles(({ palette }) => ({
       color: palette.text.primary,
     },
     '& > p': {
-      margin: '11px 50px 21px',
+      margin: '19px 0 4px',
       fontSize: 14,
-      lineHeight: '16px',
+      lineHeight: '24px',
     },
-    '& button': {
-      maxWidth: 220,
-      height: 45,
-      margin: '0 auto 30px',
-    }
+    '& a': {
+      color: palette.text.secondary,
+      textDecoration: 'underline',
+      cursor: 'pointer',
+      fontSize: 14,
+      lineHeight: '18px'
+    },
   },
   exitContainer: {
     position: 'absolute',
@@ -172,13 +176,106 @@ const useStyles = makeStyles(({ palette }) => ({
     },
   },
   prizeContainer: {
-
+    border: `1px solid ${palette.divider}`,
+    borderRadius: 12,
+    marginTop: 28,
+    padding: '12px 30px 17px 19px',
+    '& > div': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      '& h3': {
+        fontSize: 16,
+        fontWeight: 700,
+      },
+      '& > div': {
+        display: 'flex',
+        width: '32%',
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'relative',
+        padding: '0 13px',
+        '&:first-child': {
+          '& > div:first-child': {
+            background:
+              'linear-gradient(115.58deg, #FFA15E 8.45%, #EFFF8E 101.04%)',
+            opacity: (props: any) => (props.darkMode ? 0.1 : 0.2)
+          },
+          '& p': {
+            background:
+              'linear-gradient(115.58deg, #FF5E5E 8.45%, #FFED8E 101.04%)',
+            WebkitBackgroundClip: 'text',
+            textFillColor: 'transparent',
+          }
+        },
+        '&:nth-child(2)': {
+          '& > div:first-child': {
+            background:
+              'linear-gradient(115.58deg, #DEDEDE 8.45%, #CCCCCC 101.04%)',
+            opacity: (props: any) => (props.dark ? 0.1 : 0.3),
+          },
+          '& p': {
+            background:
+              'linear-gradient(115.58deg, #858585 8.45%, #E6E6E6 101.04%)',
+            WebkitBackgroundClip: 'text',
+            textFillColor: 'transparent',
+          }
+        },
+        '&:nth-child(3)': {
+          '& > div:first-child': {
+            background:
+              'linear-gradient(115.58deg, rgba(196, 111, 85, 0.1) 8.45%, rgba(153, 52, 52, 0.1) 101.04%)',
+          },
+          '& p': {
+            background:
+              'linear-gradient(115.58deg, #C46F55 8.45%, #993434 101.04%)',
+            WebkitBackgroundClip: 'text',
+            textFillColor: 'transparent',
+          }
+        },
+        '& > div:first-child': {
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          borderRadius: 8,
+        },
+        '& p': {
+          fontSize: 14,
+          lineHeight: '18px',
+          fontWeight: 'bold'
+        },
+        '& > div:nth-child(2)': {
+          display: 'flex',
+          alignItems: 'center',
+          '& img': {
+            marginRight: 3
+          },
+          '& p': {
+            fontWeight: 'normal'
+          }
+        }
+      }
+    }
   },
   buttonsContainer: {
-
+    margin: '19px 0 25px',
+    '& button': {
+      width: 150,
+      height: 45,
+      fontSize: 16,
+      '&:first-child': {
+        marginRight: 8
+      },
+      '&:last-child': {
+        color: palette.text.secondary
+      }
+    }
   },
   socialContainer: {
-    marginTop: 20,
+    marginTop: 15,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -234,10 +331,12 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
   open,
   onClose,
 }) => {
-  const classes = useStyles();
+  const [darkMode] = useDarkModeManager();
+  const classes = useStyles({ darkMode });
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const { palette } = theme;
+  const history = useHistory();
 
   return (
     <Modal
@@ -293,7 +392,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                     Premia trading competition
                   </Typography>
                   <Box className={classes.prizeContainer}>
-                    <Box>
+                    <Box mb={1}>
                       <Typography component='h3'>
                         Prizes
                       </Typography>
@@ -302,17 +401,26 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                     <Box>
                       <Box>
                         <Box width={1} height={1} />
-                        <img src={PrizeFirst} alt='Prize First' />
+                        <Box>
+                          <img src={PrizeFirst} alt='Prize First' />
+                          <Typography>1</Typography>
+                        </Box>
                         <Typography>$50,000</Typography>
                       </Box>
                       <Box>
                         <Box width={1} height={1} />
-                        <img src={PrizeSecond} alt='Prize Second' />
+                        <Box>
+                          <img src={PrizeSecond} alt='Prize Second' />
+                          <Typography>2</Typography>
+                        </Box>
                         <Typography>$25,000</Typography>
                       </Box>
                       <Box>
                         <Box width={1} height={1} />
-                        <img src={PrizeThird} alt='Prize Third' />
+                        <Box>
+                          <img src={PrizeThird} alt='Prize Third' />
+                          <Typography>3</Typography>
+                        </Box>
                         <Typography>$15,000</Typography>
                       </Box>
                     </Box>
@@ -322,19 +430,35 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   </Typography>
                   <Link>Competition rules</Link>
                   <Box className={classes.buttonsContainer}>
-                    <Button variant='contained' color='primary'>I'm in</Button>
-                    <Button variant='outlined'>Later</Button>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => {
+                        history.push('/trading-competition');
+                        localStorage.setItem('tradingModalStatus', 'closed');
+                      }}
+                    >
+                      I'm in
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      onClick={() => {
+                        onClose();
+                      }}
+                    >
+                      Later
+                    </Button>
                   </Box>
-                  <Divider />
-                  <Box className={classes.socialContainer}>
-                    <Typography>Share on:</Typography>
-                    <Box>
-                      <Container fixed><TwitterIcon /></Container>
-                      <Container fixed><TelegramIcon /></Container>
-                      <Container fixed><FacebookIcon /></Container>
-                      <Container fixed><DiscordIcon /></Container>
-                      <Container fixed><SocialIcon1 /></Container>
-                    </Box>
+                </Box>
+                <Divider />
+                <Box className={classes.socialContainer}>
+                  <Typography>Share on:</Typography>
+                  <Box>
+                    <Container fixed><TwitterIcon /></Container>
+                    <Container fixed><TelegramIcon /></Container>
+                    <Container fixed><FacebookIcon /></Container>
+                    <Container fixed><DiscordIcon /></Container>
+                    <Container fixed><SocialIcon1 /></Container>
                   </Box>
                 </Box>
               </Box>

@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom';
@@ -67,13 +67,23 @@ const TopLevelModals: React.FC = () => {
   const location = useLocation();
 
   const tradingModalStatus = localStorage.getItem('tradingModalStatus') || 'open';
-  const [ tradingModalOpen, setTradingModalOpen ] = useState(tradingModalStatus === 'open' && location.pathname !== '/');
+  const [ tradingModalOpen, setTradingModalOpen ] = useState(false);
+
+  useEffect(() => {
+    if (location.pathname !== '/' && tradingModalStatus === 'open') {
+      setTradingModalOpen(true);
+    }
+  }, [location.pathname, tradingModalStatus]);
+
 
   return (
     <>
       <TradingCompetitionModal
         open={tradingModalOpen}
-        onClose={() => setTradingModalOpen(false)}
+        onClose={() => {
+          setTradingModalOpen(false);
+          localStorage.setItem('tradingModalStatus', 'closed');
+        }}
       />
       <TransactionLoadingModal
         open={transactionLoadingOpen}
