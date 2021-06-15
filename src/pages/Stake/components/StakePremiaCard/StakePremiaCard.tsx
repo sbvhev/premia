@@ -403,7 +403,10 @@ const StakePremiaCard: React.FC = () => {
   useEffect(() => {
     if (!stakeAmount) {
       setApprovedAready(false);
-    } else if (stakingAllowance >= parseFloat(stakeAmount)) {
+    } else if (
+      stakingAllowance &&
+      stakingAllowance >= parseFloat(stakeAmount)
+    ) {
       setApprovedAready(true);
     }
   }, [stakingAllowance, stakeAmount]);
@@ -493,7 +496,6 @@ const StakePremiaCard: React.FC = () => {
       parseFloat(stakeAmount) === 0
     )
       return;
-
     const dateNow = Date.now();
     const expirationDate = permitState.permitDeadline * 1000;
     if (dateNow > expirationDate) {
@@ -560,6 +562,8 @@ const StakePremiaCard: React.FC = () => {
     }
 
     if (signedAlready || approvedAlready) {
+      console.log('this');
+      console.log(signedAlready, approvedAlready);
       return 'Stake';
     }
 

@@ -395,7 +395,7 @@ const LockPremiaCard: React.FC = () => {
   useEffect(() => {
     if (!lockAmount) {
       setApprovedAlready(false);
-    } else if (lockingAllowance >= parseFloat(lockAmount)) {
+    } else if (lockingAllowance && lockingAllowance >= parseFloat(lockAmount)) {
       setApprovedAlready(true);
     }
   }, [lockingAllowance, lockAmount]);
