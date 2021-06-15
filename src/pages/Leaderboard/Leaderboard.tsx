@@ -181,6 +181,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'absolute',
     top: 0,
     left: 0,
+    bottom: 0,
+    right: 0,
     zIndex: 2,
     border: '1px solid',
     borderImageSlice: 1,
@@ -423,7 +425,7 @@ const Leaderboard: React.FC = () => {
             return (
               <Box mb={2} key={index} className={cx(classes.mobileItem, account === user.toLowerCase() && classes.meRow)}>
                 {account === user.toLowerCase() &&
-                  <Box className={classes.meBack} width={1} height={1}>
+                  <Box className={classes.meBack}>
                     <img src={LeaderMe} alt='Me' />
                     <Typography>Me</Typography>
                   </Box>
@@ -502,7 +504,7 @@ const Leaderboard: React.FC = () => {
                 <TableRow key={index} className={cx(account === leaderItem.user.toLowerCase() && classes.meRow)}>
                   <TableCell>
                     {account === leaderItem.user.toLowerCase() &&
-                      <Box width={1} height={1} className={classes.meBack}>
+                      <Box className={classes.meBack}>
                         <img src={LeaderMe} alt='Me' />
                         <Typography>Me</Typography>
                       </Box>
