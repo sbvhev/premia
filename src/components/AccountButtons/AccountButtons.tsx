@@ -192,15 +192,31 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   tradingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginLeft: 5,
-    '& p': {
-      fontSize: 14,
-      fontWeight: 'bold',
-      lineHeight: '18px',
-      margin: 0,
+    overflow: 'hidden',
+    '& > div:hover, & > div:active': {
+      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      '& p': {
+        color: (props: any) =>
+          props.darkMode ? 'black !important' : 'white !important',
+        textFillColor: 'unset',
+        background: 'transparent',
+      },
+      '& svg path': {
+        fill: (props: any) =>
+          props.darkMode ? 'black !important' : 'white !important',
+      },
+    },
+    '& $accountInfo > div': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      marginLeft: 5,
+      '& p': {
+        fontSize: 14,
+        fontWeight: 'bold',
+        lineHeight: '18px',
+        margin: 0,
+      },
     },
   },
 
@@ -210,10 +226,21 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     textFillColor: 'transparent',
     paddingRight: 16,
     position: 'relative',
+
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+    },
+
     '& svg': {
       position: 'absolute',
       right: 0,
       top: 3,
+
+      '& path': {
+        fill: 'transparent',
+      },
     },
   },
 
@@ -239,6 +266,9 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode, mobile });
   const [countDownStr, setCountDownStr] = useState('');
+  const doNotShowDisclaimerAgain = localStorage.getItem(
+    'doNotShowDisclaimerAgain',
+  );
   const getCountDownStr = () => {
     const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
     setCountDownStr(
@@ -268,7 +298,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
 
       <Box
         display='flex'
-        className={classes.account}
+        className={cx(classes.account, classes.tradingContainer)}
         width={mobile ? 1 : 'auto'}
         my={mobile ? 1.25 : 0}
         mx={mobile ? 1.25 : 1.25}
@@ -288,7 +318,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           }}
         >
           <ClockIcon />
-          <Box height={1} className={classes.tradingContainer}>
+          <Box height={1}>
             <Typography className={classes.tradingCompetition}>
               Trading competition <UpRightArrow />
             </Typography>
@@ -302,6 +332,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           borderLeft={1}
           borderColor={theme.palette.divider}
           className={classes.leaderboard}
+          onClick={() => {
+            history.push('/leaderboard');
+
+            if (onHide) {
+              onHide();
+            }
+          }}
         >
           <Typography>Leaderboard</Typography>
         </Box>
@@ -451,7 +488,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
             mobile && classes.fullWidth,
             classes.connectWalletButton,
           )}
-          onClick={() => setConfirmTermsModalOpen(true)}
+          onClick={() => {
+            if (doNotShowDisclaimerAgain) {
+              onboard?.walletSelect();
+            } else {
+              setConfirmTermsModalOpen(true);
+            }
+          }}
         >
           <ConnectWallet className={classes.walletIcon} />
           Connect wallet

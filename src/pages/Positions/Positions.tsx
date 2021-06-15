@@ -14,7 +14,6 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import CallMadeIcon from '@material-ui/icons/CallMade';
 import Moment from 'moment';
 import cx from 'classnames';
 
@@ -312,11 +311,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       lineHeight: 1,
       fontWeight: 'bold',
     },
-    [breakpoints.down('xs')]: {
-      minHeight: 'calc(100vh - 290px)',
+    [breakpoints.down('sm')]: {
+      minHeight: 'calc(100vh - 275px)',
       '& h1': {
         marginTop: 20,
       },
+    },
+    [breakpoints.down('xs')]: {
+      minHeight: 'calc(100vh - 290px)',
     },
   },
   findPositionContainer: {
@@ -1274,7 +1276,7 @@ const Positions: React.FC = () => {
               )}
             </Container>
           </Box>
-          <Grid
+          {/* Hide until Position Guide completed <Grid
             container
             alignItems='center'
             className={classes.findPositionContainer}
@@ -1288,7 +1290,7 @@ const Positions: React.FC = () => {
             >
               Position Guide
             </Button>
-          </Grid>
+          </Grid> */}
         </Box>
       ) : (
         <>

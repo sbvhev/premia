@@ -40,7 +40,10 @@ const SelectTokenTabs: React.FC = () => {
       onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
         const newToken = tabs[newValue].token;
         setUnderlying(newToken);
-        setStrikePrice(Math.round(prices[newToken.symbol]));
+
+        if (prices[newToken.symbol]) {
+          setStrikePrice(Math.round(prices[newToken.symbol]));
+        }
       }}
     />
   );

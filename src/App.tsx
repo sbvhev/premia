@@ -32,7 +32,8 @@ import {
   Positions,
   LandingPage,
   PositionGuide,
-  TradingCompetition
+  TradingCompetition,
+  Leaderboard
 } from './pages';
 import {
   TransactionLoadingModal,
@@ -163,6 +164,12 @@ const App: React.FC = () => {
         <Route exact path='/trading-competition'>
           <PageWithSidebar>
             <TradingCompetition />
+          </PageWithSidebar>
+        </Route>
+
+        <Route exact path='/leaderboard'>
+          <PageWithSidebar>
+            <Leaderboard />
           </PageWithSidebar>
         </Route>
 

@@ -192,7 +192,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             {!mobile ? (
               <SwitchWithGlider
                 elements={[...navigationItems]}
-                defaultIndex={pageNavigationIndex}
+                defaultIndex={
+                  pageNavigationIndex === undefined ? -1 : pageNavigationIndex
+                }
                 marginBetweenSwitches={4}
                 gliderWidth={180}
                 gliderHeight={47}
@@ -201,7 +203,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             ) : (
               <SwitchWithGlider
                 elements={navigationItems}
-                defaultIndex={pageNavigationIndex}
+                defaultIndex={
+                  pageNavigationIndex === undefined ? -1 : pageNavigationIndex
+                }
                 marginBetweenSwitches={4}
                 gliderWidth={'100%'}
                 gliderHeight={47}

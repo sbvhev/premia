@@ -1,5 +1,6 @@
 export { default as Options } from './Options';
 export { default as Stake } from './Stake';
+export { default as Leaderboard } from './Leaderboard';
 export { default as Vault } from './Vault';
 export { default as Positions } from './Positions';
 export { default as LandingPage } from './LandingPage';

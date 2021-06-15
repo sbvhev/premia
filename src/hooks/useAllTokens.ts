@@ -19,14 +19,27 @@ export function useAllTokens() {
     },
   });
 
+  const { data: rinkebyTokenPairsData } = useQuery(getTokenPairs, {
+    variables: {
+      baseAddress: DAI[ChainId.RINKEBY].address.toLowerCase(),
+    },
+  });
+
   const tokenPairs: TokenPair[] = useMemo(
     () => get(tokenPairsData, 'tokenPairs') || [],
     [tokenPairsData],
   );
 
+  const rinkebyTokenPairs: TokenPair[] = useMemo(
+    () => get(rinkebyTokenPairsData, 'tokenPairs') || [],
+    [rinkebyTokenPairsData],
+  );
+
   const allTokens: Token[] = useMemo(() => {
-    return tokenPairs.map(({ underlying }) => underlying);
-  }, [tokenPairs]);
+    return (tokenPairs.length ? tokenPairs : rinkebyTokenPairs).map(
+      ({ underlying }) => underlying,
+    );
+  }, [tokenPairs, rinkebyTokenPairs]);
 
   return [base, ...allTokens];
 }
