@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
@@ -7,7 +7,6 @@ import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
 import { useWeb3 } from 'state/application/hooks';
-import { useDeviceWidth } from 'hooks';
 
 import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 import SidebarItem from './SidebarItem';

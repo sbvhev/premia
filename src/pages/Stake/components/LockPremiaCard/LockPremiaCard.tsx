@@ -43,7 +43,7 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    height: '632px',
+    // height: '662px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
@@ -56,7 +56,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    height: '645px',
+    minHeight: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -65,6 +65,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+
     width: '335px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
@@ -132,6 +133,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    height: '330px',
     padding: '0 16px 12px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
@@ -302,11 +304,17 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: '14px',
       color: palette.text.secondary,
     },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.text.primary,
+      },
+    },
   },
   switchButtonLeft: {
     marginRight: 7,
   },
   activeSwitch: {
+    cursor: 'default',
     '& svg': {
       marginRight: 8,
     },
@@ -317,6 +325,11 @@ const useStyles = makeStyles(({ palette }) => ({
       fontWeight: 700,
       fontSize: '14px',
       color: palette.primary.main,
+    },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
     },
   },
 }));
@@ -340,7 +353,7 @@ const LockPremiaCard: React.FC = () => {
   const [shouldApprove, setShouldApprove] = useState(isHardwareWallet);
   const [lockingMode, setLockingMode] = useState(true);
   const [signedAlready, setSignedAlready] = useState(false);
-  const [approvedAready, setApprovedAready] = useState(false);
+  const [approvedAlready, setApprovedAlready] = useState(false);
   const [permitState, setPermitState] = useState<PermitState>({});
   const [lockAmount, setLockAmount] = useState('');
   const [lockupMonths, setLockupMonths] = useState<number | null>(null);
@@ -367,6 +380,8 @@ const LockPremiaCard: React.FC = () => {
     [xPremiaLockedUntil, xPremiaStakePeriod],
   );
 
+  console.log('prog', progress);
+
   const { allowance: lockingAllowance, onApprove: onApproveLocking } =
     useApproval(
       contracts?.PremiaStaking?.address as string,
@@ -381,9 +396,9 @@ const LockPremiaCard: React.FC = () => {
 
   useEffect(() => {
     if (!lockAmount) {
-      setApprovedAready(false);
+      setApprovedAlready(false);
     } else if (lockingAllowance >= parseFloat(lockAmount)) {
-      setApprovedAready(true);
+      setApprovedAlready(true);
     }
   }, [lockingAllowance, lockAmount]);
 
@@ -397,9 +412,12 @@ const LockPremiaCard: React.FC = () => {
         alignItems='center'
         justifyContent='center'
         className={cn(classes.switchButton, classes.switchButtonLeft, {
-          [classes.activeSwitch]: !lockingMode,
+          [classes.activeSwitch]: lockingMode,
         })}
-        onClick={() => setLockingMode(false)}
+        onClick={() => {
+          setLockingMode(true);
+          setLockAmount('');
+        }}
       >
         <ButtonBase>
           <Typography>Lock</Typography>
@@ -419,9 +437,12 @@ const LockPremiaCard: React.FC = () => {
         alignItems='center'
         justifyContent='center'
         className={cn(classes.switchButton, {
-          [classes.activeSwitch]: lockingMode,
+          [classes.activeSwitch]: !lockingMode,
         })}
-        onClick={() => setLockingMode(true)}
+        onClick={() => {
+          setLockingMode(false);
+          setLockAmount('');
+        }}
       >
         <ButtonBase>
           <Typography>Unlock</Typography>
@@ -562,6 +583,7 @@ const LockPremiaCard: React.FC = () => {
         )} xPREMIA for fee discounts`,
       },
     );
+    setSignedAlready(false);
   }, [contracts, transact, permitState, lockAmount, lockupMonths]);
 
   const handleUnlock = useCallback(async () => {
@@ -575,34 +597,68 @@ const LockPremiaCard: React.FC = () => {
   }, [contracts, lockAmount, transact]);
 
   const activeOnClickAction = useMemo(() => {
-    if (lockingMode) {
-      return handleUnlock;
+    if (checkIsOn || shouldApprove) {
+      return approvedAlready ? handleLockWithApproval : onApproveLocking;
     }
-
-    return !signedAlready ? signPermit : handleLockWithPermit;
+    return signedAlready ? handleLockWithPermit : signPermit;
   }, [
-    lockingMode,
+    checkIsOn,
+    shouldApprove,
     signedAlready,
-    signPermit,
     handleLockWithPermit,
-    handleUnlock,
+    signPermit,
+    approvedAlready,
+    handleLockWithApproval,
+    onApproveLocking,
   ]);
 
-  const activeLabel = useMemo(() => {
+  const lockingLabel = useMemo(() => {
     if (!lockupMonths) {
-      return 'Enter period';
+      return 'Select lock period';
     }
 
     if (!lockAmount || parseFloat(lockAmount) === 0) {
       return 'Enter amount';
     }
 
-    if (lockingMode) {
-      return 'Unlock';
+    if (xPremiaBalance && parseEther(lockAmount).gt(xPremiaBalance)) {
+      return 'Not enough xPremia';
     }
 
-    return !signedAlready ? 'Sign Permit 1/2' : 'Lock';
-  }, [lockupMonths, lockAmount, lockingMode, signedAlready]);
+    if ((checkIsOn || shouldApprove) && !approvedAlready) {
+      return 'Approve 1/2';
+    }
+
+    if (signedAlready || approvedAlready) {
+      return 'Lock';
+    }
+
+    return 'Sign permit 1/2';
+  }, [
+    lockupMonths,
+    lockAmount,
+    xPremiaBalance,
+    checkIsOn,
+    shouldApprove,
+    approvedAlready,
+    signedAlready,
+  ]);
+
+  const unlockingLabel = useMemo(() => {
+    if (progress > 0) {
+      return 'Lock period is not over';
+    }
+
+    if (!lockAmount || parseFloat(lockAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (xPremiaLocked && parseEther(lockAmount) > xPremiaLocked) {
+      return 'Enter valid amount';
+    }
+
+    return 'Unlock';
+  }, [lockAmount, progress, xPremiaLocked]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -654,106 +710,108 @@ const LockPremiaCard: React.FC = () => {
         >
           <Box
             width={1}
-            marginBottom={2}
+            marginBottom={!mobile ? 'auto' : 2}
             borderRadius={10}
             padding='5px'
             border={`1px solid ${theme.palette.divider}`}
           >
             <SwitchWithGlider
-              gliderWidth={165}
+              gliderWidth={!mobile ? 165 : 152}
               gliderHeight={40}
-              marginBetweenSwitches={7}
-              defaultIndex={lockingMode ? 1 : 0}
+              marginBetweenSwitches={!mobile ? 7 : 0}
+              defaultIndex={lockingMode ? 0 : 1}
               elements={[StakeButton, UnstakeButton]}
             />
           </Box>
 
-          <Box className={classes.col}>
-            <Box
-              display='flex'
-              style={{ margin: '0 8px 2px', justifyContent: 'flex-start' }}
-            >
-              <Typography
-                component='p'
-                color='textPrimary'
-                className={classes.elementHeader}
+          {lockingMode && (
+            <Box className={classes.col}>
+              <Box
+                display='flex'
+                style={{ margin: '0 8px 2px', justifyContent: 'flex-start' }}
               >
-                Lock period
-              </Typography>
+                <Typography
+                  component='p'
+                  color='textPrimary'
+                  className={classes.elementHeader}
+                >
+                  Lock period
+                </Typography>
+              </Box>
+              <Box className={classes.borderedBox} onClick={handleOpenSelector}>
+                <Typography
+                  component='p'
+                  color={lockupMonths ? 'textPrimary' : 'textSecondary'}
+                  className={classes.subTitle}
+                  style={{ marginLeft: '10px' }}
+                >
+                  {!lockupMonths
+                    ? 'Select period'
+                    : lockupMonths === 1
+                    ? '1 Month'
+                    : `${lockupMonths} Months`}
+                </Typography>
+                <CalendarIcon
+                  fill={palette.secondary.main}
+                  style={{ marginRight: '10px' }}
+                />
+              </Box>
+              <Menu
+                id='simple-menu'
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {(!xPremiaLockedUntil ||
+                  moment
+                    .unix(xPremiaLockedUntil.toNumber())
+                    .diff(moment(), 'months') < 1) && (
+                  <MenuItem
+                    onClick={() => handleSetLockupMonths(1)}
+                    className={classes.selectionItem}
+                    style={!mobile ? { width: '350px' } : { width: '315px' }}
+                  >
+                    1 Month
+                  </MenuItem>
+                )}
+
+                {(!xPremiaLockedUntil ||
+                  moment
+                    .unix(xPremiaLockedUntil.toNumber())
+                    .diff(moment(), 'months') < 3) && (
+                  <MenuItem
+                    onClick={() => handleSetLockupMonths(3)}
+                    className={classes.selectionItem}
+                    style={!mobile ? { width: '350px' } : { width: '315px' }}
+                  >
+                    3 Months
+                  </MenuItem>
+                )}
+
+                {(!xPremiaLockedUntil ||
+                  moment
+                    .unix(xPremiaLockedUntil.toNumber())
+                    .diff(moment(), 'months') < 6) && (
+                  <MenuItem
+                    onClick={() => handleSetLockupMonths(6)}
+                    className={classes.selectionItem}
+                    style={!mobile ? { width: '350px' } : { width: '315px' }}
+                  >
+                    6 Months
+                  </MenuItem>
+                )}
+
+                <MenuItem
+                  onClick={() => handleSetLockupMonths(12)}
+                  className={classes.selectionItemLast}
+                  style={!mobile ? { width: '350px' } : { width: '315px' }}
+                >
+                  12 Months
+                </MenuItem>
+              </Menu>
             </Box>
-            <Box className={classes.borderedBox} onClick={handleOpenSelector}>
-              <Typography
-                component='p'
-                color={lockupMonths ? 'textPrimary' : 'textSecondary'}
-                className={classes.subTitle}
-                style={{ marginLeft: '10px' }}
-              >
-                {!lockupMonths
-                  ? 'Select period'
-                  : lockupMonths === 1
-                  ? '1 Month'
-                  : `${lockupMonths} Months`}
-              </Typography>
-              <CalendarIcon
-                fill={palette.secondary.main}
-                style={{ marginRight: '10px' }}
-              />
-            </Box>
-            <Menu
-              id='simple-menu'
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              {(!xPremiaLockedUntil ||
-                moment
-                  .unix(xPremiaLockedUntil.toNumber())
-                  .diff(moment(), 'months') < 1) && (
-                <MenuItem
-                  onClick={() => handleSetLockupMonths(1)}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  1 Month
-                </MenuItem>
-              )}
-
-              {(!xPremiaLockedUntil ||
-                moment
-                  .unix(xPremiaLockedUntil.toNumber())
-                  .diff(moment(), 'months') < 3) && (
-                <MenuItem
-                  onClick={() => handleSetLockupMonths(3)}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  3 Months
-                </MenuItem>
-              )}
-
-              {(!xPremiaLockedUntil ||
-                moment
-                  .unix(xPremiaLockedUntil.toNumber())
-                  .diff(moment(), 'months') < 6) && (
-                <MenuItem
-                  onClick={() => handleSetLockupMonths(6)}
-                  className={classes.selectionItem}
-                  style={!mobile ? { width: '350px' } : { width: '315px' }}
-                >
-                  6 Months
-                </MenuItem>
-              )}
-
-              <MenuItem
-                onClick={() => handleSetLockupMonths(12)}
-                className={classes.selectionItemLast}
-                style={!mobile ? { width: '350px' } : { width: '315px' }}
-              >
-                12 Months
-              </MenuItem>
-            </Menu>
-          </Box>
+          )}
 
           <Box className={classes.col}>
             <Box
@@ -765,14 +823,16 @@ const LockPremiaCard: React.FC = () => {
                 color='textPrimary'
                 className={classes.elementHeader}
               >
-                Stake quantity
+                {lockingMode ? 'Lock quantity' : 'Unlock quantity'}
               </Typography>
               <Typography
                 component='p'
                 color='textSecondary'
                 className={classes.smallInfoText}
               >
-                {formatNumber(formatEther(xPremiaBalance))}
+                {`Max available: ${formatNumber(
+                  formatEther(lockingMode ? xPremiaBalance : xPremiaLocked),
+                )}`}
               </Typography>
             </Box>
 
@@ -802,84 +862,83 @@ const LockPremiaCard: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            {checkIsOn || shouldApprove ? (
+            {lockingMode ? (
               <ContainedButton
                 fullWidth
                 color='secondary'
-                label={
-                  lockAmount && parseFloat(lockAmount) !== 0 && lockupMonths
-                    ? !approvedAready
-                      ? 'Approve 1/2'
-                      : 'Lock'
-                    : `Enter ${lockupMonths ? 'Amount' : 'Period'}`
-                }
+                label={lockingLabel}
                 disabled={
-                  !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
+                  !lockAmount ||
+                  parseFloat(lockAmount) === 0 ||
+                  (xPremiaBalance && parseEther(lockAmount).gt(xPremiaBalance))
                 }
-                onClick={
-                  !approvedAready ? onApproveLocking : handleLockWithApproval
-                }
+                onClick={activeOnClickAction}
               />
             ) : (
               <ContainedButton
                 fullWidth
                 color='secondary'
-                label={activeLabel}
+                label={unlockingLabel}
                 disabled={
-                  !lockAmount || parseFloat(lockAmount) === 0 || !lockupMonths
+                  !lockAmount ||
+                  parseFloat(lockAmount) === 0 ||
+                  (xPremiaLocked && parseEther(lockAmount).gt(xPremiaLocked)) ||
+                  progress > 0
                 }
-                onClick={activeOnClickAction}
+                onClick={handleUnlock}
               />
             )}
           </Box>
-          <Box display='flex' width='100%' marginTop='12px'>
-            <Checkbox
-              checked={checkIsOn}
-              onChange={handleToggleCheck}
-              name='agreeToTerms'
-              size='small'
-              className={classes.checkbox}
-              icon={<CustomCheckBox />}
-              checkedIcon={
-                <svg
-                  width='20'
-                  height='20'
-                  viewBox='0 0 20 20'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <rect
+          {lockingMode && !lockingAllowance && (
+            <Box display='flex' width='100%' marginTop='12px'>
+              <Checkbox
+                checked={checkIsOn}
+                onChange={handleToggleCheck}
+                name='agreeToTerms'
+                size='small'
+                className={classes.checkbox}
+                icon={<CustomCheckBox />}
+                checkedIcon={
+                  <svg
                     width='20'
                     height='20'
-                    rx='4'
-                    fill='#5294FF'
-                    fill-opacity='0.2'
-                  />
-                  <rect
-                    x='0.5'
-                    y='0.5'
-                    width='19'
-                    height='19'
-                    rx='3.5'
-                    stroke='#5294FF'
-                    stroke-opacity='0.5'
-                  />
-                  <path
-                    d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
-                    fill='#5294FF'
-                  />
-                </svg>
-              }
-            />
-            <Typography
-              component='p'
-              color='textSecondary'
-              className={classes.hardwareWalletApprovalText}
-              style={mobile ? { fontSize: '11.5px' } : {}}
-            >
-              Use Approve (required by some hardware wallets)
-            </Typography>
-          </Box>
+                    viewBox='0 0 20 20'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <rect
+                      width='20'
+                      height='20'
+                      rx='4'
+                      fill='#5294FF'
+                      fill-opacity='0.2'
+                    />
+                    <rect
+                      x='0.5'
+                      y='0.5'
+                      width='19'
+                      height='19'
+                      rx='3.5'
+                      stroke='#5294FF'
+                      stroke-opacity='0.5'
+                    />
+                    <path
+                      d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
+                      fill='#5294FF'
+                    />
+                  </svg>
+                }
+              />
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.hardwareWalletApprovalText}
+                style={mobile ? { fontSize: '11.5px' } : {}}
+              >
+                Use Approve (required by some hardware wallets)
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <Box

@@ -40,20 +40,18 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    height: '567px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     backgroundColor: 'transparent',
-    margin: '12px 12px 50px',
+    margin: '12px 12px 30px',
   },
   borderedCard: {
     alignSelf: 'flex-end',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    minHeight: '645px',
     height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
@@ -290,11 +288,17 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: '14px',
       color: palette.text.secondary,
     },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.text.primary,
+      },
+    },
   },
   switchButtonLeft: {
     marginRight: 7,
   },
   activeSwitch: {
+    cursor: 'default',
     '& svg': {
       marginRight: 8,
     },
@@ -305,6 +309,11 @@ const useStyles = makeStyles(({ palette }) => ({
       fontWeight: 700,
       fontSize: '14px',
       color: palette.primary.main,
+    },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
     },
   },
 }));
@@ -350,9 +359,12 @@ const StakePremiaCard: React.FC = () => {
       alignItems='center'
       justifyContent='center'
       className={cn(classes.switchButton, classes.switchButtonLeft, {
-        [classes.activeSwitch]: !stakingMode,
+        [classes.activeSwitch]: stakingMode,
       })}
-      onClick={() => setStakingMode(false)}
+      onClick={() => {
+        setStakingMode(true);
+        setStakeAmount('0');
+      }}
     >
       <ButtonBase>
         <Typography>Stake</Typography>
@@ -369,9 +381,12 @@ const StakePremiaCard: React.FC = () => {
       alignItems='center'
       justifyContent='center'
       className={cn(classes.switchButton, {
-        [classes.activeSwitch]: stakingMode,
+        [classes.activeSwitch]: !stakingMode,
       })}
-      onClick={() => setStakingMode(true)}
+      onClick={() => {
+        setStakingMode(false);
+        setStakeAmount('0');
+      }}
     >
       <ButtonBase>
         <Typography>Unstake</Typography>
@@ -386,7 +401,9 @@ const StakePremiaCard: React.FC = () => {
   }, [stakingAllowance]);
 
   useEffect(() => {
-    if (stakeAmount && stakingAllowance >= parseFloat(stakeAmount)) {
+    if (!stakeAmount) {
+      setApprovedAready(false);
+    } else if (stakingAllowance >= parseFloat(stakeAmount)) {
       setApprovedAready(true);
     }
   }, [stakingAllowance, stakeAmount]);
@@ -441,7 +458,7 @@ const StakePremiaCard: React.FC = () => {
   }, [contracts, stakeAmount, web3, account, setPermitState, setSignedAlready]);
 
   const handleMax = useCallback(() => {
-    if (!stakingMode) {
+    if (stakingMode) {
       if (premiaBalance) {
         setStakeAmount(formatEther(premiaBalance));
       }
@@ -458,6 +475,7 @@ const StakePremiaCard: React.FC = () => {
   );
 
   const handleStakeWithApproval = useCallback(async () => {
+    console.log('with approval');
     if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
 
     const amount = parseEther(stakeAmount);
@@ -497,6 +515,7 @@ const StakePremiaCard: React.FC = () => {
         description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
       },
     );
+    setSignedAlready(false);
   }, [contracts, permitState, stakeAmount, transact]);
 
   const handleUnstake = useCallback(async () => {
@@ -511,31 +530,60 @@ const StakePremiaCard: React.FC = () => {
     });
   }, [contracts, stakeAmount, transact]);
 
-  const activeOnClickAction = useMemo(() => {
-    if (stakingMode) {
-      return handleUnstake;
+  const onClickAction = useMemo(() => {
+    if (checkIsOn || shouldApprove) {
+      return approvedAlready ? handleStakeWithApproval : onApproveStaking;
     }
-
-    return !signedAlready ? signPermit : handleStakeWithPermit;
+    return signedAlready ? handleStakeWithPermit : signPermit;
   }, [
-    stakingMode,
+    checkIsOn,
+    shouldApprove,
+    approvedAlready,
     signedAlready,
-    signPermit,
     handleStakeWithPermit,
-    handleUnstake,
+    signPermit,
+    handleStakeWithApproval,
+    onApproveStaking,
   ]);
 
-  const activeLabel = useMemo(() => {
+  const stakingLabel = useMemo(() => {
     if (!stakeAmount || parseFloat(stakeAmount) === 0) {
       return 'Enter amount';
     }
 
-    if (stakingMode) {
-      return 'Unstake';
+    if (premiaBalance && parseEther(stakeAmount).gt(premiaBalance)) {
+      return 'Not enough Premia';
     }
 
-    return !signedAlready ? 'Sign Permit 1/2' : 'Stake';
-  }, [stakeAmount, stakingMode, signedAlready]);
+    if ((checkIsOn || shouldApprove) && !approvedAlready) {
+      return 'Approve 1/2';
+    }
+
+    if (signedAlready || approvedAlready) {
+      return 'Stake';
+    }
+
+    return 'Sign permit 1/2';
+  }, [
+    stakeAmount,
+    premiaBalance,
+    checkIsOn,
+    shouldApprove,
+    signedAlready,
+    approvedAlready,
+  ]);
+
+  const unstakingLabel = useMemo(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (xPremiaBalance && parseEther(stakeAmount) > xPremiaBalance) {
+      return 'Not enough xPremia';
+    }
+
+    return 'Unstake';
+  }, [stakeAmount, xPremiaBalance]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -588,16 +636,16 @@ const StakePremiaCard: React.FC = () => {
         >
           <Box
             width={1}
-            marginBottom={11}
+            marginBottom={!mobile ? 'auto' : 1.5}
             borderRadius={10}
             padding='5px'
             border={`1px solid ${theme.palette.divider}`}
           >
             <SwitchWithGlider
-              gliderWidth={165}
+              gliderWidth={!mobile ? 165 : 152}
               gliderHeight={40}
-              marginBetweenSwitches={7}
-              defaultIndex={stakingMode ? 1 : 0}
+              marginBetweenSwitches={!mobile ? 7 : 0}
+              defaultIndex={stakingMode ? 0 : 1}
               elements={[StakeButton, UnstakeButton]}
             />
           </Box>
@@ -612,15 +660,15 @@ const StakePremiaCard: React.FC = () => {
                 color='textPrimary'
                 className={classes.elementHeader}
               >
-                Stake quantity
+                {stakingMode ? 'Stake quantity' : 'Unstake quantity'}
               </Typography>
               <Typography
                 component='p'
                 color='textSecondary'
                 className={classes.smallInfoText}
               >
-                {`Max size available: ${formatNumber(
-                  formatEther(stakingMode ? xPremiaBalance : premiaBalance),
+                {`Max available: ${formatNumber(
+                  formatEther(stakingMode ? premiaBalance : xPremiaBalance),
                 )}`}
               </Typography>
             </Box>
@@ -651,79 +699,81 @@ const StakePremiaCard: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            {!stakingMode && (checkIsOn || shouldApprove) ? (
+            {stakingMode ? (
               <ContainedButton
                 fullWidth
-                label={
-                  stakeAmount && parseFloat(stakeAmount) !== 0
-                    ? !approvedAlready
-                      ? 'Approve 1/2'
-                      : 'Stake'
-                    : 'Enter amount'
+                label={stakingLabel}
+                disabled={
+                  !stakeAmount ||
+                  parseFloat(stakeAmount) === 0 ||
+                  (premiaBalance && parseEther(stakeAmount).gt(premiaBalance))
                 }
-                disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
-                onClick={
-                  !approvedAlready ? onApproveStaking : handleStakeWithApproval
-                }
+                onClick={onClickAction}
               />
             ) : (
               <ContainedButton
                 fullWidth
-                label={activeLabel}
-                disabled={!stakeAmount || parseFloat(stakeAmount) === 0}
-                onClick={activeOnClickAction}
+                label={unstakingLabel}
+                disabled={
+                  !stakeAmount ||
+                  parseFloat(stakeAmount) === 0 ||
+                  (xPremiaBalance && parseEther(stakeAmount).gt(xPremiaBalance))
+                }
+                onClick={handleUnstake}
               />
             )}
           </Box>
 
-          <Box display='flex' width='100%' marginTop='12px'>
-            <Checkbox
-              checked={checkIsOn}
-              onChange={handleToggleCheck}
-              name='agreeToTerms'
-              size='small'
-              className={classes.checkbox}
-              icon={<CustomCheckBox />}
-              checkedIcon={
-                <svg
-                  width='20'
-                  height='20'
-                  viewBox='0 0 20 20'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <rect
+          {stakingMode && !stakingAllowance && (
+            <Box display='flex' width='100%' marginTop='12px'>
+              <Checkbox
+                checked={checkIsOn}
+                onChange={handleToggleCheck}
+                name='agreeToTerms'
+                size='small'
+                className={classes.checkbox}
+                icon={<CustomCheckBox />}
+                checkedIcon={
+                  <svg
                     width='20'
                     height='20'
-                    rx='4'
-                    fill='#5294FF'
-                    fill-opacity='0.2'
-                  />
-                  <rect
-                    x='0.5'
-                    y='0.5'
-                    width='19'
-                    height='19'
-                    rx='3.5'
-                    stroke='#5294FF'
-                    stroke-opacity='0.5'
-                  />
-                  <path
-                    d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
-                    fill='#5294FF'
-                  />
-                </svg>
-              }
-            />
-            <Typography
-              component='p'
-              color='textSecondary'
-              className={classes.hardwareWalletApprovalText}
-              style={mobile ? { fontSize: '11.5px' } : {}}
-            >
-              Use Approve (required by some hardware wallets)
-            </Typography>
-          </Box>
+                    viewBox='0 0 20 20'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <rect
+                      width='20'
+                      height='20'
+                      rx='4'
+                      fill='#5294FF'
+                      fill-opacity='0.2'
+                    />
+                    <rect
+                      x='0.5'
+                      y='0.5'
+                      width='19'
+                      height='19'
+                      rx='3.5'
+                      stroke='#5294FF'
+                      stroke-opacity='0.5'
+                    />
+                    <path
+                      d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
+                      fill='#5294FF'
+                    />
+                  </svg>
+                }
+              />
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.hardwareWalletApprovalText}
+                style={mobile ? { fontSize: '11.5px' } : {}}
+              >
+                Use Approve (required by some hardware wallets)
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <Box

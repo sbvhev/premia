@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
