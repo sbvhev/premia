@@ -62,9 +62,9 @@ import { ReactComponent as ConsetellationMobileEight } from 'assets/svg/mobile/C
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
-import TradeOptionsSVGBackground from 'assets/images/TradeOptions.svg';
-import VaultsBasicSVGBackground from 'assets/images/VaultBasic.svg';
-import VaultsProSVGBackground from 'assets/images/VaultPro.svg';
+import TradeOptionsSVGBackground from 'assets/images/TradeOptions.png';
+import VaultsBasicSVGBackground from 'assets/images/VaultBasic.png';
+import VaultsProSVGBackground from 'assets/images/VaultPro.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 
@@ -137,6 +137,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontWeight: 400,
     lineHeight: '18px',
     whiteSpace: 'nowrap',
+    width: 'auto',
 
     '& path': {
       fill: 'rgba(255, 255,255, 0.7)',
