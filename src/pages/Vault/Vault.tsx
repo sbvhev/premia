@@ -868,7 +868,7 @@ const ProVault: React.FC = () => {
                             >
                               {formatNumber(userOwnedPutPoolSize)}
                             </Typography>
-                            <UnderlyingIcon />
+                            <BaseIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
@@ -895,7 +895,7 @@ const ProVault: React.FC = () => {
                             >
                               {formatNumber(putPoolFeesEarned)}
                             </Typography>
-                            <UnderlyingIcon />
+                            <BaseIcon />
                           </Grid>
                         </Grid>
                         <Grid container direction='row'>
