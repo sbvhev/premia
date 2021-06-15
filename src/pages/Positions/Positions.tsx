@@ -14,7 +14,6 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import CallMadeIcon from '@material-ui/icons/CallMade';
 import Moment from 'moment';
 import cx from 'classnames';
 
@@ -1282,7 +1281,7 @@ const Positions: React.FC = () => {
               )}
             </Container>
           </Box>
-          <Grid
+          {/* Hide until Position Guide completed <Grid
             container
             alignItems='center'
             className={classes.findPositionContainer}
@@ -1296,7 +1295,7 @@ const Positions: React.FC = () => {
             >
               Position Guide
             </Button>
-          </Grid>
+          </Grid> */}
         </Box>
       ) : (
         <>

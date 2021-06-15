@@ -16,6 +16,7 @@ import moment from 'moment';
 
 import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
+import { useBase, useUnderlying } from 'state/options/hooks';
 import { CLevelChartItem, UserOwnedPool } from 'web3/pools';
 import { usePools } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
@@ -335,6 +336,8 @@ const ProVault: React.FC = () => {
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
     usePools(true);
   const { callPool, putPool } = usePools();
+  const { base } = useBase();
+  const { underlying } = useUnderlying();
 
   const callPoolSize = useMemo(() => getPoolSize(callPool), [callPool]);
   const putPoolSize = useMemo(() => getPoolSize(putPool), [putPool]);
@@ -387,14 +390,11 @@ const ProVault: React.FC = () => {
       variables: { poolId: putPool?.id },
     });
 
-  const BaseIcon = useMemo(
-    () => getTokenIcon(callPool?.base.symbol),
-    [callPool],
-  );
+  const BaseIcon = useMemo(() => getTokenIcon(base.symbol), [base]);
 
   const UnderlyingIcon = useMemo(
-    () => getTokenIcon(callPool?.underlying.symbol),
-    [callPool],
+    () => getTokenIcon(underlying.symbol),
+    [underlying],
   );
 
   useEffect(() => {

@@ -55,8 +55,8 @@ export const DAI: { [chainId in ChainId | 56]: Token } = {
     name: 'Dai Stablecoin',
   },
   [ChainId.RINKEBY]: {
-    id: '0x7f8b3adfefe58944d943608a3e0a3a208e0e05f2',
-    address: '0x7f8b3adfefe58944d943608a3e0a3a208e0e05f2',
+    id: '0x253d9e1a3fff0f8183e5404f05223def40cc3376',
+    address: '0x253d9e1a3fff0f8183e5404f05223def40cc3376',
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
