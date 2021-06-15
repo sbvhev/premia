@@ -440,6 +440,7 @@ const LockPremiaCard: React.FC = () => {
         onClick={() => {
           setLockingMode(false);
           setLockAmount('');
+          setLockupMonths(null);
         }}
       >
         <ButtonBase>
@@ -867,6 +868,7 @@ const LockPremiaCard: React.FC = () => {
                 color='secondary'
                 label={lockingLabel}
                 disabled={
+                  !lockupMonths ||
                   !lockAmount ||
                   parseFloat(lockAmount) === 0 ||
                   (xPremiaBalance && parseEther(lockAmount).gt(xPremiaBalance))
