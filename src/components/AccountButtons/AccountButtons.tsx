@@ -196,13 +196,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& > div:hover, & > div:active': {
       background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
       '& p': {
-        color: (props: any) => props.darkMode ? 'black !important' : 'white !important',
+        color: (props: any) =>
+          props.darkMode ? 'black !important' : 'white !important',
         textFillColor: 'unset',
-        background: 'transparent'
+        background: 'transparent',
       },
       '& svg path': {
-        fill: (props: any) => props.darkMode ? 'black !important' : 'white !important'
-      }
+        fill: (props: any) =>
+          props.darkMode ? 'black !important' : 'white !important',
+      },
     },
     '& $accountInfo > div': {
       display: 'flex',
@@ -214,8 +216,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         fontWeight: 'bold',
         lineHeight: '18px',
         margin: 0,
-      },  
-    }
+      },
+    },
   },
 
   tradingCompetition: {
@@ -224,10 +226,21 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     textFillColor: 'transparent',
     paddingRight: 16,
     position: 'relative',
+
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+    },
+
     '& svg': {
       position: 'absolute',
       right: 0,
       top: 3,
+
+      '& path': {
+        fill: 'transparent',
+      },
     },
   },
 
@@ -479,10 +492,10 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
             if (doNotShowDisclaimerAgain) {
               onboard?.walletSelect();
             } else {
-              setConfirmTermsModalOpen(true)
+              setConfirmTermsModalOpen(true);
             }
-          }
-        }>
+          }}
+        >
           <ConnectWallet className={classes.walletIcon} />
           Connect wallet
         </Button>
