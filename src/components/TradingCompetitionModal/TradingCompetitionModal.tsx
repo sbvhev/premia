@@ -1,6 +1,6 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
+import { useHistory, Link } from 'react-router-dom';
+import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
@@ -396,7 +396,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                       <Typography component='h3'>
                         Prizes
                       </Typography>
-                      <Link>View leaderboard</Link>
+                      <Link to='/leaderboard' onClick={onClose}>View leaderboard</Link>
                     </Box>
                     <Box>
                       <Box>
@@ -428,7 +428,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   <Typography color='secondary'>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia metus orci, in vehicula sapien egestas ut. Nulla sodales suscipit orci nec efficitur. In condimentum at libero in aliquam.
                   </Typography>
-                  <Link>Competition rules</Link>
+                  <Link to='/'>Competition rules</Link>
                   <Box className={classes.buttonsContainer}>
                     <Button
                       variant='contained'
