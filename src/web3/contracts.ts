@@ -53,7 +53,7 @@ export const contracts: ContractAddresses = {
   },
   DAI: {
     1: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    4: '0x0562c2d2248d955773fcdd04422944226b0e4b78',
+    4: '0x7f8b3adfefe58944d943608a3e0a3a208e0e05f2',
     42: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
   },
   WBNB: {

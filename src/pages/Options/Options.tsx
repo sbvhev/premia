@@ -416,7 +416,7 @@ const Options: React.FC = () => {
                     ? sufficientLiquidity
                       ? 'Buy Option'
                       : 'Insufficient Liquidity'
-                    : `Approve ${underlying.symbol}`
+                    : `Approve ${activeToken.symbol}`
                 }
                 onClick={() =>
                   sufficientAllowance ? handleBuyOption() : onApprove()

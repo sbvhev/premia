@@ -10,6 +10,11 @@
         "internalType": "address",
         "name": "feeReceiver",
         "type": "address"
+      },
+      {
+        "internalType": "int128",
+        "name": "fee64x64",
+        "type": "int128"
       }
     ],
     "stateMutability": "nonpayable",
@@ -188,6 +193,12 @@
         "internalType": "uint256",
         "name": "exerciseValue",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "emaVarianceAnnualized64x64",
+        "type": "int128"
       }
     ],
     "name": "Exercise",
@@ -253,7 +264,13 @@
       {
         "indexed": false,
         "internalType": "int128",
-        "name": "slippageCoefficient64x64",
+        "name": "spot64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "emaVarianceAnnualized64x64",
         "type": "int128"
       }
     ],
@@ -321,6 +338,12 @@
         "indexed": false,
         "internalType": "int128",
         "name": "spot64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "emaVarianceAnnualized64x64",
         "type": "int128"
       }
     ],
@@ -516,6 +539,43 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "oldEmaLogReturns64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "oldEmaVariance64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "logReturns64x64",
+        "type": "int128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldTimestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "emaVarianceAnnualized64x64",
+        "type": "int128"
+      }
+    ],
+    "name": "UpdateVariance",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "user",
@@ -671,32 +731,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getBase",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBaseOracle",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bool",
@@ -743,12 +777,34 @@
   },
   {
     "inputs": [],
-    "name": "getFee64x64",
+    "name": "getPoolSettings",
     "outputs": [
       {
-        "internalType": "int128",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "underlying",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "base",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "underlyingOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "baseOracle",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct PoolStorage.PoolSettings",
         "name": "",
-        "type": "int128"
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -768,32 +824,6 @@
         "internalType": "int128",
         "name": "",
         "type": "int128"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getUnderlying",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getUnderlyingOracle",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
