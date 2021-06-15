@@ -120,6 +120,13 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     padding: 12,
+
+    '& > div': {
+      width: 'calc(100% - 28px)',
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+
     '& p': {
       fontSize: 14,
       color: palette.text.primary,
@@ -461,11 +468,29 @@ const OptionFilter: React.FC = () => {
             )}
             onClick={() => setMaturityFocused(!maturityFocused)}
           >
-            <Typography>
-              {moment(new Date(maturityDate)).isValid()
-                ? moment(new Date(maturityDate)).format('YYYY-MM-DD')
-                : 'Select Date'}
-            </Typography>
+            <Box>
+              <Typography>
+                {moment(new Date(maturityDate)).isValid()
+                  ? moment(new Date(maturityDate)).format('YYYY-MM-DD')
+                  : 'Select Date'}
+              </Typography>
+              <Typography>
+                (
+                {moment
+                  .duration(
+                    moment
+                      .utc(
+                        `${moment(new Date(maturityDate)).format(
+                          'YYYY-MM-DD',
+                        )} 00:00:00`,
+                        'YYYY-MM-DD hh:mm:dd',
+                      )
+                      .diff(moment()),
+                  )
+                  .humanize()}
+                )
+              </Typography>
+            </Box>
             <CalendarIcon />
           </Box>
           <Box
@@ -476,7 +501,7 @@ const OptionFilter: React.FC = () => {
           >
             <Calendar
               inputRef={calendarRef as any}
-              minDate={new Date()}
+              minDate={new Date(new Date().getTime() + 60 * 60 * 24 * 1000)}
               prevLabel={<ArrowBackIosIcon />}
               nextLabel={<ArrowForwardIosIcon />}
               formatShortWeekday={(locale, date) => moment(date).format('dd')}
