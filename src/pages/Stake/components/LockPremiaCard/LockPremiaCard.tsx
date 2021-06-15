@@ -380,8 +380,6 @@ const LockPremiaCard: React.FC = () => {
     [xPremiaLockedUntil, xPremiaStakePeriod],
   );
 
-  console.log('prog', progress);
-
   const { allowance: lockingAllowance, onApprove: onApproveLocking } =
     useApproval(
       contracts?.PremiaStaking?.address as string,
@@ -588,13 +586,14 @@ const LockPremiaCard: React.FC = () => {
 
   const handleUnlock = useCallback(async () => {
     if (!lockAmount || parseFloat(lockAmount) === 0) return;
+    if (progress > 0) return;
 
     const amount = parseEther(lockAmount);
 
     transact(contracts?.PremiaFeeDiscount?.unstake(lockAmount), {
       description: `Unlock ${formatBigNumber(amount)} locked xPREMIA`,
     });
-  }, [contracts, lockAmount, transact]);
+  }, [contracts?.PremiaFeeDiscount, lockAmount, progress, transact]);
 
   const activeOnClickAction = useMemo(() => {
     if (checkIsOn || shouldApprove) {
@@ -646,7 +645,7 @@ const LockPremiaCard: React.FC = () => {
 
   const unlockingLabel = useMemo(() => {
     if (progress > 0) {
-      return 'Lock period is not over';
+      return 'Still locked';
     }
 
     if (!lockAmount || parseFloat(lockAmount) === 0) {
