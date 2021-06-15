@@ -361,6 +361,8 @@ const OptionFilter: React.FC = () => {
   }, [maturityDate, setMaturityDate]);
 
   useEffect(() => {
+    if (!roundedPrice) return;
+
     if (
       Number(strikePrice) < underlyingPrice / 2 ||
       Number(strikePrice) > underlyingPrice * 2
