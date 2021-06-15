@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom';
@@ -32,14 +32,13 @@ import {
   LandingPage,
   PositionGuide,
   TradingCompetition,
-  Leaderboard
+  Leaderboard,
 } from './pages';
 import {
   TransactionLoadingModal,
   TransactionSuccessModal,
   TransactionCancelledModal,
   TransactionFailedModal,
-  TradingCompetitionModal
 } from 'components';
 
 const graphUrls: { [chainId: number]: string } = {
@@ -64,27 +63,9 @@ const TopLevelModals: React.FC = () => {
   );
 
   const closeModals = useCloseModals();
-  const location = useLocation();
-
-  const tradingModalStatus = localStorage.getItem('tradingModalStatus') || 'open';
-  const [ tradingModalOpen, setTradingModalOpen ] = useState(false);
-
-  useEffect(() => {
-    if (location.pathname !== '/' && tradingModalStatus === 'open') {
-      setTradingModalOpen(true);
-    }
-  }, [location.pathname, tradingModalStatus]);
-
 
   return (
     <>
-      <TradingCompetitionModal
-        open={tradingModalOpen}
-        onClose={() => {
-          setTradingModalOpen(false);
-          localStorage.setItem('tradingModalStatus', 'closed');
-        }}
-      />
       <TransactionLoadingModal
         open={transactionLoadingOpen}
         onClose={closeModals}
