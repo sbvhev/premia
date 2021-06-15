@@ -183,7 +183,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: 0,
     position: 'fixed',
     width: '100%',
-    boxShadow: '2px 5px 4px rgba(0, 0, 0, 0.25)',
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
   },
   menuItem: {
