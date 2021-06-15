@@ -192,16 +192,30 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 
   tradingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginLeft: 5,
-    '& p': {
-      fontSize: 14,
-      fontWeight: 'bold',
-      lineHeight: '18px',
-      margin: 0,
+    overflow: 'hidden',
+    '& > div:hover, & > div:active': {
+      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      '& p': {
+        color: (props: any) => props.darkMode ? 'black !important' : 'white !important',
+        textFillColor: 'unset',
+        background: 'transparent'
+      },
+      '& svg path': {
+        fill: (props: any) => props.darkMode ? 'black !important' : 'white !important'
+      }
     },
+    '& $accountInfo > div': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      marginLeft: 5,
+      '& p': {
+        fontSize: 14,
+        fontWeight: 'bold',
+        lineHeight: '18px',
+        margin: 0,
+      },  
+    }
   },
 
   tradingCompetition: {
@@ -271,7 +285,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
 
       <Box
         display='flex'
-        className={classes.account}
+        className={cx(classes.account, classes.tradingContainer)}
         width={mobile ? 1 : 'auto'}
         my={mobile ? 1.25 : 0}
         mx={mobile ? 1.25 : 1.25}
@@ -291,7 +305,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           }}
         >
           <ClockIcon />
-          <Box height={1} className={classes.tradingContainer}>
+          <Box height={1}>
             <Typography className={classes.tradingCompetition}>
               Trading competition <UpRightArrow />
             </Typography>
