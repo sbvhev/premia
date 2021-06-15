@@ -301,20 +301,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   noPositionsContainer: {
     maxWidth: 790,
-    margin: 'auto',
+    margin: '70px auto',
     '& h2': {
       fontSize: 18,
       lineHeight: 1,
       fontWeight: 'bold',
     },
     [breakpoints.down('sm')]: {
-      minHeight: 'calc(100vh - 275px)',
-      '& h1': {
-        marginTop: 20,
-      },
+      minHeight: 'calc(100vh - 395px)',
     },
     [breakpoints.down('xs')]: {
-      minHeight: 'calc(100vh - 290px)',
+      minHeight: 'calc(100vh - 430px)',
     },
   },
   findPositionContainer: {
@@ -356,7 +353,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 45,
       fontSize: 16,
       margin: 0,
-      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
     },
   },
   positionFilterContainer: {

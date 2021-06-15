@@ -32,7 +32,7 @@ import {
   LandingPage,
   PositionGuide,
   TradingCompetition,
-  Leaderboard
+  Leaderboard,
 } from './pages';
 import {
   TransactionLoadingModal,

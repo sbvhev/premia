@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, IconButton, Grid, Divider } from '@material-ui/core';
+import {
+  Box,
+  Container,
+  IconButton,
+  Grid,
+  Divider,
+  useMediaQuery,
+} from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useLocation } from 'react-router-dom';
 import Hamburger from 'hamburger-react';
 import cx from 'classnames';
+
 import { useDarkModeManager } from 'state/user/hooks';
+
 import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
 import MainLogo from 'assets/svg/NewLogoComboLight.svg';
-import { AccountButtons, Sidebar, Footer, ThemeSwitch } from 'components';
+import {
+  AccountButtons,
+  Sidebar,
+  Footer,
+  ThemeSwitch,
+  TradingCompetitionModal,
+} from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   page: {
@@ -59,12 +74,16 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
   children,
   hideAccountButtons = false,
 }) => {
+  const [tradingModalOpen, setTradingModalOpen] = useState(
+    localStorage.getItem('tradingModalStatus') !== 'closed',
+  );
   const [mobileSidebarHidden, setMobileSidebarHidden] = useState(true);
   const theme = useTheme();
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({ darkMode, mobileSidebarHidden });
+  const location = useLocation();
 
   const hideMobileMenu = () => {
     setMobileSidebarHidden(true);
@@ -76,8 +95,25 @@ const PageWithSidebar: React.FC<PageWithSidebarProps> = ({
     }
   }, [mobile, mobileSidebarHidden]);
 
+  if (
+    localStorage.getItem('tradingModalStatus') === 'closed' &&
+    tradingModalOpen
+  ) {
+    setTradingModalOpen(false);
+  }
+
   return (
     <Box bgcolor='background.default'>
+      <TradingCompetitionModal
+        open={
+          !location.pathname.includes('/trading-competition') &&
+          tradingModalOpen
+        }
+        onClose={() => {
+          setTradingModalOpen(false);
+        }}
+      />
+
       <Grid container>
         {!mobile && (
           <Box position='fixed' left={0} width={210}>
