@@ -22,6 +22,7 @@ import {
   useBase,
   useUnderlying,
   useMaturityDate,
+  useSize,
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -41,6 +42,7 @@ import {
 } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
+import { formatUnits } from 'ethers/lib/utils';
 
 const useStyles = makeStyles(({ palette }) => ({
   title: {
@@ -183,6 +185,7 @@ const Options: React.FC = () => {
 
   const { base } = useBase();
   const { underlying } = useUnderlying();
+  const { size } = useSize();
   const { optionType } = useOptionType();
   const { maturityDate } = useMaturityDate();
   const { totalCostInUsd } = useTotalCostInUsd();
@@ -198,6 +201,7 @@ const Options: React.FC = () => {
     getCLevelChartItems,
     {
       pollInterval: 5000,
+      skip: !optionPool,
       variables: { poolId: optionPool?.id },
     },
   );
@@ -219,6 +223,23 @@ const Options: React.FC = () => {
     [priceChanges, underlying],
   );
   const classes = useStyles({ priceChange });
+
+  const totalAvailableInActiveToken = useMemo(
+    () =>
+      Number(
+        formatUnits(optionPool?.totalAvailable ?? 0, underlying.decimals),
+      ) / (optionType === OptionType.Call ? 1 : underlyingPrice),
+    [optionPool, underlying, optionType, underlyingPrice],
+  );
+
+  const sufficientAllowance = useMemo(
+    () => Number(allowance) > 0 && Number(allowance) >= totalCostInUsd,
+    [allowance, totalCostInUsd],
+  );
+  const sufficientLiquidity = useMemo(
+    () => totalAvailableInActiveToken >= size,
+    [totalAvailableInActiveToken, size],
+  );
 
   return (
     <>
@@ -391,14 +412,14 @@ const Options: React.FC = () => {
                 size='large'
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 label={
-                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                    ? 'Buy Option'
+                  sufficientAllowance
+                    ? sufficientLiquidity
+                      ? 'Buy Option'
+                      : 'Insufficient Liquidity'
                     : `Approve ${underlying.symbol}`
                 }
                 onClick={() =>
-                  Number(allowance) > 0 && Number(allowance) >= totalCostInUsd
-                    ? handleBuyOption()
-                    : onApprove()
+                  sufficientAllowance ? handleBuyOption() : onApprove()
                 }
               />
             </Box>

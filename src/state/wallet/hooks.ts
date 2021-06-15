@@ -115,7 +115,7 @@ export function useTokenBalances(
   tokens?: (Token | undefined)[],
 ): { [tokenAddress: string]: string | undefined } {
   return useTokenBalancesWithLoadingIndicator(
-    address,
+    address === '' ? undefined : address,
     tokens?.filter((token) => token),
   )[0];
 }

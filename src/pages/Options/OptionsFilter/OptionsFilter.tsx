@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Box, Typography, Button } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -16,13 +22,16 @@ import {
   useStrikePrice,
   useSize,
   useUnderlying,
+  useBase,
 } from 'state/options/hooks';
 import { initialState as initialOptionsState } from 'state/options/reducer';
 import { useOutsideAlerter } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
+import { useTokenBalance } from 'state/wallet/hooks';
+import { useWeb3 } from 'state/application/hooks';
 import { OptionType } from 'web3/options';
 import { tokenIcons } from 'constants/tokenIcons';
-import { formatCompact } from 'utils/formatNumber';
+import { formatCompact, formatNumber } from 'utils/formatNumber';
 
 import { ColoredSlider, Loader, ContainedButton } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
@@ -273,13 +282,26 @@ const OptionFilter: React.FC = () => {
   const darkMode = useIsDarkMode();
   const classes = useStyles({ darkMode });
   const { underlying } = useUnderlying();
+  const { base } = useBase();
   const { optionType, setOptionType } = useOptionType();
   const { maturityDate, setMaturityDate } = useMaturityDate();
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { size, setSize } = useSize();
+  const { account } = useWeb3();
   const [maturityFocused, setMaturityFocused] = useState(false);
   const underlyingPrice = useUnderlyingPrice();
   const calendarRef = useRef<HTMLInputElement | null>(null);
+
+  const activeToken = useMemo(
+    () => (optionType === OptionType.Call ? underlying : base),
+    [optionType, base, underlying],
+  );
+  const activeTokenBalance = useTokenBalance(account, activeToken);
+  const maxSize = useMemo(() => {
+    return optionType === OptionType.Call
+      ? activeTokenBalance
+      : Number(activeTokenBalance) / Number(underlyingPrice);
+  }, [activeTokenBalance, optionType, underlyingPrice]);
 
   const TokenIcon = useMemo(
     () => tokenIcons[underlying.symbol as keyof typeof tokenIcons],
@@ -316,6 +338,17 @@ const OptionFilter: React.FC = () => {
       value,
     }));
   }, [minPrice, maxPrice, rounding]);
+
+  const handleChangeSize = useCallback(
+    (ev) => {
+      setSize(Number(ev.target.value));
+    },
+    [setSize],
+  );
+
+  const handleMax = useCallback(() => {
+    setSize(Number(maxSize));
+  }, [maxSize, setSize]);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
 
@@ -475,7 +508,7 @@ const OptionFilter: React.FC = () => {
       >
         <Typography className={classes.titleText}>Option Size</Typography>
         <Typography className={classes.descText}>
-          Max size available: 40,012
+          Max size available: {formatNumber(maxSize)}
         </Typography>
       </Box>
       <Box className={classes.sizeInputBox}>
@@ -483,14 +516,13 @@ const OptionFilter: React.FC = () => {
           height={18}
           className={underlying.symbol === 'UNI' ? classes.uniIcon : ''}
         />
-        <input
-          type='number'
-          value={size}
-          onChange={(ev) => {
-            setSize(Number(ev.target.value));
-          }}
-        />
-        <Button color='primary' variant='outlined' size='small'>
+        <input type='number' value={size} onChange={handleChangeSize} />
+        <Button
+          color='primary'
+          variant='outlined'
+          size='small'
+          onClick={handleMax}
+        >
           MAX
         </Button>
       </Box>

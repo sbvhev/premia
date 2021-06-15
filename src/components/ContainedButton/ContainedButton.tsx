@@ -159,7 +159,7 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
         color === 'secondary' ? classes.wrapperSecondary : classes.wrapper
       }
       style={disabled ? { opacity: 0.3, margin } : { margin }}
-      onClick={onClick}
+      onClick={!disabled ? onClick : () => {}}
     >
       <ButtonBase>
         <Box
