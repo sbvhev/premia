@@ -356,7 +356,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 45,
       fontSize: 16,
       margin: 0,
-      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
     },
   },
   positionFilterContainer: {
