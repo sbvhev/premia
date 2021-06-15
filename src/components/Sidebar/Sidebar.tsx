@@ -6,7 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
+import { useWeb3 } from 'state/application/hooks';
 
+import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/NewLogoComboLight.svg';
 import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
@@ -17,9 +19,6 @@ import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import { useWeb3 } from 'state/application/hooks';
-
-import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 
 const insights = [
   {

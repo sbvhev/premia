@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
@@ -18,7 +18,7 @@ import { getCLevelChartItems } from 'graphql/queries';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useBase, useUnderlying } from 'state/options/hooks';
 import { CLevelChartItem, UserOwnedPool } from 'web3/pools';
-import { usePools } from 'hooks';
+import { usePools, useDeviceWidth } from 'hooks';
 import { getPoolSize } from 'utils/getPoolSize';
 import { getPoolUtilization } from 'utils/getPoolUtilization';
 import { getPoolFeesEarned } from 'utils/getPoolFeesEarned';
@@ -322,6 +322,7 @@ const ProVault: React.FC = () => {
   const classes = useStyles({ dark, mediumWindow });
   const history = useHistory();
   const location = useLocation();
+  const deviceWidth = useDeviceWidth();
 
   const [withdrawCallOpen, setWithdrawCallOpen] = useState(false);
   const [depositCallOpen, setDepositCallOpen] = useState(false);
@@ -330,7 +331,6 @@ const ProVault: React.FC = () => {
   const [vaultIndex, setVaultIndex] = useState(
     new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
   );
-  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
@@ -396,15 +396,6 @@ const ProVault: React.FC = () => {
     () => getTokenIcon(underlying.symbol),
     [underlying],
   );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleEnter = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);

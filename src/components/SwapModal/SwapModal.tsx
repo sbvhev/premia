@@ -584,51 +584,6 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
       />
     ));
 
-  const getMinimumReceive = () => {
-    if (!zeroXQuote) return '?';
-    return formatUnits(
-      new BigNumber(zeroXQuote?.buyAmount ?? '0')
-        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
-        .toFixed(0),
-      toToken?.decimals,
-    );
-  };
-
-  const getSymbolWithAddress = (address: string) => {
-    return TokenList.tokens.find(
-      (e) => e.address.toLowerCase() === address.toLowerCase(),
-    )?.symbol;
-  };
-
-  const getSwapRoute = () => {
-    if (!zeroXQuote || !zeroXQuote.orders[0]) return '?';
-    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
-      (e: string) => getSymbolWithAddress(e),
-    );
-    return routes ? routes.join(' > ') : '?';
-  };
-
-  const getSwapRouter = () => {
-    if (!zeroXQuote || !zeroXQuote.orders[0]) return;
-
-    const routeIconList = ROUTE_ICON_LIST.routeIconList;
-    const icon = routeIconList.find(
-      (r) => r.routerName === zeroXQuote.orders[0].source,
-    )?.logoUrl;
-
-    return icon ? (
-      <img
-        style={{ height: '18px', marginRight: '8px' }}
-        src={icon}
-        alt='router'
-      />
-    ) : (
-      <Typography style={{ margin: '5px' }} color='primary'>
-        ?
-      </Typography>
-    );
-  };
-
   useEffect(() => {
     (async () => {
       setSwapValid(false);
@@ -888,6 +843,51 @@ const SwapModal: React.FC<SwapModalProps> = ({ open, onClose }) => {
         },
       );
     }
+  };
+
+  const getMinimumReceive = () => {
+    if (!zeroXQuote) return '???';
+    return formatUnits(
+      new BigNumber(zeroXQuote?.buyAmount ?? '0')
+        .multipliedBy(new BigNumber((100 - (slippagePercentage ?? 1)) / 100))
+        .toFixed(0),
+      toToken?.decimals,
+    );
+  };
+
+  const getSymbolWithAddress = (address: string) => {
+    return TokenList.tokens.find(
+      (e) => e.address.toLowerCase() === address.toLowerCase(),
+    )?.symbol;
+  };
+
+  const getSwapRoute = () => {
+    if (!zeroXQuote) return '???';
+    const routes = zeroXQuote.orders[0]?.fillData?.tokenAddressPath?.map(
+      (e: string) => getSymbolWithAddress(e),
+    );
+    return routes ? routes.join(' > ') : '???';
+  };
+
+  const getSwapRouter = () => {
+    if (!zeroXQuote || !zeroXQuote.orders[0]) return;
+
+    const routeIconList = ROUTE_ICON_LIST.routeIconList;
+    const icon = routeIconList.find(
+      (r) => r.routerName === zeroXQuote.orders[0].source,
+    )?.logoUrl;
+
+    return icon ? (
+      <img
+        style={{ height: '18px', marginRight: '8px' }}
+        src={icon}
+        alt='router'
+      />
+    ) : (
+      <Typography style={{ margin: '5px' }} color='primary'>
+        ?
+      </Typography>
+    );
   };
 
   return (
