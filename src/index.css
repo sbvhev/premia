@@ -261,3 +261,16 @@ ul.bn-notify-custom.bn-notify-notifications {
   width: 16px;
   height: 16px;
 }
+
+
+@keyframes float {
+	0% {
+		transform: translate(-50%, -50%);
+	}
+	50% {
+		transform: translate(-50%, calc(-50% - 20px));
+	}
+	100% {
+		transform: translate(-50%, -50%);
+	}
+}

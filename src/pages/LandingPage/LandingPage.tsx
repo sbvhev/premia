@@ -183,7 +183,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: 0,
     position: 'fixed',
     width: '100%',
+    padding: 0,
+    height: 64,
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
+    transition: 'height 0.3s ease',
+
+    '& > div': {
+      width: '100%',
+      margin: 'auto',
+    },
+  },
+  expanded: {
+    height: 90,
   },
   menuItem: {
     color: 'rgba(255, 255,255, 0.7)',
@@ -768,6 +779,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   smallIcon: {
+    animation: 'float 3s ease-in-out infinite',
+
     [breakpoints.down('sm')]: {
       width: 62.83,
       height: 53.62,
@@ -1305,7 +1318,10 @@ const LandingPage: React.FC = () => {
 
   return (
     <Grid container className={classes.mainContainer}>
-      <AppBar position='static' className={classes.appBar}>
+      <AppBar
+        position='static'
+        className={cn(classes.appBar, scrollPos < 50 ? classes.expanded : '')}
+      >
         <Toolbar>
           <Container className={classes.container}>
             <AnchorLink href='#hero' onClick={preventDefault}>
