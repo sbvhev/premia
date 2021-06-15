@@ -176,8 +176,9 @@ a {
 }
 
 .image.bg {
-  padding-top: 48px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transform: none;
 }
 
 .square {
