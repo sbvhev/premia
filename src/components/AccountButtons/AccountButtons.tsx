@@ -302,6 +302,13 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           borderLeft={1}
           borderColor={theme.palette.divider}
           className={classes.leaderboard}
+          onClick={() => {
+            history.push('/leaderboard');
+
+            if (onHide) {
+              onHide();
+            }
+          }}
         >
           <Typography>Leaderboard</Typography>
         </Box>

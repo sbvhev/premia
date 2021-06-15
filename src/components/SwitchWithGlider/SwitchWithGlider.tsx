@@ -68,10 +68,14 @@ const SwitchWithGlider: React.FC<SwitchWithGliderProps> = ({
         height={gliderHeight}
         style={
           !verticalGlider
-            ? { transform: `translateX(${gliderPosition}px)` }
+            ? {
+                transform: `translateX(${gliderPosition}px)`,
+                opacity: gliderPosition < 0 ? 0 : 1
+              }
             : {
                 transform: `translateY(${gliderPosition}px)`,
                 borderRadius: '12px',
+                opacity: gliderPosition < 0 ? 0 : 1
               }
         }
       />
