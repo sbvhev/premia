@@ -1821,14 +1821,14 @@ const LandingPage: React.FC = () => {
                     onClick={() => {
                       history.push('/vaults?tab=basic');
                     }}
-                    style={{ opacity: scrollPos > 900 ? 1 : 0 }}
+                    style={{ opacity: scrollPos > 1200 ? 1 : 0 }}
                   ></Box>
                   <Box
                     className={classes.rightSideImage}
                     onClick={() => {
                       history.push('/vaults?tab=pro');
                     }}
-                    style={{ opacity: scrollPos > 1600 ? 1 : 0 }}
+                    style={{ opacity: scrollPos > 1800 ? 1 : 0 }}
                   ></Box>
                 </Box>
               </Box>
