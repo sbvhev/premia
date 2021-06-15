@@ -7,6 +7,7 @@ export { default as ColoredSlider } from './ColoredSlider';
 export { default as ConfirmTermsModal } from './ConfirmTermsModal';
 export { default as ContainedButton } from './ContainedButton';
 export { default as ClaimTokensModal } from './ClaimTokensModal';
+export { default as TradingCompetitionModal } from './TradingCompetitionModal';
 export { default as EligibleTradingModal } from './EligibleTradingModal';
 export { default as InEligibleTradingModal } from './InEligibleTradingModal';
 export { default as BuyConfirmationModal } from './BuyConfirmationModal';

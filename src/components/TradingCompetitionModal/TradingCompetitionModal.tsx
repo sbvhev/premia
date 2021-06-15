@@ -11,7 +11,10 @@ import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
 import { ReactComponent as SocialIcon1 } from 'assets/svg/SocialIcon1.svg';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
 import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
-import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/NewLogoWhite.svg';
+import PrizeFirst from 'assets/svg/PrizeFirst.svg';
+import PrizeSecond from 'assets/svg/PrizeSecond.svg';
+import PrizeThird from 'assets/svg/PrizeThird.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -87,8 +90,21 @@ const useStyles = makeStyles(({ palette }) => ({
     top: 25.5,
     left: 'calc(50% - 42px)',
     zIndex: 10,
-    width: '84px',
-    height: '84px',
+    width: 84,
+    height: 84,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
+    borderRadius: 42,
+    '& svg': {
+      width: 42,
+      height: 42,
+      '& path': {
+        fill: 'black'
+      }
+    }
   },
   coloredBorderBackgroundForCard: {
     boxSizing: 'border-box',
@@ -155,6 +171,12 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
+  prizeContainer: {
+
+  },
+  buttonsContainer: {
+
+  },
   socialContainer: {
     marginTop: 20,
     display: 'flex',
@@ -206,13 +228,11 @@ const useStyles = makeStyles(({ palette }) => ({
 export interface EligibleTradingModalProps {
   open: boolean;
   onClose: () => void;
-  showClaimToken: () => void;
 }
 
 const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
   open,
   onClose,
-  showClaimToken
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -250,12 +270,9 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
               className={classes.secondOuterRadial}
               style={!mobile ? {} : { top: 'calc(20vh + 12px)' }}
             />
-            <img
-              src={SuccessIcon}
-              alt='Success'
-              className={classes.iconCore}
-              style={!mobile ? {} : { top: 'calc(20vh + 25.5px)' }}
-            />
+            <Box className={classes.iconCore}>
+              <LogoIcon />
+            </Box>
             <Box
               className={classes.innerMainTransparent}
               style={!mobile ? {} : { top: 'calc(20vh + 20px)' }}
@@ -273,18 +290,41 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
               <Box className={classes.mainCard}>
                 <Box className={classes.textColumn}>
                   <Typography component='h2'>
-                    You are eligible
+                    Premia trading competition
                   </Typography>
+                  <Box className={classes.prizeContainer}>
+                    <Box>
+                      <Typography component='h3'>
+                        Prizes
+                      </Typography>
+                      <Link>View leaderboard</Link>
+                    </Box>
+                    <Box>
+                      <Box>
+                        <Box width={1} height={1} />
+                        <img src={PrizeFirst} alt='Prize First' />
+                        <Typography>$50,000</Typography>
+                      </Box>
+                      <Box>
+                        <Box width={1} height={1} />
+                        <img src={PrizeSecond} alt='Prize Second' />
+                        <Typography>$25,000</Typography>
+                      </Box>
+                      <Box>
+                        <Box width={1} height={1} />
+                        <img src={PrizeThird} alt='Prize Third' />
+                        <Typography>$15,000</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
                   <Typography color='secondary'>
-                    Now, you can claim your tokens for the competition and start trading when the competitions start
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia metus orci, in vehicula sapien egestas ut. Nulla sodales suscipit orci nec efficitur. In condimentum at libero in aliquam.
                   </Typography>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={showClaimToken}
-                  >
-                    Claim Tokens
-                  </Button>
+                  <Link>Competition rules</Link>
+                  <Box className={classes.buttonsContainer}>
+                    <Button variant='contained' color='primary'>I'm in</Button>
+                    <Button variant='outlined'>Later</Button>
+                  </Box>
                   <Divider />
                   <Box className={classes.socialContainer}>
                     <Typography>Share on:</Typography>
@@ -295,7 +335,6 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                       <Container fixed><DiscordIcon /></Container>
                       <Container fixed><SocialIcon1 /></Container>
                     </Box>
-                    <Link>Not right now</Link>
                   </Box>
                 </Box>
               </Box>
