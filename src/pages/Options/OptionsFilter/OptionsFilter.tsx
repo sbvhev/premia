@@ -496,18 +496,14 @@ const OptionFilter: React.FC = () => {
               <Typography>
                 (
                 {moment
-                  .duration(
-                    moment
-                      .utc(
-                        `${moment(new Date(maturityDate)).format(
-                          'YYYY-MM-DD',
-                        )} 00:00:00`,
-                        'YYYY-MM-DD hh:mm:dd',
-                      )
-                      .diff(moment()),
+                  .utc(
+                    `${moment(new Date(maturityDate)).format(
+                      'YYYY-MM-DD',
+                    )} 00:00:00`,
+                    'YYYY-MM-DD hh:mm:dd',
                   )
-                  .humanize()}
-                )
+                  .diff(moment(), 'days')}{' '}
+                days )
               </Typography>
             </Box>
             <CalendarIcon />
