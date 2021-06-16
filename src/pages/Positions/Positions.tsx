@@ -353,7 +353,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginBottom: 18,
     },
     '& a': {
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
     '& button': {
       width: 181,
@@ -762,7 +762,10 @@ const Positions: React.FC = () => {
 
   const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
   const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
-  const noPositions = options.length + pools.length < 1;
+  const noPositions = useMemo(
+    () => (positionFilterIndex === 0 ? options.length < 1 : pools.length < 1),
+    [positionFilterIndex, options, pools],
+  );
   const currentTime = useMemo(
     () => Math.floor(new Date().getTime() / 1000),
     [],
@@ -961,7 +964,6 @@ const Positions: React.FC = () => {
     getThisWeekDates(),
     getThisMonthDates(),
   ];
-
   const chartDateData = [
     3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
     3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
@@ -973,9 +975,7 @@ const Positions: React.FC = () => {
     3234, 6432, 1234, 3234, 6432, 1234,
   ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
-
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
-
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
   const optionAssets = [
@@ -1245,7 +1245,9 @@ const Positions: React.FC = () => {
                   <img src={NoPositionOptions} alt='No Options' />
                 </Box>
                 <Box className={classes.noPositionBtnContainer}>
-                  <Typography component='h2'>No active options positions</Typography>
+                  <Typography component='h2'>
+                    No active options positions
+                  </Typography>
                   <Link to='/options'>
                     <Button color='primary'>Buy options</Button>
                   </Link>
@@ -1258,7 +1260,9 @@ const Positions: React.FC = () => {
                   <img src={NoPositionYield} alt='No Yield' />
                 </Box>
                 <Box className={classes.noPositionBtnContainer}>
-                  <Typography component='h2'>No active yield positions</Typography>
+                  <Typography component='h2'>
+                    No active yield positions
+                  </Typography>
                   <Link to='/vaults?tab=pro'>
                     <Button color='primary'>Earn yield</Button>
                   </Link>

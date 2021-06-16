@@ -7,6 +7,9 @@ import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
 import { ReactComponent as QuestionMarkIcon } from 'assets/svg/TooltipQuestionmark.svg';
 
 export const tokenIcons = {
+  BNB: EthIcon,
+  WBNB: EthIcon,
+  BUSD: DaiIcon,
   DAI: DaiIcon,
   BTC: WBTCIcon,
   wBTC: WBTCIcon,
