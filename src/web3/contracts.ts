@@ -16,6 +16,7 @@ import {
   UniswapV2Router02__factory,
   Weth__factory,
   Weth,
+  TradingCompetitionMerkle__factory,
 } from '../contracts';
 
 export enum ContractType {
@@ -53,11 +54,13 @@ export const contracts: ContractAddresses = {
     1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     4: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
     42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+    56: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
   },
   DAI: {
     1: '0x6b175474e89094c44da98b954eedeac495271d0f',
     4: '0xC7F7E810168C6Cc58a2b3eF097638a85E1CF83e1',
     42: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
+    56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
   },
   WBNB: {
     56: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
@@ -81,6 +84,7 @@ export const contracts: ContractAddresses = {
     1: '0x6399C842dD2bE3dE30BF99Bc7D1bBF6Fa3650E70',
     4: '0x7a8864eA3A4B855D0d359F16D38d966ce018aDb9',
     42: '0xa880c61D2774b34b9C710e9c41C0Cc6D8C791C3c',
+    56: '0xc417b45e6090bd4201D9400b48F84c9f34f4d0a5',
   },
   PremiaFeeDiscount: {
     1: '0xF5aae75D1AD6fDD62Cce66137F2674c96FEda854',
@@ -163,23 +167,35 @@ export async function getSignerAndContracts(
     signer.connectUnchecked(),
   );
 
-  const premiaFeeDiscountAddress = getContractAddress(
-    chainId,
-    ContractType.PremiaFeeDiscount,
-  );
-  preContracts.PremiaFeeDiscount = PremiaFeeDiscount__factory.connect(
-    premiaFeeDiscountAddress,
-    signer.connectUnchecked(),
-  );
+  if ([1, 4, 42].includes(chainId)) {
+    const premiaFeeDiscountAddress = getContractAddress(
+      chainId,
+      ContractType.PremiaFeeDiscount,
+    );
+    preContracts.PremiaFeeDiscount = PremiaFeeDiscount__factory.connect(
+      premiaFeeDiscountAddress,
+      signer.connectUnchecked(),
+    );
 
-  const premiaStakingAddress = getContractAddress(
-    chainId,
-    ContractType.PremiaStaking,
-  );
-  preContracts.PremiaStaking = PremiaStaking__factory.connect(
-    premiaStakingAddress,
-    signer.connectUnchecked(),
-  );
+    const premiaStakingAddress = getContractAddress(
+      chainId,
+      ContractType.PremiaStaking,
+    );
+    preContracts.PremiaStaking = PremiaStaking__factory.connect(
+      premiaStakingAddress,
+      signer.connectUnchecked(),
+    );
+
+    const tradingCompetitionMerkleAddress = getContractAddress(
+      chainId,
+      ContractType.TradingCompetitionMerkle,
+    );
+    preContracts.TradingCompetitionMerkle =
+      TradingCompetitionMerkle__factory.connect(
+        tradingCompetitionMerkleAddress,
+        signer.connectUnchecked(),
+      );
+  }
 
   const contracts = preContracts as PremiaContracts;
 

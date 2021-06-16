@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useBase, useUnderlying, useStrikePrice } from 'state/options/hooks';
 import { usePrices } from 'state/application/hooks';
 import { useAllTokens } from 'hooks';
-import { tokenIcons } from 'constants/tokenIcons';
+import { getTokenIcon } from 'utils/getTokenIcon';
 
 import { SearchTabs } from 'components';
 
@@ -21,7 +21,7 @@ const SelectTokenTabs: React.FC = () => {
         .map((token) => ({
           token,
           label: token.symbol,
-          icon: tokenIcons[token.symbol as keyof typeof tokenIcons],
+          icon: getTokenIcon(token.symbol),
           highlight: ['LINK', 'UNI'].includes(token.symbol),
         })),
     [tokens, base],
