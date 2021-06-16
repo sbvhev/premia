@@ -117,10 +117,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     }
   };
 
-  const WrapperComponent = disabled ? Tooltip : React.Fragment;
+  const WrapperComponent: any = disabled ? Tooltip : React.Fragment;
 
   return (
-    <WrapperComponent title='Disabled on testnet'>
+    <WrapperComponent {...(disabled ? { title: 'Disabled on testnet' } : {})}>
       <Box
         display='flex'
         alignItems='center'
