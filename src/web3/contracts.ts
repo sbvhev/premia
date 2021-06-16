@@ -11,6 +11,7 @@ import {
   PremiaFeeDiscount__factory,
   PremiaStaking,
   PremiaStaking__factory,
+  TradingCompetitionMerkle,
   UniswapV2Router02,
   UniswapV2Router02__factory,
   Weth__factory,
@@ -27,6 +28,7 @@ export enum ContractType {
   PremiaErc20 = 'PremiaErc20',
   PremiaFeeDiscount = 'PremiaFeeDiscount',
   PremiaStaking = 'PremiaStaking',
+  TradingCompetitionMerkle = 'TradingCompetitionMerkle',
 }
 
 export type ContractAddresses = {
@@ -43,6 +45,7 @@ export interface PremiaContracts {
   PremiaErc20: PremiaErc20;
   PremiaFeeDiscount: PremiaFeeDiscount;
   PremiaStaking: PremiaStaking;
+  TradingCompetitionMerkle: TradingCompetitionMerkle;
 }
 
 export const contracts: ContractAddresses = {
@@ -53,7 +56,7 @@ export const contracts: ContractAddresses = {
   },
   DAI: {
     1: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    4: '0x253d9e1a3fff0f8183e5404f05223def40cc3376',
+    4: '0xC7F7E810168C6Cc58a2b3eF097638a85E1CF83e1',
     42: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
   },
   WBNB: {
@@ -88,6 +91,9 @@ export const contracts: ContractAddresses = {
     1: '0x16f9D564Df80376C61AC914205D3fDfF7057d610',
     4: '0x65191E877AE65ff9c4959b8389Dd7E7881cDAe38',
     42: '0x1f87Beb89e43824C075d82B3a7061b1e50D1615d',
+  },
+  TradingCompetitionMerkle: {
+    4: '0x1BD3F67D4944f6030aAbFd4C38bB8Aa36BE76B39',
   },
 };
 
