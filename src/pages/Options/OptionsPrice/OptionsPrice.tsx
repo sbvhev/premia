@@ -260,8 +260,8 @@ const OptionsPrice: React.FC = () => {
     : barRef.current?.clientHeight;
   const pLBoxPos = (barSize / 2) * 0.8 - (mobile ? 58 : 22);
   const plFirstPrice = (currentPrice || 0) * 1.2;
-  const callPrice = Math.min(breakEvenPrice, currentPrice * 2);
-  const putPrice = Math.max(breakEvenPrice, currentPrice * 0.5);
+  const callPrice = isCall ? pricePerUnit + breakEvenPrice : breakEvenPrice - pricePerUnit;
+  const putPrice = isCall ? Number(strikePrice) + pricePerUnit : Number(strikePrice) - pricePerUnit;
   const potentialProfit = Math.max(
     0,
     (plPrice - strikePrice - pricePerUnit) * size,
@@ -270,10 +270,10 @@ const OptionsPrice: React.FC = () => {
   let callSize, putSize;
 
   if (isCall) {
-    if (callPrice <= currentPrice) {
-      callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
+    if (breakEvenPrice <= currentPrice) {
+      callSize = 1 / 2 + (currentPrice - breakEvenPrice) / currentPrice;
     } else {
-      callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
+      callSize = (callPrice - breakEvenPrice) / currentPrice / 2;
     }
 
     if (Number(strikePrice) <= currentPrice) {
