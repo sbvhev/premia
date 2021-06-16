@@ -1247,6 +1247,7 @@ const StyledMenuItem = withStyles((theme) => ({
     '& a': {
       textDecoration: 'none',
       display: 'flex',
+      alignItems: 'center',
     },
 
     '& span': {

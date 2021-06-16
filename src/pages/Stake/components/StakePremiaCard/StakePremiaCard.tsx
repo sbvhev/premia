@@ -1,41 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {
+  Box,
+  ButtonBase,
+  Typography,
+  Button,
+  CircularProgress,
+  Checkbox,
+  useMediaQuery,
+} from '@material-ui/core';
+import { formatNumber } from 'utils/formatNumber';
+import cn from 'classnames';
 
-import { Box, Typography, Button } from '@material-ui/core';
+import { useWeb3 } from 'state/application/hooks';
+import { useTransact, useIsHardwareWallet, useApproval } from 'hooks';
 
+import { formatBigNumber } from 'utils/formatNumber';
+import { formatEther, parseEther } from 'ethers/lib/utils';
+import { useStakingBalances } from 'state/staking/hooks';
+
+import { ERC2612PermitMessage, signERC2612Permit } from 'eth-permit/eth-permit';
+import { RSV } from 'eth-permit/rpc';
 import StakePremiaIcon from 'assets/images/StakePremia-icon2x.png';
 import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
 import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
+import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
 
-import { ContainedButton } from 'components';
+import { ContainedButton, SwitchWithGlider } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
-    height: '610px',
+    height: '710px',
     width: '384px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
+    backgroundColor: 'transparent',
     margin: '12px',
   },
   wrapperMobile: {
-    height: '480px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundcolor: 'transparent',
-    margin: '12px 12px 50px',
+    backgroundColor: 'transparent',
+    margin: '12px 12px 30px',
   },
   borderedCard: {
     alignSelf: 'flex-end',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    height: '545px',
+    height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -46,7 +63,6 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '335px',
-    height: '480px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -114,8 +130,8 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    height: '330px',
     padding: '0 16px 12px',
-    height: '230px',
     margin: '22px 0 0',
     borderBottom: `1px solid ${palette.divider}`,
   },
@@ -245,7 +261,67 @@ const useStyles = makeStyles(({ palette }) => ({
     boxShadow: '0px 0px 11px rgba(255, 139, 63, 0.767701)',
     borderRadius: '5px',
   },
+  checkbox: {
+    margin: '2px 10px 2px 0',
+    padding: '0',
+    '&:hover': {
+      backgroundColor: palette.primary,
+    },
+  },
+  hardwareWalletApprovalText: {
+    fontWeight: 500,
+    fontSize: '13px',
+    lineHeight: '24px',
+  },
+  switchButton: {
+    borderRadius: 10,
+    height: 40,
+
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.text.secondary,
+    },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.text.primary,
+      },
+    },
+  },
+  switchButtonLeft: {
+    marginRight: 7,
+  },
+  activeSwitch: {
+    cursor: 'default',
+    '& svg': {
+      marginRight: 8,
+    },
+    '& svg path': {
+      fill: palette.primary.main,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 700,
+      fontSize: '14px',
+      color: palette.primary.main,
+    },
+    '&:hover': {
+      '& .MuiTypography-root': {
+        color: palette.primary.main,
+      },
+    },
+  },
 }));
+
+interface PermitState {
+  permit?: ERC2612PermitMessage & RSV;
+  permitDeadline?: number;
+}
 
 const StakePremiaCard: React.FC = () => {
   const classes = useStyles();
@@ -253,6 +329,258 @@ const StakePremiaCard: React.FC = () => {
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [darkMode] = useDarkModeManager();
+  const { web3, account, contracts } = useWeb3();
+  const isHardwareWallet = useIsHardwareWallet();
+  const transact = useTransact();
+
+  const [stakingMode, setStakingMode] = useState(true);
+  const [checkIsOn, setCheckIsOn] = useState(false);
+  const [shouldApprove] = useState(isHardwareWallet);
+  const [signedAlready, setSignedAlready] = useState(false);
+  const [approvedAlready, setApprovedAready] = useState(false);
+  const [permitState, setPermitState] = useState<PermitState>({});
+  const [stakeAmount, setStakeAmount] = useState('');
+
+  const { xPremiaLocked, premiaBalance, xPremiaBalance, underlyingPremia } =
+    useStakingBalances();
+
+  const { allowance: stakingAllowance, onApprove: onApproveStaking } =
+    useApproval(
+      contracts?.PremiaErc20?.address,
+      contracts?.PremiaStaking?.address,
+    );
+
+  const StakeButton = () => (
+    <Box
+      clone
+      height={30}
+      width={165}
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cn(classes.switchButton, classes.switchButtonLeft, {
+        [classes.activeSwitch]: stakingMode,
+      })}
+      onClick={() => {
+        setStakingMode(true);
+        setStakeAmount('0');
+      }}
+    >
+      <ButtonBase>
+        <Typography>Stake</Typography>
+      </ButtonBase>
+    </Box>
+  );
+
+  const UnstakeButton = () => (
+    <Box
+      clone
+      height={30}
+      width={165}
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      className={cn(classes.switchButton, {
+        [classes.activeSwitch]: !stakingMode,
+      })}
+      onClick={() => {
+        setStakingMode(false);
+        setStakeAmount('0');
+      }}
+    >
+      <ButtonBase>
+        <Typography>Unstake</Typography>
+      </ButtonBase>
+    </Box>
+  );
+
+  useEffect(() => {
+    if (!stakingAllowance) {
+      setApprovedAready(false);
+    } else if (
+      stakeAmount &&
+      parseFloat(stakeAmount) !== 0 &&
+      stakingAllowance &&
+      stakingAllowance >= parseFloat(stakeAmount)
+    ) {
+      setApprovedAready(true);
+    }
+  }, [stakingAllowance, stakeAmount]);
+
+  const handleChangeStakeAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      let paddedValue = value.replace(/[^0-9.]/g, '');
+      if (paddedValue === '') {
+        setStakeAmount('');
+        return;
+      }
+      if (paddedValue === '.') {
+        setStakeAmount('0.');
+        return;
+      }
+      if (paddedValue === '0') {
+        setStakeAmount('0');
+        return;
+      }
+      if (paddedValue.startsWith('0') && paddedValue[1] !== '.') {
+        const last = paddedValue.length;
+        paddedValue = paddedValue.slice(1, last);
+      }
+      if (paddedValue) {
+        setStakeAmount(paddedValue);
+      }
+    },
+    [setStakeAmount],
+  );
+
+  const signPermit = useCallback(async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
+
+    const token = contracts?.PremiaErc20?.address as string;
+    const spender = contracts?.PremiaStaking.address as string;
+    const amount = parseEther(stakeAmount);
+    const deadline = Math.floor(new Date().getTime() / 1000 + 3600);
+
+    const permit = await signERC2612Permit(
+      web3,
+      token,
+      account,
+      spender,
+      amount.toString(),
+      deadline,
+    );
+    if (permit && permit.r) {
+      setPermitState({ permit, permitDeadline: deadline });
+      setSignedAlready(true);
+    }
+  }, [contracts, stakeAmount, web3, account, setPermitState, setSignedAlready]);
+
+  const handleMax = useCallback(() => {
+    if (stakingMode) {
+      if (premiaBalance) {
+        setStakeAmount(formatEther(premiaBalance));
+      }
+    } else {
+      if (xPremiaBalance) {
+        setStakeAmount(formatEther(xPremiaBalance));
+      }
+    }
+  }, [stakingMode, premiaBalance, xPremiaBalance]);
+
+  const handleToggleCheck = useCallback(
+    () => setCheckIsOn(!checkIsOn),
+    [checkIsOn, setCheckIsOn],
+  );
+
+  const handleStakeWithApproval = useCallback(async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
+
+    const amount = parseEther(stakeAmount);
+
+    await transact(contracts?.PremiaStaking?.enter(amount), {
+      description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
+    });
+  }, [contracts, stakeAmount, transact]);
+
+  const handleStakeWithPermit = useCallback(async () => {
+    if (
+      !permitState.permit ||
+      !permitState.permitDeadline ||
+      !stakeAmount ||
+      parseFloat(stakeAmount) === 0
+    )
+      return;
+    const dateNow = Date.now();
+    const expirationDate = permitState.permitDeadline * 1000;
+    if (dateNow > expirationDate) {
+      setPermitState({});
+      setSignedAlready(false);
+      return;
+    }
+    const amount = parseEther(stakeAmount);
+
+    await transact(
+      contracts?.PremiaStaking?.enterWithPermit(
+        amount,
+        permitState.permitDeadline,
+        permitState.permit.v,
+        permitState.permit.r,
+        permitState.permit.s,
+      ),
+      {
+        description: `Stake ${formatBigNumber(amount)} PREMIA for xPREMIA`,
+      },
+    );
+    setSignedAlready(false);
+  }, [contracts, permitState, stakeAmount, transact]);
+
+  const handleUnstake = useCallback(async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) return;
+
+    const amount = parseEther(stakeAmount);
+
+    transact(contracts?.PremiaStaking?.leave(amount), {
+      description: `Unstake to withdraw ${formatBigNumber(
+        amount,
+      )} xPREMIA as PREMIA`,
+    });
+  }, [contracts, stakeAmount, transact]);
+
+  const onClickAction = useMemo(() => {
+    if (checkIsOn || shouldApprove) {
+      return approvedAlready ? handleStakeWithApproval : onApproveStaking;
+    }
+    return signedAlready ? handleStakeWithPermit : signPermit;
+  }, [
+    checkIsOn,
+    shouldApprove,
+    approvedAlready,
+    signedAlready,
+    handleStakeWithPermit,
+    signPermit,
+    handleStakeWithApproval,
+    onApproveStaking,
+  ]);
+
+  const stakingLabel = useMemo(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (premiaBalance && parseEther(stakeAmount).gt(premiaBalance)) {
+      return 'Not enough Premia';
+    }
+
+    if ((checkIsOn || shouldApprove) && !approvedAlready) {
+      return 'Approve 1/2';
+    }
+
+    if (signedAlready || approvedAlready) {
+      return 'Stake';
+    }
+
+    return 'Sign permit 1/2';
+  }, [
+    stakeAmount,
+    premiaBalance,
+    checkIsOn,
+    shouldApprove,
+    signedAlready,
+    approvedAlready,
+  ]);
+
+  const unstakingLabel = useMemo(() => {
+    if (!stakeAmount || parseFloat(stakeAmount) === 0) {
+      return 'Enter amount';
+    }
+
+    if (xPremiaBalance && parseEther(stakeAmount).gt(xPremiaBalance)) {
+      return 'Not enough xPremia';
+    }
+
+    return 'Unstake';
+  }, [stakeAmount, xPremiaBalance]);
 
   return (
     <Box className={!mobile ? classes.wrapper : classes.wrapperMobile}>
@@ -299,17 +627,25 @@ const StakePremiaCard: React.FC = () => {
             </Typography>
           </Box>
         </Box>
+
         <Box
           className={!mobile ? classes.topSection : classes.topSectionMobile}
         >
           <Box
-            className={classes.col}
-            style={{
-              margin: '0 8px 2px',
-              justifyContent: 'flex-start',
-              width: 'calc(100% - 16px)',
-            }}
-          ></Box>
+            width={1}
+            marginBottom={!mobile ? 'auto' : 1.5}
+            borderRadius={10}
+            padding='5px'
+            border={`1px solid ${theme.palette.divider}`}
+          >
+            <SwitchWithGlider
+              gliderWidth={!mobile ? 165 : 152}
+              gliderHeight={40}
+              marginBetweenSwitches={!mobile ? 7 : 0}
+              defaultIndex={stakingMode ? 0 : 1}
+              elements={[StakeButton, UnstakeButton]}
+            />
+          </Box>
 
           <Box className={classes.col}>
             <Box
@@ -321,22 +657,24 @@ const StakePremiaCard: React.FC = () => {
                 color='textPrimary'
                 className={classes.elementHeader}
               >
-                Stake quantity
+                {stakingMode ? 'Stake quantity' : 'Unstake quantity'}
               </Typography>
               <Typography
                 component='p'
                 color='textSecondary'
                 className={classes.smallInfoText}
               >
-                {'Max size available: 124,098'}
+                {`Max available: ${formatNumber(
+                  formatEther(stakingMode ? premiaBalance : xPremiaBalance),
+                )}`}
               </Typography>
             </Box>
 
             <Box width='100%' height='46px' className={classes.inputIcon}>
               <input
-                value={'100'}
-                onChange={() => {}}
+                value={stakeAmount}
                 className={classes.borderedInput}
+                onChange={handleChangeStakeAmount}
               />
               <PremiaWhite fill={palette.text.primary} />
               <Box
@@ -345,10 +683,11 @@ const StakePremiaCard: React.FC = () => {
                 }
               >
                 <Button
+                  fullWidth
                   color='primary'
                   variant='outlined'
                   size='small'
-                  fullWidth
+                  onClick={handleMax}
                 >
                   MAX
                 </Button>
@@ -357,18 +696,81 @@ const StakePremiaCard: React.FC = () => {
           </Box>
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
-            <Box className={classes.buttonLeft}>
-              <ContainedButton fullWidth label='Stake' onClick={() => alert} />
-            </Box>
-            <Button
-              fullWidth
-              color='secondary'
-              variant='outlined'
-              className={classes.buttonRight}
-            >
-              Unstake
-            </Button>
+            {stakingMode ? (
+              <ContainedButton
+                fullWidth
+                label={stakingLabel}
+                disabled={
+                  !stakeAmount ||
+                  parseFloat(stakeAmount) === 0 ||
+                  (premiaBalance && parseEther(stakeAmount).gt(premiaBalance))
+                }
+                onClick={onClickAction}
+              />
+            ) : (
+              <ContainedButton
+                fullWidth
+                label={unstakingLabel}
+                disabled={
+                  !stakeAmount ||
+                  parseFloat(stakeAmount) === 0 ||
+                  (xPremiaBalance && parseEther(stakeAmount).gt(xPremiaBalance))
+                }
+                onClick={handleUnstake}
+              />
+            )}
           </Box>
+
+          {stakingMode && !stakingAllowance && (
+            <Box display='flex' width='100%' marginTop='12px'>
+              <Checkbox
+                checked={checkIsOn}
+                onChange={handleToggleCheck}
+                name='agreeToTerms'
+                size='small'
+                className={classes.checkbox}
+                icon={<CustomCheckBox />}
+                checkedIcon={
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 20 20'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <rect
+                      width='20'
+                      height='20'
+                      rx='4'
+                      fill='#5294FF'
+                      fillOpacity='0.2'
+                    />
+                    <rect
+                      x='0.5'
+                      y='0.5'
+                      width='19'
+                      height='19'
+                      rx='3.5'
+                      stroke='#5294FF'
+                      strokeOpacity='0.5'
+                    />
+                    <path
+                      d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
+                      fill='#5294FF'
+                    />
+                  </svg>
+                }
+              />
+              <Typography
+                component='p'
+                color='textSecondary'
+                className={classes.hardwareWalletApprovalText}
+                style={mobile ? { fontSize: '11.5px' } : {}}
+              >
+                Use Approve (required by some hardware wallets)
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <Box
@@ -394,13 +796,17 @@ const StakePremiaCard: React.FC = () => {
             >
               xPremia Unlocked
             </Typography>
-            <Typography
-              component='p'
-              color='textPrimary'
-              className={classes.elementHeader}
-            >
-              {`1000`}
-            </Typography>
+            {xPremiaBalance ? (
+              <Typography
+                component='p'
+                color='textPrimary'
+                className={classes.elementHeader}
+              >
+                {formatNumber(formatEther(xPremiaBalance))}
+              </Typography>
+            ) : (
+              <CircularProgress size={16} />
+            )}
           </Box>
           <Box className={classes.horizontalBox}>
             <Typography
@@ -415,7 +821,7 @@ const StakePremiaCard: React.FC = () => {
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`100`}
+              {formatNumber(formatEther(xPremiaLocked))}
             </Typography>
           </Box>
           <Box className={classes.horizontalBox}>
@@ -431,7 +837,7 @@ const StakePremiaCard: React.FC = () => {
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`12`}
+              {formatNumber(formatEther(xPremiaBalance.add(xPremiaLocked)))}
             </Typography>
           </Box>
           <Box className={classes.horizontalBox}>
@@ -447,7 +853,7 @@ const StakePremiaCard: React.FC = () => {
               color='textPrimary'
               className={classes.elementHeader}
             >
-              {`11`}
+              {formatNumber(formatEther(underlyingPremia))}
             </Typography>
           </Box>
         </Box>

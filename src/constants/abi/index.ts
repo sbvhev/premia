@@ -12,4 +12,5 @@ export { default as PremiaFeeDiscountAbi } from './PremiaFeeDiscount.json';
 export { default as PremiaMakerAbi } from './PremiaMaker.json';
 export { default as PremiaStakingAbi } from './PremiaStaking.json';
 export { default as ProxyManagerAbi } from './ProxyManager.json';
+export { default as TradingCompetitionMerkleAbi } from './TradingCompetitionMerkle.json';
 export { default as WethAbi } from './Weth.json';

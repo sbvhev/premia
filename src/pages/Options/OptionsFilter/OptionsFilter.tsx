@@ -30,7 +30,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { useTokenBalance } from 'state/wallet/hooks';
 import { useWeb3 } from 'state/application/hooks';
 import { OptionType } from 'web3/options';
-import { tokenIcons } from 'constants/tokenIcons';
+import { getTokenIcon } from 'utils/getTokenIcon';
 import { formatCompact, formatNumber } from 'utils/formatNumber';
 
 import { ColoredSlider, Loader, ContainedButton } from 'components';
@@ -304,7 +304,7 @@ const OptionFilter: React.FC = () => {
   }, [activeTokenBalance, optionType, underlyingPrice]);
 
   const TokenIcon = useMemo(
-    () => tokenIcons[underlying.symbol as keyof typeof tokenIcons],
+    () => getTokenIcon(underlying.symbol),
     [underlying],
   );
   const rounding = useMemo(
@@ -361,6 +361,8 @@ const OptionFilter: React.FC = () => {
   }, [maturityDate, setMaturityDate]);
 
   useEffect(() => {
+    if (!roundedPrice) return;
+
     if (
       Number(strikePrice) < underlyingPrice / 2 ||
       Number(strikePrice) > underlyingPrice * 2

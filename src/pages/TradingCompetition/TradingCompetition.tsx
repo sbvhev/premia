@@ -305,7 +305,7 @@ const TradingCompetition: React.FC = () => {
           <Container fixed className={classes.competitionPrize}>
             <Box>
               <Typography component='h3'>Prizes</Typography>
-              <Link to='/'>View leaderboard</Link>
+              <Link to='/leaderboard'>View leaderboard</Link>
             </Box>
             <Divider />
             <Box>

@@ -6,7 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
+import { useWeb3 } from 'state/application/hooks';
 
+import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 import SidebarItem from './SidebarItem';
 import MainLogo from 'assets/svg/NewLogoComboLight.svg';
 import MainLogoBlack from 'assets/svg/NewLogoComboDark.svg';
@@ -17,9 +19,6 @@ import { ReactComponent as VaultsIcon } from 'assets/svg/VaultIcon.svg';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
 import { ReactComponent as StakeIcon } from 'assets/svg/StakeIcon.svg';
 import { ReactComponent as SwapIcon } from 'assets/svg/SwapIcon.svg';
-import { useWeb3 } from 'state/application/hooks';
-
-import { SwitchWithGlider, ThemeSwitch, SwapModal } from 'components';
 
 const insights = [
   {
@@ -86,7 +85,7 @@ interface PageIndexing {
 const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
-  const { account } = useWeb3();
+  const { chainId, account } = useWeb3();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const pageIndexes: PageIndexing = {
@@ -104,7 +103,6 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   React.useEffect(() => {
     const currentPage = pageIndexes[pathname];
     setPageNavigationIndex(currentPage);
-    console.log(pageNavigationIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
@@ -131,21 +129,23 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     },
     {
       title: 'Swap',
-      onClick: account ? () => setShowSwapModal(true) : () => {},
       Icon: <SwapIcon />,
+      disabled: [4, 42].includes(chainId as number),
+      onClick: account ? () => setShowSwapModal(true) : () => {},
     },
   ];
 
   const navigationItems = navigation.map(
-    ({ title, link, Icon, onClick }, i) => (
+    ({ title, link, Icon, disabled, onClick }, i) => (
       <SidebarItem
         key={i}
         title={title}
         link={link}
         Icon={Icon}
+        disabled={disabled}
+        activeCondition={!onClick ? link === pathname : showSwapModal}
         onHide={onHide}
         onClick={onClick}
-        activeCondition={!onClick ? link === pathname : showSwapModal}
       />
     ),
   );
@@ -194,7 +194,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             {!mobile ? (
               <SwitchWithGlider
                 elements={[...navigationItems]}
-                defaultIndex={pageNavigationIndex === undefined ? -1 : pageNavigationIndex}
+                defaultIndex={
+                  pageNavigationIndex === undefined ? -1 : pageNavigationIndex
+                }
                 marginBetweenSwitches={4}
                 gliderWidth={180}
                 gliderHeight={47}
@@ -203,7 +205,9 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
             ) : (
               <SwitchWithGlider
                 elements={navigationItems}
-                defaultIndex={pageNavigationIndex === undefined ? -1 : pageNavigationIndex}
+                defaultIndex={
+                  pageNavigationIndex === undefined ? -1 : pageNavigationIndex
+                }
                 marginBetweenSwitches={4}
                 gliderWidth={'100%'}
                 gliderHeight={47}

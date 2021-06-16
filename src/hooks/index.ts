@@ -4,6 +4,7 @@ export * from './useApproval';
 export * from './useContract';
 export * from './useCurrentBlockTimestamp';
 export * from './useDebounce';
+export * from './useDeviceWidth';
 export * from './useENSContentHash';
 export * from './useExpirations';
 export * from './useInterval';
