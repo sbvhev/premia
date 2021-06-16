@@ -22,6 +22,7 @@ import { Parallax } from 'react-scroll-parallax';
 import cn from 'classnames';
 import { throttle } from 'lodash';
 import { Close as CloseIcon, ExpandMore, ExpandLess } from '@material-ui/icons';
+import { ReactComponent as PremiaGreyLogo } from 'assets/svg/PremiaGreyLogo.svg';
 import { ReactComponent as PremiaLogo } from 'assets/svg/NewLogoComboDark.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
@@ -183,7 +184,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: 0,
     position: 'fixed',
     width: '100%',
+    padding: 0,
+    height: 64,
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
+    transition: 'height 0.3s ease',
+
+    '& > div': {
+      width: '100%',
+      margin: 'auto',
+    },
+  },
+  expanded: {
+    height: 90,
   },
   menuItem: {
     color: 'rgba(255, 255,255, 0.7)',
@@ -614,6 +626,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontWeight: 500,
       fontSize: 18,
       lineHeight: '54px',
+      color: 'white',
 
       [breakpoints.down('sm')]: {
         lineHeight: '21px',
@@ -631,12 +644,13 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       alignItems: 'center',
 
       '& svg': {
-        marginRight: 19,
-        width: 30,
+        marginRight: 15,
+        width: 25,
         height: 20,
 
         '& path': {
           fill: 'white',
+          opacity: 0.4,
         },
       },
 
@@ -768,6 +782,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   smallIcon: {
+    animation: 'float 3s ease-in-out infinite',
+
     [breakpoints.down('sm')]: {
       width: 62.83,
       height: 53.62,
@@ -1306,7 +1322,13 @@ const LandingPage: React.FC = () => {
 
   return (
     <Grid container className={classes.mainContainer}>
-      <AppBar position='static' className={classes.appBar}>
+      <AppBar
+        position='static'
+        className={cn(
+          classes.appBar,
+          scrollPos < 50 && !mobile ? classes.expanded : '',
+        )}
+      >
         <Toolbar>
           <Container className={classes.container}>
             <AnchorLink href='#hero' onClick={preventDefault}>
@@ -1939,7 +1961,10 @@ const LandingPage: React.FC = () => {
           style={{ marginBottom: !mobile ? 260 : 60 }}
         >
           <Box>
-            <Typography>Explore our platform documentation</Typography>
+            {!mobile && <GitbookIcon />}
+            <Typography>
+              Dive into our open collection of decentralized financial research.
+            </Typography>
           </Box>
           {!mobile && (
             <Button
@@ -1947,7 +1972,7 @@ const LandingPage: React.FC = () => {
                 window.open('https://docs.premia.finance', '_blank')
               }
             >
-              Our Documentation
+              Learn More
             </Button>
           )}
           {mobile && (
@@ -2078,6 +2103,7 @@ const LandingPage: React.FC = () => {
         </ScrollAnimation>
         <Box className={classes.learnMoreBar}>
           <Box>
+            {!mobile && <PremiaGreyLogo />}
             <Typography>
               Interested in joining the team? Join us in building the future of
               finance.
