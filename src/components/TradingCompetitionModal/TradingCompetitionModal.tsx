@@ -1,6 +1,15 @@
 import React from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container } from '@material-ui/core';
+import {
+  Typography,
+  Modal,
+  Box,
+  Fade,
+  Backdrop,
+  Button,
+  Divider,
+  Container,
+} from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
@@ -11,7 +20,7 @@ import {
   RedditShareButton,
   TelegramShareButton,
   TwitterShareButton,
-} from "react-share";
+} from 'react-share';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
@@ -110,9 +119,9 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 42,
       height: 42,
       '& path': {
-        fill: 'black'
-      }
-    }
+        fill: 'black',
+      },
+    },
   },
   coloredBorderBackgroundForCard: {
     boxSizing: 'border-box',
@@ -161,7 +170,7 @@ const useStyles = makeStyles(({ palette }) => ({
       textDecoration: 'underline',
       cursor: 'pointer',
       fontSize: 14,
-      lineHeight: '18px'
+      lineHeight: '18px',
     },
   },
   exitContainer: {
@@ -206,14 +215,14 @@ const useStyles = makeStyles(({ palette }) => ({
           '& > div:first-child': {
             background:
               'linear-gradient(115.58deg, #FFA15E 8.45%, #EFFF8E 101.04%)',
-            opacity: (props: any) => (props.darkMode ? 0.1 : 0.2)
+            opacity: (props: any) => (props.darkMode ? 0.1 : 0.2),
           },
           '& p': {
             background:
               'linear-gradient(115.58deg, #FF5E5E 8.45%, #FFED8E 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
+          },
         },
         '&:nth-child(2)': {
           '& > div:first-child': {
@@ -226,7 +235,7 @@ const useStyles = makeStyles(({ palette }) => ({
               'linear-gradient(115.58deg, #858585 8.45%, #E6E6E6 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
+          },
         },
         '&:nth-child(3)': {
           '& > div:first-child': {
@@ -238,7 +247,7 @@ const useStyles = makeStyles(({ palette }) => ({
               'linear-gradient(115.58deg, #C46F55 8.45%, #993434 101.04%)',
             WebkitBackgroundClip: 'text',
             textFillColor: 'transparent',
-          }
+          },
         },
         '& > div:first-child': {
           width: '100%',
@@ -251,20 +260,20 @@ const useStyles = makeStyles(({ palette }) => ({
         '& p': {
           fontSize: 14,
           lineHeight: '18px',
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         },
         '& > div:nth-child(2)': {
           display: 'flex',
           alignItems: 'center',
           '& img': {
-            marginRight: 3
+            marginRight: 3,
           },
           '& p': {
-            fontWeight: 'normal'
-          }
-        }
-      }
-    }
+            fontWeight: 'normal',
+          },
+        },
+      },
+    },
   },
   buttonsContainer: {
     margin: '19px 0 25px',
@@ -273,12 +282,12 @@ const useStyles = makeStyles(({ palette }) => ({
       height: 45,
       fontSize: 16,
       '&:first-child': {
-        marginRight: 8
+        marginRight: 8,
       },
       '&:last-child': {
-        color: palette.text.secondary
-      }
-    }
+        color: palette.text.secondary,
+      },
+    },
   },
   socialContainer: {
     marginTop: 15,
@@ -289,7 +298,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       fontWeight: 500,
       lineHeight: '24px',
-      color: palette.text.primary
+      color: palette.text.primary,
     },
     '& a': {
       marginBottom: 19,
@@ -297,7 +306,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
       color: palette.text.secondary,
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     '& > div': {
       margin: '8px 0 15px',
@@ -321,19 +330,19 @@ const useStyles = makeStyles(({ palette }) => ({
         marginRight: 10,
         cursor: 'pointer',
         '&:last-child': {
-          marginRight: 0
+          marginRight: 0,
         },
         '& svg path': {
-          fill: palette.text.secondary
+          fill: palette.text.secondary,
         },
         '&:hover, &:active': {
           '& svg path': {
-            fill: palette.text.primary
+            fill: palette.text.primary,
           },
         },
-      }
-    }
-  }
+      },
+    },
+  },
 }));
 
 export interface EligibleTradingModalProps {
@@ -359,7 +368,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -397,7 +406,9 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
             <Box
               className={classes.coloredBorderBackgroundForCard}
               style={
-                palette && palette.type === 'light' ? { background: 'none' } : {}
+                palette && palette.type === 'light'
+                  ? { background: 'none' }
+                  : {}
               }
             >
               <Box className={classes.mainCard}>
@@ -407,10 +418,10 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   </Typography>
                   <Box className={classes.prizeContainer}>
                     <Box mb={1}>
-                      <Typography component='h3'>
-                        Prizes
-                      </Typography>
-                      <Link to='/leaderboard' onClick={onClose}>View leaderboard</Link>
+                      <Typography component='h3'>Prizes</Typography>
+                      <Link to='/leaderboard' onClick={onClose}>
+                        View leaderboard
+                      </Link>
                     </Box>
                     <Box>
                       <Box>
@@ -440,9 +451,12 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                     </Box>
                   </Box>
                   <Typography color='secondary'>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia metus orci, in vehicula sapien egestas ut. Nulla sodales suscipit orci nec efficitur. In condimentum at libero in aliquam.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Quisque lacinia metus orci, in vehicula sapien egestas ut.
+                    Nulla sodales suscipit orci nec efficitur. In condimentum at
+                    libero in aliquam.
                   </Typography>
-                  <Link to='/'>Competition rules</Link>
+                  <Link to='/trading-competition'>Competition rules</Link>
                   <Box className={classes.buttonsContainer}>
                     <Button
                       variant='contained'
@@ -484,7 +498,11 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                       </FacebookShareButton>
                     </Container>
                     <Container fixed>
-                      <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel="noreferrer">
+                      <a
+                        href='https://discord.com/invite/6MhRmzmdHN'
+                        target='_blank'
+                        rel='noreferrer'
+                      >
                         <DiscordIcon />
                       </a>
                     </Container>
