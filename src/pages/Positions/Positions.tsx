@@ -348,9 +348,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   noPositionBtnContainer: {
-    marginLeft: 30,
+    marginTop: 20,
     '& h2': {
-      marginBottom: 9,
+      marginBottom: 18,
+    },
+    '& a': {
+      textDecoration: 'none'
     },
     '& button': {
       width: 181,
@@ -599,6 +602,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 92,
     display: 'flex',
     alignItems: 'center',
+    margin: 'auto',
     '& img': {
       width: '100%',
     },
@@ -1234,43 +1238,33 @@ const Positions: React.FC = () => {
       )}
       {noPositions ? (
         <Box className={classes.noPositionsContainer}>
-          <Typography
-            component='h1'
-            color='textPrimary'
-            align='center'
-            className={classes.title}
-          >
-            You have no active positions
-          </Typography>
           <Box mt={mobileWindowSize ? 3 : 5}>
-            <Container fixed className={classes.noPositionBox}>
-              {positionFilterIndex === 0 && (
-                <>
-                  <Box className={classes.noPositionImage}>
-                    <img src={NoPositionOptions} alt='No Options' />
-                  </Box>
-                  <Box className={classes.noPositionBtnContainer}>
-                    <Typography component='h2'>Your options</Typography>
-                    <Link to='/options'>
-                      <Button color='primary'>Buy options</Button>
-                    </Link>
-                  </Box>
-                </>
-              )}
-              {positionFilterIndex === 1 && (
-                <>
-                  <Box className={classes.noPositionImage}>
-                    <img src={NoPositionYield} alt='No Yield' />
-                  </Box>
-                  <Box className={classes.noPositionBtnContainer}>
-                    <Typography component='h2'>Your yield</Typography>
-                    <Link to='/vaults?tab=pro'>
-                      <Button color='primary'>Earn yield</Button>
-                    </Link>
-                  </Box>
-                </>
-              )}
-            </Container>
+            {positionFilterIndex === 0 && (
+              <Box textAlign='center'>
+                <Box className={classes.noPositionImage}>
+                  <img src={NoPositionOptions} alt='No Options' />
+                </Box>
+                <Box className={classes.noPositionBtnContainer}>
+                  <Typography component='h2'>No active options positions</Typography>
+                  <Link to='/options'>
+                    <Button color='primary'>Buy options</Button>
+                  </Link>
+                </Box>
+              </Box>
+            )}
+            {positionFilterIndex === 1 && (
+              <Box textAlign='center'>
+                <Box className={classes.noPositionImage}>
+                  <img src={NoPositionYield} alt='No Yield' />
+                </Box>
+                <Box className={classes.noPositionBtnContainer}>
+                  <Typography component='h2'>No active yield positions</Typography>
+                  <Link to='/vaults?tab=pro'>
+                    <Button color='primary'>Earn yield</Button>
+                  </Link>
+                </Box>
+              </Box>
+            )}
           </Box>
           {/* Hide until Position Guide completed <Grid
             container
