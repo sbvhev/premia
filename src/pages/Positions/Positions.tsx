@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -22,7 +22,11 @@ import { usePrices } from 'state/application/hooks';
 import { formatBigNumber, formatNumber } from 'utils/formatNumber';
 import { UserOwnedPool } from 'web3/pools';
 import { OptionType, UserOwnedOption } from 'web3/options';
-import { useAllUserOwnedPools, useUserOwnedOptions } from 'hooks';
+import {
+  useAllUserOwnedPools,
+  useUserOwnedOptions,
+  useDeviceWidth,
+} from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
@@ -301,20 +305,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   noPositionsContainer: {
     maxWidth: 790,
-    margin: 'auto',
+    margin: '70px auto',
     '& h2': {
       fontSize: 18,
       lineHeight: 1,
       fontWeight: 'bold',
     },
     [breakpoints.down('sm')]: {
-      minHeight: 'calc(100vh - 275px)',
-      '& h1': {
-        marginTop: 20,
-      },
+      minHeight: 'calc(100vh - 395px)',
     },
     [breakpoints.down('xs')]: {
-      minHeight: 'calc(100vh - 290px)',
+      minHeight: 'calc(100vh - 430px)',
     },
   },
   findPositionContainer: {
@@ -356,7 +357,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 45,
       fontSize: 16,
       margin: 0,
-      color: ({ darkMode }: any) => (darkMode ? 'black' : 'white'),
     },
   },
   positionFilterContainer: {
@@ -750,7 +750,7 @@ const Positions: React.FC = () => {
   const [dateFilterIndex, setDateFilterIndex] = useState(0);
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
-  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const deviceWidth = useDeviceWidth();
 
   const options = useUserOwnedOptions();
   const pools = useAllUserOwnedPools();
@@ -773,15 +773,6 @@ const Positions: React.FC = () => {
       ),
     [options, optionFilterIndex, currentTime],
   );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleFilterOptions = () => {
     setPositionFilterIndex(0);

@@ -1,14 +1,14 @@
 import React from 'react';
 import { ReactComponent as DayIcon } from 'assets/svg/DayIcon.svg';
 import { ReactComponent as NightIcon } from 'assets/svg/NightIcon.svg';
-import { Typography, Box } from '@material-ui/core';
+import { Typography, Box, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import { SwitchWithGlider } from 'components';
 
 import { useWeb3 } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
+import { useDeviceWidth } from 'hooks';
+
+import { SwitchWithGlider } from 'components';
 
 const useStyles = makeStyles(({ palette }) => ({
   activeMode: {
@@ -57,18 +57,9 @@ const ThemeSwitch: React.FC = () => {
   const { onboard } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
-  const [deviceWidth, setDeviceWidth] = React.useState(window.innerWidth);
+  const deviceWidth = useDeviceWidth();
   const { palette } = theme;
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleDayClick = () => {
     setTimeout(() => {

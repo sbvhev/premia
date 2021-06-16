@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import {
   Container,
@@ -9,19 +9,27 @@ import {
   Typography,
   Button,
   Box,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
   useMediaQuery,
+  MenuProps,
 } from '@material-ui/core';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 import ScrollAnimation from 'react-animate-on-scroll';
 import { Parallax } from 'react-scroll-parallax';
 import cn from 'classnames';
 import { throttle } from 'lodash';
-import CloseIcon from '@material-ui/icons/Close';
+import { Close as CloseIcon, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { ReactComponent as PremiaLogo } from 'assets/svg/NewLogoComboDark.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/DiscordIcon.svg';
 import { ReactComponent as GithubIcon } from 'assets/svg/GithubIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
+import { ReactComponent as TelegramIcon } from 'assets/svg/TelegramIcon.svg';
+import { ReactComponent as DeFiIcon } from 'assets/svg/DeFiIcon.svg';
+import { ReactComponent as GitbookIcon } from 'assets/svg/GitbookIcon.svg';
 import { ReactComponent as LandingTradingIcon } from 'assets/svg/LandingTradingIcon.svg';
 import { ReactComponent as LandingHedgeIcon } from 'assets/svg/LandingHedgeIcon.svg';
 import { ReactComponent as LandingYieldIcon } from 'assets/svg/LandingYieldIcon.svg';
@@ -54,9 +62,9 @@ import { ReactComponent as ConsetellationMobileEight } from 'assets/svg/mobile/C
 import KeyIcon from 'assets/svg/Key.svg';
 import CoinIcon from 'assets/svg/Coin.svg';
 import LabIcon from 'assets/svg/Lab.svg';
-import TradeOptionsSVGBackground from 'assets/images/TradeOptions.svg';
-import VaultsBasicSVGBackground from 'assets/images/VaultBasic.svg';
-import VaultsProSVGBackground from 'assets/images/VaultPro.svg';
+import TradeOptionsSVGBackground from 'assets/images/TradeOptions.png';
+import VaultsBasicSVGBackground from 'assets/images/VaultBasic.png';
+import VaultsProSVGBackground from 'assets/images/VaultPro.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 
@@ -81,6 +89,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
           '& path': {
             fill: 'white',
+            opacity: 1,
           },
         },
       },
@@ -118,7 +127,31 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       padding: 0,
     },
   },
+  usefulLinks: {
+    background: 'transparent',
+    color: 'rgba(255, 255,255, 0.7)',
+    cursor: 'pointer',
+    margin: '0 8px',
+    padding: '0px 10px',
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: '18px',
+    whiteSpace: 'nowrap',
+    width: 'auto',
 
+    '& path': {
+      fill: 'rgba(255, 255,255, 0.7)',
+    },
+
+    '&:hover': {
+      background: 'transparent',
+      color: 'rgba(255, 255,255, 1)',
+
+      '& path': {
+        fill: 'rgb(255, 255, 255)',
+      },
+    },
+  },
   box: {
     '& svg': {
       margin: 0,
@@ -150,7 +183,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: 0,
     position: 'fixed',
     width: '100%',
-    boxShadow: '2px 5px 4px rgba(0, 0, 0, 0.25)',
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
   },
   menuItem: {
@@ -232,7 +264,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   gradientTitle: {
-    fontSize: 53,
+    fontSize: 48,
     lineHeight: '51px',
     fontWeight: 700,
     background:
@@ -972,7 +1004,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: 150,
 
       [breakpoints.down('sm')]: {
-        width: 'auto',
+        width: 130,
       },
     },
 
@@ -998,12 +1030,20 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+      flexWrap: 'wrap',
+      height: 50,
+      position: 'relative',
+      top: -4,
 
       '& svg': {
         marginRight: 16,
         width: 16,
         height: 16,
         cursor: 'pointer',
+
+        '& path': {
+          fill: 'rgb(100, 100, 100)',
+        },
       },
     },
   },
@@ -1149,20 +1189,75 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         borderBottom: '1px solid #212121',
-        padding: '16px 0',
+        padding: '16px 20px',
 
         '& svg': {
-          margin: '0 20px',
+          margin: 0,
         },
       },
+    },
+
+    '& path': {
+      fill: 'rgb(100, 100, 100)',
     },
   },
   sectionImages: {
     position: 'relative',
   },
 }));
+
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid rgba(255, 255, 255, 0.25)',
+    width: 140,
+  },
+})((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    '& a': {
+      textDecoration: 'none',
+      display: 'flex',
+      alignItems: 'center',
+    },
+
+    '& span': {
+      fontSize: 14,
+      lineHeight: '18px',
+      color: 'rgba(255, 255, 255, 0.7)',
+    },
+
+    '& .MuiListItemIcon-root': {
+      marginRight: 8,
+      minWidth: 16,
+      width: 16,
+
+      '& path': {
+        fill: 'rgba(255, 255, 255, 0.7)',
+      },
+    },
+
+    '& .MuiListItemText-root': {
+      margin: 0,
+    },
+  },
+}))(MenuItem);
 
 const LandingPage: React.FC = () => {
   const classes = useStyles();
@@ -1171,10 +1266,18 @@ const LandingPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollPos, setScrollPos] = useState(0);
   const [currentNav, setCurrentNav] = useState('');
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const preventDefault = (event: React.SyntheticEvent) => {
-    event.preventDefault();
+  const preventDefault = () => {
     setMenuOpen(false);
+  };
+
+  const handleClick = (event: React.BaseSyntheticEvent) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   useEffect(() => {
@@ -1259,32 +1362,112 @@ const LandingPage: React.FC = () => {
                     Our Values
                   </Typography>
                 </AnchorLink>
-                <Box className={classes.headerIcons}>
-                  <AnchorLink
-                    href='https://twitter.com/PremiaFinance'
-                    onClick={preventDefault}
-                  >
-                    <TwitterIcon />
-                  </AnchorLink>
-                  <AnchorLink
-                    href='https://discord.com/invite/6MhRmzmdHN'
-                    onClick={preventDefault}
-                  >
-                    <DiscordIcon />
-                  </AnchorLink>
-                  <AnchorLink
-                    href='https://github.com/PremiaFinance'
-                    onClick={preventDefault}
-                  >
-                    <GithubIcon />
-                  </AnchorLink>
-                  <AnchorLink
-                    href='https://medium.premia.finance/'
-                    onClick={preventDefault}
-                  >
-                    <MediumIcon />
-                  </AnchorLink>
-                </Box>
+                <Button
+                  className={classes.usefulLinks}
+                  aria-haspopup='true'
+                  onClick={handleClick}
+                >
+                  Useful links
+                  {anchorEl ? <ExpandLess /> : <ExpandMore />}
+                </Button>
+                <StyledMenu
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={!!anchorEl}
+                  onClose={handleClose}
+                >
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://twitter.com/PremiaFinance'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <TwitterIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Twitter' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://discord.com/invite/6MhRmzmdHN'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <DiscordIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Discord' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://medium.premia.finance/'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <MediumIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Medium' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://t.me/premia_official'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <TelegramIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Telegram' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://github.com/PremiaFinance'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <GithubIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Github' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://docs.premia.finance/'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <GitbookIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='Gitbook' />
+                    </a>
+                  </StyledMenuItem>
+                  <StyledMenuItem>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='https://defipulse.com/defi-list'
+                      onClick={preventDefault}
+                    >
+                      <ListItemIcon>
+                        <DeFiIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='DeFi Pulse' />
+                    </a>
+                  </StyledMenuItem>
+                </StyledMenu>
                 <Button
                   className={classes.openApp}
                   onClick={() => history.push('/positions')}
@@ -1344,30 +1527,62 @@ const LandingPage: React.FC = () => {
             </AnchorLink>
           </Box>
           <Box>
-            <AnchorLink
+            <a
+              target='_blank'
+              rel='noreferrer'
               href='https://twitter.com/PremiaFinance'
               onClick={preventDefault}
             >
               <TwitterIcon />
-            </AnchorLink>
-            <AnchorLink
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
               href='https://discord.com/invite/6MhRmzmdHN'
               onClick={preventDefault}
             >
               <DiscordIcon />
-            </AnchorLink>
-            <AnchorLink
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
               href='https://github.com/PremiaFinance'
               onClick={preventDefault}
             >
               <GithubIcon />
-            </AnchorLink>
-            <AnchorLink
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
               href='https://medium.premia.finance/'
               onClick={preventDefault}
             >
               <MediumIcon />
-            </AnchorLink>
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
+              href='https://t.me/premia_official'
+              onClick={preventDefault}
+            >
+              <TelegramIcon />
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
+              href='https://docs.premia.finance/'
+              onClick={preventDefault}
+            >
+              <GitbookIcon />
+            </a>
+            <a
+              target='_blank'
+              rel='noreferrer'
+              href='https://defipulse.com/defi-list'
+              onClick={preventDefault}
+            >
+              <DeFiIcon />
+            </a>
           </Box>
         </Box>
       )}
@@ -1607,14 +1822,14 @@ const LandingPage: React.FC = () => {
                     onClick={() => {
                       history.push('/vaults?tab=basic');
                     }}
-                    style={{ opacity: scrollPos > 900 ? 1 : 0 }}
+                    style={{ opacity: scrollPos > 1200 ? 1 : 0 }}
                   ></Box>
                   <Box
                     className={classes.rightSideImage}
                     onClick={() => {
                       history.push('/vaults?tab=pro');
                     }}
-                    style={{ opacity: scrollPos > 1600 ? 1 : 0 }}
+                    style={{ opacity: scrollPos > 1800 ? 1 : 0 }}
                   ></Box>
                 </Box>
               </Box>
@@ -1901,97 +2116,152 @@ const LandingPage: React.FC = () => {
               <Box className={classes.footerLines}>
                 {mobile && (
                   <Box className={classes.footerLine}>
-                    <AnchorLink
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='mailto:dev@premia.finance'
                       onClick={preventDefault}
                     >
                       <Typography variant='h1'>Misc</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='mailto:dev@premia.finance'
                       onClick={preventDefault}
                     >
                       <Typography>Contact Us</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='mailto:careers@premia.finance'
                       onClick={preventDefault}
                     >
                       <Typography>Careers</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='https://docs.premia.finance/'
                       onClick={preventDefault}
                     >
                       <Typography>Documentation</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='mailto:dev@premia.finance'
                       onClick={preventDefault}
                     >
                       <Typography>Bug Bounty</Typography>
-                    </AnchorLink>
+                    </a>
                   </Box>
                 )}
                 {mobile && (
                   <Box className={classes.footerLine}>
-                    <AnchorLink href='#' onClick={preventDefault}>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href='/'
+                      onClick={preventDefault}
+                    >
                       <Typography variant='h1'>Legal</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='https://files.premia.finance/$/Sfhhw'
                       onClick={preventDefault}
                     >
                       <Typography>Privacy Policy</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='https://files.premia.finance/$/a4dmU'
                       onClick={preventDefault}
                     >
                       <Typography>Cookie Policy</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='https://files.premia.finance/$/hijbM'
                       onClick={preventDefault}
                     >
                       <Typography>Risk Policy</Typography>
-                    </AnchorLink>
-                    <AnchorLink
+                    </a>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
                       href='https://files.premia.finance/$/SNZrK'
                       onClick={preventDefault}
                     >
                       <Typography>Terms of Service</Typography>
-                    </AnchorLink>
+                    </a>
                   </Box>
                 )}
                 <Box className={classes.footerLine}>
                   {mobile && <Typography variant='h1'>Social</Typography>}
                   {mobile && (
                     <Box>
-                      <AnchorLink
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
                         href='https://twitter.com/PremiaFinance'
                         onClick={preventDefault}
                       >
                         <TwitterIcon />
-                      </AnchorLink>
-                      <AnchorLink
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
                         href='https://discord.com/invite/6MhRmzmdHN'
                         onClick={preventDefault}
                       >
                         <DiscordIcon />
-                      </AnchorLink>
-                      <AnchorLink
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
                         href='https://github.com/PremiaFinance'
                         onClick={preventDefault}
                       >
                         <GithubIcon />
-                      </AnchorLink>
-                      <AnchorLink
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
                         href='https://medium.premia.finance/'
                         onClick={preventDefault}
                       >
                         <MediumIcon />
-                      </AnchorLink>
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://medium.premia.finance/'
+                        onClick={preventDefault}
+                      >
+                        <TelegramIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://medium.premia.finance/'
+                        onClick={preventDefault}
+                      >
+                        <GitbookIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://medium.premia.finance/'
+                        onClick={preventDefault}
+                      >
+                        <DeFiIcon />
+                      </a>
                     </Box>
                   )}
                 </Box>
@@ -2000,104 +2270,157 @@ const LandingPage: React.FC = () => {
                 Premia Finance© All Rights Reserved 2021{' '}
               </Typography>
             </Box>
-            <Box className={classes.footerLines}>
-              {!mobile && (
+            {!mobile && (
+              <Box className={classes.footerLines}>
                 <Box className={classes.footerLine}>
-                  <AnchorLink
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='mailto:dev@premia.finance'
                     onClick={preventDefault}
                   >
                     <Typography variant='h1'>Misc</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='mailto:dev@premia.finance'
                     onClick={preventDefault}
                   >
                     <Typography>Contact Us</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='mailto:careers@premia.finance'
                     onClick={preventDefault}
                   >
                     <Typography>Careers</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='https://docs.premia.finance/'
                     onClick={preventDefault}
                   >
                     <Typography>Documentation</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='mailto:dev@premia.finance'
                     onClick={preventDefault}
                   >
                     <Typography>Bug Bounty</Typography>
-                  </AnchorLink>
+                  </a>
                 </Box>
-              )}
-              {!mobile && (
                 <Box className={classes.footerLine}>
-                  <AnchorLink href='#' onClick={preventDefault}>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
+                    href='/'
+                    onClick={preventDefault}
+                  >
                     <Typography variant='h1'>Legal</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='https://files.premia.finance/$/Sfhhw'
                     onClick={preventDefault}
                   >
                     <Typography>Privacy Policy</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='https://files.premia.finance/$/a4dmU'
                     onClick={preventDefault}
                   >
                     <Typography>Cookie Policy</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='https://files.premia.finance/$/hijbM'
                     onClick={preventDefault}
                   >
                     <Typography>Risk Policy</Typography>
-                  </AnchorLink>
-                  <AnchorLink
+                  </a>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
                     href='https://files.premia.finance/$/SNZrK'
                     onClick={preventDefault}
                   >
                     <Typography>Terms of Service</Typography>
-                  </AnchorLink>
+                  </a>
                 </Box>
-              )}
-              <Box className={classes.footerLine}>
-                {!mobile && <Typography variant='h1'>Social</Typography>}
-                {!mobile && (
-                  <Box>
-                    <AnchorLink
-                      href='https://twitter.com/PremiaFinance'
-                      onClick={preventDefault}
-                    >
-                      <TwitterIcon />
-                    </AnchorLink>
-                    <AnchorLink
-                      href='https://discord.com/invite/6MhRmzmdHN'
-                      onClick={preventDefault}
-                    >
-                      <DiscordIcon />
-                    </AnchorLink>
-                    <AnchorLink
-                      href='https://github.com/PremiaFinance'
-                      onClick={preventDefault}
-                    >
-                      <GithubIcon />
-                    </AnchorLink>
-                    <AnchorLink
-                      href='https://medium.premia.finance/'
-                      onClick={preventDefault}
-                    >
-                      <MediumIcon />
-                    </AnchorLink>
-                  </Box>
-                )}
+                <Box className={classes.footerLine}>
+                  {!mobile && <Typography variant='h1'>Social</Typography>}
+                  {!mobile && (
+                    <Box>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://twitter.com/PremiaFinance'
+                        onClick={preventDefault}
+                      >
+                        <TwitterIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://discord.com/invite/6MhRmzmdHN'
+                        onClick={preventDefault}
+                      >
+                        <DiscordIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://github.com/PremiaFinance'
+                        onClick={preventDefault}
+                      >
+                        <GithubIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://medium.premia.finance/'
+                        onClick={preventDefault}
+                      >
+                        <MediumIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://t.me/premia_official'
+                        onClick={preventDefault}
+                      >
+                        <TelegramIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://docs.premia.finance/'
+                        onClick={preventDefault}
+                      >
+                        <GitbookIcon />
+                      </a>
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        href='https://defipulse.com/defi-list'
+                        onClick={preventDefault}
+                      >
+                        <DeFiIcon />
+                      </a>
+                    </Box>
+                  )}
+                </Box>
               </Box>
-            </Box>
+            )}
           </Container>
         </Box>
       </Box>

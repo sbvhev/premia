@@ -9,6 +9,7 @@ import transactions from './transactions/reducer';
 import options from './options/reducer';
 import vaults from './vaults/reducer';
 import swap from './swap/reducer';
+import staking from './staking/reducer';
 
 const PERSISTED_KEYS: string[] = ['user', 'options', 'vaults', 'swap'];
 
@@ -21,6 +22,7 @@ const store = configureStore({
     options,
     vaults,
     swap,
+    staking,
   },
   middleware: [
     ...getDefaultMiddleware({

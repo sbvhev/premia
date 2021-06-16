@@ -1,11 +1,17 @@
 import React from 'react';
 import { Box, Typography, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { BigNumber } from 'ethers';
 import cn from 'classnames';
 
 import { StakePremiaCard, LockPremiaCard } from './components';
 
-import { ReactComponent as PremiaLogo } from 'assets/svg/NewLogoWhite.svg';
+import { formatEther } from 'ethers/lib/utils';
+import { formatNumber, formatBigNumber } from 'utils/formatNumber';
+import { useStakingBalances } from 'state/staking/hooks';
+
+import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
+import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
 
 import { useDarkModeManager } from 'state/user/hooks';
 
@@ -125,6 +131,7 @@ const Stake: React.FC = () => {
   const theme = useTheme();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { premiaBalance, xPremiaBalance, xPremiaLocked } = useStakingBalances();
 
   return (
     <Box
@@ -188,7 +195,7 @@ const Stake: React.FC = () => {
             }
           >
             <Box className={classes.premiaBox1}>
-              <PremiaLogo />
+              <PremiaBlue />
             </Box>
             <Box className={classes.col} style={{ margin: '4px 0' }}>
               <Typography
@@ -203,7 +210,7 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {`124,098`}
+                {formatNumber(formatEther(premiaBalance))}
               </Typography>
             </Box>
           </Box>
@@ -222,7 +229,7 @@ const Stake: React.FC = () => {
           >
             <Box className={classes.premiaBox2}></Box>
             <Box className={classes.redPremiaIcon}>
-              <PremiaLogo />
+              <PremiaRed />
             </Box>
             <Box
               className={classes.colRelative}
@@ -240,7 +247,11 @@ const Stake: React.FC = () => {
                 color='textPrimary'
                 className={classes.bigNumber}
               >
-                {`28,912,098,122`}
+                {formatBigNumber(
+                  BigNumber.from(xPremiaBalance).add(
+                    BigNumber.from(xPremiaLocked),
+                  ),
+                )}
               </Typography>
             </Box>
           </Box>

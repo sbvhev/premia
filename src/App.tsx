@@ -19,6 +19,7 @@ import MulticallUpdater from './state/multicall/updater';
 import UserUpdater from './state/user/updater';
 import OptionsUpdater from './state/options/updater';
 import TransactionsUpdater from './state/transactions/updater';
+import StakingUpdater from './state/staking/updater';
 import { useIsDarkMode } from 'state/user/hooks';
 import { darkTheme, lightTheme } from './theme';
 import store from './state';
@@ -32,7 +33,7 @@ import {
   LandingPage,
   PositionGuide,
   TradingCompetition,
-  Leaderboard
+  Leaderboard,
 } from './pages';
 import {
   TransactionLoadingModal,
@@ -94,6 +95,7 @@ const StateUpdaters: React.FC = () => {
       <UserUpdater />
       <OptionsUpdater />
       <TransactionsUpdater />
+      <StakingUpdater />
     </>
   );
 };

@@ -141,21 +141,22 @@ export const lightTheme = responsiveFontSizes(
         textPrimary: {
           backgroundColor: primary,
           color: white,
+          border: `1px solid transparent`,
 
           '&:hover': {
-            backgroundColor: primary,
-            opacity: 0.8,
+            borderColor: primary,
+            color: primary,
+            '& svg path': {
+              fill: primary,
+            }
           },
 
           '&:active': {
-            backgroundColor: premiaBlueDay,
+            borderColor: primary,
             color: primary,
-            border: 'none',
-            opacity: 1,
-
-            '& .MuiButton-label > svg path': {
+            '& svg path': {
               fill: primary,
-            },
+            }
           },
         },
         textSecondary: {
@@ -833,21 +834,22 @@ export const darkTheme = responsiveFontSizes(
         textPrimary: {
           backgroundColor: primary,
           color: white,
+          border: `1px solid transparent`,
 
           '&:hover': {
-            backgroundColor: primary,
-            opacity: 0.8,
+            borderColor: primary,
+            color: primary,
+            '& svg path': {
+              fill: primary,
+            }
           },
 
           '&:active': {
-            backgroundColor: premiaBlueDay,
+            borderColor: primary,
             color: primary,
-            border: 'none',
-            opacity: 1,
-
-            '& .MuiButton-label > svg path': {
+            '& svg path': {
               fill: primary,
-            },
+            }
           },
         },
         textSecondary: {
