@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { constants } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { get } from 'lodash';
 
@@ -9,7 +10,8 @@ export function useHasMerkleClaim(merkleRoot: any, aidropId: number) {
   const { account, contracts } = useWeb3();
   const [claimed, setClaimed] = useState(false);
 
-  const index = get(merkleRoot, `claims.${getAddress(account)}.index`, null);
+  const address = account && account !== '' ? account : constants.AddressZero;
+  const index = get(merkleRoot, `claims.${getAddress(address)}.index`, null);
   const hasClaim = account === '' ? false : index !== null;
 
   useInterval(async () => {

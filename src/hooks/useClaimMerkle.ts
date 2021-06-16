@@ -14,10 +14,10 @@ export function useClaimMerkle(
   const transact = useTransact();
   const formattedAddr = account === '' ? account : utils.getAddress(account);
 
+  if (!contracts || !account || account === '') return () => {};
+
   const index = get(merkleRoot, `claims.${formattedAddr}.index`);
   const merkleProof = get(merkleRoot, `claims.${formattedAddr}.proof`);
-
-  if (!contracts) return;
 
   const useClaimMerkle = () =>
     transact(
