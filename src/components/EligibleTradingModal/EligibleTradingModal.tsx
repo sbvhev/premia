@@ -1,9 +1,18 @@
 import React from 'react';
-import { Typography, Modal, Box, Fade, Backdrop, Button, Divider, Container, Link } from '@material-ui/core';
+import {
+  Typography,
+  Modal,
+  Box,
+  Fade,
+  Backdrop,
+  Button,
+  Divider,
+  Container,
+  Link,
+} from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { ModalContainer } from 'components';
-
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
@@ -136,7 +145,7 @@ const useStyles = makeStyles(({ palette }) => ({
       maxWidth: 220,
       height: 45,
       margin: '0 auto 30px',
-    }
+    },
   },
   exitContainer: {
     position: 'absolute',
@@ -164,7 +173,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       fontWeight: 500,
       lineHeight: '24px',
-      color: palette.text.primary
+      color: palette.text.primary,
     },
     '& a': {
       marginBottom: 19,
@@ -172,7 +181,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
       color: palette.text.secondary,
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     '& > div': {
       margin: '8px 0 15px',
@@ -188,19 +197,19 @@ const useStyles = makeStyles(({ palette }) => ({
         marginRight: 10,
         cursor: 'pointer',
         '&:last-child': {
-          marginRight: 0
+          marginRight: 0,
         },
         '& svg path': {
-          fill: palette.text.secondary
+          fill: palette.text.secondary,
         },
         '&:hover, &:active': {
           '& svg path': {
-            fill: palette.text.primary
+            fill: palette.text.primary,
           },
         },
-      }
-    }
-  }
+      },
+    },
+  },
 }));
 
 export interface EligibleTradingModalProps {
@@ -212,7 +221,7 @@ export interface EligibleTradingModalProps {
 const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
   open,
   onClose,
-  showClaimToken
+  showClaimToken,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -226,7 +235,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -267,16 +276,17 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
             <Box
               className={classes.coloredBorderBackgroundForCard}
               style={
-                palette && palette.type === 'light' ? { background: 'none' } : {}
+                palette && palette.type === 'light'
+                  ? { background: 'none' }
+                  : {}
               }
             >
               <Box className={classes.mainCard}>
                 <Box className={classes.textColumn}>
-                  <Typography component='h2'>
-                    You are eligible
-                  </Typography>
+                  <Typography component='h2'>You are eligible</Typography>
                   <Typography color='secondary'>
-                    Now, you can claim your tokens for the competition and start trading when the competitions start
+                    Now, you can claim your tokens for the competition and start
+                    trading when the competitions start
                   </Typography>
                   <Button
                     variant='contained'
@@ -289,11 +299,21 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   <Box className={classes.socialContainer}>
                     <Typography>Share on:</Typography>
                     <Box>
-                      <Container fixed><TwitterIcon /></Container>
-                      <Container fixed><TelegramIcon /></Container>
-                      <Container fixed><FacebookIcon /></Container>
-                      <Container fixed><DiscordIcon /></Container>
-                      <Container fixed><SocialIcon1 /></Container>
+                      <Container fixed>
+                        <TwitterIcon />
+                      </Container>
+                      <Container fixed>
+                        <TelegramIcon />
+                      </Container>
+                      <Container fixed>
+                        <FacebookIcon />
+                      </Container>
+                      <Container fixed>
+                        <DiscordIcon />
+                      </Container>
+                      <Container fixed>
+                        <SocialIcon1 />
+                      </Container>
                     </Box>
                     <Link>Not right now</Link>
                   </Box>

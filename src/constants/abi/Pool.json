@@ -55,24 +55,6 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "shortTokenId",
@@ -104,18 +86,6 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "bool",
         "name": "isCallPool",
@@ -141,46 +111,22 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
         "indexed": false,
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "int128",
-        "name": "spot64x64",
-        "type": "int128"
-      },
-      {
-        "indexed": false,
-        "internalType": "int128",
-        "name": "strike64x64",
-        "type": "int128"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "maturity",
-        "type": "uint64"
+        "internalType": "uint256",
+        "name": "longTokenId",
+        "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int128",
+        "name": "spot64x64",
+        "type": "int128"
       },
       {
         "indexed": false,
@@ -214,34 +160,10 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
         "indexed": false,
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "int128",
-        "name": "strike64x64",
-        "type": "int128"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "maturity",
-        "type": "uint64"
+        "internalType": "uint256",
+        "name": "longTokenId",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -285,24 +207,6 @@
         "internalType": "address",
         "name": "underwriter",
         "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
       },
       {
         "indexed": false,
@@ -453,24 +357,6 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "shortTokenId",
@@ -495,18 +381,6 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
-        "type": "address"
-      },
       {
         "indexed": true,
         "internalType": "bool",
@@ -579,18 +453,6 @@
         "indexed": true,
         "internalType": "address",
         "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "base",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "underlying",
         "type": "address"
       },
       {
@@ -713,11 +575,6 @@
             "internalType": "uint256",
             "name": "amount",
             "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "isCall",
-            "type": "bool"
           }
         ],
         "internalType": "struct PoolStorage.ExerciseArgs",
@@ -773,6 +630,35 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getParametersForTokenId",
+    "outputs": [
+      {
+        "internalType": "enum PoolStorage.TokenType",
+        "name": "",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      },
+      {
+        "internalType": "int128",
+        "name": "",
+        "type": "int128"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -976,11 +862,6 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "isCall",
-        "type": "bool"
       }
     ],
     "name": "reassign",

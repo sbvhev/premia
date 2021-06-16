@@ -758,7 +758,10 @@ const Positions: React.FC = () => {
 
   const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
   const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
-  const noPositions = options.length + pools.length < 1;
+  const noPositions = useMemo(
+    () => (positionFilterIndex === 0 ? options.length < 1 : pools.length < 1),
+    [positionFilterIndex, options, pools],
+  );
   const currentTime = useMemo(
     () => Math.floor(new Date().getTime() / 1000),
     [],
@@ -957,7 +960,6 @@ const Positions: React.FC = () => {
     getThisWeekDates(),
     getThisMonthDates(),
   ];
-
   const chartDateData = [
     3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
     3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
@@ -969,9 +971,7 @@ const Positions: React.FC = () => {
     3234, 6432, 1234, 3234, 6432, 1234,
   ];
   const chartData = [chartDateData, chartWeekData, chartMonthData];
-
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
-
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
   const optionAssets = [
@@ -1240,7 +1240,13 @@ const Positions: React.FC = () => {
             align='center'
             className={classes.title}
           >
-            You have no active positions
+            You have no{' '}
+            {options.length < 1 && pools.length < 1
+              ? 'active'
+              : options.length < 1
+              ? 'options'
+              : 'yield'}{' '}
+            positions
           </Typography>
           <Box mt={mobileWindowSize ? 3 : 5}>
             <Container fixed className={classes.noPositionBox}>
