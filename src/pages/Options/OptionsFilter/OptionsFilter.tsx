@@ -37,6 +37,15 @@ import { ColoredSlider, Loader, ContainedButton } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
+  onHover: {
+    margin: 0,
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    position: 'absolute',
+  },
+
   optionButtons: {
     padding: 3,
     '& button': {
@@ -120,6 +129,13 @@ const useStyles = makeStyles(({ palette }) => ({
     border: `1px solid ${palette.divider}`,
     borderRadius: 12,
     padding: 12,
+
+    '& > div': {
+      width: 'calc(100% - 28px)',
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+
     '& p': {
       fontSize: 14,
       color: palette.text.primary,
@@ -190,6 +206,13 @@ const useStyles = makeStyles(({ palette }) => ({
         position: 'relative',
         '&:not(:disabled)': {
           color: palette.text.primary,
+
+          '&:hover': {
+            '& abbr': {
+              borderRadius: 8,
+              background: palette.primary.dark,
+            },
+          },
         },
         '& abbr': {
           height: '100%',
@@ -285,6 +308,7 @@ const OptionFilter: React.FC = () => {
   const { base } = useBase();
   const { optionType, setOptionType } = useOptionType();
   const { maturityDate, setMaturityDate } = useMaturityDate();
+  const [hoverMaturityDate, setHoverMaturityDate] = useState<Date>(new Date());
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { size, setSize } = useSize();
   const { account } = useWeb3();
@@ -463,11 +487,25 @@ const OptionFilter: React.FC = () => {
             )}
             onClick={() => setMaturityFocused(!maturityFocused)}
           >
-            <Typography>
-              {moment(new Date(maturityDate)).isValid()
-                ? moment(new Date(maturityDate)).format('YYYY-MM-DD')
-                : 'Select Date'}
-            </Typography>
+            <Box>
+              <Typography>
+                {moment(new Date(maturityDate)).isValid()
+                  ? moment(new Date(maturityDate)).format('YYYY-MM-DD')
+                  : 'Select Date'}
+              </Typography>
+              <Typography>
+                (
+                {moment
+                  .utc(
+                    `${moment(new Date(maturityDate)).format(
+                      'YYYY-MM-DD',
+                    )} 00:00:00`,
+                    'YYYY-MM-DD hh:mm:dd',
+                  )
+                  .diff(moment(), 'days')}{' '}
+                days )
+              </Typography>
+            </Box>
             <CalendarIcon />
           </Box>
           <Box
@@ -478,7 +516,29 @@ const OptionFilter: React.FC = () => {
           >
             <Calendar
               inputRef={calendarRef as any}
-              minDate={new Date()}
+              minDate={new Date(new Date().getTime() + 60 * 60 * 24 * 1000)}
+              maxDate={
+                new Date(new Date().getTime() + 60 * 60 * 60 * 24 * 1000)
+              }
+              tileContent={({ date, view }) => {
+                return (
+                  <p
+                    className={classes.onHover}
+                    onMouseEnter={() => {
+                      if (
+                        moment(date).isBetween(
+                          new Date(),
+                          new Date(
+                            new Date().getTime() + 60 * 60 * 60 * 24 * 1000,
+                          ),
+                        )
+                      ) {
+                        setHoverMaturityDate(new Date(date));
+                      }
+                    }}
+                  ></p>
+                );
+              }}
               prevLabel={<ArrowBackIosIcon />}
               nextLabel={<ArrowForwardIosIcon />}
               formatShortWeekday={(locale, date) => moment(date).format('dd')}
@@ -491,7 +551,7 @@ const OptionFilter: React.FC = () => {
             <Box className={classes.maturityContainer}>
               <Typography>Days to maturity</Typography>
               <Typography component='span'>
-                {moment(new Date(maturityDate)).diff(
+                {moment(new Date(hoverMaturityDate)).diff(
                   moment(new Date()),
                   'days',
                 )}
