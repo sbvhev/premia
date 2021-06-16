@@ -66,11 +66,6 @@
       },
       {
         "internalType": "int128",
-        "name": "price64x64",
-        "type": "int128"
-      },
-      {
-        "internalType": "int128",
         "name": "emaLogReturns64x64",
         "type": "int128"
       },
