@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, Tooltip } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -52,6 +52,26 @@ const useStyles = makeStyles(({ palette }) => ({
       },
     },
   },
+  disabled: {
+    cursor: 'default',
+
+    '& svg path': {
+      fill: palette.text.secondary,
+    },
+
+    '& .MuiTypography-root': {
+      color: palette.text.secondary,
+    },
+
+    '&:hover': {
+      '& svg path': {
+        fill: palette.text.secondary,
+      },
+      '& .MuiTypography-root': {
+        color: palette.text.secondary,
+      },
+    },
+  },
 }));
 
 export interface SidebarItemProps {
@@ -59,6 +79,7 @@ export interface SidebarItemProps {
   link?: string | undefined;
   Icon: any;
   href?: boolean;
+  disabled?: boolean;
   onHide?: () => void;
   activeCondition?: any;
   onClick?: (() => void) | undefined;
@@ -69,6 +90,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   link,
   Icon,
   href,
+  disabled,
   onClick,
   onHide,
   activeCondition,
@@ -95,23 +117,28 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     }
   };
 
+  const WrapperComponent = disabled ? Tooltip : React.Fragment;
+
   return (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='flex-start'
-      paddingLeft='15px'
-      width={!mobile ? '180px' : '100%'}
-      height='47px'
-      className={cx(
-        classes.inactiveSwitch,
-        activeCondition && classes.activeSwitch,
-      )}
-      onClick={handleClick}
-    >
-      {Icon}
-      <Typography>{title}</Typography>
-    </Box>
+    <WrapperComponent title='Disabled on testnet'>
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='flex-start'
+        paddingLeft='15px'
+        width={!mobile ? '180px' : '100%'}
+        height='47px'
+        className={cx(
+          classes.inactiveSwitch,
+          activeCondition && classes.activeSwitch,
+          disabled && classes.disabled,
+        )}
+        onClick={disabled ? () => {} : handleClick}
+      >
+        {Icon}
+        <Typography>{title}</Typography>
+      </Box>
+    </WrapperComponent>
   );
 };
 

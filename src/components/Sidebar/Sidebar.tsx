@@ -85,7 +85,7 @@ interface PageIndexing {
 const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
-  const { account } = useWeb3();
+  const { chainId, account } = useWeb3();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const pageIndexes: PageIndexing = {
@@ -129,21 +129,23 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     },
     {
       title: 'Swap',
-      onClick: account ? () => setShowSwapModal(true) : () => {},
       Icon: <SwapIcon />,
+      disabled: [4, 42].includes(chainId as number),
+      onClick: account ? () => setShowSwapModal(true) : () => {},
     },
   ];
 
   const navigationItems = navigation.map(
-    ({ title, link, Icon, onClick }, i) => (
+    ({ title, link, Icon, disabled, onClick }, i) => (
       <SidebarItem
         key={i}
         title={title}
         link={link}
         Icon={Icon}
+        disabled={disabled}
+        activeCondition={!onClick ? link === pathname : showSwapModal}
         onHide={onHide}
         onClick={onClick}
-        activeCondition={!onClick ? link === pathname : showSwapModal}
       />
     ),
   );
