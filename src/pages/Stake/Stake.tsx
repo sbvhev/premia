@@ -10,8 +10,10 @@ import { formatEther } from 'ethers/lib/utils';
 import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 
-import { ReactComponent as PremiaBlue } from 'assets/svg/premia.svg';
-import { ReactComponent as PremiaRed } from 'assets/svg/xpremia.svg';
+import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
+import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
+import { ReactComponent as PremiaLogo } from 'assets/svg/premia.svg';
+import { ReactComponent as XPremiaLogo } from 'assets/svg/xpremia.svg';
 
 import { useDarkModeManager } from 'state/user/hooks';
 import { getContractAddress, ContractType } from 'web3/contracts';
@@ -237,7 +239,7 @@ const Stake: React.FC = () => {
                   }
             >
               <Box className={classes.premiaBox1}>
-                <PremiaBlue />
+                <PremiaLogo />
               </Box>
               <Box className={classes.col} style={{ margin: '4px 0' }}>
                 <Typography
@@ -275,7 +277,7 @@ const Stake: React.FC = () => {
               >
               <Box className={classes.premiaBox2}></Box>
               <Box className={classes.redPremiaIcon}>
-                <PremiaRed />
+                <XPremiaLogo />
               </Box>
               <Box
                 className={classes.colRelative}
