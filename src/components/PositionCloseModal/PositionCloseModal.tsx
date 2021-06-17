@@ -378,16 +378,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-export interface PositionModalProps {
+export interface PositionCloseModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
+const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
+  open,
+  onClose,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const txStateMsg = 'Tell your friends about your Premia experience';
+  const txStateMsg = 'Tell your friends about your Premia trading experience';
   const { palette } = theme;
 
   return (
@@ -541,4 +544,4 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   );
 };
 
-export default PositionModal;
+export default PositionCloseModal;
