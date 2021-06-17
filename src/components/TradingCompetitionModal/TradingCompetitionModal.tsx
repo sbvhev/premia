@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 
 import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
@@ -113,7 +113,7 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 42,
       height: 42,
       '& path': {
-        fill: 'black',
+        fill: (props: any) => props.darkMode ? 'black' : 'white',
       },
     },
   },
@@ -271,10 +271,15 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   buttonsContainer: {
     margin: '19px 0 25px',
+    display: 'flex',
+    justifyContent: 'center',
     '& button': {
       width: 150,
       height: 45,
       fontSize: 16,
+      '& p': {
+        fontSize: 16
+      },
       '&:first-child': {
         marginRight: 8,
       },
@@ -444,16 +449,15 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   </Typography>
                   <Link to='/trading-competition'>Competition rules</Link>
                   <Box className={classes.buttonsContainer}>
-                    <Button
-                      variant='contained'
+                    <ContainedButton
+                      fullWidth
                       color='primary'
+                      label="I'm in"
                       onClick={() => {
                         history.push('/trading-competition');
                         localStorage.setItem('tradingModalStatus', 'closed');
                       }}
-                    >
-                      I'm in
-                    </Button>
+                    />
                     <Button
                       variant='outlined'
                       onClick={() => {
