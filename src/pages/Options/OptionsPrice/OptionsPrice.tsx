@@ -295,7 +295,7 @@ const OptionsPrice: React.FC = () => {
 
   useEffect(() => {
     const setFirstPrice = () => {
-      setPLPrice(plFirstPrice);
+      setPLPrice(Math.max(0, plFirstPrice));
       setPotentialProfit(Math.max(
         -1 * pricePerUnitInUsd * size,
         (isCall ? 1 : -1) * (plFirstPrice - breakEvenPrice) * size,
@@ -317,7 +317,7 @@ const OptionsPrice: React.FC = () => {
       plPrice1 = 0;
     }
 
-    setPLPrice(plPrice1);
+    setPLPrice(Math.max(plPrice1, 0));
     setPotentialProfit(Math.max(
       -1 * pricePerUnitInUsd * size,
       (isCall ? 1 : -1) * (plPrice1 - breakEvenPrice) * size,
