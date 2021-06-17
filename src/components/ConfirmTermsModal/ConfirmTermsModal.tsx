@@ -12,7 +12,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { useWeb3 } from 'state/application/hooks';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -27,6 +27,7 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'center',
     display: 'flex',
     backgroundColor: 'transparent',
+    marginBottom: '45px',
   },
   mainCard: {
     width: '364px',
@@ -59,7 +60,6 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     padding: '24px 16px 24px',
-    height: '376px',
     borderBottom: `1px solid ${palette.divider}`,
   },
   botSection: {
@@ -72,7 +72,7 @@ const useStyles = makeStyles(({ palette }) => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '20px 16px 24px',
+    padding: '12px 16px 24px',
   },
   title: {
     fontWeight: 700,
@@ -80,6 +80,13 @@ const useStyles = makeStyles(({ palette }) => ({
     lineHeight: '18px',
     margin: '8px 0 10px',
     color: palette.text.primary,
+  },
+  textBodyContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    maxHeight: '34vh',
+    overflowY: 'auto',
   },
   smallInfoText: {
     fontWeight: 400,
@@ -155,7 +162,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
   const { onboard } = useWeb3();
   const [checkIsOn, setCheckIsOn] = useState(false);
 
-  const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleChangeAgree = () => {
     if (checkIsOn) {
       localStorage.setItem('doNotShowDisclaimerAgain', 'true');
     }
@@ -222,9 +229,12 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                 </Box>
                 <Typography className={classes.title}>Disclaimer</Typography>
                 <Box
-                  display='flex'
-                  flexDirection='column'
-                  justifyContent='space-between'
+                  className={classes.textBodyContainer}
+                  style={
+                    window.innerHeight > 745
+                      ? {}
+                      : { marginLeft: '10px', width: '312px' }
+                  }
                 >
                   <Typography className={classes.smallInfoText}>
                     Premia is currently in beta, please use at your own risk.
@@ -361,14 +371,19 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                   </Typography>
                 </Box>
 
-                <Button
+                {/* <Button
                   color='primary'
                   variant='contained'
                   size='large'
                   onClick={handleChangeAgree}
                 >
                   Agree
-                </Button>
+                </Button> */}
+                <ContainedButton
+                  label='Agree'
+                  size='large'
+                  onClick={handleChangeAgree}
+                />
               </Box>
             </Box>
             <Box
