@@ -7,7 +7,7 @@ const CONTACT_EMAIL = 'dev@premia.finance';
 const APP_NAME = 'Premia Finance';
 
 const wallets = (chainId: number) => {
-  if (chainId === 56) {
+  if (chainId === 56 || chainId === 137) {
     return [
       { walletName: 'metamask', preferred: true },
       {

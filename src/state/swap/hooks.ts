@@ -72,10 +72,23 @@ export async function getSwapQuote(
     params.excludedSources = excludedSources;
   }
 
+  let prefix = '';
+
+  switch (chainId) {
+    case 56:
+      prefix = 'bsc.';
+      break;
+
+    case 137:
+      prefix = 'polygon.';
+      break;
+
+    default:
+      break;
+  }
+
   const response = await fetch(
-    `https://${
-      chainId === 56 ? 'bsc.' : ''
-    }api.0x.org/swap/v1/quote?${qs.stringify(params, {
+    `https://${prefix}api.0x.org/swap/v1/quote?${qs.stringify(params, {
       arrayFormat: 'comma',
       encode: false,
     })}`,
