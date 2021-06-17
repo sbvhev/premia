@@ -100,6 +100,24 @@ const useStyles = makeStyles(({ palette }) => ({
       backgroundColor: palette.primary.dark,
     },
   },
+  exitContainerMobile: {
+    position: 'absolute',
+    top: 'calc(20vh + 26px)',
+    right: 'calc(50% - 160px)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '12px 6px',
+    width: '24px',
+    height: '24px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    zIndex: 10,
+    backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: palette.primary.dark,
+    },
+  },
 }));
 
 export interface ConfirmTermsModalProps {
@@ -109,6 +127,7 @@ export interface ConfirmTermsModalProps {
 
 const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const theme = useTheme();
   const { palette } = theme;
   const [customSlippage, setCustomSlippage] = useState('');
@@ -165,13 +184,23 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
                   />
                   <PercentageIcon
                     fill={palette.text.secondary}
-                    style={{
-                      position: 'absolute',
-                      marginTop: '15px',
-                      height: '16px',
-                      width: '14px',
-                      left: 59,
-                    }}
+                    style={
+                      !mobile
+                        ? {
+                            position: 'absolute',
+                            marginTop: '15px',
+                            height: '16px',
+                            width: '14px',
+                            left: 59,
+                          }
+                        : {
+                            position: 'absolute',
+                            marginTop: '15px',
+                            height: '16px',
+                            width: '14px',
+                            left: 'calc(50% - 140px)',
+                          }
+                    }
                   />
                 </Box>
               </Box>
@@ -183,7 +212,12 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
               />
             </Box>
           </Box>
-          <Box onClick={onClose} className={classes.exitContainer}>
+          <Box
+            onClick={onClose}
+            className={
+              !mobile ? classes.exitContainer : classes.exitContainerMobile
+            }
+          >
             <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
           </Box>
         </Box>
