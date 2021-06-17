@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import { Currency, ETHER } from '@uniswap/sdk';
+import { Currency } from '@uniswap/sdk';
 import { ethers } from 'ethers';
 
-import { BNB } from '../../constants';
 import { ERC20_INTERFACE } from 'constants/erc20';
 import { useWeb3 } from 'state/application/hooks';
 import {
@@ -10,7 +9,7 @@ import {
   useMultipleContractSingleData,
 } from 'state/multicall/hooks';
 import { isToken, Token } from 'web3/tokens';
-import { useAllTokens, useMulticallContract } from 'hooks';
+import { useAllTokens, useGasToken, useMulticallContract } from 'hooks';
 import { isAddress } from 'utils';
 
 /**
@@ -134,7 +133,7 @@ export function useCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined)[],
 ): (string | undefined)[] {
-  const { chainId } = useWeb3();
+  const gasToken = useGasToken();
   const tokens = useMemo(
     () =>
       currencies?.filter((currency): currency is Token => isToken(currency)) ??
@@ -148,12 +147,10 @@ export function useCurrencyBalances(
   );
   const containsBase: boolean = useMemo(
     () =>
-      currencies?.some((currency?: Currency) =>
-        chainId === 56
-          ? currency?.symbol === BNB.symbol
-          : currency?.symbol === ETHER.symbol,
+      currencies?.some(
+        (currency?: Currency) => currency?.symbol === gasToken.symbol,
       ) ?? false,
-    [currencies, chainId],
+    [currencies, gasToken],
   );
   const baseBalance = useBaseBalances(containsBase ? [account] : []);
 
@@ -161,13 +158,12 @@ export function useCurrencyBalances(
     () =>
       currencies?.map((currency) => {
         if (!account || account === '' || !currency) return undefined;
-        if (currency.symbol === ETHER.symbol || currency.symbol === BNB.symbol)
-          return baseBalance[account];
+        if (currency.symbol === gasToken.symbol) return baseBalance[account];
         if (isToken(currency)) return tokenBalances[currency.address];
 
         return undefined;
       }) ?? [],
-    [account, currencies, baseBalance, tokenBalances],
+    [account, currencies, gasToken, baseBalance, tokenBalances],
   );
 }
 

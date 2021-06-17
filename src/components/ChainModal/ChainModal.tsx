@@ -175,7 +175,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
               </Typography>
               <Grid container direction='row'>
                 {chainIds.map((val, ind) => (
-                  <Grid item key={ind} xs={6} sm={3} className={classes.chain}>
+                  <Grid item key={ind} xs={6} sm={4} className={classes.chain}>
                     <Box
                       component='div'
                       className={cx({

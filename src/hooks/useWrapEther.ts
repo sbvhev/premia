@@ -8,15 +8,20 @@ export function useWrapEther() {
   const { chainId, contracts } = useWeb3();
   const transact = useTransact();
 
-  const contract = useMemo(
-    () =>
-      contracts
-        ? chainId === 56
-          ? contracts.Wbnb
-          : contracts.Weth
-        : ({} as any),
-    [contracts, chainId],
-  );
+  const contract = useMemo(() => {
+    if (!contracts) return {} as any;
+
+    switch (chainId) {
+      case 56:
+        return contracts.WBNB;
+
+      case 137:
+        return contracts.WMATIC;
+
+      default:
+        return contracts.WETH;
+    }
+  }, [contracts, chainId]);
 
   const onWrapEther = useCallback(
     async (amount: number | string) => {

@@ -53,6 +53,9 @@ export default function CurrencyLogo({
     case 56:
       chainName = 'smartchain';
       break;
+    case 137:
+      chainName = 'polygon';
+      break;
   }
 
   const srcs: string[] = useMemo(() => {

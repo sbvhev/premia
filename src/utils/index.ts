@@ -18,9 +18,9 @@ export const chainIds = [
   ChainId.MAINNET,
   ChainId.BSC,
   ChainId.MATIC,
-  ChainId.FANTOM,
+  // ChainId.FANTOM,
 ];
-export const chainLabels = ['Ethereum', 'BSC', 'Polygon', 'Fantom'];
+export const chainLabels = ['Ethereum', 'BSC', 'Polygon' /*, 'Fantom'*/];
 
 export const PARAMS: {
   [chainId in ChainId]?: {
