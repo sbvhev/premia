@@ -212,6 +212,20 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                   fullWidth
                   size={!mobile ? 'large' : 'small'}
                   label='Switch to Rinkeby for trading competition'
+                  onClick={() => {
+                    // const params = {
+                    //   chainId: '0x4',
+                    //   chainName: 'Rinkeby Testnet',
+                    //   nativeCurrency: {
+                    //     name: 'Ethereum',
+                    //     symbol: 'ETH',
+                    //     decimals: 18,
+                    //   },
+                    //   rpcUrls: ['https://rinkeby.infura.io/v3'],
+                    //   blockExplorerUrls: ['https://rinkeby.etherscan.com'],
+                    // };
+                    // web3?.send('wallet_addEthereumChain', [params, account]);
+                  }}
                 />
               </Box>
               <Box className={classes.exitContainer} onClick={onClose}>
