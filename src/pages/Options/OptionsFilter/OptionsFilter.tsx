@@ -11,6 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { ReactComponent as BestPrice } from 'assets/svg/Popup.svg';
 import Calendar from 'react-calendar';
 import moment from 'moment';
 import cx from 'classnames';
@@ -298,6 +299,13 @@ const useStyles = makeStyles(({ palette }) => ({
       fontWeight: 500,
     },
   },
+
+  bestPrice: {
+    position: 'absolute',
+    top: -34,
+    transform: 'translateX(-50%)',
+    left: 'calc(100% - 13px)',
+  },
 }));
 
 const OptionFilter: React.FC = () => {
@@ -450,7 +458,7 @@ const OptionFilter: React.FC = () => {
         </Box>
       </Box>
 
-      <Box width={1} mt={2}>
+      <Box width={1} mt={2} style={{ position: 'relative' }}>
         <Typography className={classes.titleText}>Strike Price</Typography>
 
         <Box width={1} mt={0.5}>
@@ -458,17 +466,20 @@ const OptionFilter: React.FC = () => {
           !isNaN(Number(strikePrice)) &&
           !isNaN(Number(minPrice)) &&
           !isNaN(Number(maxPrice)) ? (
-            <ColoredSlider
-              min={minPrice}
-              max={maxPrice}
-              marks={highlightedStrikes}
-              step={10 ** -underlying.decimals}
-              value={strikePrice === 0 ? 1 : strikePrice}
-              valueLabelDisplay='on'
-              onChange={(event: any, value) => {
-                setStrikePrice(value as number);
-              }}
-            />
+            <>
+              <BestPrice className={classes.bestPrice} />
+              <ColoredSlider
+                min={minPrice}
+                max={maxPrice}
+                marks={highlightedStrikes}
+                step={10 ** -underlying.decimals}
+                value={strikePrice === 0 ? 1 : strikePrice}
+                valueLabelDisplay='on'
+                onChange={(event: any, value) => {
+                  setStrikePrice(value as number);
+                }}
+              />
+            </>
           ) : (
             <Box width={20} marginX='auto'>
               <Loader stroke={theme.palette.primary.main} />
