@@ -1,11 +1,17 @@
 import React from 'react';
-import { Typography, Modal, Box, Paper, Fade, Backdrop } from '@material-ui/core';
+import { Typography, Modal, Box, Paper, Fade, Backdrop, Container } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
 import { ModalContainer } from 'components';
 
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from 'react-share';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
 import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
 import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
@@ -340,29 +346,33 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 24,
     justifyContent: 'center',
 
-    '& svg': {
+    '& > div': {
       width: 35,
       height: 35,
-      padding: 10,
       borderRadius: 12,
-      border: `1px solid ${palette.divider}`,
-      marginRight: 10,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: '0 10px 0 0',
       cursor: 'pointer',
-
-      '&:hover': {
-        border: `1px solid ${palette.secondary.main}`,
-
-        '& path': {
-          fill: palette.secondary.main,
-        },
+      '& button, & a': {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0,
       },
-
       '&:last-child': {
         marginRight: 0,
       },
-
-      '& path': {
+      '& svg path': {
         fill: palette.text.secondary,
+      },
+      '&:hover, &:active': {
+        '& svg path': {
+          fill: palette.text.primary,
+        },
       },
     },
   },
@@ -503,11 +513,35 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                     </Paper>
                     <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
                     <Box className={classes.socialLinks}>
-                      <TwitterIcon />
-                      <TelegramIcon />
-                      <FacebookIcon />
-                      <DiscordIcon />
-                      <ForumIcon />
+                      <Container fixed>
+                        <TwitterShareButton url='https://premia.finance'>
+                          <TwitterIcon />
+                        </TwitterShareButton>
+                      </Container>
+                      <Container fixed>
+                        <TelegramShareButton url='https://premia.finance'>
+                          <TelegramIcon />
+                        </TelegramShareButton>
+                      </Container>
+                      <Container fixed>
+                        <FacebookShareButton url='https://premia.finance'>
+                          <FacebookIcon />
+                        </FacebookShareButton>
+                      </Container>
+                      <Container fixed>
+                        <a
+                          href='https://discord.com/invite/6MhRmzmdHN'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          <DiscordIcon />
+                        </a>
+                      </Container>
+                      <Container fixed>
+                        <RedditShareButton url='https://premia.finance'>
+                          <ForumIcon />
+                        </RedditShareButton>
+                      </Container>
                     </Box>
                     <Typography
                       color='secondary'
