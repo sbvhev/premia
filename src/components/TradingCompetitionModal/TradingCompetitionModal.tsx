@@ -15,6 +15,12 @@ import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { ModalContainer } from 'components';
 
 import { useDarkModeManager } from 'state/user/hooks';
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from 'react-share';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
@@ -306,6 +312,14 @@ const useStyles = makeStyles(({ palette }) => ({
       margin: '8px 0 15px',
       display: 'flex',
       justifyContent: 'center',
+      '& button, & a': {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 0,
+      },
       '& > div': {
         width: 35,
         height: 35,
@@ -469,19 +483,33 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                   <Typography>Share on:</Typography>
                   <Box>
                     <Container fixed>
-                      <TwitterIcon />
+                      <TwitterShareButton url='https://premia.finance'>
+                        <TwitterIcon />
+                      </TwitterShareButton>
                     </Container>
                     <Container fixed>
-                      <TelegramIcon />
+                      <TelegramShareButton url='https://premia.finance'>
+                        <TelegramIcon />
+                      </TelegramShareButton>
                     </Container>
                     <Container fixed>
-                      <FacebookIcon />
+                      <FacebookShareButton url='https://premia.finance'>
+                        <FacebookIcon />
+                      </FacebookShareButton>
                     </Container>
                     <Container fixed>
-                      <DiscordIcon />
+                      <a
+                        href='https://discord.com/invite/6MhRmzmdHN'
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        <DiscordIcon />
+                      </a>
                     </Container>
                     <Container fixed>
-                      <SocialIcon1 />
+                      <RedditShareButton url='https://premia.finance'>
+                        <SocialIcon1 />
+                      </RedditShareButton>
                     </Container>
                   </Box>
                 </Box>

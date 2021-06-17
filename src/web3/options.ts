@@ -19,6 +19,7 @@ export interface Option {
   strike: string;
   strike64x64: string;
   maturity: string;
+  longTokenId: BigNumber;
 
   lastTradePrice: BigNumber;
   lastTradeFee: BigNumber;
@@ -52,6 +53,8 @@ export enum OptionTokenType {
   FreeLiquidity = 0,
   LongCall = 1,
   ShortCall = 2,
+  LongPut = 3,
+  ShortPut = 4,
 }
 
 export interface OptionTokenIdParams {
