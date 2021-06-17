@@ -311,7 +311,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                           height='20'
                           rx='4'
                           fill='#5294FF'
-                          fill-opacity='0.2'
+                          fillOpacity='0.2'
                         />
 
                         <rect
@@ -321,7 +321,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                           height='19'
                           rx='3.5'
                           stroke='#5294FF'
-                          stroke-opacity='0.5'
+                          strokeOpacity='0.5'
                         />
                       </svg>
                     }
@@ -338,7 +338,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                           height='20'
                           rx='4'
                           fill='#5294FF'
-                          fill-opacity='0.2'
+                          fillOpacity='0.2'
                         />
                         <rect
                           x='0.5'
@@ -347,7 +347,7 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                           height='19'
                           rx='3.5'
                           stroke='#5294FF'
-                          stroke-opacity='0.5'
+                          strokeOpacity='0.5'
                         />
                         <path
                           d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'

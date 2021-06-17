@@ -26,6 +26,10 @@ const useStyles = makeStyles(({ palette }) => ({
         '-webkit-text-fill-color': 'transparent',
       },
 
+      '& div': {
+        backgroundColor: palette.background.paper,
+      },
+
       '& .startIcon svg path': {
         fill: palette.success.main,
       },
@@ -61,6 +65,10 @@ const useStyles = makeStyles(({ palette }) => ({
         '-webkit-text-fill-color': 'transparent',
       },
 
+      '& div': {
+        backgroundColor: palette.background.paper,
+      },
+
       '& .startIcon svg path': {
         fill: palette.error.main,
       },
@@ -85,10 +93,6 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     backgroundColor: 'transparent',
 
-    '&:hover': {
-      backgroundColor: palette.background.paper,
-    },
-
     '&:active': {
       opacity: 0.8,
     },
@@ -106,6 +110,7 @@ const useStyles = makeStyles(({ palette }) => ({
   label: {
     color: palette.background.paper,
     fontWeight: 700,
+    whiteSpace: 'nowrap',
     fontSize: ({ size }: any) => (size === 'large' ? '16px' : '14px'),
     lineHeight: '18px',
   },

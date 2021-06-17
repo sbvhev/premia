@@ -24,6 +24,7 @@ import {
   BetaSoftwareModal,
   ConfirmTermsModal,
   TransactionsModal,
+  ContainedButton,
 } from 'components';
 import { ReactComponent as ClockIcon } from 'assets/svg/ClockIcon.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/NewLogoWhite.svg';
@@ -85,7 +86,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   accountInfo: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: 10,
+    paddingLeft: 12,
     paddingRight: 6,
   },
 
@@ -310,7 +311,12 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   }, [chainId, gasToken, history, location.pathname, setSwapSettings]);
 
   return (
-    <Grid container alignItems='center' justify='flex-end'>
+    <Grid
+      container
+      alignItems='center'
+      justify={!mobile ? 'flex-end' : 'center'}
+      id='here'
+    >
       <BetaSoftwareModal
         open={betaSoftwareModalOpen}
         onClose={() => setBetaSoftwareModalOpen(false)}
@@ -327,13 +333,15 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
         width={mobile ? 1 : 'auto'}
         my={mobile ? 1.25 : 0}
         mx={mobile ? 1.25 : 1.25}
+        justifySelf='center'
+        style={!mobile ? {} : { marginRight: '12px' }}
       >
         <Box
           height={1}
           className={classes.accountInfo}
           flex={1}
           display='flex'
-          justifyContent='center'
+          justifyContent='flex-start'
           onClick={() => {
             history.push('/trading-competition');
 
@@ -495,25 +503,27 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
           )}
         </Box>
       ) : (
-        <Button
-          variant='contained'
-          color='primary'
-          size='large'
-          className={cx(
-            mobile && classes.fullWidth,
-            classes.connectWalletButton,
-          )}
-          onClick={() => {
-            if (doNotShowDisclaimerAgain) {
-              onboard?.walletSelect();
-            } else {
-              setConfirmTermsModalOpen(true);
-            }
-          }}
+        <Box
+          width={!mobile ? '179px' : '100%'}
+          padding={!mobile ? 0 : '10px 14px 10px 8px'}
+          justifySelf='center'
+          justifyContent='center'
         >
-          <ConnectWallet className={classes.walletIcon} />
-          Connect wallet
-        </Button>
+          <ContainedButton
+            id='wrappper'
+            label='Connect wallet'
+            size='small'
+            fullWidth
+            onClick={() => {
+              if (doNotShowDisclaimerAgain) {
+                onboard?.walletSelect();
+              } else {
+                setConfirmTermsModalOpen(true);
+              }
+            }}
+            startIcon={<ConnectWallet style={{ marginRight: '6px' }} />}
+          />
+        </Box>
       )}
 
       <Grid item xs={1} />
