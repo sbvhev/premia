@@ -514,6 +514,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
             label='Connect wallet'
             size='small'
             fullWidth
+            textStyling={{ margin: '3px' }}
             onClick={() => {
               if (doNotShowDisclaimerAgain) {
                 onboard?.walletSelect();
@@ -521,7 +522,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
                 setConfirmTermsModalOpen(true);
               }
             }}
-            startIcon={<ConnectWallet style={{ marginRight: '6px' }} />}
+            startIcon={<ConnectWallet style={{ margin: '3px' }} />}
           />
         </Box>
       )}
