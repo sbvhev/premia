@@ -10,8 +10,6 @@ import { formatEther } from 'ethers/lib/utils';
 import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 
-import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
-import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
 import { ReactComponent as PremiaLogo } from 'assets/svg/premia.svg';
 import { ReactComponent as XPremiaLogo } from 'assets/svg/xpremia.svg';
 
@@ -101,7 +99,7 @@ const useStyles = makeStyles(({ palette }) => ({
     marginRight: '7px',
 
     '& svg path': {
-      fill: palette.common.white,
+      fill: 'url(#premiaBlue)',
     },
   },
   premiaBox2: {
@@ -125,7 +123,7 @@ const useStyles = makeStyles(({ palette }) => ({
     opacity: 1,
 
     '& svg path': {
-      fill: palette.common.white,
+      fill: 'url(#xpremiaRed)',
     },
   },
 }));
