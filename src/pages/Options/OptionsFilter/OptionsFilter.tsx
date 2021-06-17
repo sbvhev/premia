@@ -86,7 +86,9 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 
   uniIcon: {
-    margin: '-4px 4px 0 6px !important',
+    margin: '-4px 4px 0 4px !important',
+    width: 20,
+    height: 23,
   },
 
   sizeInputBox: {
