@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from 'state';
 import { setGasPrices, setTxHistory } from './actions';
 import { GasNowData, Transaction } from './reducer';
+import { ChainId } from '@sushiswap/sdk';
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,44 +19,87 @@ export default function Updater(): null {
     return Math.floor((gasNowValue || 1) / Math.pow(10, 9));
   }
 
-  const { account } = useSelector<AppState, AppState['application']>(
+  const { account, chainId } = useSelector<AppState, AppState['application']>(
     (state) => state.application,
   );
 
   const fetchGasData = () => {
     clearTimeout(timer);
 
-    fetch(
-      'https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension',
-      {
-        method: 'GET',
-      },
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        const gasNowData: GasNowData = {
-          slow: convertGasNowValueToNumber(json.data.slow),
-          standard: convertGasNowValueToNumber(json.data.standard),
-          fast: convertGasNowValueToNumber(json.data.fast),
-          rapid: convertGasNowValueToNumber(json.data.rapid),
-          timestamp: json.data.timestamp,
-        };
+    if (chainId === ChainId.MATIC)
+      fetch('https://gasstation-mainnet.matic.network', { method: 'GET' })
+        .then((res) => res.json())
+        .then((json) => {
+          const gasNowData: GasNowData = {
+            slow: Math.floor(json.safeLow),
+            standard: Math.floor(json.standard),
+            fast: Math.floor(json.fast),
+            rapid: Math.floor(json.fastest),
+            timestamp: json.blockTime,
+          };
 
-        dispatch(setGasPrices(gasNowData));
+          dispatch(setGasPrices(gasNowData));
+        });
 
-        reConnectTimes = 0;
+    if (chainId === ChainId.BSC)
+      fetch('https://bscgas.info/gas', { method: 'GET' })
+        .then((res) => res.json())
+        .then((json) => {
+          const gasNowData: GasNowData = {
+            slow: Math.floor(json.low),
+            standard: Math.floor(json.standard),
+            fast: Math.floor(json.fast),
+            rapid: Math.floor(json.instant),
+            timestamp: new Date(json.timestamp).getTime(),
+          };
 
-        timer = setTimeout(() => {
-          getGas(true);
-        }, 15000);
-      })
-      .catch(() => {
-        if (reConnectTimes < 20) {
-          reConnectTimes++;
-        }
+          dispatch(setGasPrices(gasNowData));
+        });
 
-        timer = setTimeout(getGas, reConnectTimes < 20 ? 1000 : 15000);
-      });
+    if (chainId === ChainId.RINKEBY || ChainId.FANTOM) {
+      const gasNowData: GasNowData = {
+        slow: 1,
+        standard: 1,
+        fast: 1.1,
+        rapid: 1.2,
+        timestamp: new Date().getTime(),
+      };
+
+      dispatch(setGasPrices(gasNowData));
+    }
+
+    if (chainId === ChainId.MAINNET)
+      fetch(
+        'https://www.gasnow.org/api/v3/gas/price?utm_source=GasNowExtension',
+        {
+          method: 'GET',
+        },
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          const gasNowData: GasNowData = {
+            slow: convertGasNowValueToNumber(json.data.slow),
+            standard: convertGasNowValueToNumber(json.data.standard),
+            fast: convertGasNowValueToNumber(json.data.fast),
+            rapid: convertGasNowValueToNumber(json.data.rapid),
+            timestamp: json.data.timestamp,
+          };
+
+          dispatch(setGasPrices(gasNowData));
+
+          reConnectTimes = 0;
+
+          timer = setTimeout(() => {
+            getGas(true);
+          }, 15000);
+        })
+        .catch(() => {
+          if (reConnectTimes < 20) {
+            reConnectTimes++;
+          }
+
+          timer = setTimeout(getGas, reConnectTimes < 20 ? 1000 : 15000);
+        });
   };
 
   const createWebSocketConnection = () => {
@@ -96,7 +140,7 @@ export default function Updater(): null {
   };
 
   useEffect(() => {
-    getGas(true);
+    getGas(false);
 
     return () => {
       if (!ws) return;
@@ -126,6 +170,11 @@ export default function Updater(): null {
 
     fetchTransactions();
   }, [account, dispatch]);
+
+  useEffect(() => {
+    fetchGasData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId]);
 
   return null;
 }
