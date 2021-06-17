@@ -34,6 +34,7 @@ import { CLevelChartItem } from 'web3/pools';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
+import SlippageModal from './SlippageModal';
 import {
   SelectTokenTabs,
   BuyConfirmationModal,
@@ -182,6 +183,7 @@ const Options: React.FC = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const darkMode = useIsDarkMode();
+  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
 
   const { base } = useBase();
   const { underlying } = useUnderlying();
@@ -247,6 +249,12 @@ const Options: React.FC = () => {
         <BuyConfirmationModal
           open={buyConfirmationModalOpen}
           onClose={() => setBuyConfirmationModalOpen(false)}
+        />
+      )}
+      {slippageModalOpen && (
+        <SlippageModal
+          open={slippageModalOpen}
+          onClose={() => setSlippageModalOpen(false)}
         />
       )}
       {!mobile && (
