@@ -138,36 +138,32 @@ const Stake: React.FC = () => {
 
   const addToMetaMask = (tokenAddress: string, symbol: string) => {
     const params: any = {
-      type: "ERC20",
+      type: 'ERC20',
       options: {
-        address:
-          tokenAddress,
+        address: tokenAddress,
         symbol,
         decimals: 18,
-        image: 'https://miro.medium.com/fit/c/210/210/1*lcN-he45QLjaw-aKtZSy_Q.png',
+        image:
+          'https://miro.medium.com/fit/c/210/210/1*lcN-he45QLjaw-aKtZSy_Q.png',
       },
     };
 
-    if (web3 && web3.provider.isMetaMask && web3.provider.request){
-      web3.provider.request({
-        method: "wallet_watchAsset",
-        params,
-      })
-      .then((success) => {
-        if (success) {
-          console.log(
-            `Successfully added ${symbol} to MetaMask`
-            );
+    if (web3 && web3.provider.isMetaMask && web3.provider.request) {
+      web3.provider
+        .request({
+          method: 'wallet_watchAsset',
+          params,
+        })
+        .then((success) => {
+          if (success) {
+            console.log(`Successfully added ${symbol} to MetaMask`);
           } else {
-            throw new Error(
-              "Something went wrong."
-              );
-            }
-          })
-          .catch(console.error);
-      }
+            throw new Error('Something went wrong.');
+          }
+        })
+        .catch(console.error);
     }
-
+  };
 
   return (
     <Box
@@ -217,24 +213,28 @@ const Stake: React.FC = () => {
             !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
           }
         >
-          <Tooltip title="Add Premia to MetaMask">
+          <Tooltip title='Add Premia to MetaMask'>
             <Box
               className={classes.borderedBox}
-              onClick={() => addToMetaMask(getContractAddress(chainId || 1, ContractType.PremiaErc20), 'PREMIA')
+              onClick={() =>
+                addToMetaMask(
+                  getContractAddress(chainId || 1, ContractType.PremiaErc20),
+                  'PREMIA',
+                )
               }
               width={!mobile ? '190px' : '50%'}
               marginRight='6px'
               style={
                 darkMode
                   ? {
-                    cursor: 'pointer',
-                  }
+                      cursor: 'pointer',
+                    }
                   : {
                       borderColor: 'transparent',
                       boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
                       cursor: 'pointer',
                     }
-                  }
+              }
             >
               <Box className={classes.premiaBox1}>
                 <PremiaLogo />
@@ -244,14 +244,14 @@ const Stake: React.FC = () => {
                   component='p'
                   color='textSecondary'
                   className={classes.text}
-                  >
+                >
                   Premia
                 </Typography>
                 <Typography
                   component='h2'
                   color='textPrimary'
                   className={classes.bigNumber}
-                  >
+                >
                   {formatNumber(formatEther(premiaBalance))}
                 </Typography>
               </Box>
@@ -260,19 +260,24 @@ const Stake: React.FC = () => {
           <Tooltip title='add xPremia to MetaMask'>
             <Box
               className={classes.borderedBox}
-              onClick={() => addToMetaMask(getContractAddress(chainId || 1, ContractType.PremiaStaking), 'XPREMIA')}
+              onClick={() =>
+                addToMetaMask(
+                  getContractAddress(chainId || 1, ContractType.PremiaStaking),
+                  'xPREMIA',
+                )
+              }
               justifyContent='flex-start'
               width={!mobile ? '190px' : '50%'}
               style={
                 darkMode
-                ? { cursor: 'pointer' }
-                : {
-                  borderColor: 'transparent',
-                  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-                  cursor: 'pointer',
-                }
+                  ? { cursor: 'pointer' }
+                  : {
+                      borderColor: 'transparent',
+                      boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                      cursor: 'pointer',
+                    }
               }
-              >
+            >
               <Box className={classes.premiaBox2}></Box>
               <Box className={classes.redPremiaIcon}>
                 <XPremiaLogo />
@@ -280,43 +285,43 @@ const Stake: React.FC = () => {
               <Box
                 className={classes.colRelative}
                 style={{ margin: '4px 0 4px 8px' }}
-                >
+              >
                 <Typography
                   component='p'
                   color='textSecondary'
                   className={classes.text}
-                  >
+                >
                   xPremia
                 </Typography>
                 <Typography
                   component='h2'
                   color='textPrimary'
                   className={classes.bigNumber}
-                  >
+                >
                   {formatBigNumber(
                     BigNumber.from(xPremiaBalance).add(
                       BigNumber.from(xPremiaLocked),
-                      ),
-                      )}
+                    ),
+                  )}
                 </Typography>
               </Box>
             </Box>
           </Tooltip>
+        </Box>
       </Box>
-    </Box>
-    <Box
-      display='flex'
-      flexDirection={!mobile ? 'row' : 'column'}
-      width={1}
-      height={'auto'}
-      style={
-        !mobile
-        ? { justifyContent: 'center', margin: '20px 0' }
-        : { alignItems: 'center' }
-      }
-    >
-      <StakePremiaCard />
-      <LockPremiaCard />
+      <Box
+        display='flex'
+        flexDirection={!mobile ? 'row' : 'column'}
+        width={1}
+        height={'auto'}
+        style={
+          !mobile
+            ? { justifyContent: 'center', margin: '20px 0' }
+            : { alignItems: 'center' }
+        }
+      >
+        <StakePremiaCard />
+        <LockPremiaCard />
       </Box>
     </Box>
   );
