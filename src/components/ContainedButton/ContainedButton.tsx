@@ -148,7 +148,7 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
   onClick,
 }) => {
   const darkMode = useIsDarkMode();
-  const classes = useStyles({ darkMode, size });
+  const classes = useStyles({ darkMode, size, disabled });
   const childLabel = useMemo(
     () => (children === undefined ? label : children),
     [children, label],

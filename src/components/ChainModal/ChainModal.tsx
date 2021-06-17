@@ -1,10 +1,17 @@
 import React from 'react';
-import { Typography, Modal, Box, Button, Grid, Fade, Backdrop } from '@material-ui/core';
+import {
+  Typography,
+  Modal,
+  Box,
+  Grid,
+  Fade,
+  Backdrop,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 import { chainIds, chainLabels, PARAMS } from 'utils';
 import { useWeb3 } from 'state/application/hooks';
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
@@ -33,14 +40,15 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 26,
+    right: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '6px',
+    borderRadius: '50%',
+    padding: '12px',
     cursor: 'pointer',
-    width: '20px',
+    width: '40px',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark,
@@ -110,14 +118,14 @@ const useStyles = makeStyles(({ palette }) => ({
     bottom: -2,
     fontSize: 14,
     fontWeight: 400,
-    color: palette.text.secondary
+    color: palette.text.secondary,
   },
   tradingButton: {
     width: '100%',
     height: 45,
     margin: 0,
     fontSize: 16,
-    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)'
+    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
   },
   selected: {},
 }));
@@ -130,8 +138,10 @@ export interface ChainModalProps {
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
   const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
+
   let testnetLabel = '';
-  switch(chainId) {
+  switch (chainId) {
     case 3:
       testnetLabel = 'Ropsten Testnet';
       break;
@@ -143,7 +153,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
       break;
     case 5:
       testnetLabel = 'Goerli Testnet';
-      break;    
+      break;
   }
 
   return (
@@ -153,7 +163,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -164,7 +174,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 Select network
               </Typography>
               <Grid container direction='row'>
-                { chainIds.map((val, ind) => (
+                {chainIds.map((val, ind) => (
                   <Grid item key={ind} xs={6} sm={3} className={classes.chain}>
                     <Box
                       component='div'
@@ -179,33 +189,34 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                         ]);
                       }}
                     >
-                      { ind === 0 && <EthIcon /> }
-                      { ind === 1 && <BSCIcon /> }
-                      { ind === 2 && <PolygonIcon /> }
-                      { ind === 3 && <FantomIcon /> }
-                      { chainLabels[ind] }
-                      {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
+                      {ind === 0 && <EthIcon />}
+                      {ind === 1 && <BSCIcon />}
+                      {ind === 2 && <PolygonIcon />}
+                      {ind === 3 && <FantomIcon />}
+                      {chainLabels[ind]}
+                      {(chainId === val ||
+                        (ind === 0 && testnetLabel !== '')) && (
                         <Box component='div' className={classes.selected}>
                           Current
                         </Box>
                       )}
-                      {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
+                      {testnetLabel !== '' && ind === 0 && (
+                        <p className={classes.testnet}>{testnetLabel}</p>
+                      )}
                     </Box>
                   </Grid>
                 ))}
               </Grid>
               <Box p={'5px'} width={1}>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  className={classes.tradingButton}
-                >
-                  Switch to Rinkeby for trading competition
-                </Button>
+                <ContainedButton
+                  fullWidth
+                  size={!mobile ? 'large' : 'small'}
+                  label='Switch to Rinkeby for trading competition'
+                />
               </Box>
-              <Button className={classes.exitContainer} onClick={onClose}>
+              <Box className={classes.exitContainer} onClick={onClose}>
                 <img src={XOut} alt='Exit' />
-              </Button>
+              </Box>
             </Box>
           </Box>
         </ModalContainer>

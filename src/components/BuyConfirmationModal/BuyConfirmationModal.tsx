@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  Button,
   Typography,
   Modal,
   Box,
@@ -26,7 +25,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { usePurchaseOption } from 'hooks';
 import { formatCompact, formatNumber } from 'utils/formatNumber';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { OptionType } from 'web3/options';
@@ -431,15 +430,14 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                   </Typography>
                 </Box>
 
-                <Button
-                  color='primary'
-                  variant='contained'
+                <ContainedButton
+                  fullWidth
                   size='large'
+                  label={`Buy for ${formatCompact(totalCost)} ${
+                    activeToken?.symbol
+                  } ($${formatCompact(totalCostInUsd)})`}
                   onClick={onTransact}
-                >
-                  Buy for {formatCompact(totalCost)} {activeToken?.symbol} ($
-                  {formatCompact(totalCostInUsd)})
-                </Button>
+                />
               </Box>
             </Box>
             <Box
