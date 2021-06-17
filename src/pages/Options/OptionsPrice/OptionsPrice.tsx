@@ -274,14 +274,9 @@ const OptionsPrice: React.FC = () => {
     : barRef.current?.clientHeight;
   const topPrice = isCall ? pricePerUnitInUsd + breakEvenPrice : Number(strikePrice) + pricePerUnitInUsd;
   const bottomPrice = isCall ? Number(strikePrice) - pricePerUnitInUsd : breakEvenPrice - pricePerUnitInUsd;
-  const plFirstPrice = (currentPrice || 0) * 1.2;
+  const plFirstPrice = Math.max(bottomPrice, Math.min((currentPrice || 0) * 1.2, topPrice));
   let pLBoxPos = (topPrice > bottomPrice ? (topPrice - plFirstPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 58 : 22);
   let currentPricePos = (topPrice > bottomPrice ? (topPrice - currentPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 83 : 46);
-  if (plFirstPrice > topPrice) {
-    pLBoxPos = mobile ? -58 : -22;
-  } else if (plFirstPrice < bottomPrice) {
-    pLBoxPos = barSize - (mobile ? 58 : 22);
-  }
   if (currentPrice > topPrice) {
     currentPricePos = mobile ? -83 : -46;
   } else if (currentPrice < bottomPrice) {
@@ -296,7 +291,7 @@ const OptionsPrice: React.FC = () => {
     } else {
       possiblePLBox.current.state.y = 0;
     }
-  }, [strikePrice])
+  }, [mobile, strikePrice])
 
   useEffect(() => {
     const setFirstPrice = () => {
@@ -339,7 +334,7 @@ const OptionsPrice: React.FC = () => {
       <Box
         position='relative'
         width={mobile ? 1 : 176}
-        height={mobile ? 100 : 1}
+        height={mobile ? 100 : '70vh'}
         zIndex={2}
         className={cx(
           classes.transitionItem,
