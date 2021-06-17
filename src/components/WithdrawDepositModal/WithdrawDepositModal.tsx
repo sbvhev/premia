@@ -20,7 +20,7 @@ import { getTokenIcon } from 'utils/getTokenIcon';
 import { formatCompact } from 'utils/formatNumber';
 import floatToBigNumber from 'utils/floatToBigNumber';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -439,20 +439,20 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   className={classes.horizontalBox}
                   style={{ marginTop: '16px' }}
                 >
-                  <Button
+                  <ContainedButton
                     fullWidth
                     disabled={Number(value) <= 0}
                     color={call ? 'primary' : 'secondary'}
-                    variant='contained'
                     size='large'
+                    label={
+                      isAmountAllowed
+                        ? `Confirm`
+                        : `Approve ${activeToken?.symbol}`
+                    }
                     onClick={() =>
                       isAmountAllowed ? handleWithdrawDeposit() : onApprove()
                     }
-                  >
-                    {isAmountAllowed
-                      ? `Confirm`
-                      : `Approve ${activeToken?.symbol}`}
-                  </Button>
+                  />
                 </Box>
               </Box>
             </Box>

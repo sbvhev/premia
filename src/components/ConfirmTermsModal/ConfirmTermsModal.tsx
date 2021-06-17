@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Button,
   Typography,
   Modal,
   Box,
@@ -370,15 +369,6 @@ const ConfirmTermsModal: React.FC<ConfirmTermsModalProps> = ({
                     Do not show confirmation again
                   </Typography>
                 </Box>
-
-                {/* <Button
-                  color='primary'
-                  variant='contained'
-                  size='large'
-                  onClick={handleChangeAgree}
-                >
-                  Agree
-                </Button> */}
                 <ContainedButton
                   label='Agree'
                   size='large'
