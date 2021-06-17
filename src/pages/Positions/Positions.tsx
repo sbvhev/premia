@@ -14,6 +14,7 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import { formatUnits } from 'ethers/lib/utils';
 import Moment from 'moment';
 import cx from 'classnames';
 
@@ -33,7 +34,7 @@ import {
   DataTable,
   LineChart,
   DonutChart,
-  PositionModal,
+  PositionCloseModal,
   SwitchWithGlider,
 } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
@@ -545,7 +546,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '&.buttonCell': {
         '& button': {
-          color: palette.background.paper,
+          color: palette.common.white,
+
+          '&:hover': {
+            color: palette.primary.main,
+          },
         },
       },
     },
@@ -978,35 +983,86 @@ const Positions: React.FC = () => {
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
-  const optionAssets = [
-    {
-      category: 'LINK Call',
-      value: 73,
-    },
-    {
-      category: 'LINK Put',
-      value: 27,
-    },
-  ];
+  const totalOptionAllocation = useMemo(() => {
+    return options.reduce((total, userOwned) => {
+      return (
+        total +
+        Number(
+          formatUnits(userOwned.size, userOwned.option.underlying.decimals),
+        ) *
+          tokenPrices[userOwned.option.underlying.symbol]
+      );
+    }, 0);
+  }, [options, tokenPrices]);
 
-  const yieldAssets = [
-    {
-      category: 'LINK',
-      value: 43,
-    },
-    {
-      category: 'ETH',
-      value: 27,
-    },
-    {
-      category: 'DAI',
-      value: 30,
-    },
-  ];
+  const optionAllocationPerAsset = useMemo(() => {
+    return options.reduce((allocations: any, userOwned) => {
+      const category = `${userOwned.option.underlying.symbol} ${userOwned.option.optionType}`;
+      let allocation = allocations.find(
+        (allocation: any) => allocation.category === category,
+      );
+
+      if (!allocation) {
+        allocation = { category, value: 0, total: 0 };
+        allocations.push(allocation);
+      }
+
+      allocation.total += Number(
+        formatUnits(userOwned.size, userOwned.option.underlying.decimals),
+      );
+      allocation.value =
+        ((allocation.total * tokenPrices[userOwned.option.underlying.symbol]) /
+          totalOptionAllocation) *
+        100;
+
+      return allocations;
+    }, []);
+  }, [options, tokenPrices, totalOptionAllocation]);
+
+  const totalYieldAllocation = useMemo(() => {
+    return pools.reduce((total, userOwned) => {
+      const tokenSymbol =
+        userOwned.optionType === OptionType.Call
+          ? userOwned.underlying.symbol
+          : userOwned.base.symbol;
+      return (
+        total +
+        Number(formatUnits(userOwned.size, userOwned.underlying.decimals)) *
+          tokenPrices[tokenSymbol]
+      );
+    }, 0);
+  }, [pools, tokenPrices]);
+
+  const yieldAllocationPerAsset = useMemo(() => {
+    return pools.reduce((allocations: any, userOwned) => {
+      const tokenSymbol =
+        userOwned.optionType === OptionType.Call
+          ? userOwned.underlying.symbol
+          : userOwned.base.symbol;
+      const category = tokenSymbol;
+      let allocation = allocations.find(
+        (allocation: any) => allocation.category === category,
+      );
+
+      if (!allocation) {
+        allocation = { category, value: 0, total: 0 };
+        allocations.push(allocation);
+      }
+
+      allocation.total += Number(
+        formatUnits(userOwned.size, userOwned.underlying.decimals),
+      );
+      allocation.value =
+        ((allocation.total * tokenPrices[tokenSymbol]) / totalYieldAllocation) *
+        100;
+
+      return allocations;
+    }, []);
+  }, [pools, tokenPrices, totalYieldAllocation]);
 
   return (
     <>
-      <PositionModal
+      <PositionCloseModal
         open={positionModalOpen}
         onClose={() => {
           setPositionModalOpen(false);
@@ -1220,7 +1276,9 @@ const Positions: React.FC = () => {
                   >
                     <DonutChart
                       data={
-                        positionFilterIndex === 0 ? optionAssets : yieldAssets
+                        positionFilterIndex === 0
+                          ? optionAllocationPerAsset
+                          : yieldAllocationPerAsset
                       }
                       colors={['#4D9EF2', '#EB4A97']}
                       endColors={['#2DDEA0', '#A745DD']}
@@ -1611,7 +1669,7 @@ const Positions: React.FC = () => {
                                 <Box>
                                   <TokenIcon height={20} width={20} />
                                 </Box>
-                                {pool.underlying.symbol}
+                                {tokenSymbol}
                               </Box>
                               <Box display='flex' alignItems='center'>
                                 {pool.underlying.symbol}{' '}
@@ -1715,7 +1773,7 @@ const Positions: React.FC = () => {
                               <Box>
                                 <TokenIcon height={20} width={20} />
                               </Box>
-                              {pool.underlying.symbol}
+                              {tokenSymbol}
                             </Box>
                           </TableCell>
                           <TableCell>

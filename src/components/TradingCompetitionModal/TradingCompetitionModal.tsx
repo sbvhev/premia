@@ -430,7 +430,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                           <img src={PrizeFirst} alt='Prize First' />
                           <Typography>1</Typography>
                         </Box>
-                        <Typography>$50,000</Typography>
+                        <Typography>$100,000</Typography>
                       </Box>
                       <Box>
                         <Box width={1} height={1} />
@@ -438,7 +438,7 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                           <img src={PrizeSecond} alt='Prize Second' />
                           <Typography>2</Typography>
                         </Box>
-                        <Typography>$25,000</Typography>
+                        <Typography>$35,000</Typography>
                       </Box>
                       <Box>
                         <Box width={1} height={1} />

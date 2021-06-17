@@ -187,11 +187,13 @@ const useStyles = makeStyles(({ palette }) => ({
 export interface BuyConfirmationModalProps {
   open: boolean;
   onClose: () => void;
+  onCompletePurchase?: () => void;
 }
 
 const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   open,
   onClose,
+  onCompletePurchase,
 }) => {
   const [shouldTransact, setShouldTransact] = useState(
     localStorage.getItem('BuyConfirmationModal_skip') === 'true',
@@ -209,7 +211,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   const { priceImpact } = usePriceImpact();
   const { size } = useSize();
   const breakEvenPrice = useBreakEvenPrice();
-  const purchase = usePurchaseOption();
+  const purchase = usePurchaseOption(onCompletePurchase);
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),

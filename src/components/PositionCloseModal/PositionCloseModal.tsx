@@ -1,5 +1,13 @@
 import React from 'react';
-import { Typography, Modal, Box, Paper, Fade, Backdrop, Container } from '@material-ui/core';
+import {
+  Typography,
+  Modal,
+  Box,
+  Paper,
+  Fade,
+  Backdrop,
+  Container,
+} from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
@@ -381,16 +389,19 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-export interface PositionModalProps {
+export interface PositionCloseModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
+const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
+  open,
+  onClose,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const txStateMsg = 'Tell your friends about Premia and earn fees';
+  const txStateMsg = 'Tell your friends about your Premia trading experience';
   const { palette } = theme;
 
   return (
@@ -400,7 +411,7 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -441,7 +452,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
             <Box
               className={classes.coloredBorderBackgroundForCard}
               style={
-                palette && palette.type === 'light' ? { background: 'none' } : {}
+                palette && palette.type === 'light'
+                  ? { background: 'none' }
+                  : {}
               }
             >
               <Box className={classes.mainCard}>
@@ -511,7 +524,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                         </Box>
                       </Box>
                     </Paper>
-                    <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
+                    <Typography style={{ marginBottom: 8 }}>
+                      Share on:
+                    </Typography>
                     <Box className={classes.socialLinks}>
                       <Container fixed>
                         <TwitterShareButton url='https://premia.finance'>
@@ -564,4 +579,4 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   );
 };
 
-export default PositionModal;
+export default PositionCloseModal;

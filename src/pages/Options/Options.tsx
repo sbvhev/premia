@@ -34,14 +34,17 @@ import { CLevelChartItem } from 'web3/pools';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
+import SlippageModal from './SlippageModal';
 import {
   SelectTokenTabs,
   BuyConfirmationModal,
   LineChart,
   ContainedButton,
+  PositionOpenModal,
 } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
+import { ReactComponent as SettingsGear } from 'assets/svg/SettingsGear.svg';
 import { formatUnits } from 'ethers/lib/utils';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -119,6 +122,10 @@ const useStyles = makeStyles(({ palette }) => ({
       marginRight: 4,
     },
   },
+  costAndSlippageRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   depositButton: {
     '& button': {
       margin: 0,
@@ -176,6 +183,8 @@ const Options: React.FC = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [popoverType, setPopoverType] = useState('');
+  const [positionModalOpen, setPositionModalOpen] = useState(false);
+  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
   const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
     useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -247,6 +256,19 @@ const Options: React.FC = () => {
         <BuyConfirmationModal
           open={buyConfirmationModalOpen}
           onClose={() => setBuyConfirmationModalOpen(false)}
+          onCompletePurchase={() => setPositionModalOpen(true)}
+        />
+      )}
+      {positionModalOpen && (
+        <PositionOpenModal
+          open={positionModalOpen}
+          onClose={() => setPositionModalOpen(false)}
+        />
+      )}
+      {slippageModalOpen && (
+        <SlippageModal
+          open={slippageModalOpen}
+          onClose={() => setSlippageModalOpen(false)}
         />
       )}
       {!mobile && (
@@ -329,6 +351,32 @@ const Options: React.FC = () => {
             <Link>Read more</Link>
           </Box>
         )}
+        {popoverType === 'totalCost' && (
+          <Box
+            pl={'17px'}
+            pr={1}
+            py={'14px'}
+            onMouseLeave={() => {
+              setAnchorEl(null);
+            }}
+          >
+            <p>Total costs lorem ipsum</p>
+          </Box>
+        )}
+        {popoverType === 'slippage' && (
+          <Box
+            pl={'17px'}
+            pr={1}
+            py={'14px'}
+            onMouseLeave={() => {
+              setAnchorEl(null);
+            }}
+          >
+            <p>
+              The maximum price slippage you are willing to incur on a trade.
+            </p>
+          </Box>
+        )}
       </Popover>
 
       <Grid container style={!mobile ? { marginLeft: '6px' } : {}}>
@@ -395,16 +443,77 @@ const Options: React.FC = () => {
                 })}
               </Typography>
             </Box>
-            <Box pl={xs ? 1 : 3}>
-              <Typography color='textSecondary' className={classes.priceText}>
-                Total cost
-              </Typography>
-              <Typography color='textPrimary' component='h2'>
-                $
-                {formatNumber(totalCostInUsd, true, {
-                  maximumFractionDigits: 6,
-                })}
-              </Typography>
+            <Box pl={xs ? 1 : 3} className={classes.costAndSlippageRow}>
+              <Box>
+                <Box display='flex' alignItems='center'>
+                  <Typography
+                    color='textSecondary'
+                    className={classes.priceText}
+                  >
+                    Total cost
+                  </Typography>
+                  <HelpIcon
+                    className={classes.helpIcon}
+                    onMouseEnter={(event) => {
+                      setPopoverType('totalCost');
+                      setAnchorEl(event.currentTarget);
+                    }}
+                  />
+                </Box>
+                <Typography color='textPrimary' component='h2'>
+                  $
+                  {formatNumber(totalCostInUsd, true, {
+                    maximumFractionDigits: 6,
+                  })}
+                </Typography>
+              </Box>
+              <Box marginRight='6px'>
+                <Box display='flex' alignItems='center'>
+                  <HelpIcon
+                    className={classes.helpIcon}
+                    onMouseEnter={(event) => {
+                      setPopoverType('slippage');
+                      setAnchorEl(event.currentTarget);
+                    }}
+                  />
+                  <Typography
+                    color='textSecondary'
+                    className={classes.priceText}
+                    style={{ marginLeft: '3px' }}
+                  >
+                    Slippage
+                  </Typography>
+                </Box>
+                <Box
+                  display='flex'
+                  justifyContent='flex-end'
+                  alignItems='center'
+                >
+                  <Typography
+                    color='textPrimary'
+                    component='h2'
+                    style={{ lineHeight: '8px' }}
+                  >
+                    {`${'2'}%`}
+                  </Typography>
+                  <Box
+                    display='flex'
+                    alignItems='center'
+                    padding='2px'
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setSlippageModalOpen(true)}
+                  >
+                    <SettingsGear
+                      style={{
+                        height: '11px',
+                        width: '10px',
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
               <ContainedButton

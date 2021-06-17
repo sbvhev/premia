@@ -6,7 +6,7 @@ import { get } from 'lodash';
 import { useWeb3 } from 'state/application/hooks';
 import useInterval from './useInterval';
 
-export function useHasMerkleClaim(merkleRoot: any, aidropId: number) {
+export function useHasMerkleClaim(merkleRoot: any, airdropId: number) {
   const { account, contracts } = useWeb3();
   const [claimed, setClaimed] = useState(false);
 
@@ -15,10 +15,10 @@ export function useHasMerkleClaim(merkleRoot: any, aidropId: number) {
   const hasClaim = account === '' ? false : index !== null;
 
   useInterval(async () => {
-    if (!contracts) return;
+    if (!contracts || index == null) return;
 
     const isClaimed = await contracts?.TradingCompetitionMerkle.isClaimed(
-      aidropId,
+      airdropId,
       index,
     );
 
