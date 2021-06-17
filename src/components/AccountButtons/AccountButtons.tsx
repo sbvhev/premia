@@ -290,13 +290,14 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
     getCountDownStr();
   }, 20 * 60 * 1000);
 
-  const getPremiaFunction = useMemo(() => {
+  const getPremia = useMemo(() => {
     if (!chainId) return () => {};
+
     if (chainId === 1 || chainId === 56) {
       return () => {
         setSwapSettings({
           fromToken: gasToken,
-          toToken: chainId === 1 ? PremiaETHToken : PremiaBSCToken,
+          toToken: chainId === 56 ? PremiaBSCToken : PremiaETHToken,
         });
         history.push(`${location.pathname}?getPremia=true`);
       };
@@ -391,7 +392,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
               <Button
                 color='primary'
                 className={classes.button}
-                onClick={getPremiaFunction}
+                onClick={getPremia}
               >
                 <span>Get</span>
                 <LogoIcon fill={theme.palette.common.white} />
@@ -484,7 +485,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
                 <Button
                   color='primary'
                   className={cx(classes.button, mobile && classes.fullWidth)}
-                  onClick={getPremiaFunction}
+                  onClick={getPremia}
                 >
                   Get
                   <LogoIcon fill={theme.palette.common.white} />
