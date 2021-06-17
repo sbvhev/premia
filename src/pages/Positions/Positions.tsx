@@ -542,7 +542,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '&.buttonCell': {
         '& button': {
-          color: palette.background.paper,
+          color: palette.common.white,
+
+          '&:hover': {
+            color: palette.primary.main,
+          },
         },
       },
     },
