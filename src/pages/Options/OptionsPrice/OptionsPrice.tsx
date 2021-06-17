@@ -12,7 +12,7 @@ import {
   useStrikePrice,
   useUnderlying,
   useSize,
-  usePricePerUnit,
+  usePricePerUnitInUsd,
 } from 'state/options/hooks';
 import { usePrices } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -252,7 +252,7 @@ const OptionsPrice: React.FC = () => {
   const { strikePrice } = useStrikePrice();
   const { underlying } = useUnderlying();
   const { size } = useSize();
-  const { pricePerUnit } = usePricePerUnit();
+  const { pricePerUnitInUsd } = usePricePerUnitInUsd();
   const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -268,11 +268,12 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const [plPrice, setPLPrice] = useState(0);
+  const [potentialProfit, setPotentialProfit] = useState(0);
   const barSize = mobile
     ? barRef.current?.clientWidth
     : barRef.current?.clientHeight;
-  const topPrice = isCall ? pricePerUnit + breakEvenPrice : Number(strikePrice) + pricePerUnit;
-  const bottomPrice = isCall ? Number(strikePrice) - pricePerUnit : breakEvenPrice - pricePerUnit;
+  const topPrice = isCall ? pricePerUnitInUsd + breakEvenPrice : Number(strikePrice) + pricePerUnitInUsd;
+  const bottomPrice = isCall ? Number(strikePrice) - pricePerUnitInUsd : breakEvenPrice - pricePerUnitInUsd;
   const plFirstPrice = (currentPrice || 0) * 1.2;
   let pLBoxPos = (topPrice > bottomPrice ? (topPrice - plFirstPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 58 : 22);
   let currentPricePos = (topPrice > bottomPrice ? (topPrice - currentPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 83 : 46);
@@ -286,19 +287,27 @@ const OptionsPrice: React.FC = () => {
   } else if (currentPrice < bottomPrice) {
     currentPricePos = barSize - (mobile ? 83 : 46);
   }
-  const potentialProfit = Math.max(
-    0,
-    (plPrice - strikePrice - pricePerUnit) * size,
-  );
 
-  const baroSize = topPrice > bottomPrice ? pricePerUnit / (topPrice - bottomPrice) : 0;
+  const baroSize = topPrice > bottomPrice ? pricePerUnitInUsd / (topPrice - bottomPrice) : 0;
+
+  useEffect(() => {
+    if (mobile) {
+      possiblePLBox.current.state.x = 0;
+    } else {
+      possiblePLBox.current.state.y = 0;
+    }
+  }, [strikePrice])
 
   useEffect(() => {
     const setFirstPrice = () => {
       setPLPrice(plFirstPrice);
+      setPotentialProfit(Math.max(
+        -1 * pricePerUnitInUsd * size,
+        (isCall ? 1 : -1) * (plFirstPrice - breakEvenPrice) * size,
+      ));
     };
     setFirstPrice();
-  }, [plFirstPrice]);
+  }, [breakEvenPrice, isCall, plFirstPrice, pricePerUnitInUsd, size]);
 
   const onDragPL = () => {
     let plPrice1;
@@ -314,6 +323,10 @@ const OptionsPrice: React.FC = () => {
     }
 
     setPLPrice(plPrice1);
+    setPotentialProfit(Math.max(
+      -1 * pricePerUnitInUsd * size,
+      (isCall ? 1 : -1) * (plPrice1 - breakEvenPrice) * size,
+    ))
   };
 
   return (
