@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -86,6 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
   const [darkMode] = useDarkModeManager();
   const classes = useStyles();
   const { chainId, account } = useWeb3();
+  const history = useHistory();
   const location = useLocation<{ previous: string }>();
   const { pathname } = location;
   const pageIndexes: PageIndexing = {
@@ -105,6 +106,19 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     setPageNavigationIndex(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  React.useEffect(() => {
+    if (location.search) {
+      const search = location.search;
+      const params = new URLSearchParams(search);
+      const getPremia = params.get('getPremia');
+      if (getPremia) {
+        setShowSwapModal(true);
+      }
+      const path = location.pathname;
+      history.push(path);
+    }
+  }, [history, location.pathname, location.search]);
 
   const navigation = [
     {

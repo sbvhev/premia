@@ -12,7 +12,7 @@ import {
   useStrikePrice,
   useUnderlying,
   useSize,
-  usePricePerUnit,
+  usePricePerUnitInUsd,
 } from 'state/options/hooks';
 import { usePrices } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -100,9 +100,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     top: 31,
     left: 32,
     [breakpoints.down('md')]: {
-      top: 'calc(50% - 8px)',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      left: 45,
       textAlign: 'center',
     },
     '& p': {
@@ -197,6 +195,23 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginLeft: -1,
     },
   },
+  currentPriceContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    marginLeft: 26,
+    '& img': {
+      marginRight: -26,
+    },
+    [breakpoints.down('md')]: {
+      marginLeft: 0,
+      marginTop: 26,
+      '& img': {
+        marginRight: 0,
+        marginBottom: -26,
+      },
+    },
+  },
   currentPriceLine: {
     width: (props: any) => (props.mobile ? 1 : 16),
     height: (props: any) => (props.mobile ? 16 : 1.47),
@@ -208,8 +223,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       props.darkMode
         ? '0px 0px 16px #00FF97'
         : '0px 0px 25px rgba(59, 197, 193, 0.4)',
-    marginRight: (props: any) => (props.mobile ? 0 : -16),
-    marginBottom: (props: any) => (props.mobile ? -16 : 0),
   },
 }));
 
@@ -239,7 +252,7 @@ const OptionsPrice: React.FC = () => {
   const { strikePrice } = useStrikePrice();
   const { underlying } = useUnderlying();
   const { size } = useSize();
-  const { pricePerUnit } = usePricePerUnit();
+  const { pricePerUnitInUsd } = usePricePerUnitInUsd();
   const breakEvenPrice = useBreakEvenPrice();
   const darkMode = useIsDarkMode();
   const mobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -255,68 +268,79 @@ const OptionsPrice: React.FC = () => {
   const barHeight = mobile ? standardWidth : '70vh';
   const barWidth = mobile ? 1 : standardWidth;
   const [plPrice, setPLPrice] = useState(0);
+  const [potentialProfit, setPotentialProfit] = useState(0);
   const barSize = mobile
     ? barRef.current?.clientWidth
     : barRef.current?.clientHeight;
-  const pLBoxPos = (barSize / 2) * 0.8 - (mobile ? 58 : 22);
-  const plFirstPrice = (currentPrice || 0) * 1.2;
-  const callPrice = Math.min(breakEvenPrice, currentPrice * 2);
-  const putPrice = Math.max(breakEvenPrice, currentPrice * 0.5);
-  const potentialProfit = Math.max(
-    0,
-    (plPrice - strikePrice - pricePerUnit) * size,
+  const topPrice = isCall
+    ? pricePerUnitInUsd + breakEvenPrice
+    : Number(strikePrice) + pricePerUnitInUsd;
+  const bottomPrice = isCall
+    ? Number(strikePrice) - pricePerUnitInUsd
+    : breakEvenPrice - pricePerUnitInUsd;
+  const plFirstPrice = Math.max(
+    bottomPrice,
+    Math.min((currentPrice || 0) * 1.2, topPrice),
   );
-
-  let callSize, putSize;
-
-  if (isCall) {
-    if (callPrice <= currentPrice) {
-      callSize = 1 / 2 + (currentPrice - callPrice) / currentPrice;
-    } else {
-      callSize = (currentPrice * 2 - callPrice) / currentPrice / 2;
-    }
-
-    if (Number(strikePrice) <= currentPrice) {
-      putSize = (Number(strikePrice) - currentPrice / 2) / currentPrice;
-    } else {
-      putSize = 1 / 2 + (Number(strikePrice) - currentPrice) / currentPrice / 2;
-    }
-  } else {
-    if (Number(strikePrice) <= currentPrice) {
-      putSize = 1 / 2 + (currentPrice - Number(strikePrice)) / currentPrice;
-    } else {
-      putSize = (currentPrice * 2 - Number(strikePrice)) / currentPrice / 2;
-    }
-
-    if (putPrice <= currentPrice) {
-      callSize = (putPrice - currentPrice / 2) / currentPrice;
-    } else {
-      callSize = 1 / 2 + (putPrice - currentPrice) / currentPrice / 2;
-    }
+  let pLBoxPos =
+    (topPrice > bottomPrice
+      ? ((topPrice - plFirstPrice) / (topPrice - bottomPrice)) * barSize
+      : 0) - (mobile ? 58 : 22);
+  let currentPricePos =
+    (topPrice > bottomPrice
+      ? ((topPrice - currentPrice) / (topPrice - bottomPrice)) * barSize
+      : 0) - (mobile ? 83 : 46);
+  if (currentPrice > topPrice) {
+    currentPricePos = mobile ? -83 : -46;
+  } else if (currentPrice < bottomPrice) {
+    currentPricePos = barSize - (mobile ? 83 : 46);
   }
+
+  const baroSize =
+    topPrice > bottomPrice ? pricePerUnitInUsd / (topPrice - bottomPrice) : 0;
+
+  useEffect(() => {
+    if (mobile) {
+      possiblePLBox.current.state.x = 0;
+    } else {
+      possiblePLBox.current.state.y = 0;
+    }
+  }, [mobile, strikePrice]);
 
   useEffect(() => {
     const setFirstPrice = () => {
-      setPLPrice(plFirstPrice);
+      setPLPrice(Math.max(0, plFirstPrice));
+      setPotentialProfit(
+        Math.max(
+          -1 * pricePerUnitInUsd * size,
+          (isCall ? 1 : -1) * (plFirstPrice - breakEvenPrice) * size,
+        ),
+      );
     };
     setFirstPrice();
-  }, [plFirstPrice]);
+  }, [breakEvenPrice, isCall, plFirstPrice, pricePerUnitInUsd, size]);
 
   const onDragPL = () => {
-    let plPrice1 =
-      plFirstPrice -
-      ((mobile
-        ? possiblePLBox.current.state.x
-        : possiblePLBox.current.state.y) /
-        barSize) *
-        2 *
-        currentPrice;
-
-    if (plPrice1 <= currentPrice) {
-      plPrice1 += (currentPrice - plPrice1) / 2;
+    let plPrice1;
+    if (topPrice > bottomPrice) {
+      plPrice1 =
+        plFirstPrice -
+        ((mobile
+          ? possiblePLBox.current.state.x
+          : possiblePLBox.current.state.y) /
+          barSize) *
+          (topPrice - bottomPrice);
+    } else {
+      plPrice1 = 0;
     }
 
-    setPLPrice(plPrice1);
+    setPLPrice(Math.max(plPrice1, 0));
+    setPotentialProfit(
+      Math.max(
+        -1 * pricePerUnitInUsd * size,
+        (isCall ? 1 : -1) * (plPrice1 - breakEvenPrice) * size,
+      ),
+    );
   };
 
   return (
@@ -328,42 +352,48 @@ const OptionsPrice: React.FC = () => {
     >
       <Box
         position='relative'
-        mt={mobile ? 0 : 0.7}
-        mb={mobile ? -4 : 0}
-        mr={mobile ? 0 : -3.25}
+        width={mobile ? 1 : 176}
+        height={mobile ? 100 : '70vh'}
         zIndex={2}
         className={cx(
           classes.transitionItem,
           (hoveredTop || hoveredBottom) && classes.hovered,
         )}
       >
-        <img
-          src={
-            darkMode
-              ? mobile
-                ? PriceRectangleMobile
-                : PriceRectangle
-              : mobile
-              ? PriceRectangleMobileLight
-              : PriceRectangleLight
-          }
-          alt='Current Price'
-        />
-        <Box zIndex={2} className={classes.currentPrice}>
-          <p>Current price</p>
-          <p>
-            <b>${formatCompact(underlyingPrice)}</b>
-          </p>
+        <Box
+          className={classes.currentPriceContainer}
+          top={mobile ? 'unset' : currentPricePos}
+          left={mobile ? currentPricePos : 'unset'}
+          flexDirection={mobile ? 'column' : 'row'}
+        >
+          <img
+            src={
+              darkMode
+                ? mobile
+                  ? PriceRectangleMobile
+                  : PriceRectangle
+                : mobile
+                ? PriceRectangleMobileLight
+                : PriceRectangleLight
+            }
+            alt='Current Price'
+          />
+          <Box zIndex={2} className={classes.currentPrice}>
+            <p>Current price</p>
+            <p>
+              <b>${formatCompact(underlyingPrice)}</b>
+            </p>
+          </Box>
+          <Box
+            zIndex={2}
+            className={cx(
+              classes.currentPriceLine,
+              classes.transitionItem,
+              (hoveredTop || hoveredBottom) && classes.hovered,
+            )}
+          />
         </Box>
       </Box>
-      <Box
-        zIndex={2}
-        className={cx(
-          classes.currentPriceLine,
-          classes.transitionItem,
-          (hoveredTop || hoveredBottom) && classes.hovered,
-        )}
-      />
       <div ref={barRef} style={{ width: mobile ? '100%' : 'auto' }}>
         <Box
           display='flex'
@@ -377,12 +407,8 @@ const OptionsPrice: React.FC = () => {
           borderRadius={12}
         >
           <Box
-            width={
-              mobile ? (optionType === OptionType.Call ? callSize : putSize) : 1
-            }
-            height={
-              mobile ? 1 : optionType === OptionType.Call ? callSize : putSize
-            }
+            width={mobile ? baroSize : 1}
+            height={mobile ? 1 : baroSize}
             className={cx(
               optionType === OptionType.Call
                 ? classes.chartCallTop
@@ -424,12 +450,8 @@ const OptionsPrice: React.FC = () => {
             </Box>
           </Box>
           <Box
-            width={
-              mobile ? (optionType === OptionType.Call ? putSize : callSize) : 1
-            }
-            height={
-              mobile ? 1 : optionType === OptionType.Call ? putSize : callSize
-            }
+            width={mobile ? baroSize : 1}
+            height={mobile ? 1 : baroSize}
             className={cx(
               optionType === OptionType.Call
                 ? classes.chartPutBottom

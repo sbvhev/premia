@@ -1,22 +1,42 @@
-import React from 'react';
-import { Typography, Modal, Box, Paper, Fade, Backdrop } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import {
+  Typography,
+  Modal,
+  Box,
+  Paper,
+  Fade,
+  Backdrop,
+  Container,
+} from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
+import {
+  ArrowUpward as ArrowUpwardIcon,
+  ArrowDownward as ArrowDownwardIcon,
+} from '@material-ui/icons';
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from 'react-share';
 
-import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
+import { OptionType, UserOwnedOption } from 'web3/options';
+import { getTokenIcon } from 'utils/getTokenIcon';
+
 import { ModalContainer } from 'components';
-
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
 import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
 import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
+import formatNumber from 'utils/formatNumber';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
@@ -300,11 +320,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginRight: 8,
     },
   },
+
   callBox: {
     background: 'rgba(82, 148, 255, 0.1)',
     borderRadius: 8,
     padding: '9px 11px',
-    color: '#5294FF',
+    color: palette.success.main,
     position: 'relative',
     top: -5,
 
@@ -313,14 +334,40 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 14,
 
       '& path': {
-        fill: '#5294FF',
+        fill: palette.success.main,
       },
     },
 
     '& p': {
       fontSize: 14,
       lineHeight: '18px',
-      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      '-webkit-background-clip': 'text',
+      '-webkit-text-fill-color': 'transparent',
+    },
+  },
+  putBox: {
+    background: ({ darkMode }: any) =>
+      `rgba(251, 237, 246, ${darkMode ? '0.1' : '0.5'})`,
+    borderRadius: 8,
+    padding: '9px 11px',
+    color: palette.error.main,
+    position: 'relative',
+    top: -5,
+
+    '& svg': {
+      width: 16,
+      height: 14,
+
+      '& path': {
+        fill: palette.error.main,
+      },
+    },
+
+    '& p': {
+      fontSize: 14,
+      lineHeight: '18px',
+      background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
       '-webkit-background-clip': 'text',
       '-webkit-text-fill-color': 'transparent',
     },
@@ -340,29 +387,33 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     marginBottom: 24,
     justifyContent: 'center',
 
-    '& svg': {
+    '& > div': {
       width: 35,
       height: 35,
-      padding: 10,
       borderRadius: 12,
-      border: `1px solid ${palette.divider}`,
-      marginRight: 10,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: '0 10px 0 0',
       cursor: 'pointer',
-
-      '&:hover': {
-        border: `1px solid ${palette.secondary.main}`,
-
-        '& path': {
-          fill: palette.secondary.main,
-        },
+      '& button, & a': {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0,
       },
-
       '&:last-child': {
         marginRight: 0,
       },
-
-      '& path': {
+      '& svg path': {
         fill: palette.text.secondary,
+      },
+      '&:hover, &:active': {
+        '& svg path': {
+          fill: palette.text.primary,
+        },
       },
     },
   },
@@ -371,17 +422,28 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-export interface PositionModalProps {
+export interface PositionCloseModalProps {
   open: boolean;
+  option: UserOwnedOption;
   onClose: () => void;
 }
 
-const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
-  const classes = useStyles();
+const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
+  open,
+  option,
+  onClose,
+}) => {
+  const darkMode = useIsDarkMode();
+  const classes = useStyles({ darkMode });
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
-  const txStateMsg = 'Tell your friends about Premia and earn fees';
+  const txStateMsg = 'Tell your friends about your Premia trading experience';
   const { palette } = theme;
+  const isCall = option.option.optionType === OptionType.Call;
+  const TokenIcon = useMemo(
+    () => getTokenIcon(option.option.underlying.symbol),
+    [option],
+  );
 
   return (
     <Modal
@@ -390,7 +452,7 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -431,7 +493,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
             <Box
               className={classes.coloredBorderBackgroundForCard}
               style={
-                palette && palette.type === 'light' ? { background: 'none' } : {}
+                palette && palette.type === 'light'
+                  ? { background: 'none' }
+                  : {}
               }
             >
               <Box className={classes.mainCard}>
@@ -452,8 +516,10 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                           Asset
                         </Typography>
                         <Box className={classes.boxLine}>
-                          <UniswapIcon />
-                          <Typography>Uni</Typography>
+                          <TokenIcon />
+                          <Typography>
+                            {option.option.underlying.symbol}
+                          </Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
@@ -463,9 +529,14 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                         >
                           Type
                         </Typography>
-                        <Box className={cx(classes.boxLine, classes.callBox)}>
-                          <ArrowUpwardIcon />
-                          <Typography>Call</Typography>
+                        <Box
+                          className={cx(
+                            classes.boxLine,
+                            isCall ? classes.callBox : classes.putBox,
+                          )}
+                        >
+                          {isCall ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                          <Typography>{isCall ? 'Call' : 'Put'}</Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
@@ -477,7 +548,9 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                         </Typography>
                         <Box className={classes.boxLine}>
                           <DaiIcon />
-                          <Typography>15,002</Typography>
+                          <Typography>
+                            {formatNumber(option.totalSpent)}
+                          </Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
@@ -501,13 +574,39 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
                         </Box>
                       </Box>
                     </Paper>
-                    <Typography style={{ marginBottom: 8 }}>Share on:</Typography>
+                    <Typography style={{ marginBottom: 8 }}>
+                      Share on:
+                    </Typography>
                     <Box className={classes.socialLinks}>
-                      <TwitterIcon />
-                      <TelegramIcon />
-                      <FacebookIcon />
-                      <DiscordIcon />
-                      <ForumIcon />
+                      <Container fixed>
+                        <TwitterShareButton url='https://premia.finance'>
+                          <TwitterIcon />
+                        </TwitterShareButton>
+                      </Container>
+                      <Container fixed>
+                        <TelegramShareButton url='https://premia.finance'>
+                          <TelegramIcon />
+                        </TelegramShareButton>
+                      </Container>
+                      <Container fixed>
+                        <FacebookShareButton url='https://premia.finance'>
+                          <FacebookIcon />
+                        </FacebookShareButton>
+                      </Container>
+                      <Container fixed>
+                        <a
+                          href='https://discord.com/invite/6MhRmzmdHN'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          <DiscordIcon />
+                        </a>
+                      </Container>
+                      <Container fixed>
+                        <RedditShareButton url='https://premia.finance'>
+                          <ForumIcon />
+                        </RedditShareButton>
+                      </Container>
                     </Box>
                     <Typography
                       color='secondary'
@@ -530,4 +629,4 @@ const PositionModal: React.FC<PositionModalProps> = ({ open, onClose }) => {
   );
 };
 
-export default PositionModal;
+export default PositionCloseModal;

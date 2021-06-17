@@ -14,26 +14,28 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import { formatUnits } from 'ethers/lib/utils';
 import Moment from 'moment';
 import cx from 'classnames';
 
 import { useDarkModeManager } from 'state/user/hooks';
 import { usePrices } from 'state/application/hooks';
 import { formatBigNumber, formatNumber } from 'utils/formatNumber';
+import { getTokenIcon } from 'utils/getTokenIcon';
 import { UserOwnedPool } from 'web3/pools';
 import { OptionType, UserOwnedOption } from 'web3/options';
 import {
+  useExerciseOption,
   useAllUserOwnedPools,
   useUserOwnedOptions,
   useDeviceWidth,
 } from 'hooks';
-import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
   DataTable,
   LineChart,
   DonutChart,
-  PositionModal,
+  PositionCloseModal,
   SwitchWithGlider,
 } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
@@ -151,19 +153,19 @@ const getOptionsHeadCells = () => [
     numeric: true,
     buttonCell: true,
     label: '',
-    element: <SellAllButton />,
+    // element: <SellAllButton />,   Disabled for now
     sortDisabled: true,
     sortKey: () => 1,
   },
 ];
 
-const SellAllButton: React.FC = () => {
-  return (
-    <Button variant='outlined' size='large'>
-      Exercise all
-    </Button>
-  );
-};
+// const SellAllButton: React.FC = () => {
+//   return (
+//     <Button variant='outlined' size='large'>
+//       Exercise all
+//     </Button>
+//   );
+// };
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -348,9 +350,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   noPositionBtnContainer: {
-    marginLeft: 30,
+    marginTop: 20,
     '& h2': {
-      marginBottom: 9,
+      marginBottom: 18,
+    },
+    '& a': {
+      textDecoration: 'none',
     },
     '& button': {
       width: 181,
@@ -542,7 +547,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       },
       '&.buttonCell': {
         '& button': {
-          color: palette.background.paper,
+          color: palette.common.white,
+
+          '&:hover': {
+            color: palette.primary.main,
+          },
         },
       },
     },
@@ -599,6 +608,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     height: 92,
     display: 'flex',
     alignItems: 'center',
+    margin: 'auto',
     '& img': {
       width: '100%',
     },
@@ -750,11 +760,14 @@ const Positions: React.FC = () => {
   const [dateFilterIndex, setDateFilterIndex] = useState(0);
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
+  const [activeExerciseOption, setActiveExerciseOption] =
+    useState<UserOwnedOption | null>(null);
   const deviceWidth = useDeviceWidth();
 
   const options = useUserOwnedOptions();
   const pools = useAllUserOwnedPools();
   const tokenPrices = usePrices();
+  const onExercise = useExerciseOption(() => setPositionModalOpen(true));
 
   const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
   const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
@@ -803,6 +816,11 @@ const Positions: React.FC = () => {
 
   const handleFilterExpiredOptions = () => {
     setOptionFilterIndex(1);
+  };
+
+  const handleExercise = (option: UserOwnedOption) => {
+    setActiveExerciseOption(option);
+    onExercise(option);
   };
 
   const OptionsSwitch = () => (
@@ -974,40 +992,95 @@ const Positions: React.FC = () => {
   const plPercents = [40, 30, 20, 10, 0, -10, -20];
   const boundIndex = plPercents.findIndex((val) => val === 0);
 
-  const optionAssets = [
-    {
-      category: 'LINK Call',
-      value: 73,
-    },
-    {
-      category: 'LINK Put',
-      value: 27,
-    },
-  ];
+  const totalOptionAllocation = useMemo(() => {
+    return options.reduce((total, userOwned) => {
+      return (
+        total +
+        Number(
+          formatUnits(userOwned.size, userOwned.option.underlying.decimals),
+        ) *
+          tokenPrices[userOwned.option.underlying.symbol]
+      );
+    }, 0);
+  }, [options, tokenPrices]);
 
-  const yieldAssets = [
-    {
-      category: 'LINK',
-      value: 43,
-    },
-    {
-      category: 'ETH',
-      value: 27,
-    },
-    {
-      category: 'DAI',
-      value: 30,
-    },
-  ];
+  const optionAllocationPerAsset = useMemo(() => {
+    return options.reduce((allocations: any, userOwned) => {
+      const category = `${userOwned.option.underlying.symbol} ${userOwned.option.optionType}`;
+      let allocation = allocations.find(
+        (allocation: any) => allocation.category === category,
+      );
+
+      if (!allocation) {
+        allocation = { category, value: 0, total: 0 };
+        allocations.push(allocation);
+      }
+
+      allocation.total += Number(
+        formatUnits(userOwned.size, userOwned.option.underlying.decimals),
+      );
+      allocation.value =
+        ((allocation.total * tokenPrices[userOwned.option.underlying.symbol]) /
+          totalOptionAllocation) *
+        100;
+
+      return allocations;
+    }, []);
+  }, [options, tokenPrices, totalOptionAllocation]);
+
+  const totalYieldAllocation = useMemo(() => {
+    return pools.reduce((total, userOwned) => {
+      const tokenSymbol =
+        userOwned.optionType === OptionType.Call
+          ? userOwned.underlying.symbol
+          : userOwned.base.symbol;
+      return (
+        total +
+        Number(formatUnits(userOwned.size, userOwned.underlying.decimals)) *
+          tokenPrices[tokenSymbol]
+      );
+    }, 0);
+  }, [pools, tokenPrices]);
+
+  const yieldAllocationPerAsset = useMemo(() => {
+    return pools.reduce((allocations: any, userOwned) => {
+      const tokenSymbol =
+        userOwned.optionType === OptionType.Call
+          ? userOwned.underlying.symbol
+          : userOwned.base.symbol;
+      const category = tokenSymbol;
+      let allocation = allocations.find(
+        (allocation: any) => allocation.category === category,
+      );
+
+      if (!allocation) {
+        allocation = { category, value: 0, total: 0 };
+        allocations.push(allocation);
+      }
+
+      allocation.total += Number(
+        formatUnits(userOwned.size, userOwned.underlying.decimals),
+      );
+      allocation.value =
+        ((allocation.total * tokenPrices[tokenSymbol]) / totalYieldAllocation) *
+        100;
+
+      return allocations;
+    }, []);
+  }, [pools, tokenPrices, totalYieldAllocation]);
 
   return (
     <>
-      <PositionModal
-        open={positionModalOpen}
-        onClose={() => {
-          setPositionModalOpen(false);
-        }}
-      />
+      {activeExerciseOption && (
+        <PositionCloseModal
+          open={positionModalOpen}
+          option={activeExerciseOption}
+          onClose={() => {
+            setActiveExerciseOption(null);
+            setPositionModalOpen(false);
+          }}
+        />
+      )}
       <Typography
         component='h1'
         color='textPrimary'
@@ -1216,7 +1289,9 @@ const Positions: React.FC = () => {
                   >
                     <DonutChart
                       data={
-                        positionFilterIndex === 0 ? optionAssets : yieldAssets
+                        positionFilterIndex === 0
+                          ? optionAllocationPerAsset
+                          : yieldAllocationPerAsset
                       }
                       colors={['#4D9EF2', '#EB4A97']}
                       endColors={['#2DDEA0', '#A745DD']}
@@ -1234,49 +1309,37 @@ const Positions: React.FC = () => {
       )}
       {noPositions ? (
         <Box className={classes.noPositionsContainer}>
-          <Typography
-            component='h1'
-            color='textPrimary'
-            align='center'
-            className={classes.title}
-          >
-            You have no{' '}
-            {options.length < 1 && pools.length < 1
-              ? 'active'
-              : options.length < 1
-              ? 'options'
-              : 'yield'}{' '}
-            positions
-          </Typography>
           <Box mt={mobileWindowSize ? 3 : 5}>
-            <Container fixed className={classes.noPositionBox}>
-              {positionFilterIndex === 0 && (
-                <>
-                  <Box className={classes.noPositionImage}>
-                    <img src={NoPositionOptions} alt='No Options' />
-                  </Box>
-                  <Box className={classes.noPositionBtnContainer}>
-                    <Typography component='h2'>Your options</Typography>
-                    <Link to='/options'>
-                      <Button color='primary'>Buy options</Button>
-                    </Link>
-                  </Box>
-                </>
-              )}
-              {positionFilterIndex === 1 && (
-                <>
-                  <Box className={classes.noPositionImage}>
-                    <img src={NoPositionYield} alt='No Yield' />
-                  </Box>
-                  <Box className={classes.noPositionBtnContainer}>
-                    <Typography component='h2'>Your yield</Typography>
-                    <Link to='/vaults?tab=pro'>
-                      <Button color='primary'>Earn yield</Button>
-                    </Link>
-                  </Box>
-                </>
-              )}
-            </Container>
+            {positionFilterIndex === 0 && (
+              <Box textAlign='center'>
+                <Box className={classes.noPositionImage}>
+                  <img src={NoPositionOptions} alt='No Options' />
+                </Box>
+                <Box className={classes.noPositionBtnContainer}>
+                  <Typography component='h2'>
+                    No active options positions
+                  </Typography>
+                  <Link to='/options'>
+                    <Button color='primary'>Buy options</Button>
+                  </Link>
+                </Box>
+              </Box>
+            )}
+            {positionFilterIndex === 1 && (
+              <Box textAlign='center'>
+                <Box className={classes.noPositionImage}>
+                  <img src={NoPositionYield} alt='No Yield' />
+                </Box>
+                <Box className={classes.noPositionBtnContainer}>
+                  <Typography component='h2'>
+                    No active yield positions
+                  </Typography>
+                  <Link to='/vaults?tab=pro'>
+                    <Button color='primary'>Earn yield</Button>
+                  </Link>
+                </Box>
+              </Box>
+            )}
           </Box>
           {/* Hide until Position Guide completed <Grid
             container
@@ -1464,7 +1527,9 @@ const Positions: React.FC = () => {
                                 <Button
                                   fullWidth
                                   color='primary'
-                                  onClick={() => setPositionModalOpen(true)}
+                                  onClick={() =>
+                                    handleExercise(userOwnedOption)
+                                  }
                                 >
                                   Exercise
                                 </Button>
@@ -1559,7 +1624,7 @@ const Positions: React.FC = () => {
                             ) : (
                               <Button
                                 color='primary'
-                                onClick={() => setPositionModalOpen(true)}
+                                onClick={() => handleExercise(userOwnedOption)}
                               >
                                 Exercise
                               </Button>
@@ -1619,7 +1684,7 @@ const Positions: React.FC = () => {
                                 <Box>
                                   <TokenIcon height={20} width={20} />
                                 </Box>
-                                {pool.underlying.symbol}
+                                {tokenSymbol}
                               </Box>
                               <Box display='flex' alignItems='center'>
                                 {pool.underlying.symbol}{' '}
@@ -1723,7 +1788,7 @@ const Positions: React.FC = () => {
                               <Box>
                                 <TokenIcon height={20} width={20} />
                               </Box>
-                              {pool.underlying.symbol}
+                              {tokenSymbol}
                             </Box>
                           </TableCell>
                           <TableCell>

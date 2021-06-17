@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -15,6 +15,9 @@ import cx from 'classnames';
 
 import { useWeb3, useDisconnect } from 'state/application/hooks';
 import { useDarkModeManager } from 'state/user/hooks';
+import { useSwapSettings } from 'state/swap/hooks';
+import { useGasToken } from 'hooks';
+import { PremiaETHToken, PremiaBSCToken } from 'web3/tokens';
 import moment from 'moment';
 import { shortenAddress } from 'utils';
 import {
@@ -255,17 +258,20 @@ interface AccountButtonsProps {
 }
 
 const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
-  const { account, wallet, onboard } = useWeb3();
+  const { account, wallet, onboard, chainId } = useWeb3();
   const [betaSoftwareModalOpen, setBetaSoftwareModalOpen] = useState(false);
   const [confirmTermsModalOpen, setConfirmTermsModalOpen] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
   const disconnect = useDisconnect();
   const history = useHistory();
+  const location = useLocation();
+  const gasToken = useGasToken();
   const theme = useTheme();
   const { palette } = theme;
   const [darkMode] = useDarkModeManager();
   const classes = useStyles({ darkMode, mobile });
   const [countDownStr, setCountDownStr] = useState('');
+  const { setSwapSettings } = useSwapSettings();
   const doNotShowDisclaimerAgain = localStorage.getItem(
     'doNotShowDisclaimerAgain',
   );
@@ -283,6 +289,25 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
   setInterval(() => {
     getCountDownStr();
   }, 20 * 60 * 1000);
+
+  const getPremia = useMemo(() => {
+    if (!chainId) return () => {};
+
+    if (chainId === 1 || chainId === 56) {
+      return () => {
+        setSwapSettings({
+          fromToken: gasToken,
+          toToken: chainId === 56 ? PremiaBSCToken : PremiaETHToken,
+        });
+        history.push(`${location.pathname}?getPremia=true`);
+      };
+    }
+    return () =>
+      window.open(
+        'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
+        '_blank',
+      );
+  }, [chainId, gasToken, history, location.pathname, setSwapSettings]);
 
   return (
     <Grid container alignItems='center' justify='flex-end'>
@@ -367,12 +392,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
               <Button
                 color='primary'
                 className={classes.button}
-                onClick={() =>
-                  window.open(
-                    'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
-                    '_blank',
-                  )
-                }
+                onClick={getPremia}
               >
                 <span>Get</span>
                 <LogoIcon fill={theme.palette.common.white} />
@@ -465,12 +485,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
                 <Button
                   color='primary'
                   className={cx(classes.button, mobile && classes.fullWidth)}
-                  onClick={() =>
-                    window.open(
-                      'https://app.sushi.com/swap?outputCurrency=0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70',
-                      '_blank',
-                    )
-                  }
+                  onClick={getPremia}
                 >
                   Get
                   <LogoIcon fill={theme.palette.common.white} />

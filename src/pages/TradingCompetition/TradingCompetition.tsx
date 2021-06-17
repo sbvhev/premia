@@ -9,6 +9,12 @@ import {
   Button,
   useMediaQuery,
 } from '@material-ui/core';
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from "react-share";
 import { useDarkModeManager } from 'state/user/hooks';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
@@ -172,6 +178,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       fontWeight: 500,
       lineHeight: '24px',
       color: palette.text.primary,
+    },
+    '& button, & a': {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 0,
     },
     '& > div': {
       marginTop: 6,
@@ -339,19 +353,29 @@ const TradingCompetition: React.FC = () => {
             <Typography>Share on:</Typography>
             <Box>
               <Container fixed>
-                <TwitterIcon />
+                <TwitterShareButton url='https://premia.finance'>
+                  <TwitterIcon />
+                </TwitterShareButton>
               </Container>
               <Container fixed>
-                <TelegramIcon />
+                <TelegramShareButton url='https://premia.finance'>
+                  <TelegramIcon />
+                </TelegramShareButton>
               </Container>
               <Container fixed>
-                <FacebookIcon />
+                <FacebookShareButton url='https://premia.finance'>
+                  <FacebookIcon />
+                </FacebookShareButton>
               </Container>
               <Container fixed>
-                <DiscordIcon />
+                <a href='https://discord.com/invite/6MhRmzmdHN' target='_blank' rel="noreferrer">
+                  <DiscordIcon />
+                </a>
               </Container>
               <Container fixed>
-                <SocialIcon1 />
+                <RedditShareButton url='https://premia.finance'>
+                  <SocialIcon1 />
+                </RedditShareButton>
               </Container>
             </Box>
           </Box>
