@@ -62,8 +62,15 @@ let chainIdOverride: null | number = null;
 export const setChainIdOverride = (id: number) => {
   chainIdOverride = id;
 };
-export const getChainId = async (provider: any): Promise<any> =>
-  chainIdOverride || send(provider, 'eth_chainId');
+export const getChainId = async (provider: any): Promise<any> => {
+  // Parsing this hex string to avoid error:
+  // "Provided chainId \"0x4\" must match the active chainId \"4\""
+  // actual: "0x4"
+  // expected: 4
+  const chainId = chainIdOverride || (await send(provider, 'eth_chainId'));
+  if (typeof chainId === 'string' && chainId.length > 1) return Number(chainId);
+  return chainId;
+};
 
 export const call = (provider: any, to: string, data: string) =>
   send(provider, 'eth_call', [
