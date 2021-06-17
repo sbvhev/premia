@@ -14,6 +14,7 @@ import {
   WETH,
   WBNB,
   DAI,
+  WMATIC,
 } from '../../constants';
 // import UniswapV2FactoryAbi from 'constants/abi/UniswapV2Factory.json';
 // import UniswapV2PairAbi from 'constants/abi/UniswapV2Pair.json';
@@ -97,10 +98,18 @@ export default function Updater(): null {
     AppState['options']
   >((state) => state.options);
 
-  const comparisonToken: Token = useMemo(
-    () => (chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any)),
-    [chainId],
-  );
+  const comparisonToken: Token = useMemo(() => {
+    switch (chainId) {
+      case 56:
+        return WBNB;
+
+      case 137:
+        return WMATIC;
+
+      default:
+        return WETH[chainId ?? ChainId.MAINNET] as any;
+    }
+  }, [chainId]);
   const baseToken: Token = DAI[chainId || ChainId.MAINNET];
 
   const [state, setState] = useState<{
@@ -205,10 +214,9 @@ export default function Updater(): null {
     const onboard = Onboard({
       subscriptions: {
         address: (account: string) => dispatch(setWeb3Settings({ account })),
-        network: (chainId: ChainId | 56) => {
-          const underlying: Token =
-            chainId === 56 ? WBNB : (WETH[chainId ?? ChainId.MAINNET] as any);
-          const base: Token = DAI[chainId || ChainId.MAINNET];
+        network: (chainId: ChainId | 56 | 137) => {
+          const underlying: Token = WETH[chainId ?? ChainId.RINKEBY] as any;
+          const base: Token = DAI[chainId || ChainId.RINKEBY];
 
           dispatch(setWeb3Settings({ chainId }));
           dispatch(updateBase(base));

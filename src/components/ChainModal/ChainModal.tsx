@@ -1,5 +1,13 @@
 import React from 'react';
-import { Typography, Modal, Box, Button, Grid, Fade, Backdrop } from '@material-ui/core';
+import {
+  Typography,
+  Modal,
+  Box,
+  Button,
+  Grid,
+  Fade,
+  Backdrop,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 import { chainIds, chainLabels, PARAMS } from 'utils';
@@ -110,14 +118,14 @@ const useStyles = makeStyles(({ palette }) => ({
     bottom: -2,
     fontSize: 14,
     fontWeight: 400,
-    color: palette.text.secondary
+    color: palette.text.secondary,
   },
   tradingButton: {
     width: '100%',
     height: 45,
     margin: 0,
     fontSize: 16,
-    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)'
+    boxShadow: '0px 0px 25px rgba(43, 229, 154, 0.25)',
   },
   selected: {},
 }));
@@ -131,7 +139,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
   const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
   let testnetLabel = '';
-  switch(chainId) {
+  switch (chainId) {
     case 3:
       testnetLabel = 'Ropsten Testnet';
       break;
@@ -143,7 +151,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
       break;
     case 5:
       testnetLabel = 'Goerli Testnet';
-      break;    
+      break;
   }
 
   return (
@@ -153,7 +161,7 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -164,8 +172,8 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 Select network
               </Typography>
               <Grid container direction='row'>
-                { chainIds.map((val, ind) => (
-                  <Grid item key={ind} xs={6} sm={3} className={classes.chain}>
+                {chainIds.map((val, ind) => (
+                  <Grid item key={ind} xs={6} sm={4} className={classes.chain}>
                     <Box
                       component='div'
                       className={cx({
@@ -179,17 +187,20 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                         ]);
                       }}
                     >
-                      { ind === 0 && <EthIcon /> }
-                      { ind === 1 && <BSCIcon /> }
-                      { ind === 2 && <PolygonIcon /> }
-                      { ind === 3 && <FantomIcon /> }
-                      { chainLabels[ind] }
-                      {(chainId === val || (ind === 0 && testnetLabel !== '')) && (
+                      {ind === 0 && <EthIcon />}
+                      {ind === 1 && <BSCIcon />}
+                      {ind === 2 && <PolygonIcon />}
+                      {ind === 3 && <FantomIcon />}
+                      {chainLabels[ind]}
+                      {(chainId === val ||
+                        (ind === 0 && testnetLabel !== '')) && (
                         <Box component='div' className={classes.selected}>
                           Current
                         </Box>
                       )}
-                      {testnetLabel !== '' && ind === 0 && <p className={classes.testnet}>{ testnetLabel }</p>}
+                      {testnetLabel !== '' && ind === 0 && (
+                        <p className={classes.testnet}>{testnetLabel}</p>
+                      )}
                     </Box>
                   </Grid>
                 ))}

@@ -30,11 +30,13 @@ export default function Updater(): null {
       fetch('https://gasstation-mainnet.matic.network', { method: 'GET' })
         .then((res) => res.json())
         .then((json) => {
+          console.log('json', json);
+
           const gasNowData: GasNowData = {
-            slow: Math.floor(json.safeLow),
-            standard: Math.floor(json.standard),
-            fast: Math.floor(json.fast),
-            rapid: Math.floor(json.fastest),
+            slow: json.safeLow,
+            standard: json.safeLow,
+            fast: json.standard,
+            rapid: json.fast,
             timestamp: json.blockTime,
           };
 
@@ -46,10 +48,10 @@ export default function Updater(): null {
         .then((res) => res.json())
         .then((json) => {
           const gasNowData: GasNowData = {
-            slow: Math.floor(json.low),
-            standard: Math.floor(json.standard),
-            fast: Math.floor(json.fast),
-            rapid: Math.floor(json.instant),
+            slow: json.low,
+            standard: json.standard,
+            fast: json.fast,
+            rapid: json.instant,
             timestamp: new Date(json.timestamp).getTime(),
           };
 
