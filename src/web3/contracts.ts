@@ -185,7 +185,9 @@ export async function getSignerAndContracts(
       premiaStakingAddress,
       signer.connectUnchecked(),
     );
+  }
 
+  if (chainId === 4) {
     const tradingCompetitionMerkleAddress = getContractAddress(
       chainId,
       ContractType.TradingCompetitionMerkle,
