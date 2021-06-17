@@ -40,6 +40,7 @@ import {
   BuyConfirmationModal,
   LineChart,
   ContainedButton,
+  PositionOpenModal,
 } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/HelpIcon.svg';
 import { ReactComponent as PriceTriangle } from 'assets/svg/PriceTriangle.svg';
@@ -182,13 +183,14 @@ const Options: React.FC = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const [popoverType, setPopoverType] = useState('');
+  const [positionModalOpen, setPositionModalOpen] = useState(false);
+  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
   const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
     useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const darkMode = useIsDarkMode();
-  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
 
   const { base } = useBase();
   const { underlying } = useUnderlying();
@@ -254,6 +256,13 @@ const Options: React.FC = () => {
         <BuyConfirmationModal
           open={buyConfirmationModalOpen}
           onClose={() => setBuyConfirmationModalOpen(false)}
+          onCompletePurchase={() => setPositionModalOpen(true)}
+        />
+      )}
+      {positionModalOpen && (
+        <PositionOpenModal
+          open={positionModalOpen}
+          onClose={() => setPositionModalOpen(false)}
         />
       )}
       {slippageModalOpen && (
@@ -364,8 +373,7 @@ const Options: React.FC = () => {
             }}
           >
             <p>
-              The expected slippage percent you stand to incur due to the size
-              of this trade.
+              The maximum price slippage you are willing to incur on a trade.
             </p>
           </Box>
         )}
