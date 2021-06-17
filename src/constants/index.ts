@@ -46,7 +46,7 @@ export const BUSD: Token = {
   name: 'Binance USD',
 };
 
-export const DAI: { [chainId in ChainId | 56]: Token } = {
+export const DAI: { [chainId in ChainId | 56 | 137 | 250]: Token } = {
   [ChainId.MAINNET]: {
     id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -83,9 +83,23 @@ export const DAI: { [chainId in ChainId | 56]: Token } = {
     name: 'Dai Stablecoin',
   },
   56: BUSD,
+  137: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
+  250: {
+    id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
 };
 
-export const WETH: { [chainId in ChainId | 56]: Token } = {
+export const WETH: { [chainId in ChainId | 56 | 137 | 250]: Token } = {
   [ChainId.MAINNET]: {
     id: _WETH[ChainId.MAINNET].address,
     address: _WETH[ChainId.MAINNET].address,
@@ -122,6 +136,20 @@ export const WETH: { [chainId in ChainId | 56]: Token } = {
     name: 'Wrapped Ether',
   },
   56: WBNB,
+  137: {
+    id: _WETH[ChainId.KOVAN].address,
+    address: _WETH[ChainId.KOVAN].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
+  250: {
+    id: _WETH[ChainId.KOVAN].address,
+    address: _WETH[ChainId.KOVAN].address,
+    decimals: 18,
+    symbol: 'WETH',
+    name: 'Wrapped Ether',
+  },
 };
 
 export const defaultSwapPath = (
