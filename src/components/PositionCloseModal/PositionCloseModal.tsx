@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Typography,
   Modal,
@@ -6,31 +6,37 @@ import {
   Paper,
   Fade,
   Backdrop,
-  Container
+  Container,
 } from '@material-ui/core';
 import cx from 'classnames';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
-
-import { ArrowUpward as ArrowUpwardIcon } from '@material-ui/icons';
-import { ModalContainer } from 'components';
-
+import {
+  ArrowUpward as ArrowUpwardIcon,
+  ArrowDownward as ArrowDownwardIcon,
+} from '@material-ui/icons';
 import {
   FacebookShareButton,
   RedditShareButton,
   TelegramShareButton,
   TwitterShareButton,
 } from 'react-share';
+
+import { OptionType, UserOwnedOption } from 'web3/options';
+import { getTokenIcon } from 'utils/getTokenIcon';
+
+import { ModalContainer } from 'components';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
 import SecondSuccessRadial from 'assets/svg/SuccessIconSecondOuterRadial.svg';
 import SuccessIcon from 'assets/svg/SuccessIconCore.svg';
 import { ReactComponent as DaiIcon } from 'assets/svg/Dai.svg';
-import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
+import formatNumber from 'utils/formatNumber';
+import { useIsDarkMode } from 'state/user/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
@@ -314,11 +320,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginRight: 8,
     },
   },
+
   callBox: {
     background: 'rgba(82, 148, 255, 0.1)',
     borderRadius: 8,
     padding: '9px 11px',
-    color: '#5294FF',
+    color: palette.success.main,
     position: 'relative',
     top: -5,
 
@@ -327,14 +334,40 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 14,
 
       '& path': {
-        fill: '#5294FF',
+        fill: palette.success.main,
       },
     },
 
     '& p': {
       fontSize: 14,
       lineHeight: '18px',
-      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      '-webkit-background-clip': 'text',
+      '-webkit-text-fill-color': 'transparent',
+    },
+  },
+  putBox: {
+    background: ({ darkMode }: any) =>
+      `rgba(251, 237, 246, ${darkMode ? '0.1' : '0.5'})`,
+    borderRadius: 8,
+    padding: '9px 11px',
+    color: palette.error.main,
+    position: 'relative',
+    top: -5,
+
+    '& svg': {
+      width: 16,
+      height: 14,
+
+      '& path': {
+        fill: palette.error.main,
+      },
+    },
+
+    '& p': {
+      fontSize: 14,
+      lineHeight: '18px',
+      background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
       '-webkit-background-clip': 'text',
       '-webkit-text-fill-color': 'transparent',
     },
@@ -391,18 +424,26 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
 export interface PositionCloseModalProps {
   open: boolean;
+  option: UserOwnedOption;
   onClose: () => void;
 }
 
 const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
   open,
+  option,
   onClose,
 }) => {
-  const classes = useStyles();
+  const darkMode = useIsDarkMode();
+  const classes = useStyles({ darkMode });
   const theme = useTheme();
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const txStateMsg = 'Tell your friends about your Premia trading experience';
   const { palette } = theme;
+  const isCall = option.option.optionType === OptionType.Call;
+  const TokenIcon = useMemo(
+    () => getTokenIcon(option.option.underlying.symbol),
+    [option],
+  );
 
   return (
     <Modal
@@ -475,8 +516,10 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
                           Asset
                         </Typography>
                         <Box className={classes.boxLine}>
-                          <UniswapIcon />
-                          <Typography>Uni</Typography>
+                          <TokenIcon />
+                          <Typography>
+                            {option.option.underlying.symbol}
+                          </Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
@@ -486,9 +529,14 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
                         >
                           Type
                         </Typography>
-                        <Box className={cx(classes.boxLine, classes.callBox)}>
-                          <ArrowUpwardIcon />
-                          <Typography>Call</Typography>
+                        <Box
+                          className={cx(
+                            classes.boxLine,
+                            isCall ? classes.callBox : classes.putBox,
+                          )}
+                        >
+                          {isCall ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                          <Typography>{isCall ? 'Call' : 'Put'}</Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
@@ -500,7 +548,9 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
                         </Typography>
                         <Box className={classes.boxLine}>
                           <DaiIcon />
-                          <Typography>15,002</Typography>
+                          <Typography>
+                            {formatNumber(option.totalSpent)}
+                          </Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>

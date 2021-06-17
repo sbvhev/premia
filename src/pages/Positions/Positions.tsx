@@ -21,14 +21,15 @@ import cx from 'classnames';
 import { useDarkModeManager } from 'state/user/hooks';
 import { usePrices } from 'state/application/hooks';
 import { formatBigNumber, formatNumber } from 'utils/formatNumber';
+import { getTokenIcon } from 'utils/getTokenIcon';
 import { UserOwnedPool } from 'web3/pools';
 import { OptionType, UserOwnedOption } from 'web3/options';
 import {
+  useExerciseOption,
   useAllUserOwnedPools,
   useUserOwnedOptions,
   useDeviceWidth,
 } from 'hooks';
-import { getTokenIcon } from 'utils/getTokenIcon';
 
 import {
   DataTable,
@@ -152,19 +153,19 @@ const getOptionsHeadCells = () => [
     numeric: true,
     buttonCell: true,
     label: '',
-    element: <SellAllButton />,
+    // element: <SellAllButton />,   Disabled for now
     sortDisabled: true,
     sortKey: () => 1,
   },
 ];
 
-const SellAllButton: React.FC = () => {
-  return (
-    <Button variant='outlined' size='large'>
-      Exercise all
-    </Button>
-  );
-};
+// const SellAllButton: React.FC = () => {
+//   return (
+//     <Button variant='outlined' size='large'>
+//       Exercise all
+//     </Button>
+//   );
+// };
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   title: {
@@ -759,11 +760,14 @@ const Positions: React.FC = () => {
   const [dateFilterIndex, setDateFilterIndex] = useState(0);
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
+  const [activeExerciseOption, setActiveExerciseOption] =
+    useState<UserOwnedOption | null>(null);
   const deviceWidth = useDeviceWidth();
 
   const options = useUserOwnedOptions();
   const pools = useAllUserOwnedPools();
   const tokenPrices = usePrices();
+  const onExercise = useExerciseOption(() => setPositionModalOpen(true));
 
   const yieldHeadCells = useMemo(() => getYieldHeadCells(), []);
   const optionsHeadCells = useMemo(() => getOptionsHeadCells(), []);
@@ -812,6 +816,11 @@ const Positions: React.FC = () => {
 
   const handleFilterExpiredOptions = () => {
     setOptionFilterIndex(1);
+  };
+
+  const handleExercise = (option: UserOwnedOption) => {
+    setActiveExerciseOption(option);
+    onExercise(option);
   };
 
   const OptionsSwitch = () => (
@@ -1062,12 +1071,16 @@ const Positions: React.FC = () => {
 
   return (
     <>
-      <PositionCloseModal
-        open={positionModalOpen}
-        onClose={() => {
-          setPositionModalOpen(false);
-        }}
-      />
+      {activeExerciseOption && (
+        <PositionCloseModal
+          open={positionModalOpen}
+          option={activeExerciseOption}
+          onClose={() => {
+            setActiveExerciseOption(null);
+            setPositionModalOpen(false);
+          }}
+        />
+      )}
       <Typography
         component='h1'
         color='textPrimary'
@@ -1514,7 +1527,9 @@ const Positions: React.FC = () => {
                                 <Button
                                   fullWidth
                                   color='primary'
-                                  onClick={() => setPositionModalOpen(true)}
+                                  onClick={() =>
+                                    handleExercise(userOwnedOption)
+                                  }
                                 >
                                   Exercise
                                 </Button>
@@ -1609,7 +1624,7 @@ const Positions: React.FC = () => {
                             ) : (
                               <Button
                                 color='primary'
-                                onClick={() => setPositionModalOpen(true)}
+                                onClick={() => handleExercise(userOwnedOption)}
                               >
                                 Exercise
                               </Button>

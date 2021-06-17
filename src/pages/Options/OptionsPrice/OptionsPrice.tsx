@@ -201,15 +201,15 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'absolute',
     marginLeft: 26,
     '& img': {
-      marginRight: -26
+      marginRight: -26,
     },
     [breakpoints.down('md')]: {
       marginLeft: 0,
       marginTop: 26,
       '& img': {
         marginRight: 0,
-        marginBottom: -26
-      }
+        marginBottom: -26,
+      },
     },
   },
   currentPriceLine: {
@@ -272,18 +272,32 @@ const OptionsPrice: React.FC = () => {
   const barSize = mobile
     ? barRef.current?.clientWidth
     : barRef.current?.clientHeight;
-  const topPrice = isCall ? pricePerUnitInUsd + breakEvenPrice : Number(strikePrice) + pricePerUnitInUsd;
-  const bottomPrice = isCall ? Number(strikePrice) - pricePerUnitInUsd : breakEvenPrice - pricePerUnitInUsd;
-  const plFirstPrice = Math.max(bottomPrice, Math.min((currentPrice || 0) * 1.2, topPrice));
-  let pLBoxPos = (topPrice > bottomPrice ? (topPrice - plFirstPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 58 : 22);
-  let currentPricePos = (topPrice > bottomPrice ? (topPrice - currentPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 83 : 46);
+  const topPrice = isCall
+    ? pricePerUnitInUsd + breakEvenPrice
+    : Number(strikePrice) + pricePerUnitInUsd;
+  const bottomPrice = isCall
+    ? Number(strikePrice) - pricePerUnitInUsd
+    : breakEvenPrice - pricePerUnitInUsd;
+  const plFirstPrice = Math.max(
+    bottomPrice,
+    Math.min((currentPrice || 0) * 1.2, topPrice),
+  );
+  let pLBoxPos =
+    (topPrice > bottomPrice
+      ? ((topPrice - plFirstPrice) / (topPrice - bottomPrice)) * barSize
+      : 0) - (mobile ? 58 : 22);
+  let currentPricePos =
+    (topPrice > bottomPrice
+      ? ((topPrice - currentPrice) / (topPrice - bottomPrice)) * barSize
+      : 0) - (mobile ? 83 : 46);
   if (currentPrice > topPrice) {
     currentPricePos = mobile ? -83 : -46;
   } else if (currentPrice < bottomPrice) {
     currentPricePos = barSize - (mobile ? 83 : 46);
   }
 
-  const baroSize = topPrice > bottomPrice ? pricePerUnitInUsd / (topPrice - bottomPrice) : 0;
+  const baroSize =
+    topPrice > bottomPrice ? pricePerUnitInUsd / (topPrice - bottomPrice) : 0;
 
   useEffect(() => {
     if (mobile) {
@@ -291,15 +305,17 @@ const OptionsPrice: React.FC = () => {
     } else {
       possiblePLBox.current.state.y = 0;
     }
-  }, [mobile, strikePrice])
+  }, [mobile, strikePrice]);
 
   useEffect(() => {
     const setFirstPrice = () => {
       setPLPrice(Math.max(0, plFirstPrice));
-      setPotentialProfit(Math.max(
-        -1 * pricePerUnitInUsd * size,
-        (isCall ? 1 : -1) * (plFirstPrice - breakEvenPrice) * size,
-      ));
+      setPotentialProfit(
+        Math.max(
+          -1 * pricePerUnitInUsd * size,
+          (isCall ? 1 : -1) * (plFirstPrice - breakEvenPrice) * size,
+        ),
+      );
     };
     setFirstPrice();
   }, [breakEvenPrice, isCall, plFirstPrice, pricePerUnitInUsd, size]);
@@ -312,16 +328,19 @@ const OptionsPrice: React.FC = () => {
         ((mobile
           ? possiblePLBox.current.state.x
           : possiblePLBox.current.state.y) /
-          barSize) * (topPrice - bottomPrice);
+          barSize) *
+          (topPrice - bottomPrice);
     } else {
       plPrice1 = 0;
     }
 
     setPLPrice(Math.max(plPrice1, 0));
-    setPotentialProfit(Math.max(
-      -1 * pricePerUnitInUsd * size,
-      (isCall ? 1 : -1) * (plPrice1 - breakEvenPrice) * size,
-    ))
+    setPotentialProfit(
+      Math.max(
+        -1 * pricePerUnitInUsd * size,
+        (isCall ? 1 : -1) * (plPrice1 - breakEvenPrice) * size,
+      ),
+    );
   };
 
   return (
@@ -388,12 +407,8 @@ const OptionsPrice: React.FC = () => {
           borderRadius={12}
         >
           <Box
-            width={
-              mobile ? baroSize : 1
-            }
-            height={
-              mobile ? 1 : baroSize
-            }
+            width={mobile ? baroSize : 1}
+            height={mobile ? 1 : baroSize}
             className={cx(
               optionType === OptionType.Call
                 ? classes.chartCallTop
@@ -435,12 +450,8 @@ const OptionsPrice: React.FC = () => {
             </Box>
           </Box>
           <Box
-            width={
-              mobile ? baroSize : 1
-            }
-            height={
-              mobile ? 1 : baroSize
-            }
+            width={mobile ? baroSize : 1}
+            height={mobile ? 1 : baroSize}
             className={cx(
               optionType === OptionType.Call
                 ? classes.chartPutBottom
