@@ -274,14 +274,24 @@ const OptionsPrice: React.FC = () => {
   const topPrice = isCall ? pricePerUnit + breakEvenPrice : Number(strikePrice) + pricePerUnit;
   const bottomPrice = isCall ? Number(strikePrice) - pricePerUnit : breakEvenPrice - pricePerUnit;
   const plFirstPrice = (currentPrice || 0) * 1.2;
-  const pLBoxPos = (topPrice - plFirstPrice) / (topPrice - bottomPrice) * barSize - (mobile ? 58 : 22);
-  const currentPricePos = (topPrice - currentPrice) / (topPrice - bottomPrice) * barSize - (mobile ? 83 : 46);
+  let pLBoxPos = (topPrice > bottomPrice ? (topPrice - plFirstPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 58 : 22);
+  let currentPricePos = (topPrice > bottomPrice ? (topPrice - currentPrice) / (topPrice - bottomPrice) * barSize : 0) - (mobile ? 83 : 46);
+  if (plFirstPrice > topPrice) {
+    pLBoxPos = mobile ? -58 : -22;
+  } else if (plFirstPrice < bottomPrice) {
+    pLBoxPos = barSize - (mobile ? 58 : 22);
+  }
+  if (currentPrice > topPrice) {
+    currentPricePos = mobile ? -83 : -46;
+  } else if (currentPrice < bottomPrice) {
+    currentPricePos = barSize - (mobile ? 83 : 46);
+  }
   const potentialProfit = Math.max(
     0,
     (plPrice - strikePrice - pricePerUnit) * size,
   );
 
-  const baroSize = pricePerUnit / (topPrice - bottomPrice);
+  const baroSize = topPrice > bottomPrice ? pricePerUnit / (topPrice - bottomPrice) : 0;
 
   useEffect(() => {
     const setFirstPrice = () => {
@@ -291,12 +301,17 @@ const OptionsPrice: React.FC = () => {
   }, [plFirstPrice]);
 
   const onDragPL = () => {
-    let plPrice1 =
-      plFirstPrice -
-      ((mobile
-        ? possiblePLBox.current.state.x
-        : possiblePLBox.current.state.y) /
-        barSize) * (topPrice - bottomPrice);
+    let plPrice1;
+    if (topPrice > bottomPrice) {
+      plPrice1 =
+        plFirstPrice -
+        ((mobile
+          ? possiblePLBox.current.state.x
+          : possiblePLBox.current.state.y) /
+          barSize) * (topPrice - bottomPrice);
+    } else {
+      plPrice1 = 0;
+    }
 
     setPLPrice(plPrice1);
   };
