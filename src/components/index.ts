@@ -35,4 +35,5 @@ export { default as TransactionFailedModal } from './TransactionFailedModal';
 export { default as TransactionLoadingModal } from './TransactionLoadingModal';
 export { default as TransactionSuccessModal } from './TransactionSuccessModal';
 export { default as ChainModal } from './ChainModal';
-export { default as PositionModal } from './PositionModal';
+export { default as PositionOpenModal } from './PositionOpenModal';
+export { default as PositionCloseModal } from './PositionCloseModal';

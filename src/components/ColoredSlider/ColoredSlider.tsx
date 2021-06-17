@@ -13,7 +13,6 @@ const ColoredSlider = withStyles((theme: Theme) => ({
   mark: {
     height: 8,
     backgroundColor: '#B4C2D5',
-    transform: 'translateX(8px)',
   },
 
   thumb: {
