@@ -33,7 +33,7 @@ import {
   DataTable,
   LineChart,
   DonutChart,
-  PositionModal,
+  PositionCloseModal,
   SwitchWithGlider,
 } from 'components';
 import { ReactComponent as OptionsIcon } from 'assets/svg/OptionsIcon.svg';
@@ -1002,7 +1002,7 @@ const Positions: React.FC = () => {
 
   return (
     <>
-      <PositionModal
+      <PositionCloseModal
         open={positionModalOpen}
         onClose={() => {
           setPositionModalOpen(false);
