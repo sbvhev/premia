@@ -14,7 +14,7 @@ import { OptionType } from 'web3/options';
 import { calculateFloatGasMargin } from 'utils';
 import { floatToBigNumber } from 'utils/floatToBigNumber';
 
-export function usePurchaseOption() {
+export function usePurchaseOption(onComplete: () => void = () => {}) {
   const { account } = useWeb3();
   const { optionPoolContract } = usePools();
   const { size } = useSize();
@@ -61,31 +61,39 @@ export function usePurchaseOption() {
       },
     );
 
-    return transact(
-      optionPoolContract.purchase(
+    try {
+      const tx = await transact(
+        optionPoolContract.purchase(
+          {
+            maturity,
+            strike64x64,
+            amount: optionSize,
+            maxCost,
+            isCall: optionType === OptionType.Call,
+          },
+          {
+            gasLimit: calculateFloatGasMargin(Number(gasEstimate)),
+            ...(additionalEthNecessary
+              ? {
+                  value: floatToBigNumber(
+                    additionalEthNecessary + 0.00005,
+                    activeToken.decimals,
+                  ),
+                }
+              : {}),
+          },
+        ),
         {
-          maturity,
-          strike64x64,
-          amount: optionSize,
-          maxCost,
-          isCall: optionType === OptionType.Call,
+          description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
         },
-        {
-          gasLimit: calculateFloatGasMargin(Number(gasEstimate)),
-          ...(additionalEthNecessary
-            ? {
-                value: floatToBigNumber(
-                  additionalEthNecessary + 0.00005,
-                  activeToken.decimals,
-                ),
-              }
-            : {}),
-        },
-      ),
-      {
-        description: `Purchase ${size} ${underlying.symbol} ${optionType} options`,
-      },
-    );
+      );
+
+      await tx?.wait(1);
+
+      onComplete();
+    } catch (err: any) {
+      console.error('Could not complete purchase: ', err);
+    }
   }, [
     transact,
     optionPoolContract,
@@ -98,6 +106,7 @@ export function usePurchaseOption() {
     maxCost,
     activeToken,
     activeTokenBalance,
+    onComplete,
   ]);
 
   return onPurchaseOption;

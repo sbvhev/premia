@@ -166,7 +166,7 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
                     Max slippage percent
                   </Typography>
                   <Tooltip
-                    title='The expected slippage percent you stand to incur due to the size of this trade.'
+                    title='The maximum price slippage you are willing to incur on a trade.'
                     arrow
                   >
                     <InfoIcon
