@@ -6,7 +6,7 @@ import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
-import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/ETHIcon.svg';
 import { ReactComponent as CartIcon } from 'assets/svg/Cart.svg';
 import { StepProps } from './Stepper';
 import { useIsDarkMode } from 'state/user/hooks';
