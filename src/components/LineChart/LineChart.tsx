@@ -2,7 +2,9 @@ import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
+import _ from 'lodash';
 import { useIsDarkMode } from 'state/user/hooks';
+import formatNumber from 'utils/formatNumber';
 
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -29,6 +31,45 @@ const LineChart: React.FC<LineChartProps> = ({
 }) => {
   const dark = useIsDarkMode();
   const theme = useTheme();
+
+  const wCategories = _.uniq(
+    chartType === 'weekly'
+      ? categories.map(
+          (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
+        )
+      : categories,
+  );
+
+  const wrappedCategories =
+    chartType === 'weekly'
+      ? categories.map(
+          (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
+        )
+      : categories;
+
+  const prices: any = {};
+
+  wCategories.map((item) => {
+    prices[item] = [];
+
+    if (!prices[item].length) {
+      wrappedCategories.map((category, index) => {
+        if (category === item) {
+          prices[item].push(data[index]);
+        }
+
+        return null;
+      });
+    }
+
+    return prices[item];
+  });
+
+  Object.keys(prices).map((key) => {
+    prices[key] = _.sumBy(prices[key], (i) => Number(i)) / prices[key].length;
+
+    return null;
+  });
 
   let strokeColor = isCall ? '#14A887' : '#BF47C3';
   let gradientColor = isCall ? '#D4F8FB' : '#F8D0E7';
@@ -70,12 +111,7 @@ const LineChart: React.FC<LineChartProps> = ({
       },
     },
     xaxis: {
-      categories:
-        chartType === 'weekly'
-          ? categories.map(
-              (label) => weekdays[moment(label, 'YYYY/MM/DD').isoWeekday() - 1],
-            )
-          : categories,
+      categories: wCategories,
       axisBorder: {
         show: false,
       },
@@ -84,7 +120,7 @@ const LineChart: React.FC<LineChartProps> = ({
       },
       labels: {
         style: {
-          colors: new Array(categories.length).fill(
+          colors: new Array(wCategories.length).fill(
             dark ? '#646464' : '#CACED3',
           ),
         },
@@ -145,7 +181,7 @@ const LineChart: React.FC<LineChartProps> = ({
           `Price level: <b style="color: ${
             dark ? 'white' : 'rgba(0, 0, 0, 0.91)'
           };">` +
-          props.series[props.seriesIndex][props.dataPointIndex] +
+          formatNumber(props.series[props.seriesIndex][props.dataPointIndex]) +
           '</b></span>' +
           '</div>'
         );
@@ -156,7 +192,7 @@ const LineChart: React.FC<LineChartProps> = ({
   const series = [
     {
       name: 'Prices',
-      data,
+      data: Object.values(prices),
     },
   ];
 
