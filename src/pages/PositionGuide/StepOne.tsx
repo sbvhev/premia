@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography } from '@material-ui/core';
 import cn from 'classnames';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
+import { ReactComponent as WBTCIcon } from 'assets/svg/WBTCIcon.svg';
 import { ReactComponent as UniswapIcon } from 'assets/svg/Uniswap.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
