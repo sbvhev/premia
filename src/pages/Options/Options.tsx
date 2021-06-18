@@ -259,7 +259,7 @@ const Options: React.FC = () => {
     [allowance, totalCostInUsd],
   );
   const sufficientLiquidity = useMemo(
-    () => totalAvailableInActiveToken >= size,
+    () => totalAvailableInActiveToken >= Number(size),
     [totalAvailableInActiveToken, size],
   );
 

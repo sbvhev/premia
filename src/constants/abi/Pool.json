@@ -567,6 +567,11 @@
       {
         "components": [
           {
+            "internalType": "address",
+            "name": "holder",
+            "type": "address"
+          },
+          {
             "internalType": "uint256",
             "name": "longTokenId",
             "type": "uint256"
@@ -582,7 +587,7 @@
         "type": "tuple"
       }
     ],
-    "name": "exercise",
+    "name": "exerciseFrom",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

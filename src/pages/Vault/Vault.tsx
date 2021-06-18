@@ -329,7 +329,7 @@ const ProVault: React.FC = () => {
   const [withdrawPutOpen, setWithdrawPutOpen] = useState(false);
   const [depositPutOpen, setDepositPutOpen] = useState(false);
   const [vaultIndex, setVaultIndex] = useState(
-    new URLSearchParams(location.search).get('tab') === 'pro' ? 1 : 0,
+    new URLSearchParams(location.search).get('tab') === 'basic' ? 0 : 1,
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const mobileDevice = /Mobi|Android/i.test(navigator.userAgent);
