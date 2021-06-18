@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Typography,
   Modal,
@@ -194,10 +194,9 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   onClose,
   onCompletePurchase,
 }) => {
-  const [shouldTransact, setShouldTransact] = useState(
+  const [checkIsOn, setCheckIsOn] = useState(
     localStorage.getItem('BuyConfirmationModal_skip') === 'true',
   );
-  const [checkIsOn, setCheckIsOn] = useState(false);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -222,21 +221,16 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
     [activeToken],
   );
 
-  const handleChangeAgree = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleChangeAgree = () => {
     localStorage.setItem('BuyConfirmationModal_skip', 'true');
-    setShouldTransact(true);
   };
 
-  const onTransact = useCallback(
-    () => purchase().then(onClose),
-    [purchase, onClose],
-  );
-
-  useEffect(() => {
-    if (shouldTransact) {
-      onTransact();
+  const handleBuy = useCallback(() => {
+    if (checkIsOn) {
+      handleChangeAgree();
     }
-  }, [shouldTransact, onTransact]);
+    purchase().then(onClose);
+  }, [checkIsOn, purchase, onClose]);
 
   return (
     <Modal
@@ -422,10 +416,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                       </svg>
                     }
                   />
-                  <Typography
-                    className={classes.smallInfoText}
-                    onClick={handleChangeAgree}
-                  >
+                  <Typography className={classes.smallInfoText}>
                     Do not show confirmation again
                   </Typography>
                 </Box>
@@ -436,7 +427,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                   label={`Buy for ${formatCompact(totalCost)} ${
                     activeToken?.symbol
                   } ($${formatCompact(totalCostInUsd)})`}
-                  onClick={onTransact}
+                  onClick={handleBuy}
                 />
               </Box>
             </Box>

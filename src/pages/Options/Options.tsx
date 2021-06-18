@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -28,7 +28,7 @@ import {
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { getCLevelChartItems } from 'graphql/queries';
-import { useApproval, usePools } from 'hooks';
+import { useApproval, usePools, usePurchaseOption } from 'hooks';
 import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 import { CLevelChartItem } from 'web3/pools';
@@ -73,9 +73,10 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   priceInfoBox: {
     padding: '16px 0',
-    height: 340,
+    height: 348,
     display: 'flex',
     flexDirection: 'column',
+
     justifyContent: 'space-between',
     '& h2': {
       fontSize: 18,
@@ -128,13 +129,10 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'space-between',
   },
   depositButton: {
-    '& button': {
-      margin: 0,
-      '& span': {
-        fontSize: 16,
-        fontWeight: 700,
-      },
-    },
+    height: '104px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
   popover: {
     '& p': {
@@ -186,12 +184,14 @@ const Options: React.FC = () => {
   const [popoverType, setPopoverType] = useState('');
   const [positionModalOpen, setPositionModalOpen] = useState(false);
   const [slippageModalOpen, setSlippageModalOpen] = useState(false);
+  const [showBuyConfirmation, setShowBuyConfirmation] = React.useState(true);
   const [buyConfirmationModalOpen, setBuyConfirmationModalOpen] =
     useState(false);
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const darkMode = useIsDarkMode();
+  const purchase = usePurchaseOption(() => setPositionModalOpen(true));
 
   const { base } = useBase();
   const { underlying } = useUnderlying();
@@ -217,6 +217,15 @@ const Options: React.FC = () => {
     },
   );
 
+  React.useEffect(() => {
+    const doesNotWantConfirmation = localStorage.getItem(
+      'BuyConfirmationModal_skip',
+    );
+    if (doesNotWantConfirmation) {
+      setShowBuyConfirmation(false);
+    }
+  }, []);
+
   const priceChanges = usePriceChanges();
   const underlyingPrice = useUnderlyingPrice();
   const breakEvenPrice = useBreakEvenPrice();
@@ -225,10 +234,12 @@ const Options: React.FC = () => {
     optionPoolContract?.address || account,
   );
 
-  const handleBuyOption = useCallback(
-    () => setBuyConfirmationModalOpen(true),
-    [setBuyConfirmationModalOpen],
-  );
+  const handleBuyOption = useMemo(() => {
+    return showBuyConfirmation
+      ? () => setBuyConfirmationModalOpen(true)
+      : purchase;
+  }, [purchase, showBuyConfirmation]);
+
   const priceChange = useMemo(
     () => priceChanges[underlying.symbol],
     [priceChanges, underlying],
@@ -512,20 +523,27 @@ const Options: React.FC = () => {
               </Box>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
+              {!sufficientAllowance && (
+                <ContainedButton
+                  fullWidth
+                  size='large'
+                  color={
+                    optionType === OptionType.Call ? 'primary' : 'secondary'
+                  }
+                  label={`Approve ${activeToken.symbol}`}
+                  onClick={onApprove}
+                />
+              )}
               <ContainedButton
                 fullWidth
+                margin='6px 2px 0'
                 size='large'
+                disabled={!sufficientAllowance || !sufficientLiquidity}
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 label={
-                  sufficientAllowance
-                    ? sufficientLiquidity
-                      ? 'Buy Option'
-                      : 'Insufficient Liquidity'
-                    : `Approve ${activeToken.symbol}`
+                  sufficientLiquidity ? 'Buy Option' : 'Insufficient Liquidity'
                 }
-                onClick={() =>
-                  sufficientAllowance ? handleBuyOption() : onApprove()
-                }
+                onClick={sufficientLiquidity ? handleBuyOption : () => {}}
               />
             </Box>
           </Grid>
