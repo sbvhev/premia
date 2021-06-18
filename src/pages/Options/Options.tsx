@@ -73,7 +73,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   priceInfoBox: {
     padding: '16px 0',
-    height: 364,
+    height: 348,
     display: 'flex',
     flexDirection: 'column',
 
@@ -538,7 +538,7 @@ const Options: React.FC = () => {
                 fullWidth
                 margin='6px 2px 0'
                 size='large'
-                disabled={!sufficientAllowance}
+                disabled={!sufficientAllowance || !sufficientLiquidity}
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 label={
                   sufficientLiquidity ? 'Buy Option' : 'Insufficient Liquidity'
