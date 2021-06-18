@@ -194,7 +194,9 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
   onClose,
   onCompletePurchase,
 }) => {
-  const [checkIsOn, setCheckIsOn] = useState(false);
+  const [checkIsOn, setCheckIsOn] = useState(
+    localStorage.getItem('BuyConfirmationModal_skip') === 'true',
+  );
   const dark = useIsDarkMode();
   const classes = useStyles({ dark });
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -223,19 +225,12 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
     localStorage.setItem('BuyConfirmationModal_skip', 'true');
   };
 
-  const onTransact = useCallback(
-    () => purchase().then(onClose),
-    [purchase, onClose],
-  );
-
   const handleBuy = useCallback(() => {
     if (checkIsOn) {
       handleChangeAgree();
-      onTransact();
-    } else {
-      handleChangeAgree();
     }
-  }, [checkIsOn, onTransact]);
+    purchase().then(onClose);
+  }, [checkIsOn, purchase, onClose]);
 
   return (
     <Modal
