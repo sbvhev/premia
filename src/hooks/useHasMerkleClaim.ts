@@ -15,7 +15,8 @@ export function useHasMerkleClaim(merkleRoot: any, airdropId: number) {
   const hasClaim = account === '' ? false : index !== null;
 
   useInterval(async () => {
-    if (!contracts || index == null) return;
+    if (!contracts || !contracts.TradingCompetitionMerkle || index == null)
+      return;
 
     const isClaimed = await contracts?.TradingCompetitionMerkle.isClaimed(
       airdropId,

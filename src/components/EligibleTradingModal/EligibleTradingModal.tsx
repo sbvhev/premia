@@ -5,14 +5,20 @@ import {
   Box,
   Fade,
   Backdrop,
-  Button,
   Divider,
   Container,
   Link,
 } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
+
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from 'react-share';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as TelegramIcon } from 'assets/svg/Telegram.svg';
 import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
@@ -196,6 +202,14 @@ const useStyles = makeStyles(({ palette }) => ({
         alignItems: 'center',
         marginRight: 10,
         cursor: 'pointer',
+        '& button, & a': {
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: 0,
+        },
         '&:last-child': {
           marginRight: 0,
         },
@@ -288,31 +302,42 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                     Now, you can claim your tokens for the competition and start
                     trading when the competitions start
                   </Typography>
-                  <Button
-                    variant='contained'
-                    color='primary'
+                  <ContainedButton
+                    label='Claim Tokens'
                     onClick={showClaimToken}
-                  >
-                    Claim Tokens
-                  </Button>
+                  />
                   <Divider />
                   <Box className={classes.socialContainer}>
                     <Typography>Share on:</Typography>
                     <Box>
                       <Container fixed>
-                        <TwitterIcon />
+                        <TwitterShareButton url='https://premia.finance'>
+                          <TwitterIcon />
+                        </TwitterShareButton>
                       </Container>
                       <Container fixed>
-                        <TelegramIcon />
+                        <TelegramShareButton url='https://premia.finance'>
+                          <TelegramIcon />
+                        </TelegramShareButton>
                       </Container>
                       <Container fixed>
-                        <FacebookIcon />
+                        <FacebookShareButton url='https://premia.finance'>
+                          <FacebookIcon />
+                        </FacebookShareButton>
                       </Container>
                       <Container fixed>
-                        <DiscordIcon />
+                        <a
+                          href='https://discord.com/invite/6MhRmzmdHN'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          <DiscordIcon />
+                        </a>
                       </Container>
                       <Container fixed>
-                        <SocialIcon1 />
+                        <RedditShareButton url='https://premia.finance'>
+                          <SocialIcon1 />
+                        </RedditShareButton>
                       </Container>
                     </Box>
                     <Link>Not right now</Link>

@@ -9,13 +9,14 @@ export const AVG_BLOCK_TIME = 13;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const DEFAULT_DECIMALS = 18;
 
-export const UNISWAP_FACTORY: { [chainId in ChainId | 56]: string } = {
+export const UNISWAP_FACTORY: { [chainId in ChainId | 56 | 137]: string } = {
   [ChainId.MAINNET]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
   [ChainId.RINKEBY]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
   [ChainId.ROPSTEN]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
   [ChainId.GÖRLI]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
   [ChainId.KOVAN]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
   56: '0xbcfccbde45ce874adcb698cc183debcf17952812',
+  137: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
 };
 
 export const ETH: Currency = {
@@ -28,6 +29,12 @@ export const BNB: Currency = {
   decimals: 18,
   symbol: 'BNB',
   name: 'Binance Coin',
+};
+
+export const MATIC: Currency = {
+  decimals: 18,
+  symbol: 'MATIC',
+  name: 'Matic',
 };
 
 export const WBNB: Token = {
@@ -46,7 +53,15 @@ export const BUSD: Token = {
   name: 'Binance USD',
 };
 
-export const DAI: { [chainId in ChainId | 56]: Token } = {
+export const WMATIC: Token = {
+  id: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  address: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  decimals: 18,
+  symbol: 'WMATIC',
+  name: 'Wrapped Matic',
+};
+
+export const DAI: { [chainId in ChainId | 56 | 137]: Token } = {
   [ChainId.MAINNET]: {
     id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -83,9 +98,16 @@ export const DAI: { [chainId in ChainId | 56]: Token } = {
     name: 'Dai Stablecoin',
   },
   56: BUSD,
+  137: {
+    id: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+    address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+    decimals: 18,
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+  },
 };
 
-export const WETH: { [chainId in ChainId | 56]: Token } = {
+export const WETH: { [chainId in ChainId | 56 | 137]: Token } = {
   [ChainId.MAINNET]: {
     id: _WETH[ChainId.MAINNET].address,
     address: _WETH[ChainId.MAINNET].address,
@@ -122,6 +144,7 @@ export const WETH: { [chainId in ChainId | 56]: Token } = {
     name: 'Wrapped Ether',
   },
   56: WBNB,
+  137: WMATIC,
 };
 
 export const defaultSwapPath = (

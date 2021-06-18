@@ -30,12 +30,12 @@ const useStyles = makeStyles<Theme, ModalContainerProps>(({ palette }) => ({
     backgroundColor: 'transparent',
     border: 'none',
     width: 'calc(100vw - 12px)',
-    maxHeight: '80vh',
     // Changing this 20vh top margin will break TX Modals!!
     margin: '20vh 6px',
     outline: 'none',
     display: 'flex',
     justifyContent: 'center',
+    overflowY: 'auto',
   },
 }));
 

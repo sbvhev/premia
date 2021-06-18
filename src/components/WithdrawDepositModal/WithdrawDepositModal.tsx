@@ -10,17 +10,16 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { formatUnits } from 'ethers/lib/utils';
 
-import { BNB, ETH } from '../../constants';
 import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 import { useUnderlying } from 'state/options/hooks';
-import { useApproval, useTransact, usePools } from 'hooks';
+import { useApproval, useTransact, usePools, useGasToken } from 'hooks';
 import { getTokenIcon } from 'utils/getTokenIcon';
 import { formatCompact } from 'utils/formatNumber';
 import floatToBigNumber from 'utils/floatToBigNumber';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
@@ -236,7 +235,8 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const { chainId, account } = useWeb3();
+  const gasToken = useGasToken();
+  const { account } = useWeb3();
   const { underlying } = useUnderlying();
   const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
   const { callPool: userOwnedCallPool, putPool: userOwnedPutPool } =
@@ -256,10 +256,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     [activePool, call],
   );
   const activeTokenBalance = useCurrencyBalance(account, activeToken);
-  const activeNativeTokenBalance = useCurrencyBalance(
-    account,
-    chainId === 56 ? BNB : ETH,
-  );
+  const activeNativeTokenBalance = useCurrencyBalance(account, gasToken);
   const activePoolBalance = useMemo(
     () =>
       Number(
@@ -439,20 +436,20 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   className={classes.horizontalBox}
                   style={{ marginTop: '16px' }}
                 >
-                  <Button
+                  <ContainedButton
                     fullWidth
                     disabled={Number(value) <= 0}
                     color={call ? 'primary' : 'secondary'}
-                    variant='contained'
                     size='large'
+                    label={
+                      isAmountAllowed
+                        ? `Confirm`
+                        : `Approve ${activeToken?.symbol}`
+                    }
                     onClick={() =>
                       isAmountAllowed ? handleWithdrawDeposit() : onApprove()
                     }
-                  >
-                    {isAmountAllowed
-                      ? `Confirm`
-                      : `Approve ${activeToken?.symbol}`}
-                  </Button>
+                  />
                 </Box>
               </Box>
             </Box>
