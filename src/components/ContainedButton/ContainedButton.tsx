@@ -44,6 +44,18 @@ const useStyles = makeStyles(({ palette }) => ({
         darkMode ? palette.common.black : palette.common.white,
     },
   },
+  wrapperPrimaryDisabled: {
+    fontWeight: 700,
+    borderRadius: 12,
+    minWidth: '64px',
+    textTransform: 'none',
+    padding: '1px',
+    margin: '2px',
+    background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%);`,
+    display: 'flex',
+    cursor: 'default',
+    opacity: 0.3,
+  },
   wrapperSecondary: {
     fontWeight: 700,
     borderRadius: 12,
@@ -82,6 +94,18 @@ const useStyles = makeStyles(({ palette }) => ({
       fill: ({ darkMode }: any) =>
         darkMode ? palette.common.black : palette.common.white,
     },
+  },
+  wrapperSecondarydisabled: {
+    fontWeight: 700,
+    borderRadius: 12,
+    minWidth: '64px',
+    textTransform: 'none',
+    padding: '1px',
+    margin: '2px',
+    background: `linear-gradient(316.57deg, ${palette.error.main} 18.89%, ${palette.error.dark} 95.84%);`,
+    display: 'flex',
+    cursor: 'default',
+    opacity: 0.3,
   },
   container: {
     borderRadius: 11,
@@ -161,9 +185,15 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
       width={fullWidth ? '100%' : 'auto'}
       height={height ? height : '45px'}
       className={
-        color === 'secondary' ? classes.wrapperSecondary : classes.wrapper
+        !disabled
+          ? color === 'secondary'
+            ? classes.wrapperSecondary
+            : classes.wrapper
+          : color === 'secondary'
+          ? classes.wrapperSecondarydisabled
+          : classes.wrapperPrimaryDisabled
       }
-      style={disabled ? { opacity: 0.3, margin } : { margin }}
+      style={{ margin }}
       onClick={!disabled ? onClick : () => {}}
     >
       <ButtonBase>
