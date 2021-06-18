@@ -25,6 +25,7 @@ export { default as ModalContainer } from './ModalContainer';
 export { default as Sidebar, SidebarItem } from './Sidebar';
 export { default as SearchTabs } from './SearchTabs';
 export { default as SelectTokenTabs } from './SelectTokenTabs';
+export { default as SlippageWarningModal } from './SlippageWarningModal';
 export { default as SwapModal } from './SwapModal';
 export { default as SwitchWithGlider } from './SwitchWithGlider';
 export { default as ThemeSwitch } from './ThemeSwitch';

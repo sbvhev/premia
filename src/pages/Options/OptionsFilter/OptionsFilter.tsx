@@ -520,7 +520,7 @@ const OptionFilter: React.FC = () => {
           >
             <Calendar
               inputRef={calendarRef as any}
-              minDate={new Date(new Date().getTime() + 60 * 60 * 24 * 1000)}
+              minDate={new Date(new Date().getTime() + 2 * 60 * 60 * 24 * 1000)}
               maxDate={
                 new Date(new Date().getTime() + 60 * 60 * 60 * 24 * 1000)
               }

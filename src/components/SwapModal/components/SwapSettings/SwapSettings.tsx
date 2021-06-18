@@ -15,10 +15,8 @@ import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as PercentageIcon } from 'assets/svg/PercentageIcon.svg';
 import { ReactComponent as Expand } from 'assets/svg/ExpandRightArrow.svg';
 
-import { SwitchWithGlider } from 'components';
+import { SwitchWithGlider, SlippageWarningModal } from 'components';
 import { useSwapSettings, useToggleExchange } from 'state/swap/hooks';
-
-import { SettingsConfirmation } from '../../components';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -646,7 +644,7 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       >
         <BackIcon />
       </Box>
-      <SettingsConfirmation
+      <SlippageWarningModal
         open={customSlippage > 1 && showHighSlippageWarning}
         onClose={() => setCustomSlippage('')}
         onAgree={handleSetExtraHighSlippage}
