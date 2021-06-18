@@ -8,6 +8,13 @@ const ColoredSlider = withStyles((theme: Theme) => ({
     height: 8,
     width: 'calc(100% - 16px)',
     padding: '13px 0',
+
+    '& .MuiSlider-mark': {
+      width: 4,
+      height: '4px !important',
+      bottom: 15,
+      borderRadius: 4,
+    },
   },
 
   mark: {

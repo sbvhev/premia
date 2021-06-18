@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { BigNumber } from 'ethers';
 import cn from 'classnames';
@@ -10,10 +10,12 @@ import { formatEther } from 'ethers/lib/utils';
 import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { useStakingBalances } from 'state/staking/hooks';
 
-import { ReactComponent as PremiaBlue } from 'assets/svg/NewLogoBlue.svg';
-import { ReactComponent as PremiaRed } from 'assets/svg/NewLogoRedGradient.svg';
+import { ReactComponent as PremiaLogo } from 'assets/svg/premia.svg';
+import { ReactComponent as XPremiaLogo } from 'assets/svg/xpremia.svg';
 
 import { useDarkModeManager } from 'state/user/hooks';
+import { getContractAddress, ContractType } from 'web3/contracts';
+import { useWeb3 } from 'state/application/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   col: {
@@ -97,7 +99,7 @@ const useStyles = makeStyles(({ palette }) => ({
     marginRight: '7px',
 
     '& svg path': {
-      fill: palette.common.white,
+      fill: 'url(#premiaBlue)',
     },
   },
   premiaBox2: {
@@ -121,17 +123,47 @@ const useStyles = makeStyles(({ palette }) => ({
     opacity: 1,
 
     '& svg path': {
-      fill: palette.common.white,
+      fill: 'url(#xpremiaRed)',
     },
   },
 }));
 
 const Stake: React.FC = () => {
+  const { chainId, web3 } = useWeb3();
   const classes = useStyles();
   const theme = useTheme();
   const [darkMode] = useDarkModeManager();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { premiaBalance, xPremiaBalance, xPremiaLocked } = useStakingBalances();
+
+  const addToMetaMask = (tokenAddress: string, symbol: string) => {
+    const params: any = {
+      type: 'ERC20',
+      options: {
+        address: tokenAddress,
+        symbol,
+        decimals: 18,
+        image:
+          'https://miro.medium.com/fit/c/210/210/1*lcN-he45QLjaw-aKtZSy_Q.png',
+      },
+    };
+
+    if (web3 && web3.provider.isMetaMask && web3.provider.request) {
+      web3.provider
+        .request({
+          method: 'wallet_watchAsset',
+          params,
+        })
+        .then((success) => {
+          if (success) {
+            console.log(`Successfully added ${symbol} to MetaMask`);
+          } else {
+            throw new Error('Something went wrong.');
+          }
+        })
+        .catch(console.error);
+    }
+  };
 
   return (
     <Box
@@ -181,80 +213,100 @@ const Stake: React.FC = () => {
             !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
           }
         >
-          <Box
-            className={classes.borderedBox}
-            width={!mobile ? '190px' : '50%'}
-            marginRight='6px'
-            style={
-              darkMode
-                ? {}
-                : {
-                    borderColor: 'transparent',
-                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-                  }
-            }
-          >
-            <Box className={classes.premiaBox1}>
-              <PremiaBlue />
-            </Box>
-            <Box className={classes.col} style={{ margin: '4px 0' }}>
-              <Typography
-                component='p'
-                color='textSecondary'
-                className={classes.text}
-              >
-                Premia
-              </Typography>
-              <Typography
-                component='h2'
-                color='textPrimary'
-                className={classes.bigNumber}
-              >
-                {formatNumber(formatEther(premiaBalance))}
-              </Typography>
-            </Box>
-          </Box>
-          <Box
-            className={classes.borderedBox}
-            justifyContent='flex-start'
-            width={!mobile ? '190px' : '50%'}
-            style={
-              darkMode
-                ? {}
-                : {
-                    borderColor: 'transparent',
-                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-                  }
-            }
-          >
-            <Box className={classes.premiaBox2}></Box>
-            <Box className={classes.redPremiaIcon}>
-              <PremiaRed />
-            </Box>
+          <Tooltip title='Add Premia to MetaMask'>
             <Box
-              className={classes.colRelative}
-              style={{ margin: '4px 0 4px 8px' }}
+              className={classes.borderedBox}
+              onClick={() =>
+                addToMetaMask(
+                  getContractAddress(chainId || 1, ContractType.PremiaErc20),
+                  'PREMIA',
+                )
+              }
+              width={!mobile ? '190px' : '50%'}
+              marginRight='6px'
+              style={
+                darkMode
+                  ? {
+                      cursor: 'pointer',
+                    }
+                  : {
+                      borderColor: 'transparent',
+                      boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                      cursor: 'pointer',
+                    }
+              }
             >
-              <Typography
-                component='p'
-                color='textSecondary'
-                className={classes.text}
-              >
-                xPremia
-              </Typography>
-              <Typography
-                component='h2'
-                color='textPrimary'
-                className={classes.bigNumber}
-              >
-                {formatBigNumber(
-                  BigNumber.from(xPremiaBalance).add(
-                    BigNumber.from(xPremiaLocked),
-                  ),
-                )}
-              </Typography>
+              <Box className={classes.premiaBox1}>
+                <PremiaLogo />
+              </Box>
+              <Box className={classes.col} style={{ margin: '4px 0' }}>
+                <Typography
+                  component='p'
+                  color='textSecondary'
+                  className={classes.text}
+                >
+                  Premia
+                </Typography>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.bigNumber}
+                >
+                  {formatNumber(formatEther(premiaBalance))}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          </Tooltip>
+          <Tooltip title='add xPremia to MetaMask'>
+            <Box
+              className={classes.borderedBox}
+              onClick={() =>
+                addToMetaMask(
+                  getContractAddress(chainId || 1, ContractType.PremiaStaking),
+                  'xPREMIA',
+                )
+              }
+              justifyContent='flex-start'
+              width={!mobile ? '190px' : '50%'}
+              style={
+                darkMode
+                  ? { cursor: 'pointer' }
+                  : {
+                      borderColor: 'transparent',
+                      boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
+                      cursor: 'pointer',
+                    }
+              }
+            >
+              <Box className={classes.premiaBox2}></Box>
+              <Box className={classes.redPremiaIcon}>
+                <XPremiaLogo />
+              </Box>
+              <Box
+                className={classes.colRelative}
+                style={{ margin: '4px 0 4px 8px' }}
+              >
+                <Typography
+                  component='p'
+                  color='textSecondary'
+                  className={classes.text}
+                >
+                  xPremia
+                </Typography>
+                <Typography
+                  component='h2'
+                  color='textPrimary'
+                  className={classes.bigNumber}
+                >
+                  {formatBigNumber(
+                    BigNumber.from(xPremiaBalance).add(
+                      BigNumber.from(xPremiaLocked),
+                    ),
+                  )}
+                </Typography>
+              </Box>
+            </Box>
+          </Tooltip>
         </Box>
       </Box>
       <Box

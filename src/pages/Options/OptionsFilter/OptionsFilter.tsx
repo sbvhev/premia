@@ -452,7 +452,7 @@ const OptionFilter: React.FC = () => {
         </Box>
       </Box>
 
-      <Box width={1} mt={2}>
+      <Box width={1} mt={2} style={{ position: 'relative' }}>
         <Typography className={classes.titleText}>Strike Price</Typography>
 
         <Box width={1} mt={0.5}>
@@ -460,17 +460,19 @@ const OptionFilter: React.FC = () => {
           !isNaN(Number(strikePrice)) &&
           !isNaN(Number(minPrice)) &&
           !isNaN(Number(maxPrice)) ? (
-            <ColoredSlider
-              min={minPrice}
-              max={maxPrice}
-              marks={highlightedStrikes}
-              step={10 ** -underlying.decimals}
-              value={strikePrice === 0 ? 1 : strikePrice}
-              valueLabelDisplay='on'
-              onChange={(event: any, value) => {
-                setStrikePrice(value as number);
-              }}
-            />
+            <>
+              <ColoredSlider
+                min={minPrice}
+                max={maxPrice}
+                marks={highlightedStrikes}
+                step={10 ** -underlying.decimals}
+                value={strikePrice === 0 ? 1 : strikePrice}
+                valueLabelDisplay='on'
+                onChange={(event: any, value) => {
+                  setStrikePrice(value as number);
+                }}
+              />
+            </>
           ) : (
             <Box width={20} marginX='auto'>
               <Loader stroke={theme.palette.primary.main} />

@@ -7,6 +7,7 @@ export * from './useCurrentBlockTimestamp';
 export * from './useDebounce';
 export * from './useDeviceWidth';
 export * from './useENSContentHash';
+export * from './useExerciseOption';
 export * from './useExpirations';
 export * from './useHasMerkleClaim';
 export * from './useInterval';

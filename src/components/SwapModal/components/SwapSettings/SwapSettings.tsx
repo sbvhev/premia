@@ -649,8 +649,8 @@ const SwapSettings: React.FC<SwapModalProps> = ({ goBack }) => {
       <SettingsConfirmation
         open={customSlippage > 1 && showHighSlippageWarning}
         onClose={() => setCustomSlippage('')}
-        agree={handleSetExtraHighSlippage}
-        disagree={() => setCustomSlippage('')}
+        onAgree={handleSetExtraHighSlippage}
+        onDisagree={() => setCustomSlippage('')}
       />
     </Box>
   );

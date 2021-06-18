@@ -144,19 +144,21 @@ const Sidebar: React.FC<SidebarProps> = ({ mobile, onHide }) => {
     {
       title: 'Swap',
       Icon: <SwapIcon />,
+      requireAccount: true,
       disabled: [4, 42].includes(chainId as number),
       onClick: account ? () => setShowSwapModal(true) : () => {},
     },
   ];
 
   const navigationItems = navigation.map(
-    ({ title, link, Icon, disabled, onClick }, i) => (
+    ({ title, link, Icon, disabled, requireAccount, onClick }, i) => (
       <SidebarItem
         key={i}
         title={title}
         link={link}
         Icon={Icon}
         disabled={disabled}
+        requireAccount={requireAccount}
         activeCondition={!onClick ? link === pathname : showSwapModal}
         onHide={onHide}
         onClick={onClick}

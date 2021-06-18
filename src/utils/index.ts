@@ -18,9 +18,9 @@ export const chainIds = [
   ChainId.MAINNET,
   ChainId.BSC,
   ChainId.MATIC,
-  ChainId.FANTOM,
+  // ChainId.FANTOM,
 ];
-export const chainLabels = ['Ethereum', 'BSC', 'Polygon', 'Fantom'];
+export const chainLabels = ['Ethereum', 'BSC', 'Polygon' /*, 'Fantom'*/];
 
 export const PARAMS: {
   [chainId in ChainId]?: {
@@ -45,6 +45,17 @@ export const PARAMS: {
     },
     rpcUrls: ['https://mainnet.infura.io/v3'],
     blockExplorerUrls: ['https://etherscan.com'],
+  },
+  [ChainId.RINKEBY]: {
+    chainId: '0x4',
+    chainName: 'Rinkeby Testnet',
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrls: ['https://rinkeby.infura.io/v3'],
+    blockExplorerUrls: ['https://rinkeby.etherscan.com'],
   },
   [ChainId.FANTOM]: {
     chainId: '0xfa',

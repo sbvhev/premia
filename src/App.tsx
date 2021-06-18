@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Switch, Route, useLocation } from 'react-router-dom';
@@ -40,6 +40,7 @@ import {
   TransactionSuccessModal,
   TransactionCancelledModal,
   TransactionFailedModal,
+  TradingCompetitionModal,
 } from 'components';
 
 const graphUrls: { [chainId: number]: string } = {
@@ -50,6 +51,10 @@ const graphUrls: { [chainId: number]: string } = {
 };
 
 const TopLevelModals: React.FC = () => {
+  const [tradingModalOpen, setTradingModalOpen] = useState(
+    localStorage.getItem('tradingModalStatus') !== 'closed',
+  );
+
   const transactionLoadingOpen = useModalOpen(
     ApplicationModal.TransactionLoading,
   );
@@ -62,8 +67,15 @@ const TopLevelModals: React.FC = () => {
   const transactionFailedOpen = useModalOpen(
     ApplicationModal.TransactionFailed,
   );
-
   const closeModals = useCloseModals();
+  const location = useLocation();
+
+  if (
+    localStorage.getItem('tradingModalStatus') === 'closed' &&
+    tradingModalOpen
+  ) {
+    setTradingModalOpen(false);
+  }
 
   return (
     <>
@@ -82,6 +94,15 @@ const TopLevelModals: React.FC = () => {
       <TransactionFailedModal
         open={transactionFailedOpen}
         onClose={closeModals}
+      />
+      <TradingCompetitionModal
+        open={
+          !location.pathname.includes('/trading-competition') &&
+          tradingModalOpen
+        }
+        onClose={() => {
+          setTradingModalOpen(false);
+        }}
       />
     </>
   );

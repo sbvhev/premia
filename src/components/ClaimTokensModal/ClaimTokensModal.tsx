@@ -8,7 +8,7 @@ import {
   Fade,
   Backdrop,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import cx from 'classnames';
 
 import TradingCompetitionMerkleRoot from '../../constants/merkleRoots/TradingCompetition.json';
@@ -22,6 +22,7 @@ import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
+import ContainedButton from 'components/ContainedButton';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
@@ -175,6 +176,7 @@ const ClaimTokensModal: React.FC<ClaimTokensModalProps> = ({
 }) => {
   const [selectedToken, setSelectedToken] = useState(0);
   const classes = useStyles();
+  const { palette } = useTheme();
   const hasClaim = useHasMerkleClaim(TradingCompetitionMerkleRoot, 0);
   const claimMerkle = useClaimMerkle(
     TradingCompetitionMerkleRoot,
@@ -220,15 +222,16 @@ const ClaimTokensModal: React.FC<ClaimTokensModalProps> = ({
                   </Box>
                 ))}
               </Grid>
-              <Button
-                variant='contained'
-                color='primary'
-                disabled={!hasClaim}
-                className={classes.tradingButton}
+              <ContainedButton
+                label='Claim Tokens'
+                size='large'
+                textStyling={{
+                  margin: '0 28px',
+                  color: palette.background.paper,
+                }}
                 onClick={claimMerkle}
-              >
-                Claim Tokens
-              </Button>
+                disabled={!hasClaim}
+              />
               <Button className={classes.exitContainer} onClick={onClose}>
                 <img src={XOut} alt='Exit' />
               </Button>

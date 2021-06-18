@@ -14,6 +14,8 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { useGasType, useGasPrices } from 'state/transactions/hooks';
 import { chainIds, chainLabels } from 'utils';
 import { useWeb3 } from 'state/application/hooks';
+import { formatNumber } from 'utils/formatNumber';
+
 import { BorderLinearProgress, SwitchWithGlider, ChainModal } from 'components';
 import { ReactComponent as TwitterIcon } from 'assets/svg/TwitterIcon.svg';
 import { ReactComponent as MediumIcon } from 'assets/svg/MediumIcon.svg';
@@ -258,7 +260,7 @@ const Footer: React.FC = () => {
       <GasStandardIcon />
       <Typography>
         <b>Standard</b>
-        <div>{gasPrices?.standard || 1} Gwei</div>
+        <div>{formatNumber(Number(gasPrices?.standard || 1))} Gwei</div>
       </Typography>
     </Box>
   );
@@ -273,7 +275,7 @@ const Footer: React.FC = () => {
       <GasFastIcon />
       <Typography>
         <b>Fast</b>
-        <div>{gasPrices?.fast || 1} Gwei</div>
+        <div>{formatNumber(Number(gasPrices?.fast || 1.1))} Gwei</div>
       </Typography>
     </Box>
   );
@@ -291,7 +293,7 @@ const Footer: React.FC = () => {
       <ProIcon />
       <Typography>
         <b>Rapid</b>
-        <div>{gasPrices?.rapid || 1} Gwei</div>
+        <div>{formatNumber(Number(gasPrices?.rapid || 1.2))} Gwei</div>
       </Typography>
     </Box>
   );

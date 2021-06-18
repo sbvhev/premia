@@ -102,6 +102,7 @@ export const Option = gql`
     strike
     strike64x64
     maturity
+    longTokenId
 
     lastTradePrice
     lastTradeFee
