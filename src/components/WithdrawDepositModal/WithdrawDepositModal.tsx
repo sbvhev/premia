@@ -503,7 +503,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   )}
                   <ContainedButton
                     fullWidth
-                    disabled={!transactionReady}
+                    disabled={!transactionReady || !isAmountAllowed}
                     color={call ? 'primary' : 'secondary'}
                     size='large'
                     margin='6px 2px 0'
