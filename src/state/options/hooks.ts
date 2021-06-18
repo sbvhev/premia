@@ -131,7 +131,7 @@ export function useSize() {
   );
 
   const setSize = useCallback(
-    (size: number) => dispatch(updateSize(size)),
+    (size: string) => dispatch(updateSize(size)),
     [dispatch],
   );
 
@@ -164,7 +164,7 @@ export function useOnChainOptionData() {
   const maturity = getMaturity(daysToMaturity).toHexString();
   const strike64x64 = fixedFromFloat(strikePrice || 1).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
-  const optionSize = floatToBigNumber(size, underlying.decimals);
+  const optionSize = floatToBigNumber(Number(size), underlying.decimals);
   const maxCost = floatToBigNumber(
     totalCost * (1 + slippage),
     underlying.decimals,

@@ -365,15 +365,26 @@ const OptionFilter: React.FC = () => {
     }));
   }, [minPrice, maxPrice, rounding]);
 
+  const daysToMaturity = useMemo(
+    () =>
+      moment
+        .utc(
+          `${moment(new Date(maturityDate)).format('YYYY-MM-DD')} 00:00:00`,
+          'YYYY-MM-DD hh:mm:dd',
+        )
+        .diff(moment(), 'days'),
+    [maturityDate],
+  );
+
   const handleChangeSize = useCallback(
     (ev) => {
-      setSize(Number(ev.target.value));
+      setSize(ev.target.value);
     },
     [setSize],
   );
 
   const handleMax = useCallback(() => {
-    setSize(Number(maxSize));
+    setSize(String(maxSize || ''));
   }, [maxSize, setSize]);
 
   useOutsideAlerter(calendarRef, () => setMaturityFocused(false));
@@ -498,16 +509,7 @@ const OptionFilter: React.FC = () => {
                   : 'Select Date'}
               </Typography>
               <Typography>
-                (
-                {moment
-                  .utc(
-                    `${moment(new Date(maturityDate)).format(
-                      'YYYY-MM-DD',
-                    )} 00:00:00`,
-                    'YYYY-MM-DD hh:mm:dd',
-                  )
-                  .diff(moment(), 'days')}{' '}
-                days )
+                {daysToMaturity} {daysToMaturity > 1 ? 'days' : 'day'}
               </Typography>
             </Box>
             <CalendarIcon />

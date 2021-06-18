@@ -19,7 +19,7 @@ export const updateStrikePrice = createAction<number>(
   'options/updateStrikePrice',
 );
 
-export const updateSize = createAction<number>('options/updateSize');
+export const updateSize = createAction<string>('options/updateSize');
 
 export const updatePricePerUnit = createAction<number>(
   'options/updatePricePerUnit',

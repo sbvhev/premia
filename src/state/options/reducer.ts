@@ -29,7 +29,7 @@ export interface OptionsState {
   optionType: OptionType;
   maturityDate: string;
   strikePrice: number;
-  size: number;
+  size: string;
   pricePerUnit: number;
   pricePerUnitInUsd: number;
   totalCost: number;
@@ -46,7 +46,7 @@ export const initialState: OptionsState = {
   optionType: OptionType.Call,
   maturityDate: moment(new Date()).add(14, 'days').format('YYYY-MM-DD'),
   strikePrice: 0,
-  size: 0,
+  size: '1',
   pricePerUnit: 0,
   pricePerUnitInUsd: 0,
   totalCost: 0,

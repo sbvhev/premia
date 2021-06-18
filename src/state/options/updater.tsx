@@ -69,8 +69,8 @@ export default function Updater(): null {
         const baseCostInUsd = baseCost * activePrice;
         const totalCost = fee + baseCost;
         const totalCostInUsd = feeInUsd + baseCostInUsd;
-        const pricePerUnit = totalCost / size;
-        const pricePerUnitInUsd = totalCostInUsd / size;
+        const pricePerUnit = totalCost / Number(size);
+        const pricePerUnitInUsd = totalCostInUsd / Number(size);
         const priceImpact = floatFromFixed(response.slippageCoefficient64x64);
 
         return {
