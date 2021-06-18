@@ -14,8 +14,12 @@ import { useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 import { useUnderlying } from 'state/options/hooks';
-import { useApproval, useTransact, usePools, useGasToken } from 'hooks';
-import { getTokenIcon } from 'utils/getTokenIcon';
+import { useApproval, useTransact, usePools } from 'hooks';
+import {
+  getTokenIcon,
+  getTokenCallIcon,
+  getTokenPutIcon,
+} from 'utils/getTokenIcon';
 import { formatCompact } from 'utils/formatNumber';
 import floatToBigNumber from 'utils/floatToBigNumber';
 
@@ -156,7 +160,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     textAlign: 'center',
     justifyContent: 'center',
 
-    '& svg': {
+    '& img': {
       width: 20,
       height: 24,
       position: 'relative',
@@ -235,7 +239,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
-  const gasToken = useGasToken();
+  // const gasToken = useGasToken();
   const { account } = useWeb3();
   const { underlying } = useUnderlying();
   const { callPool, callPoolContract, putPool, putPoolContract } = usePools();
@@ -256,7 +260,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     [activePool, call],
   );
   const activeTokenBalance = useCurrencyBalance(account, activeToken);
-  const activeNativeTokenBalance = useCurrencyBalance(account, gasToken);
+  // const activeNativeTokenBalance = useCurrencyBalance(account, gasToken);
   const activePoolBalance = useMemo(
     () =>
       Number(
@@ -270,17 +274,18 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     [call, userOwnedCallPool, userOwnedPutPool, underlying],
   );
   const activeBalance = useMemo(() => {
-    if (
-      ['WETH', 'WBNB'].includes(activeToken?.symbol ?? '') &&
-      type === 'deposit'
-    ) {
-      return Number(activeTokenBalance) + Number(activeNativeTokenBalance);
-    }
+    // disabled for trading competition
+    // if (
+    //   ['WETH', 'WBNB'].includes(activeToken?.symbol ?? '') &&
+    //   type === 'deposit'
+    // ) {
+    //   return Number(activeTokenBalance) + Number(activeNativeTokenBalance);
+    // }
     return type === 'deposit' ? activeTokenBalance : activePoolBalance;
   }, [
     type,
-    activeToken,
-    activeNativeTokenBalance,
+    // activeToken,
+    // activeNativeTokenBalance,
     activeTokenBalance,
     activePoolBalance,
   ]);
@@ -297,6 +302,16 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
 
   const UnderlyingIcon = useMemo(
     () => getTokenIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
+  const UnderlyingCallIcon = useMemo(
+    () => getTokenCallIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
+  const UnderlyingPutIcon = useMemo(
+    () => getTokenPutIcon(activePool?.underlying.symbol),
     [activePool],
   );
 
@@ -354,6 +369,8 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     onClose,
   ]);
 
+  console.log('call', call);
+
   return (
     <Modal
       open={open}
@@ -369,8 +386,8 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
           <Box className={classes.wrapper}>
             <Box className={classes.borderedCard}>
               <Box className={classes.titleBox}>
-                <Box height={16}>
-                  <UnderlyingIcon height={24} width={24} />
+                <Box height={16} marginRight='8px'>
+                  {call ? <UnderlyingCallIcon /> : <UnderlyingPutIcon />}
                 </Box>
                 <Typography
                   component='h2'

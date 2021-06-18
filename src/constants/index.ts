@@ -3,6 +3,8 @@ import { ChainId, Currency, WETH as _WETH } from '@uniswap/sdk';
 import { Token } from 'web3/tokens';
 
 export { default as tokenIcons } from './tokenIcons';
+export { default as tokenCallIcons } from './tokenCallIcons';
+export { default as tokenPutIcons } from './tokenPutIcons';
 export { default as wallets } from './wallets';
 
 export const AVG_BLOCK_TIME = 13;

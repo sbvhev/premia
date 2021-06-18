@@ -99,6 +99,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       '& th': {
         height: 53,
         padding: 0,
+        cursor: 'pointer',
         '&:first-child': {
           paddingLeft: 23,
         },
@@ -135,7 +136,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& p': {
       fontSize: 14,
       lineHeight: '18px',
-      fontWeight: 'bold',
+      fontWeight: 500,
     },
   },
   firstRank: {

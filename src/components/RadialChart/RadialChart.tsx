@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '18px',
 
     '& svg': {
-      maxWidth: 33,
+      width: 34,
+      height: 39,
       marginBottom: 3,
 
       '& path': {

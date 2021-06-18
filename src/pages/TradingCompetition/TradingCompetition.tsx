@@ -21,6 +21,7 @@ import {
   EligibleTradingModal,
   InEligibleTradingModal,
   ClaimTokensModal,
+  ContainedButton
 } from 'components';
 import TradingCompetitionBanner from 'assets/images/TradingCompetitionBanner.png';
 import PrizeFirst from 'assets/svg/PrizeFirst.svg';
@@ -74,6 +75,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: '100%',
       height: 45,
       marginBottom: 11,
+      fontSize: 16
     },
   },
   competitionPrize: {
@@ -298,15 +300,15 @@ const TradingCompetition: React.FC = () => {
           </Container>
         </Grid>
         <Grid item xs={12} sm={4} className={classes.competitionButtons}>
-          <Button
-            variant='contained'
+          <ContainedButton
+            fullWidth
+            size='large'
             color='primary'
+            label='Check if I am eligible'
             onClick={() => {
               setEligibleTradingModalOpen(true);
             }}
-          >
-            Check if I am eligible
-          </Button>
+          />
           <Button
             variant='outlined'
             onClick={() => {

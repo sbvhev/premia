@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { ReactComponent as Search } from 'assets/svg/Search.svg';
 import { useIsDarkMode } from 'state/user/hooks';
+import cx from 'classnames';
 import { ReactComponent as FireIcon } from 'assets/svg/FireIcon.svg';
 
 export interface SwitchProps {
@@ -71,6 +72,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     opacity: 1,
     color: theme.palette.text.secondary,
+
+    '&.UNI': {
+      '& svg:first-child': {
+        width: 20,
+        height: 23,
+        marginLeft: -2
+      }
+    },
 
     '&:hover:not(:active)': {
       color: theme.palette.primary.main,
@@ -136,7 +145,7 @@ const SearchTabs: React.FC<SwitchProps> = ({
           return (
             <Tab
               key={index}
-              className={classes.tab}
+              className={cx(classes.tab, val.label)}
               icon={
                 <>
                   <Icon height={18} style={{ marginLeft: val.marginLeft }} />

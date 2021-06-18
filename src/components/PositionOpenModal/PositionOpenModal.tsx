@@ -20,7 +20,7 @@ import {
   useMaturityDate,
   useOptionType,
 } from 'state/options/hooks';
-import { getTokenIcon } from 'utils/getTokenIcon';
+import { getTokenPutIcon, getTokenCallIcon } from 'utils/getTokenIcon';
 
 import { ModalContainer } from 'components';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
@@ -300,7 +300,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     fontSize: 14,
     whiteSpace: 'nowrap',
 
-    '& svg': {
+    '& svg, & img': {
       width: 20,
       height: 20,
       marginRight: 8,
@@ -427,8 +427,13 @@ const PositionOpenModal: React.FC<PositionOpenModalProps> = ({
   const { maturityDate } = useMaturityDate();
   const { optionType } = useOptionType();
 
-  const TokenIcon = useMemo(
-    () => getTokenIcon(underlying.symbol),
+  const TokenCallIcon = useMemo(
+    () => getTokenCallIcon(underlying.symbol),
+    [underlying],
+  );
+
+  const TokenPutIcon = useMemo(
+    () => getTokenPutIcon(underlying.symbol),
     [underlying],
   );
 
@@ -503,7 +508,11 @@ const PositionOpenModal: React.FC<PositionOpenModalProps> = ({
                           Asset
                         </Typography>
                         <Box className={classes.boxLine}>
-                          <TokenIcon />
+                          {optionType === OptionType.Call ? (
+                            <TokenCallIcon />
+                          ) : (
+                            <TokenPutIcon />
+                          )}
                           <Typography>{underlying.symbol}</Typography>
                         </Box>
                       </Box>
