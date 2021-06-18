@@ -20,7 +20,7 @@ import {
   useMaturityDate,
   useOptionType,
 } from 'state/options/hooks';
-import { getTokenIcon, getTokenPutIcon, getTokenCallIcon } from 'utils/getTokenIcon';
+import { getTokenPutIcon, getTokenCallIcon } from 'utils/getTokenIcon';
 
 import { ModalContainer } from 'components';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
@@ -426,11 +426,6 @@ const PositionOpenModal: React.FC<PositionOpenModalProps> = ({
   const { strikePrice } = useStrikePrice();
   const { maturityDate } = useMaturityDate();
   const { optionType } = useOptionType();
-
-  const TokenIcon = useMemo(
-    () => getTokenIcon(underlying.symbol),
-    [underlying],
-  );
 
   const TokenCallIcon = useMemo(
     () => getTokenCallIcon(underlying.symbol),
