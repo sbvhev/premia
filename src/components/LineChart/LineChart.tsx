@@ -4,6 +4,7 @@ import Chart from 'react-apexcharts';
 import moment from 'moment';
 import _ from 'lodash';
 import { useIsDarkMode } from 'state/user/hooks';
+import formatNumber from 'utils/formatNumber';
 
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -168,7 +169,7 @@ const LineChart: React.FC<LineChartProps> = ({
           }; border-radius: 12px 12px 0 0; background: ${
             dark ? 'rgba(0, 0, 0, 0.91)' : 'rgba(255, 255, 255, 0.91)'
           }; color: ${dark ? '#646464' : '#8D97A0'};">` +
-          moment(wCategories[props.dataPointIndex], 'YYYY/MM/DD HH:mm')
+          moment(categories[props.dataPointIndex], 'YYYY/MM/DD HH:mm')
             .format('DD MMM, YYYY h:mm A')
             .replace(String(moment().year()), '') +
           '</span>' +
@@ -180,7 +181,7 @@ const LineChart: React.FC<LineChartProps> = ({
           `Price level: <b style="color: ${
             dark ? 'white' : 'rgba(0, 0, 0, 0.91)'
           };">` +
-          props.series[props.seriesIndex][props.dataPointIndex] +
+          formatNumber(props.series[props.seriesIndex][props.dataPointIndex]) +
           '</b></span>' +
           '</div>'
         );
