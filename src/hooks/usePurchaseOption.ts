@@ -7,15 +7,15 @@ import {
   useSize,
   useOptionType,
 } from 'state/options/hooks';
-import { useCurrencyBalance } from 'state/wallet/hooks';
-import { useWeb3 } from 'state/application/hooks';
+// import { useCurrencyBalance } from 'state/wallet/hooks';
+// import { useWeb3 } from 'state/application/hooks';
 import { useTransact, usePools } from 'hooks';
 import { OptionType } from 'web3/options';
 import { calculateFloatGasMargin } from 'utils';
 import { floatToBigNumber } from 'utils/floatToBigNumber';
 
 export function usePurchaseOption(onComplete: () => void = () => {}) {
-  const { account } = useWeb3();
+  // const { account } = useWeb3();
   const { optionPoolContract } = usePools();
   const { size } = useSize();
   const { base } = useBase();
@@ -28,16 +28,18 @@ export function usePurchaseOption(onComplete: () => void = () => {}) {
     () => (optionType === OptionType.Call ? underlying : base),
     [optionType, underlying, base],
   );
-  const activeTokenBalance = useCurrencyBalance(account, activeToken);
+  // const activeTokenBalance = useCurrencyBalance(account, activeToken);
 
   const onPurchaseOption = useCallback(async () => {
     if (!optionPoolContract || !activeToken) return;
 
-    const additionalEthNecessary =
+    const additionalEthNecessary = 0;
+    /* disabled for trading competition
       ['WETH', 'WBNB'].includes(activeToken.symbol) &&
       size > Number(activeTokenBalance)
         ? size - Number(activeTokenBalance)
         : 0;
+    */
 
     const gasEstimate = await optionPoolContract.estimateGas[
       'purchase((uint64,int128,uint256,uint256,bool))'
@@ -105,7 +107,7 @@ export function usePurchaseOption(onComplete: () => void = () => {}) {
     optionType,
     maxCost,
     activeToken,
-    activeTokenBalance,
+    // activeTokenBalance,
     onComplete,
   ]);
 

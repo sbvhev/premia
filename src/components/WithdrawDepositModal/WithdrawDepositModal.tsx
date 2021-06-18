@@ -314,11 +314,13 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
         : activePoolContract!.withdraw;
 
     const amount = floatToBigNumber(value, activeToken!.decimals);
-    const additionalEthNecessary =
+    const additionalEthNecessary = 0;
+    /* disabled for trading competition
       ['WETH', 'WBNB'].includes(activeToken.symbol) &&
       value > Number(activeTokenBalance)
         ? value - Number(activeTokenBalance)
         : 0;
+    */
 
     transact(
       depositWithdraw(amount, call, {
@@ -346,7 +348,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     value,
     call,
     activeToken,
-    activeTokenBalance,
+    // activeTokenBalance,
     activePoolContract,
     transact,
     onClose,
