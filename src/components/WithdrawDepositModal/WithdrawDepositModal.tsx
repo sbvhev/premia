@@ -16,7 +16,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { useCurrencyBalance } from 'state/wallet/hooks';
 import { useUnderlying } from 'state/options/hooks';
 import { useApproval, useTransact, usePools } from 'hooks';
-import { getTokenIcon } from 'utils/getTokenIcon';
+import { getTokenIcon, getTokenCallIcon, getTokenPutIcon } from 'utils/getTokenIcon';
 import { formatCompact } from 'utils/formatNumber';
 import floatToBigNumber from 'utils/floatToBigNumber';
 
@@ -157,7 +157,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     textAlign: 'center',
     justifyContent: 'center',
 
-    '& svg': {
+    '& img': {
       width: 20,
       height: 24,
       position: 'relative',
@@ -303,6 +303,16 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     [activePool],
   );
 
+  const UnderlyingCallIcon = useMemo(
+    () => getTokenCallIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
+  const UnderlyingPutIcon = useMemo(
+    () => getTokenPutIcon(activePool?.underlying.symbol),
+    [activePool],
+  );
+
   const BaseIcon = useMemo(
     () => getTokenIcon(activePool?.base.symbol),
     [activePool],
@@ -371,7 +381,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
             <Box className={classes.borderedCard}>
               <Box className={classes.titleBox}>
                 <Box height={16}>
-                  <UnderlyingIcon height={24} width={24} />
+                  <img src={call ? UnderlyingCallIcon : UnderlyingPutIcon} alt='asset icon' />
                 </Box>
                 <Typography
                   component='h2'

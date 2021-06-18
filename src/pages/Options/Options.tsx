@@ -252,25 +252,19 @@ const Options: React.FC = () => {
 
   return (
     <>
-      {buyConfirmationModalOpen && (
-        <BuyConfirmationModal
-          open={buyConfirmationModalOpen}
-          onClose={() => setBuyConfirmationModalOpen(false)}
-          onCompletePurchase={() => setPositionModalOpen(true)}
-        />
-      )}
-      {positionModalOpen && (
-        <PositionOpenModal
-          open={positionModalOpen}
-          onClose={() => setPositionModalOpen(false)}
-        />
-      )}
-      {slippageModalOpen && (
-        <SlippageModal
-          open={slippageModalOpen}
-          onClose={() => setSlippageModalOpen(false)}
-        />
-      )}
+      <BuyConfirmationModal
+        open={buyConfirmationModalOpen}
+        onClose={() => setBuyConfirmationModalOpen(false)}
+        onCompletePurchase={() => setPositionModalOpen(true)}
+      />
+      <PositionOpenModal
+        open={positionModalOpen}
+        onClose={() => setPositionModalOpen(false)}
+      />
+      <SlippageModal
+        open={slippageModalOpen}
+        onClose={() => setSlippageModalOpen(false)}
+      />
       {!mobile && (
         <Typography
           component='h1'
