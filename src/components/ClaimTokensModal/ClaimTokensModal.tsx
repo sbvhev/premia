@@ -16,8 +16,8 @@ import { useClaimMerkle, useHasMerkleClaim } from 'hooks';
 
 import { ModalContainer } from 'components';
 import { ReactComponent as DaiIcon } from 'assets/svg/DAIIcon.svg';
-import { ReactComponent as EthIcon } from 'assets/svg/ETHIcon.svg';
-import { ReactComponent as WBTCIcon } from 'assets/svg/WBTCIcon.svg';
+import { ReactComponent as EthIcon } from 'assets/svg/EthIcon.svg';
+import { ReactComponent as WBTCIcon } from 'assets/svg/wBTCIcon.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/LinkIcon.svg';
 import { ReactComponent as YFIIcon } from 'assets/svg/YFIIcon.svg';
 import { ReactComponent as UniIcon } from 'assets/svg/UniIcon.svg';

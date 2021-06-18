@@ -20,11 +20,13 @@ import {
   TelegramShareButton,
   TwitterShareButton,
 } from 'react-share';
+import { formatEther } from 'ethers/lib/utils';
 
 import { OptionType, UserOwnedOption } from 'web3/options';
 import { getTokenCallIcon, getTokenPutIcon } from 'utils/getTokenIcon';
-import formatNumber, { formatBigNumber } from 'utils/formatNumber';
+import formatNumber from 'utils/formatNumber';
 import { useIsDarkMode } from 'state/user/hooks';
+import { usePrices } from 'state/application/hooks';
 
 import { ModalContainer } from 'components';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
@@ -37,7 +39,6 @@ import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
-import { usePrices } from 'state/application/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
@@ -457,12 +458,12 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
     [tokenPrices, option],
   );
   const pricePaidPerUnit = useMemo(() => {
-    const totalSpent = Number(formatBigNumber(option.totalSpent));
+    const totalSpent = Number(formatEther(option.totalSpent));
     const totalPrice = isCall ? totalSpent * tokenPrice : totalSpent;
-    return totalPrice / Number(formatBigNumber(option.size));
+    return totalPrice / Number(formatEther(option.size));
   }, [isCall, option, tokenPrice]);
   const exerciseValue = useMemo(() => {
-    const strike = Number(formatBigNumber(option.option.strike));
+    const strike = Number(formatEther(option.option.strike));
     return isCall ? tokenPrice - strike : strike - tokenPrice;
   }, [tokenPrice, isCall, option]);
   const profitPercentage = useMemo(

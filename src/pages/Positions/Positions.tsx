@@ -14,7 +14,7 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits, formatEther } from 'ethers/lib/utils';
 import Moment from 'moment';
 import cx from 'classnames';
 
@@ -784,8 +784,8 @@ const Positions: React.FC = () => {
     () =>
       options.filter(({ option }) =>
         optionFilterIndex
-          ? Number(formatBigNumber(option.maturity)) > currentTime
-          : Number(formatBigNumber(option.maturity)) <= currentTime,
+          ? Number(formatEther(option.maturity)) > currentTime
+          : Number(formatEther(option.maturity)) <= currentTime,
       ),
     [options, optionFilterIndex, currentTime],
   );
@@ -1436,9 +1436,13 @@ const Positions: React.FC = () => {
                       const perOptionValue = Math.max(
                         0,
                         isCall
-                          ? price - Number(formatBigNumber(option.strike))
-                          : Number(formatBigNumber(option.strike)) - price,
+                          ? price - Number(formatEther(option.strike))
+                          : Number(formatEther(option.strike)) - price,
                       );
+                      const isExercised =
+                        Number(formatEther(userOwnedOption.totalExercised)) -
+                          Number(formatEther(userOwnedOption.size)) >=
+                        0;
 
                       return (
                         <Box mb={2}>
@@ -1486,7 +1490,7 @@ const Positions: React.FC = () => {
                                 <DaiIcon />
                               </Box>
                               {formatNumber(
-                                Number(formatBigNumber(userOwnedOption.size)) *
+                                Number(formatEther(userOwnedOption.size)) *
                                   perOptionValue,
                               )}
                             </Box>
@@ -1511,34 +1515,33 @@ const Positions: React.FC = () => {
                               </Box>
                             </Box>
                             <Box px={1} my={1.5}>
-                              {Number(userOwnedOption.totalExercised) > 0 ? (
+                              {isExercised ? (
                                 <Box className={classes.exercisedCell}>
                                   <Box>
                                     <DoneIcon />
                                   </Box>
-                                  <Typography>
-                                    Exercised for{' '}
-                                    {formatBigNumber(
-                                      userOwnedOption.totalExercised,
-                                    )}
-                                  </Typography>
+                                  <Typography>Exercised</Typography>
                                 </Box>
                               ) : (
                                 <Button
                                   fullWidth
                                   color={
-                                    formatNumber(perOptionValue) === '0'
+                                    formatNumber(perOptionValue) === '0' ||
+                                    optionFilterIndex === 1
                                       ? 'secondary'
                                       : 'primary'
                                   }
                                   disabled={
-                                    formatNumber(perOptionValue) === '0'
+                                    formatNumber(perOptionValue) === '0' ||
+                                    optionFilterIndex === 1
                                   }
                                   onClick={() =>
                                     handleExercise(userOwnedOption)
                                   }
                                 >
-                                  Exercise
+                                  {optionFilterIndex === 0
+                                    ? 'Exercise'
+                                    : 'Expired'}
                                 </Button>
                               )}
                             </Box>
@@ -1569,9 +1572,13 @@ const Positions: React.FC = () => {
                       const perOptionValue = Math.max(
                         0,
                         isCall
-                          ? price - Number(formatBigNumber(option.strike))
-                          : Number(formatBigNumber(option.strike)) - price,
+                          ? price - Number(formatEther(option.strike))
+                          : Number(formatEther(option.strike)) - price,
                       );
+                      const isExercised =
+                        Number(formatEther(userOwnedOption.totalExercised)) -
+                          Number(formatEther(userOwnedOption.size)) >=
+                        0;
 
                       return (
                         <TableRow key={index}>
@@ -1603,7 +1610,7 @@ const Positions: React.FC = () => {
                           </TableCell>
                           <TableCell>
                             {formatNumber(
-                              Number(formatBigNumber(userOwnedOption.size)) *
+                              Number(formatEther(userOwnedOption.size)) *
                                 perOptionValue,
                             )}
                           </TableCell>
@@ -1616,29 +1623,30 @@ const Positions: React.FC = () => {
                             </Box>
                           </TableCell>
                           <TableCell className='buttonCell'>
-                            {Number(userOwnedOption.totalExercised) > 0 ? (
+                            {isExercised ? (
                               <Box className={classes.exercisedCell}>
                                 <Box>
                                   <DoneIcon />
                                 </Box>
-                                <Typography>
-                                  Exercised for{' '}
-                                  {formatBigNumber(
-                                    userOwnedOption.totalExercised,
-                                  )}
-                                </Typography>
+                                <Typography>Exercised</Typography>
                               </Box>
                             ) : (
                               <Button
                                 color={
-                                  formatNumber(perOptionValue) === '0'
+                                  formatNumber(perOptionValue) === '0' ||
+                                  optionFilterIndex === 1
                                     ? 'secondary'
                                     : 'primary'
                                 }
-                                disabled={formatNumber(perOptionValue) === '0'}
+                                disabled={
+                                  formatNumber(perOptionValue) === '0' ||
+                                  optionFilterIndex === 1
+                                }
                                 onClick={() => handleExercise(userOwnedOption)}
                               >
-                                Exercise
+                                {optionFilterIndex === 0
+                                  ? 'Exercise'
+                                  : 'Expired'}
                               </Button>
                             )}
                           </TableCell>

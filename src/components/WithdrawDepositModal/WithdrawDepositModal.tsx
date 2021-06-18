@@ -369,8 +369,6 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     onClose,
   ]);
 
-  console.log('call', call);
-
   return (
     <Modal
       open={open}
