@@ -68,6 +68,10 @@ import VaultsBasicSVGBackground from 'assets/images/VaultBasic.png';
 import VaultsProSVGBackground from 'assets/images/VaultPro.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
+import BullBanner from 'assets/images/BullBanner.png';
+import BearBanner from 'assets/images/BearBanner.png';
+import { ReactComponent as WinnerPrize } from 'assets/svg/WinnerPrize.svg';
+import moment from 'moment';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   mainContainer: {
@@ -185,7 +189,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'fixed',
     width: '100%',
     padding: 0,
-    height: 70,
+    height: 144,
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
     transition: 'height 0.3s ease',
 
@@ -1219,6 +1223,147 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   sectionImages: {
     position: 'relative',
   },
+  appBanner: {
+    width: '100%',
+    height: 74,
+    backgroundColor: palette.primary.main,
+    position: 'relative',
+    '& img': {
+      height: '100%',
+      position: 'absolute',
+      bottom: 0,
+      '&:first-child': {
+        left: 0
+      },
+      '&:last-child': {
+        right: 0
+      },
+    }
+  },
+  countDownBanner: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    '& svg': {
+      '& path': {
+        fill: 'white'
+      }
+    },
+    '& p': {
+      fontWeight: 700,
+      fontSize: 18,
+      lineHeight: 1,
+      marginLeft: 8,
+      color: 'white'
+    },
+    '& .flip-clock': {
+      textAlign: 'center',
+      perspective: 400,
+      '& .flip-clock__piece': {
+        display: 'inline-block',
+        margin: '0 5px'
+      },
+      '& .flip-clock__slot': {
+        fontSize: '2vw'
+      },
+      '& .card': {
+        display: 'block',
+        position: 'relative',
+        paddingBottom: 23,
+        fontSize: 24,
+        lineHeight: '18px'
+      },
+      
+      '& .card__top, & .card__bottom, & .card__back::before, &.card__back::after': {
+        display: 'block',
+        height: 23,
+        color: 'white',
+        background: 'black',
+        padding: '0.25em 0.25em',
+        borderRadius: '10px 10px 0 0',
+        backfaceVisiblity: 'hidden',
+        transformStyle: 'preserve-3d',
+        width: 59,
+        transform: 'translateZ(0)'
+      },
+
+      '& .card__bottom': {
+        color: '#fff',
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        background: '#393939',
+        borderRadius: '0 0 10px 10px',
+        pointerEvents: 'none',
+        overflow: 'hidden',
+
+        '&::after': {
+          display: 'block',
+          marginTop: -23
+        }
+      },
+      
+      '& .card__back::before, & .card__bottom::after': {
+        content: 'attr(data-value)',
+      },
+      
+      '& .card__back': {
+        position: 'absolute',
+        top: 0,
+        height: '100%',
+        left: 0,
+        pointerEvents: 'none',
+
+        '&::before': {
+          position: 'relative',
+          zIndex: -1,
+          overflow: 'hidden',  
+        }
+      },
+      
+      '& .flip .card__back::before': {
+        animation: '$flipTop 0.3s cubic-bezier(0.37, 0.01, 0.94, 0.35)',
+        animationFillMode: 'both',
+        transformOrigin: 'center bottom'
+      },
+      
+      '& .flip .card__back .card__bottom': {
+        transformOrigin: 'center top',
+        animationFillMode: 'both',
+        animation: '$flipBottom 0.6s cubic-bezier(0.15, 0.45, 0.28, 1)',
+      },
+    }
+  },
+  '@keyframes flipTop': {
+    '0%': {
+      transform: 'rotateX(0deg)',
+      zIndex: 2,
+    },
+    '0%, 99%': {
+      opacity: 0.99,
+    },
+    '100%': {
+      transform: 'rotateX(-90deg)',
+      opacity: 0,
+    }
+  },
+  
+  '@keyframes flipBottom': {
+    '0%, 50%': {
+      zIndex: -1,
+      transform: 'rotateX(90deg)',
+      opacity: 0,
+    },
+    '51%': {
+      opacity: 0.99
+    },
+    '100%': {
+      opacity: 0.99,
+      transform: 'rotateX(0deg)',
+      zIndex: 5
+    }
+  }
 }));
 
 const StyledMenu = withStyles({
@@ -1278,6 +1423,54 @@ const StyledMenuItem = withStyles((theme) => ({
   },
 }))(MenuItem);
 
+interface CountDownProps {
+  endTime: string
+}
+
+const CountDownComponent: React.FC<CountDownProps> = ({ endTime }) => {
+  const minutes = moment.utc(endTime).diff(moment(), 'seconds');
+  const values1 = {
+    days: Math.floor(minutes / 24 / 60 / 60),
+    hours: Math.floor((minutes / 60 / 60) % 24),
+    mins: (minutes / 60) % 60,
+    secs: minutes % 60
+  }
+  const [values, setValues] = useState<Object>(values1);
+  const [flipped, setFlipped] = useState(false);
+  const setValuesFunc = () => {
+    const minutes = moment.utc(endTime).diff(moment(), 'seconds');
+    const values1 = {
+      days: Math.floor(minutes / 24 / 60 / 60),
+      hours: Math.floor((minutes / 60 / 60) % 24),
+      mins: (minutes / 60) % 60,
+      secs: minutes % 60
+    }
+    setValues(values1);
+    setFlipped(true);
+    setTimeout(() => {
+      setFlipped(false);
+    }, 1000);
+  }
+  setTimeout(() => {
+    setValuesFunc();
+  }, 1000);
+  return (
+    <Box className='flip-clock'>
+      {Object.values(values).map((val, ind) => (
+        <Box key={ind} className={'flip-clock__piece ' + (flipped ? 'flip' : '')}>
+          <b className='flip-clock__card card'>
+            <b className='card__top'>{val}</b>
+            <b className='card__bottom' data-value={val + 1} />
+            <b className='card__back' data-value={val + 1}>
+              <b className='card__bottom' data-value={val} />
+            </b>
+          </b>
+        </Box>
+      ))}
+    </Box>
+  )
+};
+
 const LandingPage: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -1326,6 +1519,15 @@ const LandingPage: React.FC = () => {
   return (
     <Grid container className={classes.mainContainer}>
       <AppBar position='static' className={classes.appBar}>
+        <Box className={classes.appBanner}>
+          <img src={BullBanner} alt='Bull Banner' />
+          <Box className={classes.countDownBanner}>
+            <WinnerPrize />
+            <Typography>Trading competition with $150,000 in prizes</Typography>
+            <CountDownComponent endTime='2021-06-21T18:00:00' />
+          </Box>
+          <img src={BearBanner} alt='Bull Banner' />
+        </Box>
         <Toolbar>
           <Container className={classes.container}>
             <AnchorLink href='#hero' onClick={preventDefault}>
