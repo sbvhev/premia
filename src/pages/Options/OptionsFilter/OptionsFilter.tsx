@@ -11,8 +11,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { ReactComponent as BestPrice } from 'assets/svg/Popup.svg';
-import { ReactComponent as BestPriceLight } from 'assets/svg/PopupLight.svg';
 import Calendar from 'react-calendar';
 import moment from 'moment';
 import cx from 'classnames';
@@ -300,13 +298,6 @@ const useStyles = makeStyles(({ palette }) => ({
       fontWeight: 500,
     },
   },
-
-  bestPrice: {
-    position: 'absolute',
-    top: -6,
-    transform: 'translateX(-50%)',
-    left: 'calc(100% - 13px)',
-  },
 }));
 
 const OptionFilter: React.FC = () => {
@@ -468,11 +459,6 @@ const OptionFilter: React.FC = () => {
           !isNaN(Number(minPrice)) &&
           !isNaN(Number(maxPrice)) ? (
             <>
-              {darkMode ? (
-                <BestPrice className={classes.bestPrice} />
-              ) : (
-                <BestPriceLight className={classes.bestPrice} />
-              )}
               <ColoredSlider
                 min={minPrice}
                 max={maxPrice}
