@@ -42,3 +42,7 @@ export const updateFeeInUsd = createAction<number>('options/updateFeeInUsd');
 export const updatePriceImpact = createAction<number>(
   'options/updatePriceImpact',
 );
+
+export const updateSlippagePercentage = createAction<number>(
+  'options/updateSlippagePercentage',
+);

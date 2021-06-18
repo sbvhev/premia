@@ -7,6 +7,8 @@ import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as PercentageIcon } from 'assets/svg/BigPercentage.svg';
 
+import { useSlippagePercentage } from 'state/options/hooks';
+
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     width: '360px',
@@ -130,7 +132,10 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
   const mobile = /Mobi|Android/i.test(navigator.userAgent);
   const theme = useTheme();
   const { palette } = theme;
-  const [customSlippage, setCustomSlippage] = useState('');
+  const { slippagePercentage, setSlippagePercentage } = useSlippagePercentage();
+  const [customSlippage, setCustomSlippage] = useState(
+    slippagePercentage ? slippagePercentage.toString() : '',
+  );
 
   const handleChangeCustomSlippage = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -141,11 +146,11 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
   };
 
   const onConfirm = () => {
-    // Update Redux with hook:
-    // setOptionsSettings({
-    //   slippagePercentage: Number(customSlippage),
-    // });
-    onClose();
+    if (customSlippage) {
+      const customPercentage = Number(customSlippage);
+      setSlippagePercentage(customPercentage);
+      onClose();
+    }
   };
 
   return (

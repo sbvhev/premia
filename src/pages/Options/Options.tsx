@@ -23,6 +23,7 @@ import {
   useUnderlying,
   useMaturityDate,
   useSize,
+  useSlippagePercentage,
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -200,6 +201,8 @@ const Options: React.FC = () => {
   const { totalCostInUsd } = useTotalCostInUsd();
   const { account } = useWeb3();
   const { optionPool, optionPoolContract } = usePools();
+  const { slippagePercentage } = useSlippagePercentage();
+  console.log('slippage', slippagePercentage);
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),
@@ -494,7 +497,7 @@ const Options: React.FC = () => {
                     component='h2'
                     style={{ lineHeight: '8px' }}
                   >
-                    {`${'2'}%`}
+                    {`${slippagePercentage}%`}
                   </Typography>
                   <Box
                     display='flex'

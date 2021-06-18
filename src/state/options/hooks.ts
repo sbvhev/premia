@@ -23,6 +23,7 @@ import {
   updateFee,
   updateFeeInUsd,
   updatePriceImpact,
+  updateSlippagePercentage,
 } from './actions';
 
 export function useBasePrice(): number {
@@ -279,4 +280,19 @@ export function useBreakEvenPrice() {
       : strikePrice - pricePerUnitInUsd;
 
   return breakEvenPrice;
+}
+
+export function useSlippagePercentage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { slippagePercentage } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
+
+  const setSlippagePercentage = useCallback(
+    (slippagePercentage: number) =>
+      dispatch(updateSlippagePercentage(slippagePercentage)),
+    [dispatch],
+  );
+
+  return { slippagePercentage, setSlippagePercentage };
 }
