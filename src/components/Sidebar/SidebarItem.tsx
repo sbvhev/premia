@@ -3,9 +3,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Box, Typography, Tooltip } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
+
+import { useWeb3 } from 'state/application/hooks';
 
 const useStyles = makeStyles(({ palette }) => ({
   inactiveSwitch: {
@@ -80,6 +81,7 @@ export interface SidebarItemProps {
   Icon: any;
   href?: boolean;
   disabled?: boolean;
+  requireAccount?: boolean;
   onHide?: () => void;
   activeCondition?: any;
   onClick?: (() => void) | undefined;
@@ -91,10 +93,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   Icon,
   href,
   disabled,
+  requireAccount,
   onClick,
   onHide,
   activeCondition,
 }) => {
+  const { account } = useWeb3();
   const location = useLocation();
   const active = location.pathname === link;
   const classes = useStyles({ active });
@@ -117,10 +121,16 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     }
   };
 
-  const WrapperComponent: any = disabled ? Tooltip : React.Fragment;
+  const isDisabled =
+    disabled || (requireAccount && (!account || account === ''));
+  const WrapperComponent: any = isDisabled ? Tooltip : React.Fragment;
 
   return (
-    <WrapperComponent {...(disabled ? { title: 'Disabled on testnet' } : {})}>
+    <WrapperComponent
+      {...(isDisabled
+        ? { title: disabled ? 'Disabled on testnet' : 'Connect wallet to swap' }
+        : {})}
+    >
       <Box
         display='flex'
         alignItems='center'
@@ -131,9 +141,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         className={cx(
           classes.inactiveSwitch,
           activeCondition && classes.activeSwitch,
-          disabled && classes.disabled,
+          isDisabled && classes.disabled,
         )}
-        onClick={disabled ? () => {} : handleClick}
+        onClick={isDisabled ? () => {} : handleClick}
       >
         {Icon}
         <Typography>{title}</Typography>
