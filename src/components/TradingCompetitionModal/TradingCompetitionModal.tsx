@@ -34,7 +34,7 @@ import PrizeSecond from 'assets/svg/PrizeSecond.svg';
 import PrizeThird from 'assets/svg/PrizeThird.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
     maxWidth: 578,
     backgroundColor: 'transparent',
@@ -172,6 +172,9 @@ const useStyles = makeStyles(({ palette }) => ({
       fontSize: 14,
       lineHeight: '18px',
     },
+    [breakpoints.down('xs')]: {
+      padding: '0 8px'
+    }
   },
   exitContainer: {
     position: 'absolute',
@@ -274,6 +277,9 @@ const useStyles = makeStyles(({ palette }) => ({
         },
       },
     },
+    [breakpoints.down('xs')]: {
+      padding: '12px 8px 17px'
+    }
   },
   buttonsContainer: {
     margin: '19px 0 25px',
