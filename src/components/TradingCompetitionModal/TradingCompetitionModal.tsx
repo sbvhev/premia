@@ -397,7 +397,10 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
               className={classes.secondOuterRadial}
               style={!mobile ? {} : { top: 'calc(20vh + 12px)' }}
             />
-            <Box className={classes.iconCore}>
+            <Box
+              className={classes.iconCore}
+              style={!mobile ? {} : { top: 'calc(20vh + 25.5px)' }}
+            >
               <LogoIcon />
             </Box>
             <Box
