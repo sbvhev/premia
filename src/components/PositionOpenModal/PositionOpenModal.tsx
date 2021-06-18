@@ -508,7 +508,11 @@ const PositionOpenModal: React.FC<PositionOpenModalProps> = ({
                           Asset
                         </Typography>
                         <Box className={classes.boxLine}>
-                          <img src={optionType === OptionType.Call ? TokenCallIcon : TokenPutIcon} alt='Token Icon' />
+                          {optionType === OptionType.Call ? (
+                            <TokenCallIcon />
+                          ) : (
+                            <TokenPutIcon />
+                          )}
                           <Typography>{underlying.symbol}</Typography>
                         </Box>
                       </Box>

@@ -369,6 +369,8 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     onClose,
   ]);
 
+  console.log('call', call);
+
   return (
     <Modal
       open={open}
@@ -384,11 +386,8 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
           <Box className={classes.wrapper}>
             <Box className={classes.borderedCard}>
               <Box className={classes.titleBox}>
-                <Box height={16}>
-                  <img
-                    src={call ? UnderlyingCallIcon : UnderlyingPutIcon}
-                    alt='asset icon'
-                  />
+                <Box height={16} marginRight='8px'>
+                  {call ? <UnderlyingCallIcon /> : <UnderlyingPutIcon />}
                 </Box>
                 <Typography
                   component='h2'

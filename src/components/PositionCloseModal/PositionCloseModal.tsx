@@ -22,7 +22,7 @@ import {
 } from 'react-share';
 
 import { OptionType, UserOwnedOption } from 'web3/options';
-import { getTokenIcon } from 'utils/getTokenIcon';
+import { getTokenCallIcon, getTokenPutIcon } from 'utils/getTokenIcon';
 import formatNumber, { formatBigNumber } from 'utils/formatNumber';
 import { useIsDarkMode } from 'state/user/hooks';
 
@@ -471,8 +471,11 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
   );
 
   const TokenIcon = useMemo(
-    () => getTokenIcon(option.option.underlying.symbol),
-    [option],
+    () =>
+      isCall
+        ? getTokenCallIcon(option.option.underlying.symbol)
+        : getTokenPutIcon(option.option.underlying.symbol),
+    [option, isCall],
   );
 
   return (
