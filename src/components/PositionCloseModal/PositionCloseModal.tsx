@@ -23,6 +23,8 @@ import {
 
 import { OptionType, UserOwnedOption } from 'web3/options';
 import { getTokenIcon } from 'utils/getTokenIcon';
+import formatNumber, { formatBigNumber } from 'utils/formatNumber';
+import { useIsDarkMode } from 'state/user/hooks';
 
 import { ModalContainer } from 'components';
 import MostOuterSuccessRadial from 'assets/svg/SuccessIconOuterRadial.svg';
@@ -35,8 +37,7 @@ import { ReactComponent as FacebookIcon } from 'assets/svg/Facebook.svg';
 import { ReactComponent as DiscordIcon } from 'assets/svg/Discord.svg';
 import { ReactComponent as ForumIcon } from 'assets/svg/Forum.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
-import formatNumber from 'utils/formatNumber';
-import { useIsDarkMode } from 'state/user/hooks';
+import { usePrices } from 'state/application/hooks';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   wrapper: {
@@ -376,7 +377,16 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     '& p': {
       fontSize: 28,
       lineHeight: '24px',
-      background: 'linear-gradient(121.21deg, #5294FF 7.78%, #1EFF78 118.78%)',
+      background: `linear-gradient(121.21deg, ${palette.success.main} 7.78%, ${palette.success.dark} 118.78%)`,
+      '-webkit-background-clip': 'text',
+      '-webkit-text-fill-color': 'transparent',
+    },
+  },
+  lossBox: {
+    '& p': {
+      fontSize: 28,
+      lineHeight: '24px',
+      background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
       '-webkit-background-clip': 'text',
       '-webkit-text-fill-color': 'transparent',
     },
@@ -440,6 +450,26 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
   const txStateMsg = 'Tell your friends about your Premia trading experience';
   const { palette } = theme;
   const isCall = option.option.optionType === OptionType.Call;
+
+  const tokenPrices = usePrices();
+  const tokenPrice = useMemo(
+    () => tokenPrices[option.option.underlying.symbol],
+    [tokenPrices, option],
+  );
+  const pricePaidPerUnit = useMemo(() => {
+    const totalSpent = Number(formatBigNumber(option.totalSpent));
+    const totalPrice = isCall ? totalSpent * tokenPrice : totalSpent;
+    return totalPrice / Number(formatBigNumber(option.size));
+  }, [isCall, option, tokenPrice]);
+  const exerciseValue = useMemo(() => {
+    const strike = Number(formatBigNumber(option.option.strike));
+    return isCall ? tokenPrice - strike : strike - tokenPrice;
+  }, [tokenPrice, isCall, option]);
+  const profitPercentage = useMemo(
+    () => ((exerciseValue - pricePaidPerUnit) / pricePaidPerUnit) * 100,
+    [exerciseValue, pricePaidPerUnit],
+  );
+
   const TokenIcon = useMemo(
     () => getTokenIcon(option.option.underlying.symbol),
     [option],
@@ -549,7 +579,7 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
                         <Box className={classes.boxLine}>
                           <DaiIcon />
                           <Typography>
-                            {formatNumber(option.totalSpent)}
+                            {formatNumber(pricePaidPerUnit)}
                           </Typography>
                         </Box>
                       </Box>
@@ -562,15 +592,27 @@ const PositionCloseModal: React.FC<PositionCloseModalProps> = ({
                         </Typography>
                         <Box className={classes.boxLine}>
                           <DaiIcon />
-                          <Typography>18,002</Typography>
+                          <Typography>{formatNumber(exerciseValue)}</Typography>
                         </Box>
                       </Box>
                       <Box className={classes.boxWrapper}>
-                        <Typography className={classes.subTitle}>
-                          Profit
+                        <Typography className={classes.subTitle} align='center'>
+                          {profitPercentage > 0 ? 'Profit' : 'Loss'}
                         </Typography>
-                        <Box className={cx(classes.boxLine, classes.profitBox)}>
-                          <Typography>15%</Typography>
+                        <Box
+                          className={cx(
+                            classes.boxLine,
+                            profitPercentage > 0
+                              ? classes.profitBox
+                              : classes.lossBox,
+                          )}
+                        >
+                          <Typography>
+                            {formatNumber(profitPercentage, true, {
+                              maximumFractionDigits: 1,
+                            })}
+                            %
+                          </Typography>
                         </Box>
                       </Box>
                     </Paper>
