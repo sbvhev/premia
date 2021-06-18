@@ -6,8 +6,9 @@ import {
   Box,
   Fade,
   Backdrop,
+  Tooltip,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { formatUnits } from 'ethers/lib/utils';
 
 import { useWeb3 } from 'state/application/hooks';
@@ -25,6 +26,7 @@ import floatToBigNumber from 'utils/floatToBigNumber';
 
 import { ModalContainer, ContainedButton } from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   borderedCard: {
@@ -207,7 +209,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   horizontalBox: {
     boxSizing: 'border-box',
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     width: '100%',
   },
   elementHeader: {
@@ -239,6 +242,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
   const [value, setValue] = useState<number | undefined>(undefined);
   const dark = useIsDarkMode();
   const classes = useStyles({ dark, call });
+  const { palette } = useTheme();
   // const gasToken = useGasToken();
   const { account } = useWeb3();
   const { underlying } = useUnderlying();
@@ -369,6 +373,28 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
     onClose,
   ]);
 
+  const transactionReady = useMemo(() => {
+    return (
+      value &&
+      Number(value) > 0 &&
+      activeBalance &&
+      Number(value) <= activeBalance
+    );
+  }, [activeBalance, value]);
+
+  const activeButtonLabel = useMemo(() => {
+    if (!isAmountAllowed) {
+      return type === 'deposit' ? 'Confirm Deposit' : 'Confirm withdrawal';
+    }
+    if (!value || Number(value) === 0) {
+      return 'Enter amount';
+    }
+    if (!activeBalance || Number(value) > activeBalance) {
+      return 'Insufficient balance';
+    }
+    return type === 'deposit' ? 'Confirm Deposit' : 'Confirm withdrawal';
+  }, [isAmountAllowed, value, activeBalance, type]);
+
   return (
     <Modal
       open={open}
@@ -442,7 +468,11 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                       variant='outlined'
                       size='small'
                       className={classes.maxButton}
-                      onClick={() => setValue(Number(activeBalance || 0))}
+                      onClick={
+                        Number(activeBalance)
+                          ? () => setValue(Number(activeBalance))
+                          : () => {}
+                      }
                     >
                       MAX
                     </Button>
@@ -453,19 +483,32 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                   className={classes.horizontalBox}
                   style={{ marginTop: '16px' }}
                 >
+                  {!isAmountAllowed && (
+                    <ContainedButton
+                      fullWidth
+                      color={call ? 'primary' : 'secondary'}
+                      size='large'
+                      label={`Approve ${activeToken?.symbol}`}
+                      onClick={transactionReady ? onApprove : () => {}}
+                      endIcon={
+                        <Tooltip
+                          arrow
+                          leaveTouchDelay={1500}
+                          title={`You must give Premia permission to use your ${activeToken?.symbol} You only have to do this once per token.`}
+                        >
+                          <InfoIcon fill={palette.background.paper} />
+                        </Tooltip>
+                      }
+                    />
+                  )}
                   <ContainedButton
                     fullWidth
-                    disabled={Number(value) <= 0}
+                    disabled={!transactionReady}
                     color={call ? 'primary' : 'secondary'}
                     size='large'
-                    label={
-                      isAmountAllowed
-                        ? `Confirm`
-                        : `Approve ${activeToken?.symbol}`
-                    }
-                    onClick={() =>
-                      isAmountAllowed ? handleWithdrawDeposit() : onApprove()
-                    }
+                    margin='6px 2px 0'
+                    label={activeButtonLabel}
+                    onClick={handleWithdrawDeposit}
                   />
                 </Box>
               </Box>

@@ -73,9 +73,10 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   priceInfoBox: {
     padding: '16px 0',
-    height: 340,
+    height: 364,
     display: 'flex',
     flexDirection: 'column',
+
     justifyContent: 'space-between',
     '& h2': {
       fontSize: 18,
@@ -128,13 +129,10 @@ const useStyles = makeStyles(({ palette }) => ({
     justifyContent: 'space-between',
   },
   depositButton: {
-    '& button': {
-      margin: 0,
-      '& span': {
-        fontSize: 16,
-        fontWeight: 700,
-      },
-    },
+    height: '104px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
   popover: {
     '& p': {
@@ -512,20 +510,27 @@ const Options: React.FC = () => {
               </Box>
             </Box>
             <Box pl={xs ? 0 : 3} className={classes.depositButton}>
+              {!sufficientAllowance && (
+                <ContainedButton
+                  fullWidth
+                  size='large'
+                  color={
+                    optionType === OptionType.Call ? 'primary' : 'secondary'
+                  }
+                  label={`Approve ${activeToken.symbol}`}
+                  onClick={onApprove}
+                />
+              )}
               <ContainedButton
                 fullWidth
+                margin='6px 2px 0'
                 size='large'
+                disabled={!sufficientAllowance}
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
                 label={
-                  sufficientAllowance
-                    ? sufficientLiquidity
-                      ? 'Buy Option'
-                      : 'Insufficient Liquidity'
-                    : `Approve ${activeToken.symbol}`
+                  sufficientLiquidity ? 'Buy Option' : 'Insufficient Liquidity'
                 }
-                onClick={() =>
-                  sufficientAllowance ? handleBuyOption() : onApprove()
-                }
+                onClick={sufficientLiquidity ? handleBuyOption : () => {}}
               />
             </Box>
           </Grid>
