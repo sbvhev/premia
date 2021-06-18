@@ -173,7 +173,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       lineHeight: '18px',
     },
     [breakpoints.down('xs')]: {
-      padding: '0 8px'
+      padding: '0 8px',
+      '& h2': {
+        lineHeight: 1
+      }
     }
   },
   exitContainer: {
