@@ -5,14 +5,13 @@ import {
   Box,
   Fade,
   Backdrop,
-  Button,
   Divider,
   Container,
   Link,
 } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 
 import {
   FacebookShareButton,
@@ -303,13 +302,10 @@ const EligibleTradingModal: React.FC<EligibleTradingModalProps> = ({
                     Now, you can claim your tokens for the competition and start
                     trading when the competitions start
                   </Typography>
-                  <Button
-                    variant='contained'
-                    color='primary'
+                  <ContainedButton
+                    label='Claim Tokens'
                     onClick={showClaimToken}
-                  >
-                    Claim Tokens
-                  </Button>
+                  />
                   <Divider />
                   <Box className={classes.socialContainer}>
                     <Typography>Share on:</Typography>
