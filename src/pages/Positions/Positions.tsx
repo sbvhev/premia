@@ -1480,10 +1480,7 @@ const Positions: React.FC = () => {
                                 </Typography>
                                 <DaiIcon />
                               </Box>
-                              {formatNumber(
-                                Number(formatBigNumber(userOwnedOption.size)) *
-                                  Number(perOptionValue),
-                              )}
+                              {formatNumber(Number(perOptionValue))}
                             </Box>
                             <Box className={classes.cardRow}>
                               <Box display='flex' alignItems='center'>
@@ -1555,8 +1552,8 @@ const Positions: React.FC = () => {
                       const perOptionValue = Math.max(
                         0,
                         isCall
-                          ? Number(formatBigNumber(option.strike)) - price
-                          : price - Number(formatBigNumber(option.strike)),
+                          ? price - Number(formatBigNumber(option.strike))
+                          : Number(formatBigNumber(option.strike)) - price,
                       );
 
                       return (
