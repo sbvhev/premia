@@ -932,13 +932,13 @@ const Positions: React.FC = () => {
   );
 
   const ExpiredOptionsSwitch = () => {
-    const iconWaringMobileShift = deviceWidth / 4 + 23;
+    // const iconWaringMobileShift = deviceWidth / 4 + 23;
     return (
       <Box
         width={mobileWindowSize ? '50%' : 'auto'}
         height={mobileWindowSize ? '100%' : 'auto'}
       >
-        <Box
+        {/* <Box
           className={classes.expiredIcon}
           style={
             !mobileWindowSize
@@ -951,7 +951,7 @@ const Positions: React.FC = () => {
           }
         >
           <p>{1}</p>
-        </Box>
+        </Box> Hidden until feature complete */}
         <Box
           display='flex'
           alignItems='center'
@@ -1436,8 +1436,8 @@ const Positions: React.FC = () => {
                       const perOptionValue = Math.max(
                         0,
                         isCall
-                          ? Number(formatBigNumber(option.strike)) - price
-                          : price - Number(formatBigNumber(option.strike)),
+                          ? price - Number(formatBigNumber(option.strike))
+                          : Number(formatBigNumber(option.strike)) - price,
                       );
 
                       return (
@@ -1485,7 +1485,10 @@ const Positions: React.FC = () => {
                                 </Typography>
                                 <DaiIcon />
                               </Box>
-                              {formatNumber(Number(perOptionValue))}
+                              {formatNumber(
+                                Number(formatBigNumber(userOwnedOption.size)) *
+                                  perOptionValue,
+                              )}
                             </Box>
                             <Box className={classes.cardRow}>
                               <Box display='flex' alignItems='center'>
@@ -1523,7 +1526,14 @@ const Positions: React.FC = () => {
                               ) : (
                                 <Button
                                   fullWidth
-                                  color='primary'
+                                  color={
+                                    formatNumber(perOptionValue) === '0'
+                                      ? 'secondary'
+                                      : 'primary'
+                                  }
+                                  disabled={
+                                    formatNumber(perOptionValue) === '0'
+                                  }
                                   onClick={() =>
                                     handleExercise(userOwnedOption)
                                   }
@@ -1620,7 +1630,12 @@ const Positions: React.FC = () => {
                               </Box>
                             ) : (
                               <Button
-                                color='primary'
+                                color={
+                                  formatNumber(perOptionValue) === '0'
+                                    ? 'secondary'
+                                    : 'primary'
+                                }
+                                disabled={formatNumber(perOptionValue) === '0'}
                                 onClick={() => handleExercise(userOwnedOption)}
                               >
                                 Exercise
