@@ -22,8 +22,7 @@ const PremiaETHToken: Token = {
   name: 'Premia',
   symbol: 'PREMIA',
   decimals: 18,
-  logoURI:
-    'https://tokens.1inch.exchange/0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70.png',
+  logoURI: '/images/PremiaTokenLogo.svg',
 };
 
 const PremiaBSCToken: Token = {
