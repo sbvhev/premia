@@ -208,6 +208,7 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
               alignItems='center'
               marginRight='2px'
               className='startIcon'
+              style={{ backgroundColor: 'transparent' }}
             >
               {startIcon}
             </Box>
@@ -225,6 +226,7 @@ const ContainedButton: React.FC<ContainedButtonProps> = ({
               alignItems='center'
               marginLeft='8px'
               className='endIcon'
+              style={{ backgroundColor: 'transparent' }}
             >
               {endIcon}
             </Box>
