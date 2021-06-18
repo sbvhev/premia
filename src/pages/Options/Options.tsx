@@ -202,7 +202,6 @@ const Options: React.FC = () => {
   const { account } = useWeb3();
   const { optionPool, optionPoolContract } = usePools();
   const { slippagePercentage } = useSlippagePercentage();
-  console.log('slippage', slippagePercentage);
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),

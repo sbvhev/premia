@@ -140,10 +140,16 @@ export function useSize() {
 
 export function useOnChainOptionData() {
   const underlyingPrice = useUnderlyingPrice();
-  const { underlying, strikePrice, size, maturityDate, totalCost } =
-    useSelector<AppState, AppState['options']>(
-      (state: AppState) => state.options,
-    );
+  const {
+    underlying,
+    strikePrice,
+    size,
+    maturityDate,
+    totalCost,
+    slippagePercentage,
+  } = useSelector<AppState, AppState['options']>(
+    (state: AppState) => state.options,
+  );
 
   const getMaturity = (days: number) => {
     const ONE_DAY = 3600 * 24;
@@ -153,12 +159,16 @@ export function useOnChainOptionData() {
     );
   };
 
+  const slippage = slippagePercentage / 100;
   const daysToMaturity = moment(maturityDate).diff(moment(), 'days');
   const maturity = getMaturity(daysToMaturity).toHexString();
   const strike64x64 = fixedFromFloat(strikePrice || 1).toHexString();
   const spot64x64 = fixedFromFloat(underlyingPrice || 1).toHexString();
   const optionSize = floatToBigNumber(size, underlying.decimals);
-  const maxCost = floatToBigNumber(totalCost * 100, underlying.decimals);
+  const maxCost = floatToBigNumber(
+    totalCost * (1 + slippage),
+    underlying.decimals,
+  );
 
   return {
     maturity,

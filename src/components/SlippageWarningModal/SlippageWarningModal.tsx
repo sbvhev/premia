@@ -112,14 +112,14 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-export interface SwapModalProps {
+export interface WarningModalProps {
   open: boolean;
   onClose: () => void;
   onAgree: () => void;
   onDisagree: () => void;
 }
 
-const SettingsConfirmation: React.FC<SwapModalProps> = ({
+const SlippageWarningModal: React.FC<WarningModalProps> = ({
   open,
   onClose,
   onAgree,
@@ -198,4 +198,4 @@ const SettingsConfirmation: React.FC<SwapModalProps> = ({
   );
 };
 
-export default SettingsConfirmation;
+export default SlippageWarningModal;

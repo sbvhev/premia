@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Typography, Modal, Box, Tooltip } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-import { ModalContainer, ContainedButton } from 'components';
+import {
+  ModalContainer,
+  ContainedButton,
+  SlippageWarningModal,
+} from 'components';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
 import { ReactComponent as PercentageIcon } from 'assets/svg/BigPercentage.svg';
@@ -136,6 +140,20 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
   const [customSlippage, setCustomSlippage] = useState(
     slippagePercentage ? slippagePercentage.toString() : '',
   );
+  const [showHighSlippageWarning, setShowHighSlippageWarning] =
+    React.useState(true);
+
+  React.useEffect(() => {
+    const hasAcceptedRisk = localStorage.getItem('Accepted_high_slippage_risk');
+    if (hasAcceptedRisk) {
+      setShowHighSlippageWarning(false);
+    }
+  }, []);
+
+  const handleSetExtraHighSlippage = () => {
+    localStorage.setItem('Accepted_high_slippage_risk', 'true');
+    setShowHighSlippageWarning(false);
+  };
 
   const handleChangeCustomSlippage = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -154,80 +172,92 @@ const SlippageModal: React.FC<ConfirmTermsModalProps> = ({ open, onClose }) => {
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalContainer size='md'>
-        <Box className={classes.wrapper}>
-          <Box
-            className={classes.mainCard}
-            style={palette.type === 'light' ? { border: 'none' } : {}}
-          >
-            <Box className={classes.topSection}>
-              <Typography className={classes.title}>
-                Slippage tolerance
-              </Typography>
-              <Box width='100%'>
-                <Box display='flex' width='100%' alignItems='center'>
-                  <Typography className={classes.elementHeader}>
-                    Max slippage percent
-                  </Typography>
-                  <Tooltip
-                    title='The maximum price slippage you are willing to incur on a trade.'
-                    arrow
-                  >
-                    <InfoIcon
-                      fill={palette.secondary.main}
-                      style={{ marginLeft: '6px' }}
+    <>
+      <Modal open={open} onClose={onClose}>
+        <ModalContainer size='md'>
+          <Box className={classes.wrapper}>
+            <Box
+              className={classes.mainCard}
+              style={palette.type === 'light' ? { border: 'none' } : {}}
+            >
+              <Box className={classes.topSection}>
+                <Typography className={classes.title}>
+                  Slippage tolerance
+                </Typography>
+                <Box width='100%'>
+                  <Box display='flex' width='100%' alignItems='center'>
+                    <Typography className={classes.elementHeader}>
+                      Max slippage percent
+                    </Typography>
+                    <Tooltip
+                      title='The maximum price slippage you are willing to incur on a trade.'
+                      arrow
+                    >
+                      <InfoIcon
+                        fill={palette.secondary.main}
+                        style={{ marginLeft: '6px' }}
+                      />
+                    </Tooltip>
+                  </Box>
+                  <Box className={classes.inputContainer}>
+                    <input
+                      value={customSlippage}
+                      onChange={handleChangeCustomSlippage}
+                      className={classes.borderedInput}
+                      placeholder='Custom'
                     />
-                  </Tooltip>
+                    <PercentageIcon
+                      fill={palette.text.secondary}
+                      style={
+                        !mobile
+                          ? {
+                              position: 'absolute',
+                              marginTop: '15px',
+                              height: '16px',
+                              width: '14px',
+                              left: 59,
+                            }
+                          : {
+                              position: 'absolute',
+                              marginTop: '15px',
+                              height: '16px',
+                              width: '14px',
+                              left: 'calc(50% - 140px)',
+                            }
+                      }
+                    />
+                  </Box>
                 </Box>
-                <Box className={classes.inputContainer}>
-                  <input
-                    value={customSlippage}
-                    onChange={handleChangeCustomSlippage}
-                    className={classes.borderedInput}
-                    placeholder='Custom'
-                  />
-                  <PercentageIcon
-                    fill={palette.text.secondary}
-                    style={
-                      !mobile
-                        ? {
-                            position: 'absolute',
-                            marginTop: '15px',
-                            height: '16px',
-                            width: '14px',
-                            left: 59,
-                          }
-                        : {
-                            position: 'absolute',
-                            marginTop: '15px',
-                            height: '16px',
-                            width: '14px',
-                            left: 'calc(50% - 140px)',
-                          }
-                    }
-                  />
-                </Box>
+                <ContainedButton
+                  label='Confirm'
+                  disabled={!customSlippage}
+                  fullWidth
+                  onClick={onConfirm}
+                />
               </Box>
-              <ContainedButton
-                label='Confirm'
-                disabled={!customSlippage}
-                fullWidth
-                onClick={onConfirm}
-              />
+            </Box>
+            <Box
+              onClick={onClose}
+              className={
+                !mobile ? classes.exitContainer : classes.exitContainerMobile
+              }
+            >
+              <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
             </Box>
           </Box>
-          <Box
-            onClick={onClose}
-            className={
-              !mobile ? classes.exitContainer : classes.exitContainerMobile
-            }
-          >
-            <img src={XOut} alt='Exit' style={{ padding: '6px' }} />
-          </Box>
-        </Box>
-      </ModalContainer>
-    </Modal>
+        </ModalContainer>
+      </Modal>
+      <SlippageWarningModal
+        open={
+          customSlippage !== '' &&
+          parseFloat(customSlippage) > 5 &&
+          showHighSlippageWarning
+        }
+        onClose={() => setCustomSlippage('')}
+        onAgree={handleSetExtraHighSlippage}
+        onDisagree={() => setCustomSlippage('')}
+      />
+    </>
   );
 };
 
