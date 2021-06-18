@@ -33,7 +33,6 @@ import {
 
 import {
   DataTable,
-  LineChart,
   DonutChart,
   PositionCloseModal,
   SwitchWithGlider,
@@ -48,6 +47,8 @@ import { ReactComponent as PutIcon } from 'assets/svg/PutIcon.svg';
 import { ReactComponent as WarningIcon } from 'assets/svg/WarningIcon.svg';
 import NoPositionYield from 'assets/images/NoPositionYield.png';
 import NoPositionOptions from 'assets/images/NoPositionOptions.png';
+import LargeCapitalIcon from 'assets/svg/LargeCapitalIcon.svg';
+import LargeReturnIcon from 'assets/svg/LargeReturnIcon.svg';
 import CapitalIcon from 'assets/svg/CapitalIcon.svg';
 import ReturnIcon from 'assets/svg/ReturnIcon.svg';
 
@@ -89,7 +90,7 @@ const getYieldHeadCells = () => [
   {
     id: 'expectedapy',
     numeric: false,
-    label: 'Expected APY',
+    label: 'Current ROI',
     sortKey: (yieldItem: any) => yieldItem?.apy,
   },
   {
@@ -186,8 +187,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     maxWidth: 'unset',
   },
   yieldBox: {
-    width: 38,
-    height: 38,
+    width: ({ smallWindowSize }: any) => (smallWindowSize ? 34 : 56),
+    height: ({ smallWindowSize }: any) => (smallWindowSize ? 34 : 56),
     position: 'relative',
     '& div': {
       opacity: 0.2,
@@ -206,7 +207,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: `linear-gradient(121.21deg, ${palette.error.main} 7.78%, ${palette.error.dark} 118.78%)`,
   },
   price: {
-    fontSize: 18,
+    fontSize: ({ smallWindowSize }: any) => (smallWindowSize ? 18 : 24),
     lineHeight: 1,
     fontWeight: 700,
     display: 'flex',
@@ -220,6 +221,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   subtitle: {
     fontSize: 14,
     lineHeight: 1.2,
+    whiteSpace: 'nowrap',
   },
   errorIcon: {
     position: 'absolute',
@@ -439,6 +441,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   plInfoContainer: {
     display: 'flex',
+    justifyContent: 'space-around',
+
     '@media (max-width: 500px)': {
       marginLeft: 12,
       marginTop: 8,
@@ -452,6 +456,17 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
         fill: palette.text.secondary,
       },
     },
+  },
+  profitLossSection: {
+    height: '100%',
+    width: '100%',
+  },
+  borderedPlTitle: {
+    width: '100%',
+    borderBottom: `1px solid ${palette.divider}`,
+    padding: '18px',
+    marginBottom: '18px',
+    marginLeft: '0px',
   },
   tableHeading: {
     height: 56,
@@ -709,55 +724,14 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
 }));
 
-const getTodayHours = () => {
-  const hoursPerDay = 24;
-  let formattedTime;
-  let times = [];
-  for (let i = 0; i < hoursPerDay + 1; i++) {
-    formattedTime = Moment(i, 'hh').format('h a');
-    times.push(formattedTime);
-  }
-  return times;
-};
-
-const getThisWeekDates = () => {
-  let startOfWeek = Moment().startOf('week');
-  let endOfWeek = Moment().endOf('week');
-
-  let days = [];
-  let day = startOfWeek;
-
-  while (day <= endOfWeek) {
-    days.push(Moment(day.toDate()).format('YYYY/MM/DD'));
-    day = day.clone().add(1, 'd');
-  }
-
-  return days;
-};
-
-const getThisMonthDates = () => {
-  let startOfMonth = Moment().startOf('month');
-  let endOfMonth = Moment().endOf('month');
-
-  let days = [];
-  let day = startOfMonth;
-
-  while (day <= endOfMonth) {
-    days.push(Moment(day.toDate()).format('MMM DD'));
-    day = day.clone().add(1, 'd');
-  }
-
-  return days;
-};
-
 const Positions: React.FC = () => {
   const [darkMode] = useDarkModeManager();
-  const classes = useStyles({ darkMode });
   const theme = useTheme();
   const mobileWindowSize = useMediaQuery(theme.breakpoints.down('xs'));
+  const smallWindowSize = useMediaQuery(theme.breakpoints.down('sm'));
+  const classes = useStyles({ darkMode, smallWindowSize });
 
   const [positionFilterIndex, setPositionFilterIndex] = useState(0);
-  const [dateFilterIndex, setDateFilterIndex] = useState(0);
   const [optionFilterIndex, setOptionFilterIndex] = useState(0);
   const [positionModalOpen, setPositionModalOpen] = useState(false);
   const [activeExerciseOption, setActiveExerciseOption] =
@@ -796,18 +770,6 @@ const Positions: React.FC = () => {
 
   const handleFilterYield = () => {
     setPositionFilterIndex(1);
-  };
-
-  const handleFilterToday = () => {
-    setDateFilterIndex(0);
-  };
-
-  const handleFilterThisWeek = () => {
-    setDateFilterIndex(1);
-  };
-
-  const handleFilterThisMonth = () => {
-    setDateFilterIndex(2);
   };
 
   const handleFilterCurrentOptions = () => {
@@ -858,57 +820,6 @@ const Positions: React.FC = () => {
     >
       <YieldIcon />
       <Typography style={{ marginTop: '3px' }}>Yield</Typography>
-    </Box>
-  );
-
-  const TodayFilterSwitch = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      className={cx(
-        classes.inactiveSwitch,
-        dateFilterIndex === 0 && classes.activeSwitch,
-      )}
-      width={mobileWindowSize ? '33.3%' : '102px'}
-      height={mobileWindowSize ? '31px' : '42px'}
-      onClick={handleFilterToday}
-    >
-      <Typography>Today</Typography>
-    </Box>
-  );
-
-  const WeekFilterSwitch = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      className={cx(
-        classes.inactiveSwitch,
-        dateFilterIndex === 1 && classes.activeSwitch,
-      )}
-      width={mobileWindowSize ? '33.3%' : '102px'}
-      height={mobileWindowSize ? '31px' : '42px'}
-      onClick={handleFilterThisWeek}
-    >
-      <Typography>This Week</Typography>
-    </Box>
-  );
-
-  const MonthFilterSwitch = () => (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      width={mobileWindowSize ? '33.3%' : '102px'}
-      height={mobileWindowSize ? '31px' : '42px'}
-      className={cx(
-        classes.inactiveSwitch,
-        dateFilterIndex === 2 && classes.activeSwitch,
-      )}
-      onClick={handleFilterThisMonth}
-    >
-      <Typography>This month</Typography>
     </Box>
   );
 
@@ -972,33 +883,19 @@ const Positions: React.FC = () => {
     );
   };
 
-  const chartTypes = ['daily', 'weekly', 'monthly'];
-  const chartDateCats = [
-    getTodayHours(),
-    getThisWeekDates(),
-    getThisMonthDates(),
-  ];
-  const chartDateData = [
-    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
-    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
-  ];
-  const chartWeekData = [3234, 6432, 1234, 3234, 6432, 1234, 3234];
-  const chartMonthData = [
-    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
-    3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234, 3234, 6432, 1234,
-    3234, 6432, 1234, 3234, 6432, 1234,
-  ];
-  const chartData = [chartDateData, chartWeekData, chartMonthData];
-  const plPercents = [40, 30, 20, 10, 0, -10, -20];
-  const boundIndex = plPercents.findIndex((val) => val === 0);
-
   const totalOptionAllocation = useMemo(() => {
     return options.reduce((total, userOwned) => {
       return (
         total +
-        Number(
+        (Number(
           formatUnits(userOwned.size, userOwned.option.underlying.decimals),
-        ) *
+        ) -
+          Number(
+            formatUnits(
+              userOwned.totalExercised,
+              userOwned.option.underlying.decimals,
+            ),
+          )) *
           tokenPrices[userOwned.option.underlying.symbol]
       );
     }, 0);
@@ -1069,6 +966,22 @@ const Positions: React.FC = () => {
     }, []);
   }, [pools, tokenPrices, totalYieldAllocation]);
 
+  const yieldAverageReturn = useMemo(() => {
+    return pools.reduce((total, userOwned, i) => {
+      return (
+        total +
+        Number(
+          formatNumber(
+            (Number(userOwned.totalPremiumsEarned) /
+              Number(userOwned.totalDeposited)) *
+              100,
+          ),
+        ) /
+          (i + 1)
+      );
+    }, 0);
+  }, [pools]);
+
   return (
     <>
       {activeExerciseOption && (
@@ -1130,65 +1043,103 @@ const Positions: React.FC = () => {
             />
           )}
         </Box>
-        {!noPositions && (
-          <Box
-            className={
-              !mobileWindowSize
-                ? classes.switchContainer
-                : classes.switchContainerMobile
-            }
-            width={!mobileWindowSize ? '335px' : '100%'}
-            style={
-              darkMode
-                ? {}
-                : {
-                    borderColor: 'transparent',
-                    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.0746353)',
-                  }
-            }
-            marginTop={!mobileWindowSize ? 0 : '10px'}
-          >
-            {!mobileWindowSize ? (
-              <SwitchWithGlider
-                elements={[
-                  TodayFilterSwitch,
-                  WeekFilterSwitch,
-                  MonthFilterSwitch,
-                ]}
-                defaultIndex={dateFilterIndex}
-                marginBetweenSwitches={7}
-                gliderWidth={102}
-                gliderHeight={42}
-              />
-            ) : (
-              <SwitchWithGlider
-                elements={[
-                  TodayFilterSwitch,
-                  WeekFilterSwitch,
-                  MonthFilterSwitch,
-                ]}
-                defaultIndex={dateFilterIndex}
-                marginBetweenSwitches={-2}
-                gliderWidth={(deviceWidth - 50) / 3}
-                gliderHeight={31}
-              />
-            )}
-          </Box>
-        )}
       </Grid>
       {!noPositions && (
         <Box mb={2.5} ml={!mobileWindowSize ? '6px' : ''}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={12} lg={8}>
-              <Container fixed className={classes.fullWidth}>
-                <Box className={classes.infoHeading}>
-                  <Box>
-                    <Typography className={classes.mainTitle}>
-                      My P&L
-                    </Typography>
+          <Grid
+            container
+            spacing={2}
+            wrap={smallWindowSize ? 'wrap' : 'nowrap'}
+          >
+            <Grid item xs={12} sm={12} md={12}>
+              {smallWindowSize ? (
+                <Container fixed className={classes.fullWidth}>
+                  <Box className={classes.infoHeading}>
+                    <Box>
+                      <Typography className={classes.mainTitle}>
+                        My P&L
+                      </Typography>
+                    </Box>
+                    <Box className={classes.plInfoContainer}>
+                      <Box display='flex' alignItems='center'>
+                        <Box className={classes.yieldBox}>
+                          <Box
+                            width={1}
+                            height={1}
+                            borderRadius={7}
+                            className={classes.capital}
+                          />
+                          <img src={CapitalIcon} alt='Capital Active' />
+                        </Box>
+                        <Box ml={1}>
+                          <Typography
+                            color='textSecondary'
+                            className={classes.subtitle}
+                          >
+                            Capital in{' '}
+                            {positionFilterIndex === 0 ? 'options' : 'pools'}
+                          </Typography>
+                          <Typography
+                            color='textPrimary'
+                            component='h2'
+                            className={classes.price}
+                          >
+                            {formatNumber(
+                              positionFilterIndex === 0
+                                ? totalOptionAllocation
+                                : totalYieldAllocation,
+                            )}
+                            <DaiIcon />
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box mx={2.5} display='flex' alignItems='center'>
+                        <Box className={classes.yieldBox}>
+                          <Box
+                            width={1}
+                            height={1}
+                            borderRadius={7}
+                            className={classes.return}
+                          />
+                          <img src={ReturnIcon} alt='Current Return' />
+                        </Box>
+                        <Box ml={1}>
+                          <Typography
+                            color='textSecondary'
+                            className={classes.subtitle}
+                          >
+                            Average return
+                          </Typography>
+                          <Typography
+                            color='textPrimary'
+                            component='h2'
+                            className={classes.price}
+                          >
+                            {yieldAverageReturn}%
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
                   </Box>
-                  <Box className={classes.plInfoContainer}>
-                    <Box display='flex' alignItems='center'>
+                </Container>
+              ) : (
+                <Container fixed className={classes.profitLossSection}>
+                  <Typography
+                    className={cx(classes.mainTitle, classes.borderedPlTitle)}
+                  >
+                    My P&L
+                  </Typography>
+
+                  <Box
+                    width={1}
+                    padding={4}
+                    className={classes.plInfoContainer}
+                  >
+                    <Box
+                      display='flex'
+                      flexDirection='column'
+                      alignItems='center'
+                    >
                       <Box className={classes.yieldBox}>
                         <Box
                           width={1}
@@ -1196,26 +1147,41 @@ const Positions: React.FC = () => {
                           borderRadius={7}
                           className={classes.capital}
                         />
-                        <img src={CapitalIcon} alt='Capital Active' />
+                        <img src={LargeCapitalIcon} alt='Capital Active' />
                       </Box>
-                      <Box ml={1}>
+                      <Box
+                        mt={1}
+                        display='flex'
+                        flexDirection='column'
+                        alignItems='center'
+                      >
                         <Typography
                           color='textSecondary'
                           className={classes.subtitle}
                         >
-                          Capital in options
+                          Capital in{' '}
+                          {positionFilterIndex === 0 ? 'options' : 'pools'}
                         </Typography>
                         <Typography
                           color='textPrimary'
                           component='h2'
                           className={classes.price}
                         >
-                          124,098
+                          {formatNumber(
+                            positionFilterIndex === 0
+                              ? totalOptionAllocation
+                              : totalYieldAllocation,
+                          )}
                           <DaiIcon />
                         </Typography>
                       </Box>
                     </Box>
-                    <Box mx={2.5} display='flex' alignItems='center'>
+                    <Box
+                      mx={2.5}
+                      display='flex'
+                      flexDirection='column'
+                      alignItems='center'
+                    >
                       <Box className={classes.yieldBox}>
                         <Box
                           width={1}
@@ -1223,9 +1189,14 @@ const Positions: React.FC = () => {
                           borderRadius={7}
                           className={classes.return}
                         />
-                        <img src={ReturnIcon} alt='Current Return' />
+                        <img src={LargeReturnIcon} alt='Current Return' />
                       </Box>
-                      <Box ml={1}>
+                      <Box
+                        mt={1}
+                        display='flex'
+                        flexDirection='column'
+                        alignItems='center'
+                      >
                         <Typography
                           color='textSecondary'
                           className={classes.subtitle}
@@ -1237,40 +1208,15 @@ const Positions: React.FC = () => {
                           component='h2'
                           className={classes.price}
                         >
-                          12%
+                          {yieldAverageReturn}%
                         </Typography>
                       </Box>
                     </Box>
                   </Box>
-                </Box>
-                <Divider />
-                <Box display='flex' position='relative'>
-                  <Box className={classes.plPercents}>
-                    {plPercents.map((val, ind) => (
-                      <Typography key={ind}>
-                        {val}
-                        {val !== 0 && '%'}
-                      </Typography>
-                    ))}
-                    <Box
-                      className={classes.boundLine}
-                      top={boundIndex * 26 + 23}
-                    />
-                  </Box>
-                  <Box flex={1} mb={-1.5} mr={1.5}>
-                    <LineChart
-                      isCall
-                      data={chartData[dateFilterIndex]}
-                      categories={chartDateCats[dateFilterIndex]}
-                      chartType={chartTypes[dateFilterIndex]}
-                      width='100%'
-                      height={200}
-                    />
-                  </Box>
-                </Box>
-              </Container>
+                </Container>
+              )}
             </Grid>
-            <Grid item container sm={12} md={12} lg={4}>
+            <Grid item container sm={12} md={12}>
               <Container fixed className={classes.fullWidth}>
                 <Grid container direction='column' style={{ height: '100%' }}>
                   <Box className={classes.infoHeading}>
@@ -1749,7 +1695,7 @@ const Positions: React.FC = () => {
                             <Box className={classes.cardRow}>
                               <Box display='flex' alignItems='center'>
                                 <Typography color='textSecondary'>
-                                  Expected APY
+                                  Current ROI
                                 </Typography>
                               </Box>
                               {formatNumber(

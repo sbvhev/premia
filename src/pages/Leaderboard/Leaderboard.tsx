@@ -330,7 +330,7 @@ const Leaderboard: React.FC = () => {
   const leaderItems = [
     {
       rank: 1,
-      user: '0x3806410847af6cC861D8457b1E4aC029778AAf20',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -338,7 +338,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 2,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -346,7 +346,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 3,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -354,7 +354,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 4,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -362,7 +362,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 5,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: 124001.04,
       optionsPL: 100002.01,
       vaultsPL: 23999.03,
@@ -370,7 +370,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 6,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: -22341.01,
       optionsPL: -23631.4,
       vaultsPL: 1929.41,
@@ -378,7 +378,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 7,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: -22341.01,
       optionsPL: -23631.4,
       vaultsPL: 1929.41,
@@ -386,7 +386,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 8,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: -22341.01,
       optionsPL: -23631.4,
       vaultsPL: 1929.41,
@@ -394,7 +394,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 9,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: -22341.01,
       optionsPL: -23631.4,
       vaultsPL: 1929.41,
@@ -402,7 +402,7 @@ const Leaderboard: React.FC = () => {
     },
     {
       rank: 10,
-      user: '0x6EEE30E5eCd010ce35d167C649c89ee9E990D391',
+      user: '0x6942050847af6cC86977l024964aC021337h4x0r',
       totalPL: -22341.01,
       optionsPL: -23631.4,
       vaultsPL: 1929.41,

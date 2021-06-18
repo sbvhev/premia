@@ -31,19 +31,19 @@ export function useExerciseOption(onComplete: () => void = () => {}) {
       );
       const longTokenId = userOwned.option.longTokenId;
 
-      console.log('longtokenId', longTokenId);
-
       const gasEstimate = await optionPoolContract.estimateGas[
-        'exercise((uint256,uint256))'
+        'exerciseFrom((address,uint256,uint256))'
       ]({
+        holder: account,
         longTokenId,
         amount,
       });
 
       try {
         const tx = await transact(
-          optionPoolContract.exercise(
+          optionPoolContract.exerciseFrom(
             {
+              holder: account,
               longTokenId,
               amount,
             },

@@ -277,7 +277,7 @@ const AccountButtons: React.FC<AccountButtonsProps> = ({ mobile, onHide }) => {
     'doNotShowDisclaimerAgain',
   );
   const getCountDownStr = () => {
-    const hours = moment.utc('2021-06-18T18:00:00').diff(moment(), 'hours');
+    const hours = moment.utc('2021-06-21T18:00:00').diff(moment(), 'hours');
     setCountDownStr(
       Math.floor(hours / 24) +
         'd' +
