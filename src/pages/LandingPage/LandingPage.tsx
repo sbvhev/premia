@@ -9,12 +9,12 @@ import {
   Typography,
   Button,
   Box,
-  Menu,
+  Popover,
   MenuItem,
   ListItemIcon,
   ListItemText,
   useMediaQuery,
-  MenuProps,
+  PopoverProps,
 } from '@material-ui/core';
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 import ScrollAnimation from 'react-animate-on-scroll';
@@ -107,7 +107,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
           opacity: 1,
 
           '& path': {
-            fill: 'rgba(255, 255, 255, 0.8)',
+            fill: 'rgba(255, 255, 255, 0.7)',
           },
         },
       },
@@ -158,7 +158,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       margin: 0,
 
       '& path': {
-        fill: 'rgba(255, 255, 255, 0.8)',
+        fill: 'rgba(255, 255, 255, 0.7)',
       },
     },
   },
@@ -185,7 +185,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'fixed',
     width: '100%',
     padding: 0,
-    height: 64,
+    height: 70,
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
     transition: 'height 0.3s ease',
 
@@ -193,9 +193,6 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: '100%',
       margin: 'auto',
     },
-  },
-  expanded: {
-    height: 90,
   },
   menuItem: {
     color: 'rgba(255, 255,255, 0.7)',
@@ -1146,7 +1143,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 
     '& > div': {
       position: 'sticky',
-      height: 'calc(100vh - 400px)',
+      height: 450,
       top: 150,
       bottom: 250,
       left: 0,
@@ -1225,12 +1222,18 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
 }));
 
 const StyledMenu = withStyles({
+  root: {
+    pointerEvents: 'none',
+  },
   paper: {
     border: '1px solid rgba(255, 255, 255, 0.25)',
     width: 140,
+    pointerEvents: 'auto',
+    padding: '10px 0',
+    top: '66px !important',
   },
-})((props: MenuProps) => (
-  <Menu
+})((props: PopoverProps) => (
+  <Popover
     elevation={0}
     getContentAnchorEl={null}
     anchorOrigin={{
@@ -1288,7 +1291,7 @@ const LandingPage: React.FC = () => {
     setMenuOpen(false);
   };
 
-  const handleClick = (event: React.BaseSyntheticEvent) => {
+  const handleMouseEnter = (event: React.BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -1322,13 +1325,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <Grid container className={classes.mainContainer}>
-      <AppBar
-        position='static'
-        className={cn(
-          classes.appBar,
-          scrollPos < 50 && !mobile ? classes.expanded : '',
-        )}
-      >
+      <AppBar position='static' className={classes.appBar}>
         <Toolbar>
           <Container className={classes.container}>
             <AnchorLink href='#hero' onClick={preventDefault}>
@@ -1387,16 +1384,19 @@ const LandingPage: React.FC = () => {
                 <Button
                   className={classes.usefulLinks}
                   aria-haspopup='true'
-                  onClick={handleClick}
+                  onClick={handleMouseEnter}
+                  onMouseOver={handleMouseEnter}
                 >
                   Useful links
                   {anchorEl ? <ExpandLess /> : <ExpandMore />}
                 </Button>
                 <StyledMenu
                   anchorEl={anchorEl}
-                  keepMounted
                   open={!!anchorEl}
+                  disableScrollLock
+                  onMouseLeave={handleClose}
                   onClose={handleClose}
+                  disableRestoreFocus
                 >
                   <StyledMenuItem>
                     <a

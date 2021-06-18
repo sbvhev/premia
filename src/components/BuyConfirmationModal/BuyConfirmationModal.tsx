@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  Button,
   Typography,
   Modal,
   Box,
@@ -26,7 +25,7 @@ import { useIsDarkMode } from 'state/user/hooks';
 import { usePurchaseOption } from 'hooks';
 import { formatCompact, formatNumber } from 'utils/formatNumber';
 
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { ReactComponent as HelpIcon } from 'assets/svg/Help.svg';
 import XOut from 'assets/svg/XOutGrey.svg';
 import { OptionType } from 'web3/options';
@@ -378,7 +377,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                           height='20'
                           rx='4'
                           fill='#5294FF'
-                          fill-opacity='0.2'
+                          fillOpacity='0.2'
                         />
 
                         <rect
@@ -388,7 +387,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                           height='19'
                           rx='3.5'
                           stroke='#5294FF'
-                          stroke-opacity='0.5'
+                          strokeOpacity='0.5'
                         />
                       </svg>
                     }
@@ -405,7 +404,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                           height='20'
                           rx='4'
                           fill='#5294FF'
-                          fill-opacity='0.2'
+                          fillOpacity='0.2'
                         />
                         <rect
                           x='0.5'
@@ -414,7 +413,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                           height='19'
                           rx='3.5'
                           stroke='#5294FF'
-                          stroke-opacity='0.5'
+                          strokeOpacity='0.5'
                         />
                         <path
                           d='M6 9.79777L9.08199 13L15 6.86891L14.1504 6L9.08199 11.25L6.83786 8.92275L6 9.79777Z'
@@ -431,15 +430,14 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
                   </Typography>
                 </Box>
 
-                <Button
-                  color='primary'
-                  variant='contained'
+                <ContainedButton
+                  fullWidth
                   size='large'
+                  label={`Buy for ${formatCompact(totalCost)} ${
+                    activeToken?.symbol
+                  } ($${formatCompact(totalCostInUsd)})`}
                   onClick={onTransact}
-                >
-                  Buy for {formatCompact(totalCost)} {activeToken?.symbol} ($
-                  {formatCompact(totalCostInUsd)})
-                </Button>
+                />
               </Box>
             </Box>
             <Box

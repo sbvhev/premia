@@ -3,7 +3,6 @@ import {
   Typography,
   Modal,
   Box,
-  Button,
   Grid,
   Fade,
   Backdrop,
@@ -12,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
 import { chainIds, chainLabels, PARAMS } from 'utils';
 import { useWeb3 } from 'state/application/hooks';
-import { ModalContainer } from 'components';
+import { ModalContainer, ContainedButton } from 'components';
 import { ReactComponent as EthIcon } from 'assets/svg/ColoredEth.svg';
 import { ReactComponent as BSCIcon } from 'assets/svg/BSC.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/Polygon.svg';
@@ -41,14 +40,15 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   exitContainer: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 26,
+    right: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '6px',
+    borderRadius: '50%',
+    padding: '12px',
     cursor: 'pointer',
-    width: '20px',
+    width: '40px',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: palette.primary.dark,
@@ -138,6 +138,8 @@ export interface ChainModalProps {
 const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
   const { account, web3, chainId } = useWeb3();
   const classes = useStyles();
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
+
   let testnetLabel = '';
   switch (chainId) {
     case 3:
@@ -181,10 +183,18 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                       })}
                       onClick={() => {
                         const params = PARAMS[val];
-                        web3?.send('wallet_addEthereumChain', [
-                          params,
-                          account,
-                        ]);
+
+                        if (val < 56) {
+                          web3?.send('wallet_switchEthereumChain', [
+                            { chainId: params?.chainId },
+                            account,
+                          ]);
+                        } else {
+                          web3?.send('wallet_addEthereumChain', [
+                            params,
+                            account,
+                          ]);
+                        }
                       }}
                     >
                       {ind === 0 && <EthIcon />}
@@ -206,17 +216,21 @@ const ChainModal: React.FC<ChainModalProps> = ({ open, onClose }) => {
                 ))}
               </Grid>
               <Box p={'5px'} width={1}>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  className={classes.tradingButton}
-                >
-                  Switch to Rinkeby for trading competition
-                </Button>
+                <ContainedButton
+                  fullWidth
+                  size={!mobile ? 'large' : 'small'}
+                  label='Switch to Rinkeby for trading competition'
+                  onClick={() => {
+                    web3?.send('wallet_switchEthereumChain', [
+                      { chainId: '0x4' },
+                      account,
+                    ]);
+                  }}
+                />
               </Box>
-              <Button className={classes.exitContainer} onClick={onClose}>
+              <Box className={classes.exitContainer} onClick={onClose}>
                 <img src={XOut} alt='Exit' />
-              </Button>
+              </Box>
             </Box>
           </Box>
         </ModalContainer>
