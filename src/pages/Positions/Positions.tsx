@@ -1115,7 +1115,7 @@ const Positions: React.FC = () => {
                             component='h2'
                             className={classes.price}
                           >
-                            {yieldAverageReturn}%
+                            {formatNumber(yieldAverageReturn)}%
                           </Typography>
                         </Box>
                       </Box>
@@ -1208,7 +1208,7 @@ const Positions: React.FC = () => {
                           component='h2'
                           className={classes.price}
                         >
-                          {yieldAverageReturn}%
+                          {formatNumber(yieldAverageReturn)}%
                         </Typography>
                       </Box>
                     </Box>
