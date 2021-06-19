@@ -23,7 +23,9 @@ import {
   useUnderlying,
   useMaturityDate,
   useSize,
+  useStrikePrice,
   useSlippagePercentage,
+  usePricePerUnitInUsd,
 } from 'state/options/hooks';
 import { usePriceChanges, useWeb3 } from 'state/application/hooks';
 import { useIsDarkMode } from 'state/user/hooks';
@@ -32,6 +34,7 @@ import { useApproval, usePools, usePurchaseOption } from 'hooks';
 import { formatNumber, formatBigNumber } from 'utils/formatNumber';
 import { OptionType } from 'web3/options';
 import { CLevelChartItem } from 'web3/pools';
+import { useTokenBalance } from 'state/wallet/hooks';
 
 import OptionsFilter from './OptionsFilter';
 import OptionsPrice from './OptionsPrice';
@@ -201,12 +204,16 @@ const Options: React.FC = () => {
   const { totalCostInUsd } = useTotalCostInUsd();
   const { account } = useWeb3();
   const { optionPool, optionPoolContract } = usePools();
+  const { optionPool: userOwnedOptionPool } = usePools(true);
   const { slippagePercentage } = useSlippagePercentage();
+  const { pricePerUnitInUsd } = usePricePerUnitInUsd();
+  const { strikePrice } = useStrikePrice();
 
   const activeToken = useMemo(
     () => (optionType === OptionType.Call ? underlying : base),
     [optionType, base, underlying],
   );
+  const activeTokenBalance = useTokenBalance(account, activeToken);
 
   const { data: { clevelChartItems = [] } = {} } = useQuery(
     getCLevelChartItems,
@@ -216,15 +223,6 @@ const Options: React.FC = () => {
       variables: { poolId: optionPool?.id },
     },
   );
-
-  React.useEffect(() => {
-    const doesNotWantConfirmation = localStorage.getItem(
-      'BuyConfirmationModal_skip',
-    );
-    if (doesNotWantConfirmation) {
-      setShowBuyConfirmation(false);
-    }
-  }, []);
 
   const priceChanges = usePriceChanges();
   const underlyingPrice = useUnderlyingPrice();
@@ -246,22 +244,56 @@ const Options: React.FC = () => {
   );
   const classes = useStyles({ priceChange });
 
-  const totalAvailableInActiveToken = useMemo(
-    () =>
-      Number(
-        formatUnits(optionPool?.totalAvailable ?? 0, underlying.decimals),
-      ) / (optionType === OptionType.Call ? 1 : underlyingPrice),
-    [optionPool, underlying, optionType, underlyingPrice],
+  const maxBalanceSize = useMemo(() => {
+    return optionType === OptionType.Call
+      ? activeTokenBalance
+      : Number(activeTokenBalance) / pricePerUnitInUsd;
+  }, [activeTokenBalance, optionType, pricePerUnitInUsd]);
+  const maxPoolSize = useMemo(() => {
+    const poolSize = Number(
+      formatUnits(
+        optionPool?.totalAvailable || 0,
+        optionPool?.underlying.decimals,
+      ),
+    );
+    const userPoolSize = Number(
+      formatUnits(
+        userOwnedOptionPool?.totalAvailable || 0,
+        userOwnedOptionPool?.underlying.decimals,
+      ),
+    );
+    const realPoolSize = poolSize - userPoolSize;
+    return optionType === OptionType.Call
+      ? realPoolSize
+      : realPoolSize / strikePrice;
+  }, [optionPool, userOwnedOptionPool, optionType, strikePrice]);
+  const maxSize = useMemo(
+    () => Math.min(Number(maxBalanceSize), Number(maxPoolSize)),
+    [maxBalanceSize, maxPoolSize],
   );
 
   const sufficientAllowance = useMemo(
     () => Number(allowance) > 0 && Number(allowance) >= totalCostInUsd,
     [allowance, totalCostInUsd],
   );
-  const sufficientLiquidity = useMemo(
-    () => totalAvailableInActiveToken >= Number(size),
-    [totalAvailableInActiveToken, size],
-  );
+  const buyDisabled = useMemo(() => Number(size) > maxSize, [maxSize, size]);
+  const buyButtonLabel = useMemo(() => {
+    if (Number(size) > maxPoolSize) {
+      return 'Insufficient Liquidity';
+    } else if (Number(size) > Number(maxBalanceSize)) {
+      return 'Insufficient Balance';
+    }
+    return 'Buy Option';
+  }, [maxPoolSize, maxBalanceSize, size]);
+
+  React.useEffect(() => {
+    const doesNotWantConfirmation = localStorage.getItem(
+      'BuyConfirmationModal_skip',
+    );
+    if (doesNotWantConfirmation) {
+      setShowBuyConfirmation(false);
+    }
+  }, []);
 
   return (
     <>
@@ -538,12 +570,10 @@ const Options: React.FC = () => {
                 fullWidth
                 margin='6px 2px 0'
                 size='large'
-                disabled={!sufficientAllowance || !sufficientLiquidity}
+                disabled={!sufficientAllowance || buyDisabled}
                 color={optionType === OptionType.Call ? 'primary' : 'secondary'}
-                label={
-                  sufficientLiquidity ? 'Buy Option' : 'Insufficient Liquidity'
-                }
-                onClick={sufficientLiquidity ? handleBuyOption : () => {}}
+                label={buyButtonLabel}
+                onClick={!buyDisabled ? handleBuyOption : () => {}}
               />
             </Box>
           </Grid>

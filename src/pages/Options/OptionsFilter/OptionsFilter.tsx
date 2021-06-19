@@ -11,6 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { formatUnits } from 'ethers/lib/utils';
 import Calendar from 'react-calendar';
 import moment from 'moment';
 import cx from 'classnames';
@@ -23,9 +24,10 @@ import {
   useSize,
   useUnderlying,
   useBase,
+  usePricePerUnitInUsd,
 } from 'state/options/hooks';
 import { initialState as initialOptionsState } from 'state/options/reducer';
-import { useOutsideAlerter } from 'hooks';
+import { useOutsideAlerter, usePools } from 'hooks';
 import { useIsDarkMode } from 'state/user/hooks';
 import { useTokenBalance } from 'state/wallet/hooks';
 import { useWeb3 } from 'state/application/hooks';
@@ -311,8 +313,11 @@ const OptionFilter: React.FC = () => {
   const { optionType, setOptionType } = useOptionType();
   const { maturityDate, setMaturityDate } = useMaturityDate();
   const [hoverMaturityDate, setHoverMaturityDate] = useState<Date>(new Date());
+  const { pricePerUnitInUsd } = usePricePerUnitInUsd();
   const { strikePrice, setStrikePrice } = useStrikePrice();
   const { size, setSize } = useSize();
+  const { optionPool } = usePools();
+  const { optionPool: userOwnedOptionPool } = usePools(true);
   const { account } = useWeb3();
   const [maturityFocused, setMaturityFocused] = useState(false);
   const underlyingPrice = useUnderlyingPrice();
@@ -323,11 +328,33 @@ const OptionFilter: React.FC = () => {
     [optionType, base, underlying],
   );
   const activeTokenBalance = useTokenBalance(account, activeToken);
-  const maxSize = useMemo(() => {
+  const maxBalanceSize = useMemo(() => {
     return optionType === OptionType.Call
       ? activeTokenBalance
-      : Number(activeTokenBalance) / Number(underlyingPrice);
-  }, [activeTokenBalance, optionType, underlyingPrice]);
+      : Number(activeTokenBalance) / pricePerUnitInUsd;
+  }, [activeTokenBalance, optionType, pricePerUnitInUsd]);
+  const maxPoolSize = useMemo(() => {
+    const poolSize = Number(
+      formatUnits(
+        optionPool?.totalAvailable || 0,
+        optionPool?.underlying.decimals,
+      ),
+    );
+    const userPoolSize = Number(
+      formatUnits(
+        userOwnedOptionPool?.totalAvailable || 0,
+        userOwnedOptionPool?.underlying.decimals,
+      ),
+    );
+    const realPoolSize = poolSize - userPoolSize;
+    return optionType === OptionType.Call
+      ? realPoolSize
+      : realPoolSize / strikePrice;
+  }, [optionPool, userOwnedOptionPool, optionType, strikePrice]);
+  const maxSize = useMemo(
+    () => Math.min(Number(maxBalanceSize), Number(maxPoolSize)),
+    [maxBalanceSize, maxPoolSize],
+  );
 
   const TokenIcon = useMemo(
     () => getTokenIcon(underlying.symbol),
