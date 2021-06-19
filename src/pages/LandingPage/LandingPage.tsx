@@ -68,6 +68,11 @@ import VaultsBasicSVGBackground from 'assets/images/VaultBasic.png';
 import VaultsProSVGBackground from 'assets/images/VaultPro.png';
 import BackgroundTop from 'assets/images/BackgroundTop.png';
 import BackgroundBottom from 'assets/images/BackgroundBottom.png';
+import BullBanner from 'assets/images/BullBanner.png';
+import BearBanner from 'assets/images/BearBanner.png';
+import BullMobileBanner from 'assets/images/BullMobileBanner.png';
+import BearMobileBanner from 'assets/images/BearMobileBanner.png';
+import { ReactComponent as WinnerPrize } from 'assets/svg/WinnerPrize.svg';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   mainContainer: {
@@ -185,7 +190,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'fixed',
     width: '100%',
     padding: 0,
-    height: 70,
+    height: (props: any) => props.bannerVisible ? 144 : 70,
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
     transition: 'height 0.3s ease',
 
@@ -193,6 +198,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       width: '100%',
       margin: 'auto',
     },
+
+    [breakpoints.down('sm')]: {
+      height: (props: any) => props.bannerVisible ? 180 : 70
+    }
   },
   menuItem: {
     color: 'rgba(255, 255,255, 0.7)',
@@ -343,11 +352,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   body: {
-    paddingTop: 56,
+    paddingTop: (props: any) => props.bannerVisible ? 130 : 56,
     border: 'none',
 
     [breakpoints.down('sm')]: {
-      padding: '56px 20px 0 20px',
+      padding: (props: any) => props.bannerVisible ? '166px 20px 0 20px' : '56px 20px 0 20px',
     },
   },
   explorePremia: {
@@ -1170,7 +1179,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: 'black',
     width: '100%',
     position: 'fixed',
-    top: 56,
+    top: (props: any) => props.bannerVisible ? 166 : 56,
     zIndex: 60000,
     borderTop: '1px solid #212121',
 
@@ -1218,6 +1227,78 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   sectionImages: {
     position: 'relative',
+  },
+  appBanner: {
+    width: '100%',
+    height: (props: any) => props.bannerVisible ? 74 : 0,
+    opacity: (props: any) => props.bannerVisible ? 1 : 0,
+    transition: 'all 0.5s',
+    backgroundColor: palette.primary.main,
+    position: 'relative',
+    margin: '0 auto !important',
+    '& img': {
+      height: '100%',
+      position: 'absolute',
+      bottom: 0,
+      zIndex: 1,
+      '&:first-child': {
+        left: 0
+      },
+      '&:last-child': {
+        right: 0
+      },
+    },
+    '& iframe': {
+      top: 0,
+      right: 0,
+      border: 'none',
+      height: 63,
+    },
+    [breakpoints.down('sm')]: {
+      height: (props: any) => props.bannerVisible ? 110 : 0,
+      '& iframe': {
+        marginTop: 5
+      }
+    }
+  },
+  countDownBanner: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    '& > div': {
+      zIndex: 2,
+      textAlign: 'center',
+      maxWidth: '85%',
+    },
+    '& svg': {
+      '& path': {
+        fill: 'white'
+      }
+    },
+    '& > svg': {
+      position: 'absolute',
+      right: 24,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      zIndex: 3
+    },
+    '& p': {
+      fontWeight: 700,
+      fontSize: 18,
+      lineHeight: 1,
+      marginLeft: 8,
+      color: 'white'
+    },
+
+    [breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      '& > svg': {
+        transform: 'none',
+        top: 12,
+        right: 8
+      }
+    }
   },
 }));
 
@@ -1279,7 +1360,8 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const LandingPage: React.FC = () => {
-  const classes = useStyles();
+  const [ bannerVisible, setBannerVisible ] = useState(true);
+  const classes = useStyles({ bannerVisible });
   const theme = useTheme();
   const history = useHistory();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1326,6 +1408,18 @@ const LandingPage: React.FC = () => {
   return (
     <Grid container className={classes.mainContainer}>
       <AppBar position='static' className={classes.appBar}>
+        <Box className={classes.appBanner}>
+          <img src={mobile ? BullMobileBanner : BullBanner} alt='Bull Banner' />
+          <Box className={classes.countDownBanner}>
+            <Box display='flex'>
+              <WinnerPrize />
+              <Typography>Trading competition with $150,000 in prizes</Typography>
+            </Box>
+            <iframe src='./countdown.html' title='top right image'></iframe>
+            <CloseIcon onClick={() => setBannerVisible(false) } />
+          </Box>
+          <img src={mobile ? BearMobileBanner : BearBanner} alt='Bull Banner' />
+        </Box>
         <Toolbar>
           <Container className={classes.container}>
             <AnchorLink href='#hero' onClick={preventDefault}>
