@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography,
   Modal,
@@ -9,9 +9,9 @@ import {
   Backdrop,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { isEmpty } from 'lodash';
 import cx from 'classnames';
 
-import TradingCompetitionMerkleRoot from '../../constants/merkleRoots/TradingCompetition.json';
 import { useClaimMerkle, useHasMerkleClaim } from 'hooks';
 
 import { ModalContainer } from 'components';
@@ -175,15 +175,28 @@ const ClaimTokensModal: React.FC<ClaimTokensModalProps> = ({
   onClose,
 }) => {
   const [selectedToken, setSelectedToken] = useState(0);
-  const classes = useStyles();
+  const [tradingCompetitionMerkle, setTradingCompetitionMerkle] = useState({});
   const { palette } = useTheme();
-  const hasClaim = useHasMerkleClaim(TradingCompetitionMerkleRoot, 0);
+  const classes = useStyles();
+
+  const hasClaim = useHasMerkleClaim(tradingCompetitionMerkle, 0);
   const claimMerkle = useClaimMerkle(
-    TradingCompetitionMerkleRoot,
+    tradingCompetitionMerkle,
     0,
     1,
     'Claiming tokens for competition',
   );
+
+  useEffect(() => {
+    if (isEmpty(tradingCompetitionMerkle)) {
+      fetch('https://files.premia.finance/$/m1DrL', { method: 'GET' })
+        .then((res) => res.json())
+        .then((json) => {
+          console.log('json', json);
+          setTradingCompetitionMerkle(json);
+        });
+    }
+  }, [tradingCompetitionMerkle]);
 
   return (
     <Modal
