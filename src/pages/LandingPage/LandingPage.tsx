@@ -1238,6 +1238,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       '&:last-child': {
         right: 0
       },
+    },
+    '& iframe': {
+      top: 0,
+      right: 0,
+      border: 'none',
+      height: '100%',
     }
   },
   countDownBanner: {
@@ -1257,113 +1263,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       marginLeft: 8,
       color: 'white'
     },
-    '& .flip-clock': {
-      textAlign: 'center',
-      perspective: 400,
-      '& .flip-clock__piece': {
-        display: 'inline-block',
-        margin: '0 5px'
-      },
-      '& .flip-clock__slot': {
-        fontSize: '2vw'
-      },
-      '& .card': {
-        display: 'block',
-        position: 'relative',
-        paddingBottom: 23,
-        fontSize: 24,
-        lineHeight: '18px'
-      },
-      
-      '& .card__top, & .card__bottom, & .card__back::before, &.card__back::after': {
-        display: 'block',
-        height: 23,
-        color: 'white',
-        background: 'black',
-        padding: '0.25em 0.25em',
-        borderRadius: '10px 10px 0 0',
-        backfaceVisiblity: 'hidden',
-        transformStyle: 'preserve-3d',
-        width: 59,
-        transform: 'translateZ(0)'
-      },
-
-      '& .card__bottom': {
-        color: '#fff',
-        position: 'absolute',
-        top: '50%',
-        left: 0,
-        background: '#393939',
-        borderRadius: '0 0 10px 10px',
-        pointerEvents: 'none',
-        overflow: 'hidden',
-
-        '&::after': {
-          display: 'block',
-          marginTop: -23
-        }
-      },
-      
-      '& .card__back::before, & .card__bottom::after': {
-        content: 'attr(data-value)',
-      },
-      
-      '& .card__back': {
-        position: 'absolute',
-        top: 0,
-        height: '100%',
-        left: 0,
-        pointerEvents: 'none',
-
-        '&::before': {
-          position: 'relative',
-          zIndex: -1,
-          overflow: 'hidden',  
-        }
-      },
-      
-      '& .flip .card__back::before': {
-        animation: '$flipTop 0.3s cubic-bezier(0.37, 0.01, 0.94, 0.35)',
-        animationFillMode: 'both',
-        transformOrigin: 'center bottom'
-      },
-      
-      '& .flip .card__back .card__bottom': {
-        transformOrigin: 'center top',
-        animationFillMode: 'both',
-        animation: '$flipBottom 0.6s cubic-bezier(0.15, 0.45, 0.28, 1)',
-      },
-    }
   },
-  '@keyframes flipTop': {
-    '0%': {
-      transform: 'rotateX(0deg)',
-      zIndex: 2,
-    },
-    '0%, 99%': {
-      opacity: 0.99,
-    },
-    '100%': {
-      transform: 'rotateX(-90deg)',
-      opacity: 0,
-    }
-  },
-  
-  '@keyframes flipBottom': {
-    '0%, 50%': {
-      zIndex: -1,
-      transform: 'rotateX(90deg)',
-      opacity: 0,
-    },
-    '51%': {
-      opacity: 0.99
-    },
-    '100%': {
-      opacity: 0.99,
-      transform: 'rotateX(0deg)',
-      zIndex: 5
-    }
-  }
 }));
 
 const StyledMenu = withStyles({
@@ -1446,14 +1346,11 @@ const CountDownComponent: React.FC<CountDownProps> = ({ endTime }) => {
       secs: minutes % 60
     }
     setValues(values1);
-    setFlipped(true);
-    setTimeout(() => {
-      setFlipped(false);
-    }, 1000);
+    requestAnimationFrame(setValuesFunc);
   }
   setTimeout(() => {
     setValuesFunc();
-  }, 1000);
+  }, 500)
   return (
     <Box className='flip-clock'>
       {Object.values(values).map((val, ind) => (
@@ -1524,7 +1421,7 @@ const LandingPage: React.FC = () => {
           <Box className={classes.countDownBanner}>
             <WinnerPrize />
             <Typography>Trading competition with $150,000 in prizes</Typography>
-            <CountDownComponent endTime='2021-06-21T18:00:00' />
+            <iframe src='./countdown.html' title='top right image'></iframe>
           </Box>
           <img src={BearBanner} alt='Bull Banner' />
         </Box>
