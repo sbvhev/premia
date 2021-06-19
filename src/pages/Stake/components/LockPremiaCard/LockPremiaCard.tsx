@@ -9,6 +9,7 @@ import {
   MenuItem,
   Checkbox,
   useMediaQuery,
+  Tooltip,
 } from '@material-ui/core';
 import { BigNumber } from 'ethers';
 import { formatEther, parseEther } from 'ethers/lib/utils';
@@ -29,6 +30,8 @@ import { ContainedButton, Loader, SwitchWithGlider } from 'components';
 import { ReactComponent as CalendarIcon } from 'assets/svg/CalendarIcon.svg';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
+import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 import LockPremiaIcon from 'assets/images/LockPremia-icon2x.png';
 import LockPremiaMobile from 'assets/images/LockPremiaMobile-icon2x.png';
 
@@ -43,7 +46,6 @@ const useStyles = makeStyles(({ palette }) => ({
     margin: '12px',
   },
   wrapperMobile: {
-    // height: '662px',
     width: '335px',
     display: 'flex',
     flexDirection: 'column',
@@ -56,7 +58,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '384px',
-    minHeight: '645px',
+    height: '645px',
     border: `1px solid ${palette.divider}`,
     backgroundColor: palette.background.paper,
     borderRadius: '12px',
@@ -349,7 +351,7 @@ const LockPremiaCard: React.FC = () => {
   const isHardwareWallet = useIsHardwareWallet();
   const transact = useTransact();
 
-  const [checkIsOn, setCheckIsOn] = useState(false);
+  const [checkIsOn, setCheckIsOn] = useState(isHardwareWallet);
   const [shouldApprove] = useState(isHardwareWallet);
   const [lockingMode, setLockingMode] = useState(true);
   const [signedAlready, setSignedAlready] = useState(false);
@@ -608,21 +610,53 @@ const LockPremiaCard: React.FC = () => {
     });
   }, [contracts?.PremiaFeeDiscount, lockAmount, lockPeriodIsOver, transact]);
 
-  const activeOnClickAction = useMemo(() => {
-    if (checkIsOn || shouldApprove) {
-      return approvedAlready ? handleLockWithApproval : onApproveLocking;
+  const appovalAction = useMemo(() => {
+    if (shouldApprove || checkIsOn) {
+      return onApproveLocking;
     }
-    return signedAlready ? handleLockWithPermit : signPermit;
+    return signPermit;
+  }, [checkIsOn, onApproveLocking, shouldApprove, signPermit]);
+
+  const lockingMethod = useMemo(() => {
+    if (
+      !lockupMonths ||
+      !lockAmount ||
+      Number(lockAmount) === 0 ||
+      !xPremiaBalance ||
+      !xPremiaBalance.gte(parseEther(lockAmount))
+    ) {
+      return () => {};
+    }
+    if (lockingAllowance && approvedAlready) {
+      return handleLockWithApproval;
+    }
+    return handleLockWithPermit;
   }, [
-    checkIsOn,
-    shouldApprove,
-    signedAlready,
-    handleLockWithPermit,
-    signPermit,
+    lockupMonths,
+    lockAmount,
+    xPremiaBalance,
+    lockingAllowance,
     approvedAlready,
+    handleLockWithPermit,
     handleLockWithApproval,
-    onApproveLocking,
   ]);
+
+  const authorizationButtonLabel = useMemo(() => {
+    if (lockingAllowance || signedAlready) {
+      return 'Approved';
+    }
+    if (shouldApprove || checkIsOn) {
+      return 'Approve 1/2';
+    }
+    return 'Sign permit 1/2';
+  }, [lockingAllowance, signedAlready, shouldApprove, checkIsOn]);
+
+  const authorizationTooltip = useMemo(() => {
+    if (shouldApprove || checkIsOn) {
+      return 'You must give Premia permission to use your xPremia. You only have to do this once per token.';
+    }
+    return 'You need to sign a permit to enable locking xPremia';
+  }, [shouldApprove, checkIsOn]);
 
   const lockingLabel = useMemo(() => {
     if (!lockupMonths) {
@@ -636,25 +670,8 @@ const LockPremiaCard: React.FC = () => {
     if (xPremiaBalance && parseEther(lockAmount).gt(xPremiaBalance)) {
       return 'Not enough xPremia';
     }
-
-    if ((checkIsOn || shouldApprove) && !approvedAlready) {
-      return 'Approve 1/2';
-    }
-
-    if (signedAlready || approvedAlready) {
-      return 'Lock';
-    }
-
-    return 'Sign permit 1/2';
-  }, [
-    lockupMonths,
-    lockAmount,
-    xPremiaBalance,
-    checkIsOn,
-    shouldApprove,
-    approvedAlready,
-    signedAlready,
-  ]);
+    return 'Lock xPremia';
+  }, [lockupMonths, lockAmount, xPremiaBalance]);
 
   const unlockingLabel = useMemo(() => {
     if (!lockedXPremia) {
@@ -879,18 +896,44 @@ const LockPremiaCard: React.FC = () => {
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             {lockingMode ? (
-              <ContainedButton
-                fullWidth
-                color='secondary'
-                label={lockingLabel}
-                disabled={
-                  !lockupMonths ||
-                  !lockAmount ||
-                  parseFloat(lockAmount) === 0 ||
-                  (xPremiaBalance && parseEther(lockAmount).gt(xPremiaBalance))
-                }
-                onClick={activeOnClickAction}
-              />
+              <>
+                <ContainedButton
+                  fullWidth
+                  color='secondary'
+                  margin='2px 4px 2px 2px'
+                  label={authorizationButtonLabel}
+                  disabled={lockingAllowance > 0 || signedAlready}
+                  onClick={appovalAction}
+                  startIcon={
+                    lockingAllowance || signedAlready ? (
+                      <ApprovedIcon fill={palette.background.paper} />
+                    ) : (
+                      false
+                    )
+                  }
+                  endIcon={
+                    !lockingAllowance && !signedAlready ? (
+                      <Tooltip
+                        arrow
+                        leaveTouchDelay={1500}
+                        title={authorizationTooltip}
+                      >
+                        <InfoIcon fill={palette.background.paper} />
+                      </Tooltip>
+                    ) : (
+                      false
+                    )
+                  }
+                />
+                <ContainedButton
+                  fullWidth
+                  color='secondary'
+                  margin='2px 2px 2px 4px'
+                  label={lockingLabel}
+                  disabled={!signedAlready && !lockingAllowance}
+                  onClick={lockingMethod}
+                />
+              </>
             ) : (
               <ContainedButton
                 fullWidth
@@ -906,7 +949,7 @@ const LockPremiaCard: React.FC = () => {
               />
             )}
           </Box>
-          {lockingMode && !lockingAllowance && (
+          {lockingMode && !lockingAllowance && !signedAlready && (
             <Box display='flex' width='100%' marginTop='12px'>
               <Checkbox
                 checked={checkIsOn}
