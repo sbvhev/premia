@@ -3,6 +3,7 @@ body {
   height: 100%;
   overflow: hidden;
   width: 100%;
+  margin: 0;
   font-family: 'DM Sans', sans-serif;
 }
 
