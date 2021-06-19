@@ -26,6 +26,7 @@ export interface Option {
   lastTradeSize: BigNumber;
   lastTradeTimestamp: BigNumber;
   totalVolume: BigNumber;
+  totalExerciseReturn: BigNumber;
   totalExercised: BigNumber;
   totalCharged: BigNumber;
   totalFeesEarned: BigNumber;
@@ -44,6 +45,7 @@ export interface UserOwnedOption {
   lastTradeFee: BigNumber;
   lastTradeSize: BigNumber;
   lastTradeTimestamp: BigNumber;
+  totalExerciseReturn: BigNumber;
   totalExercised: BigNumber;
   totalSpent: BigNumber;
   totalFeesPaid: BigNumber;

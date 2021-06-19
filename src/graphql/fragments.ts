@@ -109,6 +109,7 @@ export const Option = gql`
     lastTradeSize
     lastTradeTimestamp
     totalVolume
+    totalExerciseReturn
     totalExercised
     totalCharged
     totalFeesEarned
@@ -133,6 +134,7 @@ export const UserOwnedOption = gql`
     lastTradeFee
     lastTradeSize
     lastTradeTimestamp
+    totalExerciseReturn
     totalExercised
     totalSpent
     totalFeesPaid

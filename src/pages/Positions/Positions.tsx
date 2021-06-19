@@ -925,6 +925,22 @@ const Positions: React.FC = () => {
     }, []);
   }, [options, tokenPrices, totalOptionAllocation]);
 
+  const optionsAverageReturn = useMemo(() => {
+    return options.reduce((total, userOwned, i) => {
+      return (
+        total +
+        Number(
+          formatNumber(
+            (Number(userOwned.totalExerciseReturn) /
+              Number(userOwned.totalSpent)) *
+              100,
+          ),
+        ) /
+          (i + 1)
+      );
+    }, 0);
+  }, [options]);
+
   const totalYieldAllocation = useMemo(() => {
     return pools.reduce((total, userOwned) => {
       const tokenSymbol =
@@ -1115,7 +1131,12 @@ const Positions: React.FC = () => {
                             component='h2'
                             className={classes.price}
                           >
-                            {formatNumber(yieldAverageReturn)}%
+                            {formatNumber(
+                              positionFilterIndex === 0
+                                ? optionsAverageReturn
+                                : yieldAverageReturn,
+                            )}
+                            %
                           </Typography>
                         </Box>
                       </Box>
@@ -1208,7 +1229,12 @@ const Positions: React.FC = () => {
                           component='h2'
                           className={classes.price}
                         >
-                          {formatNumber(yieldAverageReturn)}%
+                          {formatNumber(
+                            positionFilterIndex === 0
+                              ? optionsAverageReturn
+                              : yieldAverageReturn,
+                          )}
+                          %
                         </Typography>
                       </Box>
                     </Box>
@@ -1239,8 +1265,22 @@ const Positions: React.FC = () => {
                           ? optionAllocationPerAsset
                           : yieldAllocationPerAsset
                       }
-                      colors={['#4D9EF2', '#EB4A97']}
-                      endColors={['#2DDEA0', '#A745DD']}
+                      colors={[
+                        '#4D9EF2',
+                        '#EB4A97',
+                        '#5294FF',
+                        '#EB7A4A',
+                        '#1EFF78',
+                        '#EB4A97',
+                      ]}
+                      endColors={[
+                        '#2DDEA0',
+                        '#A745DD',
+                        'rgba(82, 148, 255, 0.12)',
+                        '#F643CF',
+                        '#5294FF',
+                        '#8C43F6',
+                      ]}
                       rotations={[21.21, 116.57]}
                       content={
                         positionFilterIndex === 0 ? 'My options' : 'My assets'

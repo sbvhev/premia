@@ -189,7 +189,10 @@ const ClaimTokensModal: React.FC<ClaimTokensModalProps> = ({
 
   useEffect(() => {
     if (isEmpty(tradingCompetitionMerkle)) {
-      fetch('https://files.premia.finance/$/m1DrL', { method: 'GET' })
+      fetch(
+        `https://api.premia.finance/merkle/0x0000000000005117Dd3A72E64a705198753FDD54`,
+        { method: 'GET' },
+      )
         .then((res) => res.json())
         .then((json) => {
           console.log('json', json);

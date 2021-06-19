@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 
 import { Token } from 'web3/tokens';
 
-export function getDecimalFrom64x64(bn64x64: BigNumber): BigNumber {
+export function fixedToFloat(bn64x64: BigNumber): BigNumber {
   return bn64x64.mul(BigNumber.from(10).pow(18)).shr(64);
 }
 
