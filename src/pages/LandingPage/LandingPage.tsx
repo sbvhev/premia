@@ -71,7 +71,6 @@ import BackgroundBottom from 'assets/images/BackgroundBottom.png';
 import BullBanner from 'assets/images/BullBanner.png';
 import BearBanner from 'assets/images/BearBanner.png';
 import { ReactComponent as WinnerPrize } from 'assets/svg/WinnerPrize.svg';
-import moment from 'moment';
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
   mainContainer: {
@@ -1322,51 +1321,6 @@ const StyledMenuItem = withStyles((theme) => ({
     },
   },
 }))(MenuItem);
-
-interface CountDownProps {
-  endTime: string
-}
-
-const CountDownComponent: React.FC<CountDownProps> = ({ endTime }) => {
-  const minutes = moment.utc(endTime).diff(moment(), 'seconds');
-  const values1 = {
-    days: Math.floor(minutes / 24 / 60 / 60),
-    hours: Math.floor((minutes / 60 / 60) % 24),
-    mins: (minutes / 60) % 60,
-    secs: minutes % 60
-  }
-  const [values, setValues] = useState<Object>(values1);
-  const [flipped, setFlipped] = useState(false);
-  const setValuesFunc = () => {
-    const minutes = moment.utc(endTime).diff(moment(), 'seconds');
-    const values1 = {
-      days: Math.floor(minutes / 24 / 60 / 60),
-      hours: Math.floor((minutes / 60 / 60) % 24),
-      mins: (minutes / 60) % 60,
-      secs: minutes % 60
-    }
-    setValues(values1);
-    requestAnimationFrame(setValuesFunc);
-  }
-  setTimeout(() => {
-    setValuesFunc();
-  }, 500)
-  return (
-    <Box className='flip-clock'>
-      {Object.values(values).map((val, ind) => (
-        <Box key={ind} className={'flip-clock__piece ' + (flipped ? 'flip' : '')}>
-          <b className='flip-clock__card card'>
-            <b className='card__top'>{val}</b>
-            <b className='card__bottom' data-value={val + 1} />
-            <b className='card__back' data-value={val + 1}>
-              <b className='card__bottom' data-value={val} />
-            </b>
-          </b>
-        </Box>
-      ))}
-    </Box>
-  )
-};
 
 const LandingPage: React.FC = () => {
   const classes = useStyles();
