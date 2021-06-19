@@ -213,7 +213,7 @@ const Stake: React.FC = () => {
             !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
           }
         >
-          <Tooltip title='Add Premia to MetaMask'>
+          <Tooltip arrow title='Add Premia to MetaMask'>
             <Box
               className={classes.borderedBox}
               onClick={() =>
@@ -257,7 +257,7 @@ const Stake: React.FC = () => {
               </Box>
             </Box>
           </Tooltip>
-          <Tooltip title='Add xPremia to MetaMask'>
+          <Tooltip arrow title='Add xPremia to MetaMask'>
             <Box
               className={classes.borderedBox}
               onClick={() =>
