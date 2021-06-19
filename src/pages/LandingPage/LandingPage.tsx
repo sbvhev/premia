@@ -190,7 +190,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     position: 'fixed',
     width: '100%',
     padding: 0,
-    height: (props: any) => props.bannerVisible ? 144 : 70,
+    height: (props: any) => (props.bannerVisible ? 144 : 70),
     borderBottom: '1px solid rgba(255, 255, 255, 0.13)',
     transition: 'height 0.3s ease',
 
@@ -200,8 +200,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
 
     [breakpoints.down('sm')]: {
-      height: (props: any) => props.bannerVisible ? 180 : 70
-    }
+      height: (props: any) => (props.bannerVisible ? 180 : 70),
+    },
   },
   menuItem: {
     color: 'rgba(255, 255,255, 0.7)',
@@ -352,11 +352,12 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
   },
   body: {
-    paddingTop: (props: any) => props.bannerVisible ? 130 : 56,
+    paddingTop: (props: any) => (props.bannerVisible ? 130 : 56),
     border: 'none',
 
     [breakpoints.down('sm')]: {
-      padding: (props: any) => props.bannerVisible ? '166px 20px 0 20px' : '56px 20px 0 20px',
+      padding: (props: any) =>
+        props.bannerVisible ? '166px 20px 0 20px' : '56px 20px 0 20px',
     },
   },
   explorePremia: {
@@ -1179,7 +1180,7 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     background: 'black',
     width: '100%',
     position: 'fixed',
-    top: (props: any) => props.bannerVisible ? 166 : 56,
+    top: (props: any) => (props.bannerVisible ? 166 : 56),
     zIndex: 60000,
     borderTop: '1px solid #212121',
 
@@ -1230,8 +1231,8 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
   },
   appBanner: {
     width: '100%',
-    height: (props: any) => props.bannerVisible ? 74 : 0,
-    opacity: (props: any) => props.bannerVisible ? 1 : 0,
+    height: (props: any) => (props.bannerVisible ? 74 : 0),
+    opacity: (props: any) => (props.bannerVisible ? 1 : 0),
     transition: 'all 0.5s',
     backgroundColor: palette.primary.main,
     position: 'relative',
@@ -1242,10 +1243,10 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       bottom: 0,
       zIndex: 1,
       '&:first-child': {
-        left: 0
+        left: 0,
       },
       '&:last-child': {
-        right: 0
+        right: 0,
       },
     },
     '& iframe': {
@@ -1255,11 +1256,11 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       height: 63,
     },
     [breakpoints.down('sm')]: {
-      height: (props: any) => props.bannerVisible ? 110 : 0,
+      height: (props: any) => (props.bannerVisible ? 110 : 0),
       '& iframe': {
-        marginTop: 5
-      }
-    }
+        marginTop: 5,
+      },
+    },
   },
   countDownBanner: {
     display: 'flex',
@@ -1273,22 +1274,22 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
     },
     '& svg': {
       '& path': {
-        fill: 'white'
-      }
+        fill: 'white',
+      },
     },
     '& > svg': {
       position: 'absolute',
       right: 24,
       top: '50%',
       transform: 'translateY(-50%)',
-      zIndex: 3
+      zIndex: 3,
     },
     '& p': {
       fontWeight: 700,
       fontSize: 18,
       lineHeight: 1,
       marginLeft: 8,
-      color: 'white'
+      color: 'white',
     },
 
     [breakpoints.down('sm')]: {
@@ -1296,9 +1297,9 @@ const useStyles = makeStyles(({ palette, breakpoints }) => ({
       '& > svg': {
         transform: 'none',
         top: 12,
-        right: 8
-      }
-    }
+        right: 8,
+      },
+    },
   },
 }));
 
@@ -1360,7 +1361,7 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const LandingPage: React.FC = () => {
-  const [ bannerVisible, setBannerVisible ] = useState(true);
+  const [bannerVisible, setBannerVisible] = useState(true);
   const classes = useStyles({ bannerVisible });
   const theme = useTheme();
   const history = useHistory();
@@ -1413,10 +1414,15 @@ const LandingPage: React.FC = () => {
           <Box className={classes.countDownBanner}>
             <Box display='flex'>
               <WinnerPrize />
-              <Typography>Trading competition with $150,000 in prizes</Typography>
+              <Typography>
+                Trading competition with $150,000 in prizes
+              </Typography>
             </Box>
             <iframe src='./countdown.html' title='top right image'></iframe>
-            <CloseIcon onClick={() => setBannerVisible(false) } />
+            <CloseIcon
+              className={classes.closeIcon}
+              onClick={() => setBannerVisible(false)}
+            />
           </Box>
           <img src={mobile ? BearMobileBanner : BearBanner} alt='Bull Banner' />
         </Box>
