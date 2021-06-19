@@ -1375,6 +1375,9 @@ const Positions: React.FC = () => {
                         ? option.underlying.symbol
                         : option.base.symbol;
                       const TokenIcon = getTokenIcon(tokenSymbol);
+                      const UnderlyingIcon = getTokenIcon(
+                        option.underlying.symbol,
+                      );
                       const expiration = Moment(
                         new Date(Number(option.maturity) * 1000),
                       );
@@ -1403,9 +1406,9 @@ const Positions: React.FC = () => {
                             >
                               <Box className={classes.tokenIconCell}>
                                 <Box>
-                                  <TokenIcon height={20} width={20} />
+                                  <UnderlyingIcon height={20} width={20} />
                                 </Box>
-                                {tokenSymbol}
+                                {option.underlying.symbol}
                               </Box>
                               <Box
                                 className={cx(
@@ -1507,10 +1510,9 @@ const Positions: React.FC = () => {
                     renderRow={(userOwnedOption: UserOwnedOption, index) => {
                       const { option } = userOwnedOption;
                       const isCall = option.optionType === OptionType.Call;
-                      const tokenSymbol = isCall
-                        ? option.underlying.symbol
-                        : option.base.symbol;
-                      const TokenIcon = getTokenIcon(tokenSymbol);
+                      const UnderlyingIcon = getTokenIcon(
+                        option.underlying.symbol,
+                      );
                       const expiration = Moment(
                         new Date(Number(option.maturity) * 1000),
                       );
@@ -1531,9 +1533,9 @@ const Positions: React.FC = () => {
                           <TableCell>
                             <Box className={classes.tokenIconCell}>
                               <Box>
-                                <TokenIcon height={20} width={20} />
+                                <UnderlyingIcon height={20} width={20} />
                               </Box>
-                              {tokenSymbol}
+                              {option.underlying.symbol}
                             </Box>
                           </TableCell>
                           <TableCell>
