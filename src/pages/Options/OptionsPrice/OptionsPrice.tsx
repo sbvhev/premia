@@ -245,7 +245,8 @@ const OptionsPrice: React.FC = () => {
     window.addEventListener('resize', handleResize);
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, possiblePLBoxContainer.current);
 
   const theme = useTheme();
   const { optionType } = useOptionType();
@@ -305,7 +306,7 @@ const OptionsPrice: React.FC = () => {
     } else {
       possiblePLBox.current.state.y = 0;
     }
-  }, [mobile, strikePrice]);
+  }, [mobile, strikePrice, possiblePLBoxDimensions]);
 
   useEffect(() => {
     const setFirstPrice = () => {

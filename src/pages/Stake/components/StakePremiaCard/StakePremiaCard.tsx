@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Checkbox,
   useMediaQuery,
+  Tooltip,
 } from '@material-ui/core';
 import { formatNumber } from 'utils/formatNumber';
 import cn from 'classnames';
@@ -26,6 +27,8 @@ import StakePremiaMobile from 'assets/images/StakePremiaMobile-icon2x.png';
 import { useDarkModeManager } from 'state/user/hooks';
 import { ReactComponent as PremiaWhite } from 'assets/svg/NewLogoWhiteSmall.svg';
 import { ReactComponent as CustomCheckBox } from 'assets/svg/CheckBox.svg';
+import { ReactComponent as InfoIcon } from 'assets/svg/TooltipQuestionmark.svg';
+import { ReactComponent as ApprovedIcon } from 'assets/svg/ApprovedTick.svg';
 
 import { ContainedButton, SwitchWithGlider } from 'components';
 
@@ -334,7 +337,7 @@ const StakePremiaCard: React.FC = () => {
   const transact = useTransact();
 
   const [stakingMode, setStakingMode] = useState(true);
-  const [checkIsOn, setCheckIsOn] = useState(false);
+  const [checkIsOn, setCheckIsOn] = useState(isHardwareWallet);
   const [shouldApprove] = useState(isHardwareWallet);
   const [signedAlready, setSignedAlready] = useState(false);
   const [approvedAlready, setApprovedAready] = useState(false);
@@ -527,21 +530,51 @@ const StakePremiaCard: React.FC = () => {
     });
   }, [contracts, stakeAmount, transact]);
 
-  const onClickAction = useMemo(() => {
-    if (checkIsOn || shouldApprove) {
-      return approvedAlready ? handleStakeWithApproval : onApproveStaking;
+  const appovalAction = useMemo(() => {
+    if (shouldApprove || checkIsOn) {
+      return onApproveStaking;
     }
-    return signedAlready ? handleStakeWithPermit : signPermit;
+    return signPermit;
+  }, [checkIsOn, onApproveStaking, shouldApprove, signPermit]);
+
+  const stakingMethod = useMemo(() => {
+    if (
+      !stakeAmount ||
+      Number(stakeAmount) === 0 ||
+      !premiaBalance ||
+      !premiaBalance.gte(parseEther(stakeAmount))
+    ) {
+      return () => {};
+    }
+    if (stakingAllowance && approvedAlready) {
+      return handleStakeWithApproval;
+    }
+    return handleStakeWithPermit;
   }, [
-    checkIsOn,
-    shouldApprove,
+    stakeAmount,
+    premiaBalance,
+    stakingAllowance,
     approvedAlready,
-    signedAlready,
     handleStakeWithPermit,
-    signPermit,
     handleStakeWithApproval,
-    onApproveStaking,
   ]);
+
+  const authorizationButtonLabel = useMemo(() => {
+    if (stakingAllowance || signedAlready) {
+      return 'Approved';
+    }
+    if (shouldApprove || checkIsOn) {
+      return 'Approve 1/2';
+    }
+    return 'Sign permit 1/2';
+  }, [stakingAllowance, signedAlready, shouldApprove, checkIsOn]);
+
+  const authorizationTooltip = useMemo(() => {
+    if (shouldApprove || checkIsOn) {
+      return 'You must give Premia permission to use your PREMIA Tokens. You only have to do this once per token.';
+    }
+    return 'You need to sign a permit to enable staking PREMIA';
+  }, [shouldApprove, checkIsOn]);
 
   const stakingLabel = useMemo(() => {
     if (!stakeAmount || parseFloat(stakeAmount) === 0) {
@@ -551,24 +584,8 @@ const StakePremiaCard: React.FC = () => {
     if (premiaBalance && parseEther(stakeAmount).gt(premiaBalance)) {
       return 'Not enough Premia';
     }
-
-    if ((checkIsOn || shouldApprove) && !approvedAlready) {
-      return 'Approve 1/2';
-    }
-
-    if (signedAlready || approvedAlready) {
-      return 'Stake';
-    }
-
-    return 'Sign permit 1/2';
-  }, [
-    stakeAmount,
-    premiaBalance,
-    checkIsOn,
-    shouldApprove,
-    signedAlready,
-    approvedAlready,
-  ]);
+    return 'Stake Premia';
+  }, [stakeAmount, premiaBalance]);
 
   const unstakingLabel = useMemo(() => {
     if (!stakeAmount || parseFloat(stakeAmount) === 0) {
@@ -697,16 +714,42 @@ const StakePremiaCard: React.FC = () => {
 
           <Box className={classes.horizontalBox} style={{ marginTop: '12px' }}>
             {stakingMode ? (
-              <ContainedButton
-                fullWidth
-                label={stakingLabel}
-                disabled={
-                  !stakeAmount ||
-                  parseFloat(stakeAmount) === 0 ||
-                  (premiaBalance && parseEther(stakeAmount).gt(premiaBalance))
-                }
-                onClick={onClickAction}
-              />
+              <>
+                <ContainedButton
+                  fullWidth
+                  margin='2px 4px 2px 2px'
+                  label={authorizationButtonLabel}
+                  disabled={stakingAllowance > 0 || signedAlready}
+                  onClick={appovalAction}
+                  startIcon={
+                    stakingAllowance || signedAlready ? (
+                      <ApprovedIcon fill={palette.background.paper} />
+                    ) : (
+                      false
+                    )
+                  }
+                  endIcon={
+                    !stakingAllowance && !signedAlready ? (
+                      <Tooltip
+                        arrow
+                        leaveTouchDelay={1500}
+                        title={authorizationTooltip}
+                      >
+                        <InfoIcon fill={palette.background.paper} />
+                      </Tooltip>
+                    ) : (
+                      false
+                    )
+                  }
+                />
+                <ContainedButton
+                  fullWidth
+                  margin='2px 2px 2px 4px'
+                  label={stakingLabel}
+                  disabled={!signedAlready && !stakingAllowance}
+                  onClick={stakingMethod}
+                />
+              </>
             ) : (
               <ContainedButton
                 fullWidth
@@ -721,12 +764,12 @@ const StakePremiaCard: React.FC = () => {
             )}
           </Box>
 
-          {stakingMode && !stakingAllowance && (
+          {stakingMode && !stakingAllowance && !signedAlready && (
             <Box display='flex' width='100%' marginTop='12px'>
               <Checkbox
                 checked={checkIsOn}
                 onChange={handleToggleCheck}
-                name='agreeToTerms'
+                name='UseApprove'
                 size='small'
                 className={classes.checkbox}
                 icon={<CustomCheckBox />}

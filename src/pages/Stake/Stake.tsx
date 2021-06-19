@@ -87,7 +87,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: '18px',
     lineHeight: '18px',
   },
-  premiaBox1: {
+  blueBox: {
     width: '40px',
     minWidth: '40px',
     height: '40px',
@@ -102,7 +102,7 @@ const useStyles = makeStyles(({ palette }) => ({
       fill: 'url(#premiaBlue)',
     },
   },
-  premiaBox2: {
+  redBox: {
     width: '40px',
     minWidth: '40px',
     height: '40px',
@@ -118,7 +118,7 @@ const useStyles = makeStyles(({ palette }) => ({
   redPremiaIcon: {
     position: 'relative',
     top: 4,
-    left: -38,
+    left: -36,
     zIndex: 5,
     opacity: 1,
 
@@ -213,7 +213,7 @@ const Stake: React.FC = () => {
             !mobile ? classes.horizontalBox : classes.horizontalBoxMobile
           }
         >
-          <Tooltip title='Add Premia to MetaMask'>
+          <Tooltip arrow title='Add Premia to MetaMask'>
             <Box
               className={classes.borderedBox}
               onClick={() =>
@@ -236,7 +236,7 @@ const Stake: React.FC = () => {
                     }
               }
             >
-              <Box className={classes.premiaBox1}>
+              <Box className={classes.blueBox}>
                 <PremiaLogo />
               </Box>
               <Box className={classes.col} style={{ margin: '4px 0' }}>
@@ -257,7 +257,7 @@ const Stake: React.FC = () => {
               </Box>
             </Box>
           </Tooltip>
-          <Tooltip title='add xPremia to MetaMask'>
+          <Tooltip arrow title='Add xPremia to MetaMask'>
             <Box
               className={classes.borderedBox}
               onClick={() =>
@@ -278,13 +278,13 @@ const Stake: React.FC = () => {
                     }
               }
             >
-              <Box className={classes.premiaBox2}></Box>
+              <Box className={classes.redBox} />
               <Box className={classes.redPremiaIcon}>
                 <XPremiaLogo />
               </Box>
               <Box
                 className={classes.colRelative}
-                style={{ margin: '4px 0 4px 8px' }}
+                style={{ margin: '4px 0 4px 11px' }}
               >
                 <Typography
                   component='p'

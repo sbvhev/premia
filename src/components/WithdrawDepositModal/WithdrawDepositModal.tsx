@@ -489,7 +489,7 @@ const WithdrawDepositModal: React.FC<WithdrawDepositModalProps> = ({
                       color={call ? 'primary' : 'secondary'}
                       size='large'
                       label={`Approve ${activeToken?.symbol}`}
-                      onClick={transactionReady ? onApprove : () => {}}
+                      onClick={onApprove}
                       endIcon={
                         <Tooltip
                           arrow

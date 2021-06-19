@@ -72,8 +72,8 @@ export const DAI: { [chainId in ChainId | 56 | 137]: Token } = {
     name: 'Dai Stablecoin',
   },
   [ChainId.RINKEBY]: {
-    id: '0xd9abf41C1b5929fEB71AbCc94d839C7757c6aFe0',
-    address: '0xd9abf41C1b5929fEB71AbCc94d839C7757c6aFe0',
+    id: '0xfEb940BAfD4a552BAeBE86f56d6D31E4DCd95e53',
+    address: '0xfEb940BAfD4a552BAeBE86f56d6D31E4DCd95e53',
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
@@ -118,8 +118,8 @@ export const WETH: { [chainId in ChainId | 56 | 137]: Token } = {
     name: 'Wrapped Ether',
   },
   [ChainId.RINKEBY]: {
-    id: '0x3b64bE65F7EF3CA6c26A52FaD9C1CeBBe1931fB3', // _WETH[ChainId.RINKEBY].address,
-    address: '0x3b64bE65F7EF3CA6c26A52FaD9C1CeBBe1931fB3', // _WETH[ChainId.RINKEBY].address,
+    id: '0x227dA5Feb8b55E1dF54322026149A6b4eAC0b295', // _WETH[ChainId.RINKEBY].address,
+    address: '0x227dA5Feb8b55E1dF54322026149A6b4eAC0b295', // _WETH[ChainId.RINKEBY].address,
     decimals: 18,
     symbol: 'WETH',
     name: 'Wrapped Ether',

@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 
+import { WETH, DAI } from '../constants';
 import {
   Erc20,
   Erc20__factory,
@@ -53,18 +54,18 @@ export interface PremiaContracts {
 
 export const contracts: ContractAddresses = {
   WETH: {
-    1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    4: '0x3b64bE65F7EF3CA6c26A52FaD9C1CeBBe1931fB3', // '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-    42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-    56: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
-    137: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+    1: WETH[1].address,
+    4: WETH[4].address, // '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    42: WETH[42].address,
+    56: WETH[56].address,
+    137: WETH[137].address,
   },
   DAI: {
-    1: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    4: '0xd9abf41C1b5929fEB71AbCc94d839C7757c6aFe0',
-    42: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
-    56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-    137: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+    1: DAI[1].address,
+    4: DAI[4].address,
+    42: DAI[42].address,
+    56: DAI[56].address,
+    137: DAI[137].address,
   },
   WBNB: {
     56: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
@@ -105,7 +106,7 @@ export const contracts: ContractAddresses = {
     42: '0x1f87Beb89e43824C075d82B3a7061b1e50D1615d',
   },
   TradingCompetitionMerkle: {
-    4: '0x66DD98ae687aEc4383eBB11615A6a4Cd954A8Eb4',
+    4: '0x9c034c2bE1cf11Ad0491d707bFbEb5891c83824f',
   },
 };
 
